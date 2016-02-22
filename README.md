@@ -10,10 +10,15 @@ A JavaScript library for parsing and formatting chord sheets
 npm install chordsheetjs
 ```
 
-Load with `require()` or `import` (es2015):
+Load with `require()`:
 
 ```javascript
 var Chord = require('chordsheetjs');
+```
+
+or `import` (es2015):
+
+```javascript
 import ChordSheetJS from 'chordsheetjs';
 ```
 
