@@ -3,7 +3,7 @@
   "author": "Martijn Versluis",
   "version": "0.2.0",
   "description": "A JavaScript library for parsing and formatting chord sheets",
-  "main": "chordsheet.js",
+  "main": "lib/chordsheet.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/martijnversluis/ChordSheetJS.git"
@@ -22,8 +22,8 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel-register",
-    "build-max": "browserify -t [ babelify --presets [ es2015 ] ] src/chordsheet.js -o dist/chordsheet.js",
-    "build-min": "browserify -t [ babelify --presets [ es2015 ] ] -t uglifyify src/chordsheet.js -o dist/chordsheet.min.js",
+    "build-max": "browserify -t [ babelify --presets [ es2015 ] ] lib/chordsheet.js -o dist/chordsheet.js",
+    "build-min": "browserify -t [ babelify --presets [ es2015 ] ] -t uglifyify lib/chordsheet.js -o dist/chordsheet.min.js",
     "build": "npm run build-max && npm run build-min"
   }
 }
