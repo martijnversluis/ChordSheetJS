@@ -13,7 +13,7 @@ npm install chordsheetjs
 Load with `require()`:
 
 ```javascript
-var Chord = require('chordsheetjs');
+var ChordSheetJS = require('chordsheetjs');
 ```
 
 or `import` (es2015):
