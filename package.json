@@ -17,8 +17,7 @@
     "babel-register": "^6.4.3",
     "babelify": "^7.2.0",
     "expect": "^1.13.4",
-    "mocha": "^2.4.5",
-    "uglifyify": "^3.0.1"
+    "mocha": "^2.4.5"
   },
   "scripts": {
     "test": "mocha --compilers js:babel-register",
