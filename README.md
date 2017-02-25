@@ -1,4 +1,4 @@
-# ChordProJS
+# ChordSheetJS [![Build Status](https://travis-ci.org/martijnversluis/ChordSheetJS.svg?branch=master)](https://travis-ci.org/martijnversluis/ChordSheetJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
