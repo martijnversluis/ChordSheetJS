@@ -1,6 +1,6 @@
 import expect from 'expect'
-import Item from '../lib/chord_sheet/item';
-import Tag from '../lib/chord_sheet/tag';
+import Item from '../src/chord_sheet/item';
+import Tag from '../src/chord_sheet/tag';
 
 expect.extend({
   toBeItem(chords, lyrics) {

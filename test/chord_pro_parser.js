@@ -1,6 +1,6 @@
 import expect from 'expect';
 import './matchers';
-import ChordProParser from '../lib/parser/chord_pro_parser';
+import ChordProParser from '../src/parser/chord_pro_parser';
 
 const chordSheet = `
 {title: Let it be}

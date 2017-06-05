@@ -13,16 +13,14 @@
   },
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
-    "babel-preset-es2015": "^6.5.0",
-    "babel-register": "^6.4.3",
-    "babelify": "^7.2.0",
+    "babel-cli": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "expect": "^1.13.4",
     "mocha": "^2.4.5"
   },
   "scripts": {
     "test": "mocha --compilers js:babel-register",
-    "build-max": "browserify -t [ babelify --presets [ es2015 ] ] lib/chordsheet.js -o dist/chordsheet.js",
-    "build-min": "browserify -t [ babelify --presets [ es2015 ] ] -t uglifyify lib/chordsheet.js -o dist/chordsheet.min.js",
-    "build": "npm run build-max && npm run build-min"
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm test && npm run build"
   }
 }
