@@ -22,10 +22,6 @@ or `import` (es2015):
 import ChordSheetJS from 'chordsheetjs';
 ```
 
-It is also possible to download or clone the repository. When you load one of
-the compiled packages in the `dist/` folder, you can use `window.ChordSheetJS` in the
-browser.
-
 ## Functionalities
 
 ### Parse chord sheet
