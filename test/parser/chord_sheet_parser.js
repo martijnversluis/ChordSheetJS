@@ -1,6 +1,6 @@
 import expect from 'expect';
-import './matchers';
-import ChordSheetParser from '../src/parser/chord_sheet_parser';
+import '../matchers';
+import ChordSheetParser from '../../src/parser/chord_sheet_parser';
 
 const chordSheet = `
        Am         C/G        F          C

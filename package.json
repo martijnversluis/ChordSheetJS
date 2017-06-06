@@ -20,7 +20,7 @@
     "mocha": "^2.4.5"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-register",
+    "test": "mocha --recursive --compilers js:babel-register",
     "build": "babel src --out-dir lib",
     "prepublish": "npm test && npm run build"
   }
