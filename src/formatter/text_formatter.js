@@ -15,10 +15,10 @@ export default class TextFormatter extends FormatterBase {
     let output = '';
 
     if (this.chordsLine.trim().length) {
-      output += this.chordsLine + NEW_LINE;
+      output += this.chordsLine.trimRight() + NEW_LINE;
     }
 
-    output += this.lyricsLine + NEW_LINE;
+    output += this.lyricsLine.trimRight() + NEW_LINE;
     this.output(output);
     this.chordsLine = '';
     this.lyricsLine = '';
