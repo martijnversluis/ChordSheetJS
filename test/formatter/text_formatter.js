@@ -22,6 +22,8 @@ describe('TextFormatter', () => {
         createTag('title', 'Let it be')
       ]),
 
+      createLine([]),
+
       createLine([
         createTag('Chorus', '')
       ]),
@@ -49,6 +51,10 @@ describe('TextFormatter', () => {
     const formatter = new TextFormatter();
 
     const expectedChordSheet = `
+Let it be
+
+Chorus
+
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
 C                G              F  C/E Dm C

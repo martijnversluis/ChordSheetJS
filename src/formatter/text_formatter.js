@@ -41,7 +41,9 @@ export default class TextFormatter extends FormatterBase {
 
   formatItem(item) {
     if (item instanceof Tag) {
-      return this.formatTag(item);
+      this.lyricsLine += this.formatTag(item);
+      this.dirtyLine = true;
+      return;
     }
 
     let chordsLength = item.chords.length;
