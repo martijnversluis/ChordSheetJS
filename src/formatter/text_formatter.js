@@ -1,4 +1,5 @@
 import FormatterBase from './formatter_base';
+import Tag from '../chord_sheet/tag';
 
 const NEW_LINE = '\n';
 
@@ -39,6 +40,10 @@ export default class TextFormatter extends FormatterBase {
   }
 
   formatItem(item) {
+    if (item instanceof Tag) {
+      return this.formatTag(item);
+    }
+
     let chordsLength = item.chords.length;
 
     if (chordsLength) {
@@ -49,5 +54,13 @@ export default class TextFormatter extends FormatterBase {
     this.chordsLine += this.padString(item.chords, length);
     this.lyricsLine += this.padString(item.lyrics, length);
     this.dirtyLine = true;
+  }
+
+  formatTag(tag) {
+    if (tag.value.length) {
+      return tag.value;
+    }
+
+    return tag.name;
   }
 }
