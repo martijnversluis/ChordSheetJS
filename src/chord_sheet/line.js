@@ -31,7 +31,7 @@ export default class Line {
   }
 
   addTag(name, value) {
-    const tag = new Tag(name, value);
+    const tag = (name instanceof Tag) ? name : new Tag(name, value);
     this.items.push(tag);
     return tag;
   }

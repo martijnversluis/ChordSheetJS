@@ -1,3 +1,5 @@
+const META_TAGS = ['title', 'subtitle'];
+
 export default class Tag {
   constructor(name, value) {
     this._name = name;
@@ -18,5 +20,9 @@ export default class Tag {
 
   get value() {
     return this._value.trim();
+  }
+
+  isMetaTag() {
+    return META_TAGS.indexOf(this.name) != -1;
   }
 }
