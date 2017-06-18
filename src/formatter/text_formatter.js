@@ -39,6 +39,23 @@ export default class TextFormatter extends FormatterBase {
     return str;
   }
 
+  formatMetaData(song) {
+    const title = song.title.trim();
+    const subtitle = song.subtitle.trim();
+
+    if (title) {
+      this.output(title.toUpperCase() + NEW_LINE);
+    }
+
+    if (subtitle) {
+      this.output(subtitle.trim() + NEW_LINE);
+    }
+
+    if (title || subtitle) {
+      this.output(NEW_LINE);
+    }
+  }
+
   formatItem(item) {
     if (item instanceof Tag) {
       this.lyricsLine += this.formatTag(item);

@@ -1,6 +1,9 @@
 import Line from './line';
 import Tag from './tag';
 
+const TITLE = 'title';
+const SUBTITLE = 'subtitle';
+
 export default class Song {
   constructor(metaData = {}) {
     this.lines = [];
@@ -51,5 +54,13 @@ export default class Song {
     }
 
     return tag;
+  }
+
+  get title() {
+    return this.metaData[TITLE] || "";
+  }
+
+  get subtitle() {
+    return this.metaData[SUBTITLE] || "";
   }
 }

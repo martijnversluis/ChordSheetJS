@@ -18,10 +18,6 @@ describe('TextFormatter', () => {
     // [C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]
 
     const song = createSong([
-      createLine([
-        createTag('title', 'Let it be')
-      ]),
-
       createLine([]),
 
       createLine([
@@ -46,12 +42,16 @@ describe('TextFormatter', () => {
         createItem('Dm', ' '),
         createItem('C', '')
       ])
-    ]);
+    ], {
+      title: 'Let it be',
+      subtitle: 'ChordSheetJS example version'
+    });
 
     const formatter = new TextFormatter();
 
     const expectedChordSheet = `
-Let it be
+LET IT BE
+ChordSheetJS example version
 
 Chorus
 
