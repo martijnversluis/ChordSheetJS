@@ -2,10 +2,6 @@ import expect from 'expect';
 import '../matchers';
 import { createSong, createLine, createItem, createTag } from '../utilities';
 import TextFormatter from '../../src/formatter/text_formatter';
-import Item from '../../src/chord_sheet/item';
-import Line from '../../src/chord_sheet/line';
-import Song from '../../src/chord_sheet/song';
-import Tag from '../../src/chord_sheet/tag';
 
 describe('TextFormatter', () => {
   it('formats a song to a text chord sheet correctly', () => {
