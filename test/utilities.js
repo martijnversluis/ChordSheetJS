@@ -3,8 +3,8 @@ import Line from '../src/chord_sheet/line';
 import Song from '../src/chord_sheet/song';
 import Tag from '../src/chord_sheet/tag';
 
-export function createSong(lines) {
-  const song = new Song();
+export function createSong(lines, metaData) {
+  const song = new Song(metaData);
   song.lines = lines;
   return song;
 }

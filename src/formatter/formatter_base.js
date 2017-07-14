@@ -8,6 +8,8 @@ export default class FormatterBase {
   }
 
   format(song) {
+    this.formatMetaData(song);
+
     song.lines.forEach((line) => {
       this.newLine();
 
@@ -19,4 +21,6 @@ export default class FormatterBase {
     this.endOfSong();
     return this.stringOutput;
   }
+
+  formatMetaData(name, value) { }
 }

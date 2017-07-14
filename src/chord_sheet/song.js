@@ -1,9 +1,14 @@
 import Line from './line';
+import Tag from './tag';
+
+const TITLE = 'title';
+const SUBTITLE = 'subtitle';
 
 export default class Song {
-  constructor() {
+  constructor(metaData = {}) {
     this.lines = [];
     this.currentLine = null;
+    this.metaData = metaData;
   }
 
   chords(chr) {
@@ -27,6 +32,10 @@ export default class Song {
     return this.currentLine.addItem();
   }
 
+  dropLine() {
+    this.lines.pop();
+  }
+
   ensureLine() {
     if (!this.currentLine) {
       this.addLine();
@@ -34,7 +43,24 @@ export default class Song {
   }
 
   addTag(name, value) {
-    this.ensureLine();
-    return this.currentLine.addTag(name, value);
+    const tag = new Tag(name, value);
+
+    if (tag.isMetaTag()) {
+      this.metaData[tag.name] = tag.value;
+      this.dropLine();
+    } else {
+      this.ensureLine();
+      this.currentLine.addTag(tag);
+    }
+
+    return tag;
+  }
+
+  get title() {
+    return this.metaData[TITLE] || "";
+  }
+
+  get subtitle() {
+    return this.metaData[SUBTITLE] || "";
   }
 }
