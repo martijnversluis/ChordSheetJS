@@ -15,7 +15,7 @@ export default class HtmlFormatter extends FormatterBase {
   formatItem(item) {
     if (item instanceof Tag) {
       return;
-    };
+    }
 
     let chords = item.chords.trim();
     let lyrics = item.lyrics.trim();
