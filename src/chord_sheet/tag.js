@@ -1,8 +1,21 @@
 const META_TAGS = ['title', 'subtitle'];
 
+const ALIASES = {
+  t: 'title',
+  st: 'subtitle'
+};
+
+const translateTagNameAlias = function (name) {
+  if (name in ALIASES) {
+    return ALIASES[name];
+  }
+
+  return name;
+};
+
 export default class Tag {
   constructor(name, value) {
-    this._name = name;
+    this._name = translateTagNameAlias(name);
     this._value = value;
   }
 
