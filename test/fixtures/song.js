@@ -3,6 +3,7 @@ import { createSong, createLine, createItem, createTag } from '../utilities';
 // Mimic the following chord sheet:
 //
 // {title: Let it be}
+// {subtitle: ChordSheetJS example version}
 // {Chorus}
 //
 // Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
