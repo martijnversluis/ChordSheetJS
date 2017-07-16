@@ -40,8 +40,8 @@ export default class TextFormatter extends FormatterBase {
   }
 
   formatMetaData(song) {
-    const title = song.title.trim();
-    const subtitle = song.subtitle.trim();
+    const title = song.title;
+    const subtitle = song.subtitle;
 
     if (title) {
       this.output(title.toUpperCase() + NEW_LINE);
