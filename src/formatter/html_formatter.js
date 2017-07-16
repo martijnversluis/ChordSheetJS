@@ -12,6 +12,16 @@ export default class HtmlFormatter extends FormatterBase {
     this.lyricsLine = '';
   }
 
+  formatMetaData(song) {
+    if (song.title) {
+      this.output(`<h1>${song.title}</h1>`);
+    }
+
+    if (song.subtitle) {
+      this.output(`<h2>${song.subtitle}</h2>`);
+    }
+  }
+
   formatItem(item) {
     if (item instanceof Tag) {
       return;

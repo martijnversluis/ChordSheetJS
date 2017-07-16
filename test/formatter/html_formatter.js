@@ -8,6 +8,8 @@ describe('HtmlFormatter', () => {
     const formatter = new HtmlFormatter();
 
     const expectedChordSheet =
+      '<h1>Let it be</h1>' +
+      '<h2>ChordSheetJS example version</h2>' +
       '<table>' +
         '<tr>' +
         '<td class="chord"></td>' +
