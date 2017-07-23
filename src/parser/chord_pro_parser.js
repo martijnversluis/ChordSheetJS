@@ -18,7 +18,7 @@ export default class ChordProParser {
 
   parseDocument(document) {
     for (let chr of document) {
-      this.processor.call(this, chr);
+      this.processor(chr);
     }
   }
 

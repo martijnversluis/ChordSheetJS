@@ -36,6 +36,6 @@ export default class Tag {
   }
 
   isMetaTag() {
-    return META_TAGS.indexOf(this.name) != -1;
+    return META_TAGS.indexOf(this.name) !== -1;
   }
 }
