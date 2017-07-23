@@ -9,7 +9,8 @@ export default class Line {
   }
 
   addItem() {
-    return this.currentItem = pushNew(this.items, Item);
+    this.currentItem = pushNew(this.items, Item);
+    return this.currentItem;
   }
 
   ensureItem() {

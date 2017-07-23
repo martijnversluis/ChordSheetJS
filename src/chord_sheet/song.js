@@ -22,7 +22,8 @@ export default class Song {
   }
 
   addLine() {
-    return this.currentLine = pushNew(this.lines, Line);
+    this.currentLine = pushNew(this.lines, Line);
+    return this.currentLine;
   }
 
   addItem() {

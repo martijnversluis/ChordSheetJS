@@ -7,13 +7,8 @@ export default class ChordSheetParser {
   parse(document) {
     this.initialize(document);
 
-    while (true) {
+    while (this.hasNextLine()) {
       const line = this.readLine();
-
-      if (line === null) {
-        break;
-      }
-
       this.parseLine(line);
     }
 
@@ -28,7 +23,7 @@ export default class ChordSheetParser {
     } else {
       this.songItem = this.songLine.addItem();
 
-      if (CHORD_LINE_REGEX.test(line)) {
+      if (CHORD_LINE_REGEX.test(line) && this.hasNextLine()) {
         const nextLine = this.readLine();
         this.parseLyricsWithChords(line, nextLine);
       } else {
@@ -46,13 +41,13 @@ export default class ChordSheetParser {
   }
 
   readLine() {
-    if (this.currentLine < this.lineCount) {
-      const line = this.lines[this.currentLine]
-      this.currentLine++;
-      return line;
-    }
+    const line = this.lines[this.currentLine];
+    this.currentLine++;
+    return line;
+  }
 
-    return null;
+  hasNextLine() {
+    return this.currentLine < this.lineCount;
   }
 
   parseLyricsWithChords(line, nextLine) {
