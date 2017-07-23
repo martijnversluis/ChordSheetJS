@@ -25,7 +25,11 @@ export default class TextFormatter extends FormatterBase {
   }
 
   endOfSong() {
-    this.dirtyLine ? this.finishLine() : this.output(NEW_LINE);
+    if (this.dirtyLine) {
+      this.finishLine();
+    } else {
+      this.output(NEW_LINE);
+    }
   }
 
   newLine() {

@@ -1,5 +1,6 @@
 import Item from './item';
 import Tag from './tag';
+import {pushNew} from '../utilities';
 
 export default class Line {
   constructor() {
@@ -8,10 +9,7 @@ export default class Line {
   }
 
   addItem() {
-    const item = new Item();
-    this.items.push(item);
-    this.currentItem = item;
-    return item;
+    return this.currentItem = pushNew(this.items, Item);
   }
 
   ensureItem() {

@@ -1,5 +1,6 @@
 import Line from './line';
 import Tag from './tag';
+import {pushNew} from '../utilities';
 
 const TITLE = 'title';
 const SUBTITLE = 'subtitle';
@@ -21,10 +22,7 @@ export default class Song {
   }
 
   addLine() {
-    const line = new Line();
-    this.lines.push(line);
-    this.currentLine = line;
-    return line;
+    return this.currentLine = pushNew(this.lines, Line);
   }
 
   addItem() {
