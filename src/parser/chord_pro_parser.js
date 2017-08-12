@@ -6,6 +6,7 @@ const SQUARE_END = ']';
 const CURLY_START = '{';
 const CURLY_END = '}';
 const COLON = ':';
+const SHARP_SIGN = '#';
 
 export default class ChordProParser {
   parse(document) {
@@ -24,6 +25,9 @@ export default class ChordProParser {
 
   readLyrics(chr) {
     switch (chr) {
+      case SHARP_SIGN:
+        this.processor = this.readComment;
+        break;
       case NEW_LINE:
         this.song.addLine();
         break;
@@ -75,6 +79,14 @@ export default class ChordProParser {
         break;
       default:
         this.tagValue += chr;
+    }
+  }
+
+  readComment(chr) {
+    switch (chr) {
+      case NEW_LINE:
+        this.processor = this.readLyrics;
+        break;
     }
   }
 
