@@ -44,4 +44,11 @@ describe('ChordProParser', () => {
     expect(song.title).toEqual('Let it be');
     expect(song.subtitle).toEqual('ChordSheetJS example version');
   });
+
+  it('ignores comments', () => {
+    const chordSheetWithComment = "# this is a comment\nLet it [Am]be, let it [C/G]be";
+    const song = new ChordProParser().parse(chordSheetWithComment);
+
+    expect(song.lines.length).toEqual(1);
+  });
 });
