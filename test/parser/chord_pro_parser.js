@@ -12,14 +12,10 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {
-    const parser = new ChordProParser();
-    const song = parser.parse(chordSheet);
+    const song = new ChordProParser().parse(chordSheet);
     const lines = song.lines;
 
     expect(lines.length).toEqual(4);
-
-    expect(song.title).toEqual('Let it be');
-    expect(song.subtitle).toEqual('ChordSheetJS example version');
 
     expect(lines[0].items.length).toEqual(1);
     expect(lines[0].items[0]).toBeTag('Chorus', '');
@@ -40,5 +36,12 @@ describe('ChordProParser', () => {
     expect(lines3Items[3]).toBeItem('C/E', ' ');
     expect(lines3Items[4]).toBeItem('Dm', ' ');
     expect(lines3Items[5]).toBeItem('C', '');
+  });
+
+  it('parses meta data', () => {
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.title).toEqual('Let it be');
+    expect(song.subtitle).toEqual('ChordSheetJS example version');
   });
 });
