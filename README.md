@@ -25,7 +25,6 @@ import ChordSheetJS from 'chordsheetjs';
 ## Functionalities
 
 ### Parse chord sheet
-```
 
 #### Regular chord sheets
 
@@ -60,20 +59,20 @@ const song = parser.parse(chordSheet);
 #### Plain text format
 
 ```javascript
-var formatter = new ChordSheetJS.TextFormatter();
-var disp = formatter.format(song);
+const formatter = new ChordSheetJS.TextFormatter();
+const disp = formatter.format(song);
 ```
 
 #### HTML format
 
 ```javascript
-var formatter = new ChordSheetJS.HtmlFormatter();
-var disp = formatter.format(song);
+const formatter = new ChordSheetJS.HtmlFormatter();
+const disp = formatter.format(song);
 ```
 
 #### Chord pro format
 
 ```javascript
-var formatter = new ChordSheetJS.ChordProFormatter();
-var disp = formatter.format(song);
+const formatter = new ChordSheetJS.ChordProFormatter();
+const disp = formatter.format(song);
 ```
