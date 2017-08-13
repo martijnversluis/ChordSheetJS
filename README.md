@@ -25,35 +25,34 @@ import ChordSheetJS from 'chordsheetjs';
 ## Functionalities
 
 ### Parse chord sheet
-
-Assuming a chord sheet:
-
-```javascript
-var chordSheet =
-"G                        \n" +
-"Stand by me,             \n" +
-"             Em          \n" +
-"Oh now, now, stand by me.\n" +
-"C                        \n" +
-"Stand by me,             \n" +
-"D                        \n" +
-"Stand by me,             \n" +
-"G                        \n" +
-"Stand by me.             \n";
 ```
 
 #### Regular chord sheets
 
 ```javascript
-var parser = new ChordSheetJS.ChordSheetParser();
-var song = parser.parse(chordSheet);
+const chordSheet = `
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be`.substring(1);
+
+const parser = new ChordSheetJS.ChordSheetParser();
+const song = parser.parse(chordSheet);
 ```
 
 #### Chord pro format
 
 ```javascript
-var parser = new ChordSheetJS.ChordProParser();
-var song = parser.parse(chordSheet);
+const chordSheet = `
+{title: Let it be}
+{subtitle: ChordSheetJS example version}
+{Chorus}
+
+Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+[C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]`.substring(1);
+
+const parser = new ChordSheetJS.ChordProParser();
+const song = parser.parse(chordSheet);
 ```
 
 ### Display a parsed sheet
