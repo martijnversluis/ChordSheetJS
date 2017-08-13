@@ -76,3 +76,92 @@ const disp = formatter.format(song);
 const formatter = new ChordSheetJS.ChordProFormatter();
 const disp = formatter.format(song);
 ```
+
+## Supported ChordPro directives
+
+:heavy_check_mark: = supported
+
+:clock2: = will be supported in a future version
+
+:heavy_multiplication_x: = no plans to support it in the near future
+
+### Meta-data directives
+
+| Directive        | Support            |
+|:---------------- |:------------------:|
+| title (short: t) | :heavy_check_mark: |
+| subtitle         | :heavy_check_mark: |
+| artist           | :clock2:           |
+| composer         | :clock2:           |
+| lyricist         | :clock2:           |
+| copyright        | :clock2:           |
+| album            | :clock2:           |
+| year             | :clock2:           |
+| key              | :clock2:           |
+| time             | :clock2:           |
+| tempo            | :clock2:           |
+| duration         | :clock2:           |
+| capo             | :clock2:           |
+| meta             | :clock2:           |
+
+### Formatting directives
+
+| Directive                  | Support                  |
+|:-------------------------- |:------------------------:|
+| comment (short: c)         | :heavy_multiplication_x: |
+| comment_italic (short: ci) | :heavy_multiplication_x: |
+| comment_box (short: cb)    | :heavy_multiplication_x: |
+| chorus                     | :heavy_multiplication_x: |
+| image                      | :heavy_multiplication_x: |
+
+### Environment directives
+
+| Directive                    | Support                  |
+|:---------------------------- |:------------------------:|
+| start_of_chorus (short: soc) | :clock2:                 |
+| end_of_chorus (short: eoc)   | :clock2:                 |
+| start_of_verse               | :clock2:                 |
+| end_of_verse                 | :clock2:                 |
+| start_of_tab (short: sot)    | :heavy_multiplication_x: |
+| end_of_tab (short: eot)      | :heavy_multiplication_x: |
+| start_of_grid                | :heavy_multiplication_x: |
+| end_of_grid                  | :heavy_multiplication_x: |
+
+### Chord diagrams
+
+| Directive | Support                  |
+|:--------- |:------------------------:|
+| define    | :heavy_multiplication_x: |
+| chord     | :heavy_multiplication_x: |
+
+### Fonts, sizes and colours
+
+| Directive   | Support                  |
+|:----------- |:------------------------:|
+| textfont    | :clock2:                 |
+| textsize    | :clock2:                 |
+| textcolour  | :clock2:                 |
+| chordfont   | :clock2:                 |
+| chordsize   | :clock2:                 |
+| chordcolour | :clock2:                 |
+| tabfont     | :heavy_multiplication_x: |
+| tabsize     | :heavy_multiplication_x: |
+| tabcolour   | :heavy_multiplication_x: |
+
+### Output related directives
+
+| Directive                      | Support                  |
+|:------------------------------ |:------------------------:|
+| new_page (short: np)           | :heavy_multiplication_x: | 
+| new_physical_page (short: npp) | :heavy_multiplication_x: |
+| column_break (short: cb)       | :heavy_multiplication_x: |
+| grid (short: g)                | :heavy_multiplication_x: |
+| no_grid (short: ng)            | :heavy_multiplication_x: |
+| titles                         | :heavy_multiplication_x: |
+| columns (short: col)           | :heavy_multiplication_x: |
+
+### Custom extensions
+
+| Directive | Support  |
+|:--------- |:--------:|
+| x_        | :clock2: |
