@@ -8,12 +8,12 @@ export default class ChordProFormatter extends FormatterBase {
     this.dirtyLine = false;
   }
 
-  formatItem(item) {
-    if (item.chords) {
-      this.output('[' + item.chords + ']');
+  formatChordLyricsPair(chordLyricsPair) {
+    if (chordLyricsPair.chords) {
+      this.output('[' + chordLyricsPair.chords + ']');
     }
     
-    this.output(item.lyrics);
+    this.output(chordLyricsPair.lyrics);
     this.dirtyLine = true;
   }
 

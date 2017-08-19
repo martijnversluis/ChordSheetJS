@@ -1,4 +1,4 @@
-import Item from '../src/chord_sheet/item';
+import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Line from '../src/chord_sheet/line';
 import Song from '../src/chord_sheet/song';
 import Tag from '../src/chord_sheet/tag';
@@ -15,11 +15,11 @@ export function createLine(items) {
   return line;
 }
 
-export function createItem(chords, lyrics) {
-  const item = new Item();
-  item.chords = chords;
-  item.lyrics = lyrics;
-  return item;
+export function createChordLyricsPair(chords, lyrics) {
+  const chordLyricsPair = new ChordLyricsPair();
+  chordLyricsPair.chords = chords;
+  chordLyricsPair.lyrics = lyrics;
+  return chordLyricsPair;
 }
 
 export function createTag(name, value) {

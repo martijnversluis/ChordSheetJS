@@ -1,4 +1,4 @@
-import { createSong, createLine, createItem, createTag } from '../utilities';
+import { createSong, createLine, createChordLyricsPair, createTag } from '../utilities';
 
 // Mimic the following chord sheet:
 //
@@ -19,20 +19,20 @@ export default createSong([
   createLine([]),
 
   createLine([
-    createItem('', 'Let it '),
-    createItem('Am', 'be, let it '),
-    createItem('C/G', 'be, let it '),
-    createItem('F', 'be, let it '),
-    createItem('C', 'be')
+    createChordLyricsPair('', 'Let it '),
+    createChordLyricsPair('Am', 'be, let it '),
+    createChordLyricsPair('C/G', 'be, let it '),
+    createChordLyricsPair('F', 'be, let it '),
+    createChordLyricsPair('C', 'be')
   ]),
 
   createLine([
-    createItem('C', 'Whisper words of '),
-    createItem('G', 'wisdom, let it '),
-    createItem('F', 'be '),
-    createItem('C/E', ' '),
-    createItem('Dm', ' '),
-    createItem('C', '')
+    createChordLyricsPair('C', 'Whisper words of '),
+    createChordLyricsPair('G', 'wisdom, let it '),
+    createChordLyricsPair('F', 'be '),
+    createChordLyricsPair('C/E', ' '),
+    createChordLyricsPair('Dm', ' '),
+    createChordLyricsPair('C', '')
   ])
 ], {
   title: 'Let it be',

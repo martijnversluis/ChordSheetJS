@@ -1,4 +1,4 @@
-export default class Item {
+export default class ChordLyricsPair {
   constructor() {
     this.chords = '';
     this.lyrics = '';

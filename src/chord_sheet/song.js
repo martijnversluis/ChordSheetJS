@@ -26,9 +26,9 @@ export default class Song {
     return this.currentLine;
   }
 
-  addItem() {
+  addChordLyricsPair() {
     this.ensureLine();
-    return this.currentLine.addItem();
+    return this.currentLine.addChordLyricsPair();
   }
 
   dropLine() {
