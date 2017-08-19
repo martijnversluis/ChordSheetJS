@@ -19,15 +19,15 @@ export default class ChordSheetParser {
     this.songLine = this.song.addLine();
 
     if (line.trim().length === 0) {
-      this.songItem = null;
+      this.chordLyricsPair = null;
     } else {
-      this.songItem = this.songLine.addItem();
+      this.chordLyricsPair = this.songLine.addChordLyricsPair();
 
       if (CHORD_LINE_REGEX.test(line) && this.hasNextLine()) {
         const nextLine = this.readLine();
         this.parseLyricsWithChords(line, nextLine);
       } else {
-        this.songItem.lyrics = line + '';
+        this.chordLyricsPair.lyrics = line + '';
       }
     }
   }
@@ -53,10 +53,10 @@ export default class ChordSheetParser {
   parseLyricsWithChords(line, nextLine) {
     this.processCharacters(line, nextLine);
 
-    this.songItem.lyrics += nextLine.substring(line.length);
+    this.chordLyricsPair.lyrics += nextLine.substring(line.length);
 
-    this.songItem.chords = this.songItem.chords.trim();
-    this.songItem.lyrics = this.songItem.lyrics.trim();
+    this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
+    this.chordLyricsPair.lyrics = this.chordLyricsPair.lyrics.trim();
 
     if (!nextLine.trim().length) {
       this.songLine = this.song.addLine();
@@ -70,17 +70,17 @@ export default class ChordSheetParser {
       if (WHITE_SPACE.test(chr)) {
         this.processingText = false;
       } else {
-        this.ensureItemInitialized();
-        this.songItem.chords += chr;
+        this.ensureChordLyricsPairInitialized();
+        this.chordLyricsPair.chords += chr;
       }
 
-      this.songItem.lyrics += nextLine[c] || '';
+      this.chordLyricsPair.lyrics += nextLine[c] || '';
     }
   }
 
-  ensureItemInitialized() {
+  ensureChordLyricsPairInitialized() {
     if (!this.processingText) {
-      this.songItem = this.songLine.addItem();
+      this.chordLyricsPair = this.songLine.addChordLyricsPair();
       this.processingText = true;
     }
   }

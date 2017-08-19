@@ -1,37 +1,37 @@
-import Item from './item';
+import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import {pushNew} from '../utilities';
 
 export default class Line {
   constructor() {
-    this.items = [];
-    this.currentItem = null;
+    this.chordLyricsPairs = [];
+    this.currentChordLyricsPair = null;
   }
 
-  addItem() {
-    this.currentItem = pushNew(this.items, Item);
-    return this.currentItem;
+  addChordLyricsPair() {
+    this.currentChordLyricsPair = pushNew(this.chordLyricsPairs, ChordLyricsPair);
+    return this.currentChordLyricsPair;
   }
 
-  ensureItem() {
-    if (!this.currentItem) {
-      this.addItem();
+  ensureChordLyricsPair() {
+    if (!this.currentChordLyricsPair) {
+      this.addChordLyricsPair();
     }
   }
 
   chords(chr) {
-    this.ensureItem();
-    this.currentItem.chords += chr;
+    this.ensureChordLyricsPair();
+    this.currentChordLyricsPair.chords += chr;
   }
 
   lyrics(chr) {
-    this.ensureItem();
-    this.currentItem.lyrics += chr;
+    this.ensureChordLyricsPair();
+    this.currentChordLyricsPair.lyrics += chr;
   }
 
   addTag(name, value) {
     const tag = (name instanceof Tag) ? name : new Tag(name, value);
-    this.items.push(tag);
+    this.chordLyricsPairs.push(tag);
     return tag;
   }
 }

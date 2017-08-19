@@ -17,25 +17,25 @@ describe('ChordProParser', () => {
 
     expect(lines.length).toEqual(4);
 
-    expect(lines[0].items.length).toEqual(1);
-    expect(lines[0].items[0]).toBeTag('Chorus', '');
+    expect(lines[0].chordLyricsPairs.length).toEqual(1);
+    expect(lines[0].chordLyricsPairs[0]).toBeTag('Chorus', '');
 
-    expect(lines[1].items.length).toEqual(0);
+    expect(lines[1].chordLyricsPairs.length).toEqual(0);
 
-    const line2Items = lines[2].items;
-    expect(line2Items[0]).toBeItem('', 'Let it ');
-    expect(line2Items[1]).toBeItem('Am', 'be, let it ');
-    expect(line2Items[2]).toBeItem('C/G', 'be, let it ');
-    expect(line2Items[3]).toBeItem('F', 'be, let it ');
-    expect(line2Items[4]).toBeItem('C', 'be');
+    const line2Pairs = lines[2].chordLyricsPairs;
+    expect(line2Pairs[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line2Pairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
+    expect(line2Pairs[2]).toBeChordLyricsPair('C/G', 'be, let it ');
+    expect(line2Pairs[3]).toBeChordLyricsPair('F', 'be, let it ');
+    expect(line2Pairs[4]).toBeChordLyricsPair('C', 'be');
 
-    const lines3Items = lines[3].items;
-    expect(lines3Items[0]).toBeItem('C', 'Whisper words of ');
-    expect(lines3Items[1]).toBeItem('G', 'wisdom, let it ');
-    expect(lines3Items[2]).toBeItem('F', 'be ');
-    expect(lines3Items[3]).toBeItem('C/E', ' ');
-    expect(lines3Items[4]).toBeItem('Dm', ' ');
-    expect(lines3Items[5]).toBeItem('C', '');
+    const lines3Pairs = lines[3].chordLyricsPairs;
+    expect(lines3Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
+    expect(lines3Pairs[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
+    expect(lines3Pairs[2]).toBeChordLyricsPair('F', 'be ');
+    expect(lines3Pairs[3]).toBeChordLyricsPair('C/E', ' ');
+    expect(lines3Pairs[4]).toBeChordLyricsPair('Dm', ' ');
+    expect(lines3Pairs[5]).toBeChordLyricsPair('C', '');
   });
 
   it('parses meta data', () => {

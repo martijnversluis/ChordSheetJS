@@ -32,7 +32,7 @@ export default class ChordProParser {
         this.song.addLine();
         break;
       case SQUARE_START:
-        this.song.addItem();
+        this.song.addChordLyricsPair();
         this.processor = this.readChords;
         break;
       case CURLY_START:

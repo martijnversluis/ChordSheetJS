@@ -1,10 +1,10 @@
 import expect from 'expect'
-import Item from '../src/chord_sheet/item';
+import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Tag from '../src/chord_sheet/tag';
 
 expect.extend({
-  toBeItem(chords, lyrics) {
-    expect(this.actual).toBeA(Item);
+  toBeChordLyricsPair(chords, lyrics) {
+    expect(this.actual).toBeA(ChordLyricsPair);
     expect(this.actual.chords).toEqual(chords);
     expect(this.actual.lyrics).toEqual(lyrics);
   },
