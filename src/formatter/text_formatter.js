@@ -62,8 +62,11 @@ export default class TextFormatter extends FormatterBase {
 
   formatItem(item) {
     if (item instanceof Tag) {
-      this.lyricsLine += this.formatTag(item);
-      this.dirtyLine = true;
+      if (!item.isMetaTag()) {
+        this.lyricsLine += this.formatTag(item);
+        this.dirtyLine = true;
+      }
+
       return;
     }
 

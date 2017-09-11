@@ -1,7 +1,6 @@
 import { createSong, createLine, createChordLyricsPair, createTag } from '../utilities';
 
 // Mimic the following chord sheet:
-//
 // {title: Let it be}
 // {subtitle: ChordSheetJS example version}
 // {Chorus}
@@ -10,7 +9,13 @@ import { createSong, createLine, createChordLyricsPair, createTag } from '../uti
 // [C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]
 
 export default createSong([
-  createLine([]),
+  createLine([
+    createTag('title', 'Let it be')
+  ]),
+
+  createLine([
+    createTag('subtitle', 'ChordSheetJS example version')
+  ]),
 
   createLine([
     createTag('Chorus', '')

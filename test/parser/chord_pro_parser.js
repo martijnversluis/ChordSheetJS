@@ -15,27 +15,33 @@ describe('ChordProParser', () => {
     const song = new ChordProParser().parse(chordSheet);
     const lines = song.lines;
 
-    expect(lines.length).toEqual(4);
+    expect(lines.length).toEqual(6);
 
     expect(lines[0].chordLyricsPairs.length).toEqual(1);
-    expect(lines[0].chordLyricsPairs[0]).toBeTag('Chorus', '');
+    expect(lines[0].chordLyricsPairs[0]).toBeTag('title', 'Let it be');
 
-    expect(lines[1].chordLyricsPairs.length).toEqual(0);
+    expect(lines[1].chordLyricsPairs.length).toEqual(1);
+    expect(lines[1].chordLyricsPairs[0]).toBeTag('subtitle', 'ChordSheetJS example version');
 
-    const line2Pairs = lines[2].chordLyricsPairs;
-    expect(line2Pairs[0]).toBeChordLyricsPair('', 'Let it ');
-    expect(line2Pairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
-    expect(line2Pairs[2]).toBeChordLyricsPair('C/G', 'be, let it ');
-    expect(line2Pairs[3]).toBeChordLyricsPair('F', 'be, let it ');
-    expect(line2Pairs[4]).toBeChordLyricsPair('C', 'be');
+    expect(lines[2].chordLyricsPairs.length).toEqual(1);
+    expect(lines[2].chordLyricsPairs[0]).toBeTag('Chorus', '');
 
-    const lines3Pairs = lines[3].chordLyricsPairs;
-    expect(lines3Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
-    expect(lines3Pairs[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
-    expect(lines3Pairs[2]).toBeChordLyricsPair('F', 'be ');
-    expect(lines3Pairs[3]).toBeChordLyricsPair('C/E', ' ');
-    expect(lines3Pairs[4]).toBeChordLyricsPair('Dm', ' ');
-    expect(lines3Pairs[5]).toBeChordLyricsPair('C', '');
+    expect(lines[3].chordLyricsPairs.length).toEqual(0);
+
+    const line4Pairs = lines[4].chordLyricsPairs;
+    expect(line4Pairs[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line4Pairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
+    expect(line4Pairs[2]).toBeChordLyricsPair('C/G', 'be, let it ');
+    expect(line4Pairs[3]).toBeChordLyricsPair('F', 'be, let it ');
+    expect(line4Pairs[4]).toBeChordLyricsPair('C', 'be');
+
+    const lines5Pairs = lines[5].chordLyricsPairs;
+    expect(lines5Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
+    expect(lines5Pairs[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
+    expect(lines5Pairs[2]).toBeChordLyricsPair('F', 'be ');
+    expect(lines5Pairs[3]).toBeChordLyricsPair('C/E', ' ');
+    expect(lines5Pairs[4]).toBeChordLyricsPair('Dm', ' ');
+    expect(lines5Pairs[5]).toBeChordLyricsPair('C', '');
   });
 
   it('parses meta data', () => {

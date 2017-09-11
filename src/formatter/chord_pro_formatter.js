@@ -1,27 +1,40 @@
 import FormatterBase from './formatter_base';
+import Tag from "../chord_sheet/tag";
 
 const NEW_LINE = '\n';
 
 export default class ChordProFormatter extends FormatterBase {
   constructor() {
     super();
-    this.dirtyLine = false;
   }
 
-  formatChordLyricsPair(chordLyricsPair) {
-    if (chordLyricsPair.chords) {
-      this.output('[' + chordLyricsPair.chords + ']');
+  formatItem(item) {
+    if (item instanceof Tag) {
+      this.output(this.formatTag(item));
+    } else {
+      if (item.chords) {
+        this.output('[' + item.chords + ']');
+      }
+
+      if (item.lyrics) {
+        this.output(item.lyrics);
+      }
     }
-    
-    this.output(chordLyricsPair.lyrics);
-    this.dirtyLine = true;
   }
 
-  endOfSong() {
-    this.newLine();
+  formatTag(tag) {
+    if (tag.hasValue()) {
+      return `{${tag.originalName}: ${tag.value}}`;
+    }
+
+    return `{${tag.originalName}}`;
   }
+
+  endOfSong() { }
 
   newLine() {
-    this.output(NEW_LINE);
+    if (this.stringOutput) {
+      this.output(NEW_LINE);
+    }
   }
 }
