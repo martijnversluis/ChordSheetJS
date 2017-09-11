@@ -15,16 +15,21 @@ const translateTagNameAlias = function (name) {
 
 export default class Tag {
   constructor(name, value) {
-    this._name = translateTagNameAlias(name);
-    this._value = value;
+    this.name = name;
+    this.value = value;
   }
 
   set name(name) {
-    this._name = name;
+    this._name = translateTagNameAlias(name);
+    this._originalName = name;
   }
 
   get name() {
     return this._name.trim();
+  }
+
+  get originalName() {
+    return this._originalName.trim();
   }
 
   set value(value) {
@@ -33,6 +38,10 @@ export default class Tag {
 
   get value() {
     return this._value.trim();
+  }
+
+  hasValue() {
+    return !!this._value.trim().length;
   }
 
   isMetaTag() {

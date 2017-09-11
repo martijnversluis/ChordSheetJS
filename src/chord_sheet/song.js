@@ -46,11 +46,10 @@ export default class Song {
 
     if (tag.isMetaTag()) {
       this.metaData[tag.name] = tag.value;
-      this.dropLine();
-    } else {
-      this.ensureLine();
-      this.currentLine.addTag(tag);
     }
+
+    this.ensureLine();
+    this.currentLine.addTag(tag);
 
     return tag;
   }
