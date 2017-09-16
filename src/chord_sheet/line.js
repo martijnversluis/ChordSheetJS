@@ -4,12 +4,12 @@ import {pushNew} from '../utilities';
 
 export default class Line {
   constructor() {
-    this.chordLyricsPairs = [];
+    this.items = [];
     this.currentChordLyricsPair = null;
   }
 
   addChordLyricsPair() {
-    this.currentChordLyricsPair = pushNew(this.chordLyricsPairs, ChordLyricsPair);
+    this.currentChordLyricsPair = pushNew(this.items, ChordLyricsPair);
     return this.currentChordLyricsPair;
   }
 
@@ -31,7 +31,7 @@ export default class Line {
 
   addTag(name, value) {
     const tag = (name instanceof Tag) ? name : new Tag(name, value);
-    this.chordLyricsPairs.push(tag);
+    this.items.push(tag);
     return tag;
   }
 }

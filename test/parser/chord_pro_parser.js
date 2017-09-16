@@ -17,25 +17,25 @@ describe('ChordProParser', () => {
 
     expect(lines.length).toEqual(6);
 
-    expect(lines[0].chordLyricsPairs.length).toEqual(1);
-    expect(lines[0].chordLyricsPairs[0]).toBeTag('title', 'Let it be');
+    expect(lines[0].items.length).toEqual(1);
+    expect(lines[0].items[0]).toBeTag('title', 'Let it be');
 
-    expect(lines[1].chordLyricsPairs.length).toEqual(1);
-    expect(lines[1].chordLyricsPairs[0]).toBeTag('subtitle', 'ChordSheetJS example version');
+    expect(lines[1].items.length).toEqual(1);
+    expect(lines[1].items[0]).toBeTag('subtitle', 'ChordSheetJS example version');
 
-    expect(lines[2].chordLyricsPairs.length).toEqual(1);
-    expect(lines[2].chordLyricsPairs[0]).toBeTag('Chorus', '');
+    expect(lines[2].items.length).toEqual(1);
+    expect(lines[2].items[0]).toBeTag('Chorus', '');
 
-    expect(lines[3].chordLyricsPairs.length).toEqual(0);
+    expect(lines[3].items.length).toEqual(0);
 
-    const line4Pairs = lines[4].chordLyricsPairs;
+    const line4Pairs = lines[4].items;
     expect(line4Pairs[0]).toBeChordLyricsPair('', 'Let it ');
     expect(line4Pairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
     expect(line4Pairs[2]).toBeChordLyricsPair('C/G', 'be, let it ');
     expect(line4Pairs[3]).toBeChordLyricsPair('F', 'be, let it ');
     expect(line4Pairs[4]).toBeChordLyricsPair('C', 'be');
 
-    const lines5Pairs = lines[5].chordLyricsPairs;
+    const lines5Pairs = lines[5].items;
     expect(lines5Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
     expect(lines5Pairs[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
     expect(lines5Pairs[2]).toBeChordLyricsPair('F', 'be ');
