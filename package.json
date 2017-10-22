@@ -23,5 +23,6 @@
     "test": "mocha --recursive --compilers js:babel-register",
     "build": "babel src --out-dir lib",
     "prepublish": "npm test && npm run build"
-  }
+  },
+  "dependencies": {}
 }
