@@ -13,12 +13,17 @@ export default class TextFormatter extends FormatterBase {
 
   finishLine() {
     let output = '';
+    const hasChords = !!this.chordsLine.trim().length;
+    const hasLyrics = !!this.lyricsLine.trim().length;
 
-    if (this.chordsLine.trim().length) {
+    if (hasChords) {
       output += this.chordsLine.trimRight() + NEW_LINE;
     }
 
-    output += this.lyricsLine.trimRight() + NEW_LINE;
+    if (hasLyrics || !hasChords) {
+      output += this.lyricsLine.trimRight() + NEW_LINE;
+    }
+
     this.output(output);
     this.chordsLine = '';
     this.lyricsLine = '';
