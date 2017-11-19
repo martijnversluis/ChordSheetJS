@@ -37,7 +37,7 @@ export default class ChordSheetParser {
     this.lines = document.split("\n");
     this.currentLine = 0;
     this.lineCount = this.lines.length;
-    this.processingText = false;
+    this.processingText = true;
   }
 
   readLine() {
@@ -66,11 +66,16 @@ export default class ChordSheetParser {
   processCharacters(line, nextLine) {
     for (let c = 0, charCount = line.length; c < charCount; c++) {
       const chr = line[c];
+      const nextChar = line[c + 1];
+      const isWhiteSpace = WHITE_SPACE.test(chr);
 
-      if (WHITE_SPACE.test(chr)) {
+      if (isWhiteSpace) {
         this.processingText = false;
       } else {
         this.ensureChordLyricsPairInitialized();
+      }
+
+      if (!isWhiteSpace || (nextChar && WHITE_SPACE.test(nextChar))) {
         this.chordLyricsPair.chords += chr;
       }
 
