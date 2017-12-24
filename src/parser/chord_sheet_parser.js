@@ -37,7 +37,7 @@ export default class ChordSheetParser {
     this.lines = document.split("\n");
     this.currentLine = 0;
     this.lineCount = this.lines.length;
-    this.processingText = false;
+    this.processingText = true;
   }
 
   readLine() {
@@ -50,32 +50,45 @@ export default class ChordSheetParser {
     return this.currentLine < this.lineCount;
   }
 
-  parseLyricsWithChords(line, nextLine) {
-    this.processCharacters(line, nextLine);
+  parseLyricsWithChords(chordsLine, lyricsLine) {
+    this.processCharacters(chordsLine, lyricsLine);
 
-    this.chordLyricsPair.lyrics += nextLine.substring(line.length);
+    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
 
     this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
     this.chordLyricsPair.lyrics = this.chordLyricsPair.lyrics.trim();
 
-    if (!nextLine.trim().length) {
+    if (!lyricsLine.trim().length) {
       this.songLine = this.song.addLine();
     }
   }
 
-  processCharacters(line, nextLine) {
-    for (let c = 0, charCount = line.length; c < charCount; c++) {
-      const chr = line[c];
+  processCharacters(chordsLine, lyricsLine) {
+    for (let c = 0, charCount = chordsLine.length; c < charCount; c++) {
+      const chr = chordsLine[c];
+      const nextChar = chordsLine[c + 1];
+      const isWhiteSpace = WHITE_SPACE.test(chr);
+      this.addCharacter(chr, nextChar);
 
-      if (WHITE_SPACE.test(chr)) {
-        this.processingText = false;
-      } else {
-        this.ensureChordLyricsPairInitialized();
-        this.chordLyricsPair.chords += chr;
-      }
-
-      this.chordLyricsPair.lyrics += nextLine[c] || '';
+      this.chordLyricsPair.lyrics += lyricsLine[c] || '';
+      this.processingText = !isWhiteSpace;
     }
+  }
+
+  addCharacter(chr, nextChar) {
+    const isWhiteSpace = WHITE_SPACE.test(chr);
+
+    if (!isWhiteSpace) {
+      this.ensureChordLyricsPairInitialized();
+    }
+
+    if (!isWhiteSpace || this.shouldAddCharacterToChords(nextChar)) {
+      this.chordLyricsPair.chords += chr;
+    }
+  }
+
+  shouldAddCharacterToChords(nextChar) {
+    return (nextChar && WHITE_SPACE.test(nextChar));
   }
 
   ensureChordLyricsPairInitialized() {
