@@ -44,7 +44,7 @@ export default class HtmlTableFormatter extends HtmlFormatter {
   }
 
   row(contents) {
-    const attr = contents ? '' : ' class="empty-line"'
+    const attr = contents ? '' : ' class="empty-line"';
     return `<tr${attr}>${contents}</tr>`;
   }
 
