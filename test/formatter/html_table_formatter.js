@@ -1,11 +1,11 @@
 import expect from 'expect';
 import '../matchers';
-import HtmlFormatter from '../../src/formatter/html_formatter';
+import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
 import song from '../fixtures/song';
 
-describe('HtmlFormatter', () => {
+describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
-    const formatter = new HtmlFormatter();
+    const formatter = new HtmlTableFormatter();
 
     const expectedChordSheet =
       '<h1>Let it be</h1>' +
