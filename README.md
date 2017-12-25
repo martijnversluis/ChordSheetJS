@@ -65,8 +65,17 @@ const disp = formatter.format(song);
 
 #### HTML format
 
+##### Table-based layout
+
 ```javascript
-const formatter = new ChordSheetJS.HtmlFormatter();
+const formatter = new ChordSheetJS.HtmlTableFormatter();
+const disp = formatter.format(song);
+```
+
+##### Div-based layout
+
+```javascript
+const formatter = new ChordSheetJS.HtmlDivFormatter();
 const disp = formatter.format(song);
 ```
 

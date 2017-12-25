@@ -1,5 +1,5 @@
 import FormatterBase from './formatter_base';
-import Tag from "../chord_sheet/tag";
+import Tag from '../chord_sheet/tag';
 
 const SPACE = '&nbsp;';
 
@@ -8,18 +8,6 @@ export default class HtmlFormatter extends FormatterBase {
     super();
     this.dirtyLine = false;
     this.lineEmpty = true;
-    this.chordsLine = '';
-    this.lyricsLine = '';
-  }
-
-  formatMetaData(song) {
-    if (song.title) {
-      this.output(`<h1>${song.title}</h1>`);
-    }
-
-    if (song.subtitle) {
-      this.output(`<h2>${song.subtitle}</h2>`);
-    }
   }
 
   formatItem(item) {
@@ -37,18 +25,20 @@ export default class HtmlFormatter extends FormatterBase {
         lyrics += SPACE;
       }
 
-      this.chordsLine += this.cell('chord', chords);
-      this.lyricsLine += this.cell('lyrics', lyrics);
+      this.outputPair(chords, lyrics);
     }
 
     this.dirtyLine = true;
   }
 
-  finishLine() {
-    const rows = this.row(this.chordsLine) + this.row(this.lyricsLine);
-    this.output(this.table(rows));
-    this.chordsLine = '';
-    this.lyricsLine = '';
+  formatMetaData(song) {
+    if (song.title) {
+      this.output(`<h1>${song.title}</h1>`);
+    }
+
+    if (song.subtitle) {
+      this.output(`<h2>${song.subtitle}</h2>`);
+    }
   }
 
   newLine() {
@@ -61,18 +51,5 @@ export default class HtmlFormatter extends FormatterBase {
     if (this.dirtyLine) {
       this.finishLine();
     }
-  }
-
-  cell(cssClass, value) {
-    return `<td class="${cssClass}">${value}</td>`;
-  }
-
-  row(contents) {
-    const attr = contents ? '' : ' class="empty-line"'
-    return `<tr${attr}>${contents}</tr>`;
-  }
-
-  table(contents) {
-    return `<table>${contents}</table>`;
   }
 }
