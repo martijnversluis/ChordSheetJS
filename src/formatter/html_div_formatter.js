@@ -1,7 +1,4 @@
 import HtmlFormatter from './html_formatter';
-import Tag from '../chord_sheet/tag';
-
-const SPACE = '&nbsp;';
 
 export default class HtmlDivFormatter extends HtmlFormatter {
   constructor() {
@@ -23,25 +20,8 @@ export default class HtmlDivFormatter extends HtmlFormatter {
     this.output('</div>');
   }
 
-  formatItem(item) {
-    if (item instanceof Tag) {
-      return;
-    }
-
-    let chords = item.chords.trim();
-    let lyrics = item.lyrics.trim();
-
-    if (chords.length || lyrics.length) {
-      if (chords.length > lyrics.length) {
-        chords += SPACE;
-      } else if (lyrics.length > chords.length) {
-        lyrics += SPACE;
-      }
-
-      this.line += this.column(this.chord(chords) + this.lyrics(lyrics));
-    }
-
-    this.dirtyLine = true;
+  outputPair(chords, lyrics) {
+    this.line += this.column(this.chord(chords) + this.lyrics(lyrics));
   }
 
   finishLine() {
