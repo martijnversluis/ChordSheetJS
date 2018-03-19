@@ -4,6 +4,10 @@ const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^\/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 export default class ChordSheetParser {
+  constructor({preserveWhitespace = true} = {}) {
+    this.preserveWhitespace = (preserveWhitespace === true);
+  }
+
   parse(document) {
     this.initialize(document);
 
@@ -88,7 +92,7 @@ export default class ChordSheetParser {
   }
 
   shouldAddCharacterToChords(nextChar) {
-    return (nextChar && WHITE_SPACE.test(nextChar));
+    return (nextChar && WHITE_SPACE.test(nextChar) && this.preserveWhitespace);
   }
 
   ensureChordLyricsPairInitialized() {
