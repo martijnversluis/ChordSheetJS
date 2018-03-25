@@ -1,4 +1,5 @@
 import HtmlFormatter from './html_formatter';
+import htmlEntitiesEncode from './html_entities_encode';
 
 export default class HtmlDivFormatter extends HtmlFormatter {
   constructor() {
@@ -31,11 +32,11 @@ export default class HtmlDivFormatter extends HtmlFormatter {
   }
 
   chord(chord) {
-    return this.div('chord', chord);
+    return this.div('chord', htmlEntitiesEncode(chord));
   }
 
   lyrics(lyrics) {
-    return this.div('lyrics', lyrics);
+    return this.div('lyrics',htmlEntitiesEncode(lyrics));
   }
 
   div(cssClasses, value) {

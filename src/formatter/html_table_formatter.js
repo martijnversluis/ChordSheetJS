@@ -1,4 +1,5 @@
 import HtmlFormatter from './html_formatter';
+import htmlEntitiesEncode from './html_entities_encode';
 
 export default class HtmlTableFormatter extends HtmlFormatter {
   constructor() {
@@ -20,7 +21,7 @@ export default class HtmlTableFormatter extends HtmlFormatter {
   }
 
   cell(cssClass, value) {
-    return `<td class="${cssClass}">${value}</td>`;
+    return `<td class="${cssClass}">${htmlEntitiesEncode(value)}</td>`;
   }
 
   row(contents) {

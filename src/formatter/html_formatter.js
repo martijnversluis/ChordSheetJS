@@ -1,7 +1,7 @@
 import FormatterBase from './formatter_base';
 import Tag from '../chord_sheet/tag';
 
-const SPACE = '&nbsp;';
+const SPACE = ' ';
 
 export default class HtmlFormatter extends FormatterBase {
   constructor() {
