@@ -1,6 +1,10 @@
 export default class ChordLyricsPair {
-  constructor() {
-    this.chords = '';
-    this.lyrics = '';
+  constructor(chords = '', lyrics = '') {
+    this.chords = chords;
+    this.lyrics = lyrics;
+  }
+
+  clone() {
+    return new ChordLyricsPair(this.chords, this.lyrics);
   }
 }

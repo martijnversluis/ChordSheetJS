@@ -1,7 +1,7 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/chordsheet.js",
   "repository": {
@@ -14,6 +14,7 @@
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
     "babel-cli": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.24.1",
     "expect": "^1.13.4",

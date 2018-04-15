@@ -47,4 +47,8 @@ export default class Tag {
   isMetaTag() {
     return META_TAGS.indexOf(this.name) !== -1;
   }
+
+  clone() {
+    return new Tag(this.name, this.value);
+  }
 }
