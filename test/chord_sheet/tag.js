@@ -30,4 +30,14 @@ describe('Tag', () => {
       expect(new Tag('foo', 'bar').hasValue()).toBe(true);
     });
   });
+
+  describe('#clone', () => {
+    it('returns a clone of the tag', () => {
+      const tag = new Tag('foo', 'bar');
+      const clonedTag = tag.clone();
+
+      expect(clonedTag.name).toEqual('foo');
+      expect(clonedTag.value).toEqual('bar');
+    });
+  });
 });

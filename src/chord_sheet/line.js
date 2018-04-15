@@ -34,4 +34,10 @@ export default class Line {
     this.items.push(tag);
     return tag;
   }
+
+  clone() {
+    const clonedLine = new Line();
+    clonedLine.items = this.items.map(item => item.clone());
+    return clonedLine;
+  }
 }
