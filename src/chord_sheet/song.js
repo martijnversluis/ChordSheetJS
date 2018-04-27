@@ -41,8 +41,8 @@ export default class Song {
     }
   }
 
-  addTag(name, value) {
-    const tag = new Tag(name, value);
+  addTag(tagContents) {
+    const tag = Tag.parse(tagContents);
 
     if (tag.isMetaTag()) {
       this.metaData[tag.name] = tag.value;
