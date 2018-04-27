@@ -88,7 +88,7 @@ export default class TextFormatter extends FormatterBase {
   }
 
   formatTag(tag) {
-    if (tag.value.length) {
+    if (tag.hasValue()) {
       return tag.value;
     }
 
