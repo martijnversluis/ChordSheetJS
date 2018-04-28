@@ -5,7 +5,6 @@ const SQUARE_START = '[';
 const SQUARE_END = ']';
 const CURLY_START = '{';
 const CURLY_END = '}';
-const COLON = ':';
 const SHARP_SIGN = '#';
 
 export default class ChordProParser {
@@ -36,7 +35,7 @@ export default class ChordProParser {
         this.processor = this.readChords;
         break;
       case CURLY_START:
-        this.processor = this.readTagName;
+        this.processor = this.readTag;
         break;
       default:
         this.song.lyrics(chr);
@@ -57,28 +56,14 @@ export default class ChordProParser {
     }
   }
 
-  readTagName(chr) {
-    switch (chr) {
-      case COLON:
-        this.processor = this.readTagValue;
-        break;
-      case CURLY_END:
-        this.finishTag();
-        this.processor = this.readLyrics;
-        break;
-      default:
-        this.tagName += chr;
-    }
-  }
-
-  readTagValue(chr) {
+  readTag(chr) {
     switch (chr) {
       case CURLY_END:
         this.finishTag();
         this.processor = this.readLyrics;
         break;
       default:
-        this.tagValue += chr;
+        this.tag += chr;
     }
   }
 
@@ -91,12 +76,11 @@ export default class ChordProParser {
   }
 
   finishTag() {
-    this.song.addTag(this.tagName, this.tagValue);
+    this.song.addTag(this.tag);
     this.resetTag();
   }
 
   resetTag() {
-    this.tagName = '';
-    this.tagValue = '';
+    this.tag = '';
   }
 }

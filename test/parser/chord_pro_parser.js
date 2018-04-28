@@ -24,7 +24,7 @@ describe('ChordProParser', () => {
     expect(lines[1].items[0]).toBeTag('subtitle', 'ChordSheetJS example version');
 
     expect(lines[2].items.length).toEqual(1);
-    expect(lines[2].items[0]).toBeTag('Chorus', '');
+    expect(lines[2].items[0]).toBeTag('Chorus', null);
 
     expect(lines[3].items.length).toEqual(0);
 

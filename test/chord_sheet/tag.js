@@ -40,4 +40,34 @@ describe('Tag', () => {
       expect(clonedTag.value).toEqual('bar');
     });
   });
+
+  describe('::parse', () => {
+    it('can parse {name}', () => {
+      const tag = Tag.parse('foo');
+
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toBe(null);
+    });
+
+    it('can parse {name:value}', () => {
+      const tag = Tag.parse('foo:bar ber');
+
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
+    });
+
+    it('can parse {name value}', () => {
+      const tag = Tag.parse('foo bar ber');
+
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
+    });
+
+    it('can parse {name: value}', () => {
+      const tag = Tag.parse('foo: bar ber');
+
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
+    });
+  });
 });

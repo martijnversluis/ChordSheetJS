@@ -5,6 +5,8 @@ const ALIASES = {
   st: 'subtitle'
 };
 
+const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
+
 const translateTagNameAlias = function (name) {
   if (name in ALIASES) {
     return ALIASES[name];
@@ -17,6 +19,16 @@ export default class Tag {
   constructor(name, value) {
     this.name = name;
     this.value = value;
+  }
+
+  static parse(tag) {
+    const matches = tag.match(TAG_REGEX);
+
+    if (matches.length) {
+      return new Tag(matches[1], matches[3] || null);
+    }
+
+    return null;
   }
 
   set name(name) {
@@ -37,11 +49,15 @@ export default class Tag {
   }
 
   get value() {
-    return this._value.trim();
+    if (this._value) {
+      return this._value.trim();
+    }
+
+    return this._value || null;
   }
 
   hasValue() {
-    return !!this._value.trim().length;
+    return this.value !== null && this.value.trim().length > 0;
   }
 
   isMetaTag() {
