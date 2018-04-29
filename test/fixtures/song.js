@@ -18,7 +18,11 @@ export default createSong([
   ]),
 
   createLine([
-    createTag('Chorus', '')
+    createTag('x_some_setting', '')
+  ]),
+
+  createLine([
+    createTag('comment', 'Bridge')
   ]),
 
   createLine([]),
