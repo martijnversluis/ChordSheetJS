@@ -4,15 +4,9 @@ import Tag from '../chord_sheet/tag';
 const SPACE = ' ';
 
 export default class HtmlFormatter extends FormatterBase {
-  constructor() {
-    super();
-    this.dirtyLine = false;
-    this.lineEmpty = true;
-  }
-
   formatItem(item) {
     if (item instanceof Tag) {
-      return;
+      return this.formatTag(item);
     }
 
     let chords = item.chords.trim();
@@ -27,8 +21,12 @@ export default class HtmlFormatter extends FormatterBase {
 
       this.outputPair(chords, lyrics);
     }
+  }
 
-    this.dirtyLine = true;
+  formatTag(tag) {
+    if (tag.isRenderable()) {
+      return this.outputTag(tag);
+    }
   }
 
   formatMetaData(song) {
@@ -42,14 +40,18 @@ export default class HtmlFormatter extends FormatterBase {
   }
 
   newLine() {
-    if (this.dirtyLine) {
+    if (this.hasDirtyLine()) {
       this.finishLine();
     }
   }
 
   endOfSong() {
-    if (this.dirtyLine) {
+    if (this.hasDirtyLine()) {
       this.finishLine();
     }
+  }
+
+  hasDirtyLine() {
+    throw new Error(`${this.constructor.name} should implement hasDirtyLine()`);
   }
 }

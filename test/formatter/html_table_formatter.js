@@ -14,38 +14,43 @@ describe('HtmlTableFormatter', () => {
       '<h2>ChordSheetJS example version</h2>' +
       '<table>' +
         '<tr>' +
-        '<td class="chord"></td>' +
-        '<td class="chord">Am</td>' +
-        '<td class="chord">C/G</td>' +
-        '<td class="chord">F</td>' +
-        '<td class="chord">C</td>' +
+          '<td class="comment">Bridge</td>' +
+        '</tr>' +
+      '</table>' +
+      '<table>' +
+        '<tr>' +
+          '<td class="chord"></td>' +
+          '<td class="chord">Am</td>' +
+          '<td class="chord">C/G</td>' +
+          '<td class="chord">F</td>' +
+          '<td class="chord">C</td>' +
         '</tr>' +
         '<tr>' +
-        '<td class="lyrics">Let it </td>' +
-        '<td class="lyrics">be, let it </td>' +
-        '<td class="lyrics">be, let it </td>' +
-        '<td class="lyrics">be, let it </td>' +
-        '<td class="lyrics">be </td>' +
+          '<td class="lyrics">Let it </td>' +
+          '<td class="lyrics">be, let it </td>' +
+          '<td class="lyrics">be, let it </td>' +
+          '<td class="lyrics">be, let it </td>' +
+          '<td class="lyrics">be </td>' +
         '</tr>' +
-        '</table>' +
-        '<table>' +
+      '</table>' +
+      '<table>' +
         '<tr>' +
-        '<td class="chord">C</td>' +
-        '<td class="chord">G</td>' +
-        '<td class="chord">F</td>' +
-        '<td class="chord">C/E </td>' +
-        '<td class="chord">Dm </td>' +
-        '<td class="chord">C </td>' +
+          '<td class="chord">C</td>' +
+          '<td class="chord">G</td>' +
+          '<td class="chord">F</td>' +
+          '<td class="chord">C/E </td>' +
+          '<td class="chord">Dm </td>' +
+          '<td class="chord">C </td>' +
         '</tr>' +
         '<tr>' +
-        '<td class="lyrics">Whisper words of </td>' +
-        '<td class="lyrics">wisdom, let it </td>' +
-        '<td class="lyrics">be </td>' +
-        '<td class="lyrics"></td>' +
-        '<td class="lyrics"></td>' +
-        '<td class="lyrics"></td>' +
+          '<td class="lyrics">Whisper words of </td>' +
+          '<td class="lyrics">wisdom, let it </td>' +
+          '<td class="lyrics">be </td>' +
+          '<td class="lyrics"></td>' +
+          '<td class="lyrics"></td>' +
+          '<td class="lyrics"></td>' +
         '</tr>' +
-        '</table>';
+      '</table>';
 
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });

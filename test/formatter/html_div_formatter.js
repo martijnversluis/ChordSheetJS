@@ -14,6 +14,9 @@ describe('HtmlDivFormatter', () => {
       '<h2>ChordSheetJS example version</h2>' +
       '<div class="chord-sheet">' +
         '<div class="row">' +
+          '<div class="comment">Bridge</div>' +
+        '</div>' +
+        '<div class="row">' +
           '<div class="column">' +
             '<div class="chord"></div>' +
             '<div class="lyrics">Let it </div>' +

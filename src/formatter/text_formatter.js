@@ -67,8 +67,8 @@ export default class TextFormatter extends FormatterBase {
 
   formatItem(item) {
     if (item instanceof Tag) {
-      if (!item.isMetaTag()) {
-        this.lyricsLine += this.formatTag(item);
+      if (item.isRenderable() && item.hasValue()) {
+        this.lyricsLine += item.value;
         this.dirtyLine = true;
       }
 
@@ -85,13 +85,5 @@ export default class TextFormatter extends FormatterBase {
     this.chordsLine += this.padString(item.chords, length);
     this.lyricsLine += this.padString(item.lyrics, length);
     this.dirtyLine = true;
-  }
-
-  formatTag(tag) {
-    if (tag.hasValue()) {
-      return tag.value;
-    }
-
-    return tag.name;
   }
 }
