@@ -1,4 +1,5 @@
 const META_TAGS = ['title', 'subtitle'];
+const RENDERABLE_TAGS = ['comment'];
 
 const ALIASES = {
   t: 'title',
@@ -58,6 +59,10 @@ export default class Tag {
 
   hasValue() {
     return this.value !== null && this.value.trim().length > 0;
+  }
+
+  isRenderable() {
+    return RENDERABLE_TAGS.indexOf(this.name) !== -1;
   }
 
   isMetaTag() {
