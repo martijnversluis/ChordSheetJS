@@ -4,32 +4,37 @@ import Tag from '../chord_sheet/tag';
 const SPACE = ' ';
 
 export default class HtmlFormatter extends FormatterBase {
-  formatItem(item) {
+  outputItem(item) {
     if (item instanceof Tag) {
-      return this.formatTag(item);
+      return this.outputTagIfRenderable(item);
     }
 
     let chords = item.chords.trim();
     let lyrics = item.lyrics.trim();
 
     if (chords.length || lyrics.length) {
-      if (chords.length > lyrics.length) {
-        chords += SPACE;
-      } else if (lyrics.length > chords.length) {
-        lyrics += SPACE;
-      }
-
+      [chords, lyrics] = this.padLongestLine(chords, lyrics);
       this.outputPair(chords, lyrics);
     }
   }
 
-  formatTag(tag) {
+  padLongestLine(chords, lyrics) {
+    if (chords.length > lyrics.length) {
+      chords += SPACE;
+    } else if (lyrics.length > chords.length) {
+      lyrics += SPACE;
+    }
+
+    return [chords, lyrics];
+  }
+
+  outputTagIfRenderable(tag) {
     if (tag.isRenderable()) {
       return this.outputTag(tag);
     }
   }
 
-  formatMetaData(song) {
+  outputMetaData(song) {
     if (song.title) {
       this.output(`<h1>${song.title}</h1>`);
     }

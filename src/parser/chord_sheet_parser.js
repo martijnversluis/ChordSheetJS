@@ -25,14 +25,18 @@ export default class ChordSheetParser {
     if (line.trim().length === 0) {
       this.chordLyricsPair = null;
     } else {
-      this.chordLyricsPair = this.songLine.addChordLyricsPair();
+      this.parseNonEmptyLine(line);
+    }
+  }
 
-      if (CHORD_LINE_REGEX.test(line) && this.hasNextLine()) {
-        const nextLine = this.readLine();
-        this.parseLyricsWithChords(line, nextLine);
-      } else {
-        this.chordLyricsPair.lyrics = line + '';
-      }
+  parseNonEmptyLine(line) {
+    this.chordLyricsPair = this.songLine.addChordLyricsPair();
+
+    if (CHORD_LINE_REGEX.test(line) && this.hasNextLine()) {
+      const nextLine = this.readLine();
+      this.parseLyricsWithChords(line, nextLine);
+    } else {
+      this.chordLyricsPair.lyrics = line + '';
     }
   }
 

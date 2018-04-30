@@ -48,7 +48,7 @@ export default class TextFormatter extends FormatterBase {
     return str;
   }
 
-  formatMetaData(song) {
+  outputMetaData(song) {
     const title = song.title;
     const subtitle = song.subtitle;
 
@@ -65,14 +65,9 @@ export default class TextFormatter extends FormatterBase {
     }
   }
 
-  formatItem(item) {
+  outputItem(item) {
     if (item instanceof Tag) {
-      if (item.isRenderable() && item.hasValue()) {
-        this.lyricsLine += item.value;
-        this.dirtyLine = true;
-      }
-
-      return;
+      return this.outputTagIfRenderable(item);
     }
 
     let chordsLength = item.chords.length;
@@ -85,5 +80,12 @@ export default class TextFormatter extends FormatterBase {
     this.chordsLine += this.padString(item.chords, length);
     this.lyricsLine += this.padString(item.lyrics, length);
     this.dirtyLine = true;
+  }
+
+  outputTagIfRenderable(tag) {
+    if (tag.isRenderable() && tag.hasValue()) {
+      this.lyricsLine += tag.value;
+      this.dirtyLine = true;
+    }
   }
 }
