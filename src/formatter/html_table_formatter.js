@@ -17,10 +17,8 @@ export default class HtmlTableFormatter extends HtmlFormatter {
     this.lyricsLine += this.cell('lyrics', lyrics);
   }
 
-  outputTag(tag) {
-    if (tag.name === 'comment') {
-      this.lyricsLine += this.comment(tag.value);
-    }
+  outputComment(comment) {
+    this.lyricsLine += this.comment(comment.value);
   }
 
   finishLine() {

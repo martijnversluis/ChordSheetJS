@@ -29,10 +29,8 @@ export default class HtmlDivFormatter extends HtmlFormatter {
     this.line += this.column(this.chord(chords) + this.lyrics(lyrics));
   }
 
-  outputTag(tag) {
-    if (tag.name === 'comment') {
-      this.line += this.comment(tag.value);
-    }
+  outputComment(comment) {
+    this.line += this.comment(comment.value);
   }
 
   finishLine() {

@@ -34,6 +34,12 @@ export default class HtmlFormatter extends FormatterBase {
     }
   }
 
+  outputTag(tag) {
+    if (tag.name === 'comment') {
+      this.outputComment(tag);
+    }
+  }
+
   outputMetaData(song) {
     if (song.title) {
       this.output(`<h1>${song.title}</h1>`);
