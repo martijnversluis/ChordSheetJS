@@ -4,6 +4,7 @@ const RENDERABLE_TAGS = ['comment'];
 const ALIASES = {
   t: 'title',
   st: 'subtitle',
+  c: 'comment',
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
