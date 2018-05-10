@@ -7,6 +7,10 @@ export default class HtmlDivFormatter extends HtmlFormatter {
     this.line = '';
   }
 
+  hasDirtyLine() {
+    return this.line.length > 0;
+  }
+
   outputSong(song) {
     return this.div('chord-sheet', song);
   }
@@ -25,6 +29,10 @@ export default class HtmlDivFormatter extends HtmlFormatter {
     this.line += this.column(this.chord(chords) + this.lyrics(lyrics));
   }
 
+  outputComment(comment) {
+    this.line += this.comment(comment.value);
+  }
+
   finishLine() {
     const row = this.row(this.line);
     this.output(row);
@@ -36,7 +44,11 @@ export default class HtmlDivFormatter extends HtmlFormatter {
   }
 
   lyrics(lyrics) {
-    return this.div('lyrics',htmlEntitiesEncode(lyrics));
+    return this.div('lyrics', htmlEntitiesEncode(lyrics));
+  }
+
+  comment(comment) {
+    return this.div('comment', comment);
   }
 
   div(cssClasses, value) {

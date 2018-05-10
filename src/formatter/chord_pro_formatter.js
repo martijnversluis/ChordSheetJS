@@ -8,17 +8,21 @@ export default class ChordProFormatter extends FormatterBase {
     super();
   }
 
-  formatItem(item) {
+  outputItem(item) {
     if (item instanceof Tag) {
       this.output(this.formatTag(item));
     } else {
-      if (item.chords) {
-        this.output('[' + item.chords + ']');
-      }
+      this.outputChordLyricsPair(item);
+    }
+  }
 
-      if (item.lyrics) {
-        this.output(item.lyrics);
-      }
+  outputChordLyricsPair(item) {
+    if (item.chords) {
+      this.output('[' + item.chords + ']');
+    }
+
+    if (item.lyrics) {
+      this.output(item.lyrics);
     }
   }
 

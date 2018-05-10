@@ -12,7 +12,7 @@ describe('TextFormatter', () => {
 LET IT BE
 ChordSheetJS example version
 
-Chorus
+Bridge
 
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be

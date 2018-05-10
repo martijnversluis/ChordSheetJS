@@ -31,6 +31,13 @@ describe('Tag', () => {
     });
   });
 
+  describe('#isRenderable', () => {
+    it('checks whether the tag should be rendered', () => {
+      expect(new Tag('comment', 'foobar').isRenderable()).toBe(true);
+      expect(new Tag('x_some_setting', 'foobar').isRenderable()).toBe(false);
+    });
+  });
+
   describe('#clone', () => {
     it('returns a clone of the tag', () => {
       const tag = new Tag('foo', 'bar');
