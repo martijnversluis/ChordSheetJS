@@ -23,7 +23,7 @@ export default class FormatterBase {
     return this.stringOutput;
   }
 
-  outputMetaData(name, value) { }
+  outputMetaData() { }
   startOfSong() { }
   endOfSong() { }
 }

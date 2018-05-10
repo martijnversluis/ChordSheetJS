@@ -8,7 +8,7 @@ import { createSong, createLine, createChordLyricsPair } from '../utilities';
 export default createSong([
   createLine([
     createChordLyricsPair('Intro: ', ''),
-    createChordLyricsPair('C', '')
+    createChordLyricsPair('C', ''),
   ]),
 
   createLine([
@@ -16,6 +16,6 @@ export default createSong([
     createChordLyricsPair('Am', 'be, let it '),
     createChordLyricsPair('C/G', 'be, let it '),
     createChordLyricsPair('F', 'be, let it '),
-    createChordLyricsPair('C', 'be')
-  ])
+    createChordLyricsPair('C', 'be'),
+  ]),
 ]);

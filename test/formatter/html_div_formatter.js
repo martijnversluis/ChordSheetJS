@@ -75,8 +75,8 @@ describe('HtmlDivFormatter', () => {
 
     const songWithHtmlEntities = createSong([
       createLine([
-        createChordLyricsPair('Am', '<h1>Let it</h1>')
-      ])
+        createChordLyricsPair('Am', '<h1>Let it</h1>'),
+      ]),
     ]);
 
     const expectedChordSheet =

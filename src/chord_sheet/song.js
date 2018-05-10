@@ -1,6 +1,6 @@
 import Line from './line';
 import Tag from './tag';
-import {pushNew} from '../utilities';
+import { pushNew } from '../utilities';
 
 const TITLE = 'title';
 const SUBTITLE = 'subtitle';
@@ -55,17 +55,17 @@ export default class Song {
   }
 
   get title() {
-    return this.metaData[TITLE] || "";
+    return this.metaData[TITLE] || '';
   }
 
   get subtitle() {
-    return this.metaData[SUBTITLE] || "";
+    return this.metaData[SUBTITLE] || '';
   }
 
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
-    clonedSong.metaData = {...this.metaData};
+    clonedSong.metaData = { ...this.metaData };
     return clonedSong;
   }
 }

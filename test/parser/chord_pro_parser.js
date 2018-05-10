@@ -52,7 +52,7 @@ describe('ChordProParser', () => {
   });
 
   it('ignores comments', () => {
-    const chordSheetWithComment = "# this is a comment\nLet it [Am]be, let it [C/G]be";
+    const chordSheetWithComment = '# this is a comment\nLet it [Am]be, let it [C/G]be';
     const song = new ChordProParser().parse(chordSheetWithComment);
 
     expect(song.lines.length).toEqual(1);

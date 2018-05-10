@@ -3,12 +3,12 @@ const RENDERABLE_TAGS = ['comment'];
 
 const ALIASES = {
   t: 'title',
-  st: 'subtitle'
+  st: 'subtitle',
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 
-const translateTagNameAlias = function (name) {
+const translateTagNameAlias = (name) => {
   if (name in ALIASES) {
     return ALIASES[name];
   }

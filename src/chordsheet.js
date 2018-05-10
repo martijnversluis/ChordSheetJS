@@ -19,5 +19,5 @@ export default {
   ChordLyricsPair,
   Line,
   Song,
-  Tag
+  Tag,
 };

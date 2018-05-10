@@ -44,8 +44,9 @@ export default class TextFormatter extends FormatterBase {
   }
 
   padString(str, length) {
-    for(let l = str.length; l < length; l++, str += ' ');
-    return str;
+    let paddedString = str;
+    for (let l = str.length; l < length; l += 1, paddedString += ' ');
+    return paddedString;
   }
 
   outputMetaData(song) {
@@ -67,19 +68,19 @@ export default class TextFormatter extends FormatterBase {
 
   outputItem(item) {
     if (item instanceof Tag) {
-      return this.outputTagIfRenderable(item);
+      this.outputTagIfRenderable(item);
+    } else {
+      let chordsLength = item.chords.length;
+
+      if (chordsLength) {
+        chordsLength += 1;
+      }
+
+      const length = Math.max(chordsLength, item.lyrics.length);
+      this.chordsLine += this.padString(item.chords, length);
+      this.lyricsLine += this.padString(item.lyrics, length);
+      this.dirtyLine = true;
     }
-
-    let chordsLength = item.chords.length;
-
-    if (chordsLength) {
-      chordsLength++;
-    }
-
-    const length = Math.max(chordsLength, item.lyrics.length);
-    this.chordsLine += this.padString(item.chords, length);
-    this.lyricsLine += this.padString(item.lyrics, length);
-    this.dirtyLine = true;
   }
 
   outputTagIfRenderable(tag) {

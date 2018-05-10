@@ -1,4 +1,5 @@
-import expect from 'expect'
+import expect from 'expect';
+
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Tag from '../src/chord_sheet/tag';
 
@@ -13,5 +14,5 @@ expect.extend({
     expect(this.actual).toBeA(Tag);
     expect(this.actual.name).toEqual(name);
     expect(this.actual.value).toEqual(value);
-  }
-})
+  },
+});
