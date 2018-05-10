@@ -1,2 +1,10 @@
 node_modules
+src
+test
+.babelrc
+.codeclimate.yml
+.eslintrc.json
+.hound.yml
+.jshintrc
+.travis.yml
 .idea
