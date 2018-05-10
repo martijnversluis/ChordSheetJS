@@ -34,7 +34,7 @@ describe('ChordSheetParser', () => {
 
   context('with option preserveWhitespace:true', () => {
     it('parses a regular chord sheet correctly', () => {
-      const parser = new ChordSheetParser({preserveWhitespace: true});
+      const parser = new ChordSheetParser({ preserveWhitespace: true });
       const song = parser.parse(chordSheet);
       const lines = song.lines;
 
@@ -59,7 +59,7 @@ describe('ChordSheetParser', () => {
 
   context('with option preserveWhitespace:false', () => {
     it('parses a regular chord sheet correctly', () => {
-      const parser = new ChordSheetParser({preserveWhitespace: false});
+      const parser = new ChordSheetParser({ preserveWhitespace: false });
       const song = parser.parse(chordSheet);
       const lines = song.lines;
 

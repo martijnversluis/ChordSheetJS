@@ -17,8 +17,8 @@ export default class ChordProParser {
   }
 
   parseDocument(document) {
-    for (let chr of document) {
-      this.processor(chr);
+    for (let i = 0, count = document.length; i < count; i += 1) {
+      this.processor(document[i]);
     }
   }
 
@@ -71,6 +71,8 @@ export default class ChordProParser {
     switch (chr) {
       case NEW_LINE:
         this.processor = this.readLyrics;
+        break;
+      default:
         break;
     }
   }

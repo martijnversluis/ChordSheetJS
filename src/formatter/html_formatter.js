@@ -1,28 +1,26 @@
 import FormatterBase from './formatter_base';
 import Tag from '../chord_sheet/tag';
 
-const SPACE = ' ';
-
 export default class HtmlFormatter extends FormatterBase {
   outputItem(item) {
     if (item instanceof Tag) {
-      return this.outputTagIfRenderable(item);
-    }
+      this.outputTagIfRenderable(item);
+    } else {
+      let chords = item.chords.trim();
+      let lyrics = item.lyrics.trim();
 
-    let chords = item.chords.trim();
-    let lyrics = item.lyrics.trim();
-
-    if (chords.length || lyrics.length) {
-      [chords, lyrics] = this.padLongestLine(chords, lyrics);
-      this.outputPair(chords, lyrics);
+      if (chords.length || lyrics.length) {
+        [chords, lyrics] = this.padLongestLine(chords, lyrics);
+        this.outputPair(chords, lyrics);
+      }
     }
   }
 
   padLongestLine(chords, lyrics) {
     if (chords.length > lyrics.length) {
-      chords += SPACE;
+      return [`${chords} `, lyrics];
     } else if (lyrics.length > chords.length) {
-      lyrics += SPACE;
+      return [chords, `${lyrics} `];
     }
 
     return [chords, lyrics];
@@ -30,7 +28,7 @@ export default class HtmlFormatter extends FormatterBase {
 
   outputTagIfRenderable(tag) {
     if (tag.isRenderable()) {
-      return this.outputTag(tag);
+      this.outputTag(tag);
     }
   }
 

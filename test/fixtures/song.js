@@ -10,19 +10,19 @@ import { createSong, createLine, createChordLyricsPair, createTag } from '../uti
 
 export default createSong([
   createLine([
-    createTag('title', 'Let it be')
+    createTag('title', 'Let it be'),
   ]),
 
   createLine([
-    createTag('subtitle', 'ChordSheetJS example version')
+    createTag('subtitle', 'ChordSheetJS example version'),
   ]),
 
   createLine([
-    createTag('x_some_setting', '')
+    createTag('x_some_setting', ''),
   ]),
 
   createLine([
-    createTag('comment', 'Bridge')
+    createTag('comment', 'Bridge'),
   ]),
 
   createLine([]),
@@ -32,7 +32,7 @@ export default createSong([
     createChordLyricsPair('Am', 'be, let it '),
     createChordLyricsPair('C/G', 'be, let it '),
     createChordLyricsPair('F', 'be, let it '),
-    createChordLyricsPair('C', 'be')
+    createChordLyricsPair('C', 'be'),
   ]),
 
   createLine([
@@ -41,9 +41,9 @@ export default createSong([
     createChordLyricsPair('F', 'be '),
     createChordLyricsPair('C/E', ' '),
     createChordLyricsPair('Dm', ' '),
-    createChordLyricsPair('C', '')
-  ])
+    createChordLyricsPair('C', ''),
+  ]),
 ], {
   title: 'Let it be',
-  subtitle: 'ChordSheetJS example version'
+  subtitle: 'ChordSheetJS example version',
 });

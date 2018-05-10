@@ -1,13 +1,9 @@
 import FormatterBase from './formatter_base';
-import Tag from "../chord_sheet/tag";
+import Tag from '../chord_sheet/tag';
 
 const NEW_LINE = '\n';
 
 export default class ChordProFormatter extends FormatterBase {
-  constructor() {
-    super();
-  }
-
   outputItem(item) {
     if (item instanceof Tag) {
       this.output(this.formatTag(item));
@@ -18,7 +14,7 @@ export default class ChordProFormatter extends FormatterBase {
 
   outputChordLyricsPair(item) {
     if (item.chords) {
-      this.output('[' + item.chords + ']');
+      this.output(`[${item.chords}]`);
     }
 
     if (item.lyrics) {

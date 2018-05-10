@@ -1,6 +1,6 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
-import {pushNew} from '../utilities';
+import { pushNew } from '../utilities';
 
 export default class Line {
   constructor() {

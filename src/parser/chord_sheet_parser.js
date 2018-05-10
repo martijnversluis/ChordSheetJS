@@ -1,10 +1,10 @@
 import Song from '../chord_sheet/song';
 
 const WHITE_SPACE = /\s/;
-const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^\/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
+const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 export default class ChordSheetParser {
-  constructor({preserveWhitespace = true} = {}) {
+  constructor({ preserveWhitespace = true } = {}) {
     this.preserveWhitespace = (preserveWhitespace === true);
   }
 
@@ -36,13 +36,13 @@ export default class ChordSheetParser {
       const nextLine = this.readLine();
       this.parseLyricsWithChords(line, nextLine);
     } else {
-      this.chordLyricsPair.lyrics = line + '';
+      this.chordLyricsPair.lyrics = `${line}`;
     }
   }
 
   initialize(document) {
     this.song = new Song();
-    this.lines = document.split("\n");
+    this.lines = document.split('\n');
     this.currentLine = 0;
     this.lineCount = this.lines.length;
     this.processingText = true;
@@ -50,7 +50,7 @@ export default class ChordSheetParser {
 
   readLine() {
     const line = this.lines[this.currentLine];
-    this.currentLine++;
+    this.currentLine += 1;
     return line;
   }
 
@@ -72,7 +72,7 @@ export default class ChordSheetParser {
   }
 
   processCharacters(chordsLine, lyricsLine) {
-    for (let c = 0, charCount = chordsLine.length; c < charCount; c++) {
+    for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
       const chr = chordsLine[c];
       const nextChar = chordsLine[c + 1];
       const isWhiteSpace = WHITE_SPACE.test(chr);

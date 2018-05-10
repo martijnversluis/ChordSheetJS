@@ -4,22 +4,23 @@ import Tag from '../../src/chord_sheet/tag';
 describe('Tag', () => {
   const expectedAliases = {
     t: 'title',
-    st: 'subtitle'
+    st: 'subtitle',
   };
 
-  it('translates tag aliases to their full tag name', () => {
-    for (const alias in expectedAliases) {
-      const fullTagName = expectedAliases[alias];
+  Object.keys(expectedAliases).forEach((alias) => {
+    const fullTagName = expectedAliases[alias];
+
+    it(`translates the tag alias ${alias} to the full tag name ${fullTagName}`, () => {
       expect(new Tag(fullTagName, 'value').name).toEqual(fullTagName);
       expect(new Tag(alias, 'value').name).toEqual(fullTagName);
-    }
+    });
   });
 
   describe('#originalName', () => {
-    it('returns the non-translated name', () => {
-      for (const alias in expectedAliases) {
+    Object.keys(expectedAliases).forEach((alias) => {
+      it(`returns the non-translated name for ${alias}`, () => {
         expect(new Tag(alias, 'value').originalName).toEqual(alias);
-      }
+      });
     });
   });
 
