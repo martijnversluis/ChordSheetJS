@@ -5,6 +5,7 @@ describe('Tag', () => {
   const expectedAliases = {
     t: 'title',
     st: 'subtitle',
+    c: 'comment',
   };
 
   Object.keys(expectedAliases).forEach((alias) => {
