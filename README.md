@@ -117,7 +117,7 @@ const disp = formatter.format(song);
 
 | Directive                  | Support                  |
 |:-------------------------- |:------------------------:|
-| comment (short: c)         | :heavy_multiplication_x: |
+| comment (short: c)         | :heavy_check_mark:       |
 | comment_italic (short: ci) | :heavy_multiplication_x: |
 | comment_box (short: cb)    | :heavy_multiplication_x: |
 | chorus                     | :heavy_multiplication_x: |
