@@ -5,7 +5,7 @@ import ChordSheetParser from '../../src/parser/chord_sheet_parser';
 const chordSheet = `
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
-C                G              F  C/E Dm C
+C                F  G           F  C/E Dm C
 Whisper words of wisdom, let it be`.substring(1);
 
 describe('ChordSheetParser', () => {
@@ -25,11 +25,12 @@ describe('ChordSheetParser', () => {
 
     const line1Items = lines[1].items;
     expect(line1Items[0]).toBeChordLyricsPair('C               ', 'Whisper words of ');
-    expect(line1Items[1]).toBeChordLyricsPair('G             ', 'wisdom, let it ');
-    expect(line1Items[2]).toBeChordLyricsPair('F ', 'be');
-    expect(line1Items[3]).toBeChordLyricsPair('C/E', '');
-    expect(line1Items[4]).toBeChordLyricsPair('Dm', '');
-    expect(line1Items[5]).toBeChordLyricsPair('C', '');
+    expect(line1Items[1]).toBeChordLyricsPair('F ', 'wis');
+    expect(line1Items[2]).toBeChordLyricsPair('G          ', 'dom, let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('F ', 'be');
+    expect(line1Items[4]).toBeChordLyricsPair('C/E', '');
+    expect(line1Items[5]).toBeChordLyricsPair('Dm', '');
+    expect(line1Items[6]).toBeChordLyricsPair('C', '');
   });
 
   context('with option preserveWhitespace:true', () => {
@@ -49,11 +50,12 @@ describe('ChordSheetParser', () => {
 
       const line1Items = lines[1].items;
       expect(line1Items[0]).toBeChordLyricsPair('C               ', 'Whisper words of ');
-      expect(line1Items[1]).toBeChordLyricsPair('G             ', 'wisdom, let it ');
-      expect(line1Items[2]).toBeChordLyricsPair('F ', 'be');
-      expect(line1Items[3]).toBeChordLyricsPair('C/E', '');
-      expect(line1Items[4]).toBeChordLyricsPair('Dm', '');
-      expect(line1Items[5]).toBeChordLyricsPair('C', '');
+      expect(line1Items[1]).toBeChordLyricsPair('F ', 'wis');
+      expect(line1Items[2]).toBeChordLyricsPair('G          ', 'dom, let it ');
+      expect(line1Items[3]).toBeChordLyricsPair('F ', 'be');
+      expect(line1Items[4]).toBeChordLyricsPair('C/E', '');
+      expect(line1Items[5]).toBeChordLyricsPair('Dm', '');
+      expect(line1Items[6]).toBeChordLyricsPair('C', '');
     });
   });
 
@@ -74,11 +76,12 @@ describe('ChordSheetParser', () => {
 
       const line1Items = lines[1].items;
       expect(line1Items[0]).toBeChordLyricsPair('C', 'Whisper words of ');
-      expect(line1Items[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
-      expect(line1Items[2]).toBeChordLyricsPair('F', 'be');
-      expect(line1Items[3]).toBeChordLyricsPair('C/E', '');
-      expect(line1Items[4]).toBeChordLyricsPair('Dm', '');
-      expect(line1Items[5]).toBeChordLyricsPair('C', '');
+      expect(line1Items[1]).toBeChordLyricsPair('F', 'wis');
+      expect(line1Items[2]).toBeChordLyricsPair('G', 'dom, let it ');
+      expect(line1Items[3]).toBeChordLyricsPair('F', 'be');
+      expect(line1Items[4]).toBeChordLyricsPair('C/E', '');
+      expect(line1Items[5]).toBeChordLyricsPair('Dm', '');
+      expect(line1Items[6]).toBeChordLyricsPair('C', '');
     });
   });
 });

@@ -8,7 +8,7 @@ const chordSheet = `
 {Chorus}
 
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
-[C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]`.substring(1);
+[C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`.substring(1);
 
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {
@@ -37,11 +37,12 @@ describe('ChordProParser', () => {
 
     const lines5Pairs = lines[5].items;
     expect(lines5Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
-    expect(lines5Pairs[1]).toBeChordLyricsPair('G', 'wisdom, let it ');
-    expect(lines5Pairs[2]).toBeChordLyricsPair('F', 'be ');
-    expect(lines5Pairs[3]).toBeChordLyricsPair('C/E', ' ');
-    expect(lines5Pairs[4]).toBeChordLyricsPair('Dm', ' ');
-    expect(lines5Pairs[5]).toBeChordLyricsPair('C', '');
+    expect(lines5Pairs[1]).toBeChordLyricsPair('F', 'wis');
+    expect(lines5Pairs[2]).toBeChordLyricsPair('G', 'dom, let it ');
+    expect(lines5Pairs[3]).toBeChordLyricsPair('F', 'be ');
+    expect(lines5Pairs[4]).toBeChordLyricsPair('C/E', ' ');
+    expect(lines5Pairs[5]).toBeChordLyricsPair('Dm', ' ');
+    expect(lines5Pairs[6]).toBeChordLyricsPair('C', '');
   });
 
   it('parses meta data', () => {
