@@ -6,7 +6,7 @@ import { createSong, createLine, createChordLyricsPair, createTag } from '../uti
 // {Chorus}
 //
 // Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
-// [C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]
+// [C]Whisper words of [C/G]wis[G]dom, let it [F]be [C/E] [Dm] [C]
 
 export default createSong([
   createLine([
@@ -37,7 +37,8 @@ export default createSong([
 
   createLine([
     createChordLyricsPair('C', 'Whisper words of '),
-    createChordLyricsPair('G', 'wisdom, let it '),
+    createChordLyricsPair('C/G', 'wis'),
+    createChordLyricsPair('G', 'dom, let it '),
     createChordLyricsPair('F', 'be '),
     createChordLyricsPair('C/E', ' '),
     createChordLyricsPair('Dm', ' '),

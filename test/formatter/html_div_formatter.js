@@ -45,8 +45,12 @@ describe('HtmlDivFormatter', () => {
             '<div class="lyrics">Whisper words of </div>' +
           '</div>' +
           '<div class="column">' +
+            '<div class="chord">C/G</div>' +
+            '<div class="lyrics">wis</div>' +
+          '</div>' +
+          '<div class="column">' +
             '<div class="chord">G</div>' +
-            '<div class="lyrics">wisdom, let it </div>' +
+            '<div class="lyrics">dom, let it </div>' +
           '</div>' +
           '<div class="column">' +
             '<div class="chord">F</div>' +

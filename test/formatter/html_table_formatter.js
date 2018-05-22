@@ -36,6 +36,7 @@ describe('HtmlTableFormatter', () => {
       '<table>' +
         '<tr>' +
           '<td class="chord">C</td>' +
+          '<td class="chord">C/G</td>' +
           '<td class="chord">G</td>' +
           '<td class="chord">F</td>' +
           '<td class="chord">C/E </td>' +
@@ -44,7 +45,8 @@ describe('HtmlTableFormatter', () => {
         '</tr>' +
         '<tr>' +
           '<td class="lyrics">Whisper words of </td>' +
-          '<td class="lyrics">wisdom, let it </td>' +
+          '<td class="lyrics">wis</td>' +
+          '<td class="lyrics">dom, let it </td>' +
           '<td class="lyrics">be </td>' +
           '<td class="lyrics"></td>' +
           '<td class="lyrics"></td>' +
