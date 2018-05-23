@@ -1,4 +1,5 @@
-import expect from 'expect';
+import { expect } from 'chai';
+
 import '../matchers';
 import TextFormatter from '../../src/formatter/text_formatter';
 import song from '../fixtures/song';
@@ -20,7 +21,7 @@ C                C/G G           F  C/E Dm C
 Whisper words of wis dom, let it be
 `.substring(1);
 
-    expect(formatter.format(song)).toEqual(expectedChordSheet);
+    expect(formatter.format(song)).to.equal(expectedChordSheet);
   });
 
   it('omits the lyrics line when it is empty', () => {
@@ -32,6 +33,6 @@ Intro:  C
 Let it be, let it be, let it be, let it be
 `.substring(1);
 
-    expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
+    expect(formatter.format(songWithIntro)).to.equal(expectedChordSheet);
   });
 });

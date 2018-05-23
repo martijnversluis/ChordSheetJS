@@ -1,4 +1,5 @@
-import expect from 'expect';
+import chai, { expect } from 'chai';
+
 import '../matchers';
 import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
 import htmlEntitiesEncode from '../../src/formatter/html_entities_encode';

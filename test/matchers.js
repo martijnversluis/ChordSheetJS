@@ -1,18 +1,48 @@
-import expect from 'expect';
+import { Assertion } from 'chai';
 
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Tag from '../src/chord_sheet/tag';
 
-expect.extend({
-  toBeChordLyricsPair(chords, lyrics) {
-    expect(this.actual).toBeA(ChordLyricsPair);
-    expect(this.actual.chords).toEqual(chords);
-    expect(this.actual.lyrics).toEqual(lyrics);
-  },
+Assertion.addMethod('chordLyricsPair', function (chords, lyrics) {
+  var obj = this._obj;
 
-  toBeTag(name, value) {
-    expect(this.actual).toBeA(Tag);
-    expect(this.actual.name).toEqual(name);
-    expect(this.actual.value).toEqual(value);
-  },
+  new Assertion(this._obj).to.be.instanceof(ChordLyricsPair);
+
+  this.assert(
+    obj.chords === chords,
+    "expected #{this} chords to be #{exp} but got #{act}",
+    "expected #{this} chords not to be #{exp} but got #{act}",
+    chords,
+    obj.chords,
+  );
+
+  this.assert(
+    obj.lyrics === lyrics,
+    "expected #{this} lyrics to be #{exp} but got #{act}",
+    "expected #{this} lyrics not to be #{exp} but got #{act}",
+    lyrics,
+    obj.lyrics,
+  );
+});
+
+Assertion.addMethod('tag', function (name, value) {
+  var obj = this._obj;
+
+  new Assertion(this._obj).to.be.instanceof(Tag);
+
+  this.assert(
+    obj.name === name,
+    "expected #{this} name to be #{exp} but got #{act}",
+    "expected #{this} name not to be #{exp} but got #{act}",
+    name,
+    obj.name,
+  );
+
+  this.assert(
+    obj.value === value,
+    "expected #{this} value to be #{exp} but got #{act}",
+    "expected #{this} value not to be #{exp} but got #{act}",
+    value,
+    obj.value,
+  );
 });

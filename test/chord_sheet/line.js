@@ -1,4 +1,5 @@
-import expect from 'expect';
+import { expect } from 'chai';
+
 import Line from '../../src/chord_sheet/line';
 import ItemStub from '../cloneable_stub';
 
@@ -10,7 +11,7 @@ describe('Line', () => {
       const clonedLine = line.clone();
 
       const actualValues = clonedLine.items.map(item => item.value);
-      expect(actualValues).toEqual(['foo', 'bar']);
+      expect(actualValues).to.eql(['foo', 'bar']);
     });
   });
 });
