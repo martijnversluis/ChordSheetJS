@@ -1,9 +1,12 @@
-import expect from 'expect';
+import chai, { expect } from 'chai';
+
 import '../matchers';
 import HtmlDivFormatter from '../../src/formatter/html_div_formatter';
 import htmlEntitiesEncode from '../../src/formatter/html_entities_encode';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createLine, createSong } from '../utilities';
+
+chai.use(require('chai-diff'));
 
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -35,7 +38,7 @@ describe('HtmlDivFormatter', () => {
           '</div>' +
           '<div class="column">' +
             '<div class="chord">C</div>' +
-            '<div class="lyrics">be </div>' +
+            '<div class="lyrics">be</div>' +
           '</div>' +
         '</div>' +
 
@@ -45,29 +48,33 @@ describe('HtmlDivFormatter', () => {
             '<div class="lyrics">Whisper words of </div>' +
           '</div>' +
           '<div class="column">' +
+            '<div class="chord">F</div>' +
+            '<div class="lyrics">wis</div>' +
+          '</div>' +
+          '<div class="column">' +
             '<div class="chord">G</div>' +
-            '<div class="lyrics">wisdom, let it </div>' +
+            '<div class="lyrics">dom, let it </div>' +
           '</div>' +
           '<div class="column">' +
             '<div class="chord">F</div>' +
             '<div class="lyrics">be </div>' +
           '</div>' +
           '<div class="column">' +
-            '<div class="chord">C/E </div>' +
-            '<div class="lyrics"></div>' +
+            '<div class="chord">C/E</div>' +
+            '<div class="lyrics"> </div>' +
           '</div>' +
           '<div class="column">' +
-            '<div class="chord">Dm </div>' +
-            '<div class="lyrics"></div>' +
+            '<div class="chord">Dm</div>' +
+            '<div class="lyrics"> </div>' +
           '</div>' +
           '<div class="column">' +
-            '<div class="chord">C </div>' +
-            '<div class="lyrics"></div>' +
+            '<div class="chord">C</div>' +
+            '<div class="lyrics"> </div>' +
           '</div>' +
         '</div>' +
       '</div>';
 
-    expect(formatter.format(song)).toEqual(expectedChordSheet);
+    expect(formatter.format(song)).to.equalText(expectedChordSheet);
   });
 
   it('encodes HTML entities', () => {
@@ -84,11 +91,11 @@ describe('HtmlDivFormatter', () => {
         '<div class="row">' +
           '<div class="column">' +
             '<div class="chord">Am</div>' +
-            `<div class="lyrics">${htmlEntitiesEncode('<h1>Let it</h1>')} </div>` +
+            `<div class="lyrics">${htmlEntitiesEncode('<h1>Let it</h1>')}</div>` +
           '</div>' +
         '</div>' +
       '</div>';
 
-    expect(formatter.format(songWithHtmlEntities)).toEqual(expectedChordSheet);
+    expect(formatter.format(songWithHtmlEntities)).to.equalText(expectedChordSheet);
   });
 });

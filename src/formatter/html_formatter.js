@@ -6,24 +6,9 @@ export default class HtmlFormatter extends FormatterBase {
     if (item instanceof Tag) {
       this.outputTagIfRenderable(item);
     } else {
-      let chords = item.chords.trim();
-      let lyrics = item.lyrics.trim();
-
-      if (chords.length || lyrics.length) {
-        [chords, lyrics] = this.padLongestLine(chords, lyrics);
-        this.outputPair(chords, lyrics);
-      }
+      const { chords, lyrics } = item;
+      this.outputPair(chords, lyrics);
     }
-  }
-
-  padLongestLine(chords, lyrics) {
-    if (chords.length > lyrics.length) {
-      return [`${chords} `, lyrics];
-    } else if (lyrics.length > chords.length) {
-      return [chords, `${lyrics} `];
-    }
-
-    return [chords, lyrics];
   }
 
   outputTagIfRenderable(tag) {

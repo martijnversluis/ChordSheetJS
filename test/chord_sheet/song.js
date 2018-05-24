@@ -1,4 +1,5 @@
-import expect from 'expect';
+import { expect } from 'chai';
+
 import Song from '../../src/chord_sheet/song';
 import LineStub from '../cloneable_stub';
 
@@ -11,8 +12,8 @@ describe('Song', () => {
       const clonedSong = song.clone();
 
       const actualValues = clonedSong.lines.map(line => line.value);
-      expect(actualValues).toEqual(['foo', 'bar']);
-      expect(clonedSong.metaData).toEqual({ foo: 'bar' });
+      expect(actualValues).to.eql(['foo', 'bar']);
+      expect(clonedSong.metaData).to.eql({ foo: 'bar' });
     });
   });
 });
