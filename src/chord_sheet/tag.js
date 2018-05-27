@@ -73,4 +73,8 @@ export default class Tag {
   clone() {
     return new Tag(this.name, this.value);
   }
+
+  toString() {
+    return `Tag(name=${this.name}, value=${this.name})`;
+  }
 }
