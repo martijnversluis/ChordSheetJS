@@ -48,4 +48,8 @@ export default class HtmlFormatter extends FormatterBase {
   hasDirtyLine() {
     throw new Error(`${this.constructor.name} should implement hasDirtyLine()`);
   }
+
+  emptyLine() {
+    throw new Error(`${this.constructor.name} should implement emptyLine()`);
+  }
 }

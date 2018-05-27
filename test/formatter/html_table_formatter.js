@@ -20,6 +20,7 @@ describe('HtmlTableFormatter', () => {
           '<td class="comment">Bridge</td>' +
         '</tr>' +
       '</table>' +
+      '<table></table>' +
       '<table>' +
         '<tr>' +
           '<td class="chord"></td>' +

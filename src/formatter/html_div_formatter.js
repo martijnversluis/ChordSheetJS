@@ -39,6 +39,10 @@ export default class HtmlDivFormatter extends HtmlFormatter {
     this.line = '';
   }
 
+  emptyLine() {
+    this.output(this.row(''));
+  }
+
   chord(chord) {
     return this.div('chord', htmlEntitiesEncode(chord));
   }

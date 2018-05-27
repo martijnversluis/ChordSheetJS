@@ -27,6 +27,10 @@ export default class HtmlTableFormatter extends HtmlFormatter {
     this.lyricsLine = '';
   }
 
+  emptyLine() {
+    this.output(this.table(''));
+  }
+
   rowContents() {
     let rowContents = '';
 

@@ -14,15 +14,20 @@ export default class FormatterBase {
     song.lines.forEach((line) => {
       this.newLine();
 
-      line.items.forEach((item) => {
-        this.outputItem(item);
-      });
+      if (line.items.length > 0) {
+        line.items.forEach((item, itemIndex) => {
+          this.outputItem(item);
+        });
+      } else {
+        this.emptyLine();
+      }
     });
 
     this.endOfSong();
     return this.stringOutput;
   }
 
+  emptyLine() { }
   outputMetaData() { }
   startOfSong() { }
   endOfSong() { }
