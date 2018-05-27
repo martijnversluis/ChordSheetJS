@@ -15,7 +15,7 @@ export default class FormatterBase {
       this.newLine();
 
       if (line.items.length > 0) {
-        line.items.forEach((item, itemIndex) => {
+        line.items.forEach((item) => {
           this.outputItem(item);
         });
       } else {

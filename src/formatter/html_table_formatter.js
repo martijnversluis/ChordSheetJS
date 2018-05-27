@@ -59,6 +59,7 @@ export default class HtmlTableFormatter extends HtmlFormatter {
   }
 
   table(contents) {
-    return `<table>${contents}</table>`;
+    const attr = contents ? '' : ' class="empty-line"';
+    return `<table${attr}>${contents}</table>`;
   }
 }
