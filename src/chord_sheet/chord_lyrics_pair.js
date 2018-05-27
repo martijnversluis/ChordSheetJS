@@ -7,4 +7,8 @@ export default class ChordLyricsPair {
   clone() {
     return new ChordLyricsPair(this.chords, this.lyrics);
   }
+
+  toString() {
+    return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
+  }
 }

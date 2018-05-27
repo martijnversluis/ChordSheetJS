@@ -19,6 +19,7 @@ describe('HtmlDivFormatter', () => {
         '<div class="row">' +
           '<div class="comment">Bridge</div>' +
         '</div>' +
+        '<div class="row empty-line"></div>' +
         '<div class="row">' +
           '<div class="column">' +
             '<div class="chord"></div>' +
@@ -41,7 +42,6 @@ describe('HtmlDivFormatter', () => {
             '<div class="lyrics">be</div>' +
           '</div>' +
         '</div>' +
-
         '<div class="row">' +
           '<div class="column">' +
             '<div class="chord">C</div>' +
