@@ -31,10 +31,6 @@ export default class Song {
     return this.currentLine.addChordLyricsPair();
   }
 
-  dropLine() {
-    this.lines.pop();
-  }
-
   ensureLine() {
     if (!this.currentLine) {
       this.addLine();
