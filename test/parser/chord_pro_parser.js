@@ -59,4 +59,40 @@ describe('ChordProParser', () => {
 
     expect(song.lines.length).to.equal(1);
   });
+
+  it('groups lines by paragraph', () => {
+    const chordSheetWithParagraphs = `
+Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+[C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
+
+[Am]Whisper words of [Bb]wisdom, let it [F]be [C]`.substring(1);
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheetWithParagraphs);
+    const paragraphs = song.paragraphs;
+
+    const paragraph0Lines = paragraphs[0].lines;
+
+    const paragraph0Line0Items = paragraph0Lines[0].items;
+    expect(paragraph0Line0Items[0]).to.be.chordLyricsPair('', 'Let it ');
+    expect(paragraph0Line0Items[1]).to.be.chordLyricsPair('Am', 'be, let it ');
+    expect(paragraph0Line0Items[2]).to.be.chordLyricsPair('C/G', 'be, let it ');
+    expect(paragraph0Line0Items[3]).to.be.chordLyricsPair('F', 'be, let it ');
+    expect(paragraph0Line0Items[4]).to.be.chordLyricsPair('C', 'be');
+
+    const paragraph0Line1Items = paragraph0Lines[1].items;
+    expect(paragraph0Line1Items[0]).to.be.chordLyricsPair('C', 'Whisper words of ');
+    expect(paragraph0Line1Items[1]).to.be.chordLyricsPair('F', 'wis');
+    expect(paragraph0Line1Items[2]).to.be.chordLyricsPair('G', 'dom, let it ');
+    expect(paragraph0Line1Items[3]).to.be.chordLyricsPair('F', 'be ');
+    expect(paragraph0Line1Items[4]).to.be.chordLyricsPair('C/E', ' ');
+    expect(paragraph0Line1Items[5]).to.be.chordLyricsPair('Dm', ' ');
+    expect(paragraph0Line1Items[6]).to.be.chordLyricsPair('C', '');
+
+    const paragraph1Line0Items = paragraphs[1].lines[0].items;
+    expect(paragraph1Line0Items[0]).to.be.chordLyricsPair('Am', 'Whisper words of ');
+    expect(paragraph1Line0Items[1]).to.be.chordLyricsPair('Bb', 'wisdom, let it ');
+    expect(paragraph1Line0Items[2]).to.be.chordLyricsPair('F', 'be ');
+    expect(paragraph1Line0Items[3]).to.be.chordLyricsPair('C', '');
+  });
 });

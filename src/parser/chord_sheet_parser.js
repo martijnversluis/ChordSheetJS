@@ -16,6 +16,7 @@ export default class ChordSheetParser {
       this.parseLine(line);
     }
 
+    this.song.finish();
     return this.song;
   }
 
