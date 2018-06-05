@@ -8,6 +8,8 @@ import { createSong, createLine, createChordLyricsPair, createTag } from '../uti
 //
 // Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 // [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
+//
+// [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
 
 export default createSong([
   createLine([
@@ -44,6 +46,15 @@ export default createSong([
     createChordLyricsPair('C/E', ' '),
     createChordLyricsPair('Dm', ' '),
     createChordLyricsPair('C', ' '),
+  ]),
+
+  createLine([]),
+
+  createLine([
+    createChordLyricsPair('Am', 'Whisper words of '),
+    createChordLyricsPair('Bb', 'wisdom, let it '),
+    createChordLyricsPair('F', 'be '),
+    createChordLyricsPair('C', ''),
   ]),
 ], {
   title: 'Let it be',

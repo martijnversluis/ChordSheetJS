@@ -56,6 +56,21 @@ describe('HtmlTableFormatter', () => {
           '<td class="lyrics"> </td>' +
           '<td class="lyrics"> </td>' +
         '</tr>' +
+      '</table>' +
+      '<table class="empty-line"></table>' +
+      '<table>' +
+        '<tr>' +
+          '<td class="chord">Am</td>' +
+          '<td class="chord">Bb</td>' +
+          '<td class="chord">F</td>' +
+          '<td class="chord">C</td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td class="lyrics">Whisper words of </td>' +
+          '<td class="lyrics">wisdom, let it </td>' +
+          '<td class="lyrics">be </td>' +
+          '<td class="lyrics"></td>' +
+        '</tr>' +
       '</table>';
 
     expect(formatter.format(song)).to.equalText(expectedChordSheet);

@@ -19,6 +19,9 @@ Bridge
 Let it be, let it be, let it be, let it be
 C                F  G           F  C/E Dm C
 Whisper words of wisdom, let it be
+
+Am               Bb             F  C
+Whisper words of wisdom, let it be
 `.substring(1);
 
     expect(formatter.format(song)).to.equal(expectedChordSheet);
