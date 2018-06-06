@@ -6,4 +6,3 @@ node_js:
   - "7"
   - "8"
   - "node"
-  - "iojs"

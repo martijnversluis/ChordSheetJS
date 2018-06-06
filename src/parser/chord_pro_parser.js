@@ -13,6 +13,7 @@ export default class ChordProParser {
     this.resetTag();
     this.processor = this.readLyrics;
     this.parseDocument(document);
+    this.song.finish();
     return this.song;
   }
 

@@ -51,5 +51,5 @@ Assertion.addMethod('equalText', function equalText(otherText) {
   const actual = this._obj.replace(/>/g, '>\n');
   const expected = otherText.replace(/>/g, '>\n');
 
-  new Assertion(actual).not.to.be.differentFrom(expected, { showSpace: true, context: 5 });
+  new Assertion(actual).not.to.be.differentFrom(expected, { showSpace: true, context: 10 });
 });

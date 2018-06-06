@@ -1,5 +1,6 @@
 import Line from './line';
 import Tag from './tag';
+import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
 
 const TITLE = 'title';
@@ -9,6 +10,8 @@ export default class Song {
   constructor(metaData = {}) {
     this.lines = [];
     this.currentLine = null;
+    this.paragraphs = [];
+    this.currentParagraph = null;
     this.metaData = metaData;
   }
 
@@ -22,8 +25,24 @@ export default class Song {
   }
 
   addLine() {
+    this.ensureParagraph();
+    this.flushLine();
     this.currentLine = pushNew(this.lines, Line);
     return this.currentLine;
+  }
+
+  flushLine() {
+    if (this.currentLine !== null) {
+      if (this.currentLine.isEmpty()) {
+        this.addParagraph();
+      } else {
+        this.currentParagraph.addLine(this.currentLine);
+      }
+    }
+  }
+
+  finish() {
+    this.flushLine();
   }
 
   addChordLyricsPair() {
@@ -31,13 +50,20 @@ export default class Song {
     return this.currentLine.addChordLyricsPair();
   }
 
-  dropLine() {
-    this.lines.pop();
+  ensureLine() {
+    if (this.currentLine === null) {
+      this.addLine();
+    }
   }
 
-  ensureLine() {
-    if (!this.currentLine) {
-      this.addLine();
+  addParagraph() {
+    this.currentParagraph = pushNew(this.paragraphs, Paragraph);
+    return this.currentParagraph;
+  }
+
+  ensureParagraph() {
+    if (this.currentParagraph === null) {
+      this.addParagraph();
     }
   }
 

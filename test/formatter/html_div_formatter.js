@@ -72,6 +72,25 @@ describe('HtmlDivFormatter', () => {
             '<div class="lyrics"> </div>' +
           '</div>' +
         '</div>' +
+        '<div class="row empty-line"></div>' +
+        '<div class="row">' +
+          '<div class="column">' +
+            '<div class="chord">Am</div>' +
+            '<div class="lyrics">Whisper words of </div>' +
+          '</div>' +
+          '<div class="column">' +
+            '<div class="chord">Bb</div>' +
+            '<div class="lyrics">wisdom, let it </div>' +
+          '</div>' +
+          '<div class="column">' +
+            '<div class="chord">F</div>' +
+            '<div class="lyrics">be </div>' +
+          '</div>' +
+          '<div class="column">' +
+            '<div class="chord">C</div>' +
+            '<div class="lyrics"></div>' +
+          '</div>' +
+        '</div>' +
       '</div>';
 
     expect(formatter.format(song)).to.equalText(expectedChordSheet);

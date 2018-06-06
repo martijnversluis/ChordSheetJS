@@ -1,11 +1,12 @@
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Line from '../src/chord_sheet/line';
-import Song from '../src/chord_sheet/song';
 import Tag from '../src/chord_sheet/tag';
+import SongStub from './song_stub';
 
 export function createSong(lines, metaData) {
-  const song = new Song(metaData);
-  song.lines = lines;
+  const song = new SongStub(metaData);
+  lines.forEach(line => song.addLine(line));
+  song.finish();
   return song;
 }
 

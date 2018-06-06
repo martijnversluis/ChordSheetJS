@@ -8,6 +8,10 @@ export default class Line {
     this.currentChordLyricsPair = null;
   }
 
+  isEmpty() {
+    return this.items.length === 0;
+  }
+
   addChordLyricsPair() {
     this.currentChordLyricsPair = pushNew(this.items, ChordLyricsPair);
     return this.currentChordLyricsPair;
