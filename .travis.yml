@@ -1,8 +1,17 @@
 language: node_js
 node_js:
-  - "4"
-  - "5"
-  - "6"
-  - "7"
-  - "8"
-  - "node"
+- '4'
+- '5'
+- '6'
+- '7'
+- '8'
+- node
+deploy:
+  provider: npm
+  email: martijnversluis@gmail.com
+  api_key:
+    secure: dqQPnpXMZ3uZdSKzXlhYCwO9+4o8MHjUT1Xq6belmjjb2HvWRpDlrrETauZ98hArdz3NmenxD1ed5vHusVvuo2LrpTdE1qKNtMI0BGyVDEobe57Q4ukwn3FM9tJMVDNC55dKx/UTds3tYxvxpbEDjnQbgIY2QHwM0heG366j6w8=
+  on:
+    branch: master
+    tags: true
+    repo: martijnversluis/ChordSheetJS

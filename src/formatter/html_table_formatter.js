@@ -2,8 +2,9 @@ import HtmlFormatter from './html_formatter';
 import htmlEntitiesEncode from './html_entities_encode';
 
 export default class HtmlTableFormatter extends HtmlFormatter {
-  constructor() {
+  constructor({ renderBlankLines = true } = {}) {
     super();
+    this.renderBlankLines = renderBlankLines;
     this.chordsLine = '';
     this.lyricsLine = '';
   }
@@ -54,12 +55,17 @@ export default class HtmlTableFormatter extends HtmlFormatter {
   }
 
   row(contents) {
-    const attr = contents ? '' : ' class="empty-line"';
-    return `<tr${attr}>${contents}</tr>`;
+    return `<tr>${contents}</tr>`;
   }
 
   table(contents) {
-    const attr = contents ? '' : ' class="empty-line"';
-    return `<table${attr}>${contents}</table>`;
+    const hasContents = !!contents;
+
+    if (hasContents || this.renderBlankLines) {
+      const attr = hasContents ? '' : ' class="empty-line"';
+      return `<table${attr}>${contents}</table>`;
+    }
+
+    return '';
   }
 }
