@@ -97,4 +97,42 @@ describe('HtmlTableFormatter', () => {
 
     expect(formatter.format(songWithHtmlEntities)).to.equalText(expectedChordSheet);
   });
+
+  context('with option renderBlankLines:false', () => {
+    it('does not include HTML for blank lines', () => {
+      const songWithBlankLine = createSong([
+        createLine([
+          createChordLyricsPair('C', 'Whisper words of wisdom'),
+        ]),
+
+        createLine([]),
+
+        createLine([
+          createChordLyricsPair('Am', 'Whisper words of wisdom'),
+        ]),
+      ]);
+
+      const expectedChordSheet =
+        '<table>' +
+          '<tr>' +
+            '<td class="chord">C</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td class="lyrics">Whisper words of wisdom</td>' +
+          '</tr>' +
+        '</table>' +
+        '<table>' +
+          '<tr>' +
+            '<td class="chord">Am</td>' +
+          '</tr>' +
+          '<tr>' +
+            '<td class="lyrics">Whisper words of wisdom</td>' +
+          '</tr>' +
+        '</table>';
+
+      const formatter = new HtmlTableFormatter({ renderBlankLines: false });
+
+      expect(formatter.format(songWithBlankLine)).to.equalText(expectedChordSheet);
+    });
+  });
 });

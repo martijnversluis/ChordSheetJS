@@ -117,4 +117,40 @@ describe('HtmlDivFormatter', () => {
 
     expect(formatter.format(songWithHtmlEntities)).to.equalText(expectedChordSheet);
   });
+
+  context('with option renderBlankLines:false', () => {
+    it('does not include HTML for blank lines', () => {
+      const songWithBlankLine = createSong([
+        createLine([
+          createChordLyricsPair('C', 'Whisper words of wisdom'),
+        ]),
+
+        createLine([]),
+
+        createLine([
+          createChordLyricsPair('Am', 'Whisper words of wisdom'),
+        ]),
+      ]);
+
+      const expectedChordSheet =
+        '<div class="chord-sheet">' +
+          '<div class="row">' +
+            '<div class="column">' +
+              '<div class="chord">C</div>' +
+              '<div class="lyrics">Whisper words of wisdom</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="row">' +
+            '<div class="column">' +
+              '<div class="chord">Am</div>' +
+              '<div class="lyrics">Whisper words of wisdom</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      const formatter = new HtmlDivFormatter({ renderBlankLines: false });
+
+      expect(formatter.format(songWithBlankLine)).to.equalText(expectedChordSheet);
+    });
+  });
 });

@@ -2,8 +2,9 @@ import HtmlFormatter from './html_formatter';
 import htmlEntitiesEncode from './html_entities_encode';
 
 export default class HtmlDivFormatter extends HtmlFormatter {
-  constructor() {
+  constructor({ renderBlankLines = true } = {}) {
     super();
+    this.renderBlankLines = renderBlankLines;
     this.line = '';
   }
 
@@ -66,11 +67,16 @@ export default class HtmlDivFormatter extends HtmlFormatter {
 
   row(contents) {
     let cssClasses = 'row';
+    const hasContents = !!contents;
 
-    if (!contents) {
-      cssClasses += ' empty-line';
+    if (hasContents || this.renderBlankLines) {
+      if (!hasContents) {
+        cssClasses += ' empty-line';
+      }
+
+      return this.div(cssClasses, contents);
     }
 
-    return this.div(cssClasses, contents);
+    return '';
   }
 }
