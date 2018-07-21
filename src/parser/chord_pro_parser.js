@@ -1,6 +1,6 @@
 import Song from '../chord_sheet/song';
 import { END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE } from '../chord_sheet/tag';
-import { CHORUS, VERSE } from '../constants';
+import { CHORUS, NONE, VERSE } from '../constants';
 
 const NEW_LINE = '\n';
 const SQUARE_START = '[';
@@ -12,7 +12,7 @@ const SHARP_SIGN = '#';
 export default class ChordProParser {
   parse(document) {
     this.song = new Song();
-    this.sectionType = null;
+    this.sectionType = NONE;
     this.resetTag();
     this.processor = this.readLyrics;
     this.parseDocument(document);
@@ -99,7 +99,7 @@ export default class ChordProParser {
         break;
 
       case END_OF_CHORUS:
-        this.sectionType = null;
+        this.sectionType = NONE;
         this.song.setCurrentLineType(this.sectionType);
         break;
 
@@ -108,7 +108,7 @@ export default class ChordProParser {
         break;
 
       case END_OF_VERSE:
-        this.sectionType = null;
+        this.sectionType = NONE;
         this.song.setCurrentLineType(this.sectionType);
         break;
     }

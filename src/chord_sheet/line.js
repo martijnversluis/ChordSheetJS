@@ -1,13 +1,13 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import { pushNew } from '../utilities';
-import { CHORUS, VERSE } from '../constants';
+import { CHORUS, NONE, VERSE } from '../constants';
 
 export default class Line {
   constructor() {
     this.items = [];
     this.currentChordLyricsPair = null;
-    this.type = null;
+    this.type = NONE;
   }
 
   isEmpty() {
