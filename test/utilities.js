@@ -2,6 +2,8 @@ import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Line from '../src/chord_sheet/line';
 import Tag from '../src/chord_sheet/tag';
 import SongStub from './song_stub';
+import { NONE } from '../src/constants';
+import Paragraph from '../src/chord_sheet/paragraph';
 
 export function createSong(lines, metaData) {
   const song = new SongStub(metaData);
@@ -10,10 +12,17 @@ export function createSong(lines, metaData) {
   return song;
 }
 
-export function createLine(items) {
+export function createLine(items, type = NONE) {
   const line = new Line();
   line.items = items;
+  line.type = type;
   return line;
+}
+
+export function createParagraph(lines) {
+  const paragraph = new Paragraph();
+  lines.forEach(line => paragraph.addLine(line));
+  return paragraph;
 }
 
 export function createChordLyricsPair(chords, lyrics) {
