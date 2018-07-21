@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import '../matchers';
 import ChordProParser from '../../src/parser/chord_pro_parser';
+import { CHORUS, VERSE } from '../../src/constants';
 
 const chordSheet = `
 {title: Let it be}
@@ -94,5 +95,22 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
     expect(paragraph1Line0Items[1]).to.be.chordLyricsPair('Bb', 'wisdom, let it ');
     expect(paragraph1Line0Items[2]).to.be.chordLyricsPair('F', 'be ');
     expect(paragraph1Line0Items[3]).to.be.chordLyricsPair('C', '');
+  });
+
+  it('adds the type to lines', () => {
+    const markedChordSheet = `
+{start_of_verse}
+Let it [Am]be
+{end_of_verse}
+C]Whisper words of [F]wis[G]dom
+{start_of_chorus}
+Let it [F]be [C]
+{end_of_chorus}`.substring(1);
+
+    const parser = new ChordProParser();
+    const song = parser.parse(markedChordSheet);
+    const lineTypes = song.lines.map(line => line.type);
+
+    expect(lineTypes).to.eql([null, VERSE, null, null, null, CHORUS, null]);
   });
 });
