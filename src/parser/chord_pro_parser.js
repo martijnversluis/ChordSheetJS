@@ -1,6 +1,7 @@
 import Song from '../chord_sheet/song';
 import { END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE } from '../chord_sheet/tag';
 import { CHORUS, NONE, VERSE } from '../constants';
+import ParserWarning from './parser_warning';
 
 const NEW_LINE = '\n';
 const SQUARE_START = '[';
@@ -12,6 +13,8 @@ const SHARP_SIGN = '#';
 export default class ChordProParser {
   parse(document) {
     this.song = new Song();
+    this.lineNumber = 1;
+    this.warnings = [];
     this.sectionType = NONE;
     this.resetTag();
     this.processor = this.readLyrics;
@@ -32,6 +35,7 @@ export default class ChordProParser {
         this.processor = this.readComment;
         break;
       case NEW_LINE:
+        this.lineNumber += 1;
         this.song.addLine();
         this.song.setCurrentLineType(this.sectionType);
         break;
@@ -95,22 +99,45 @@ export default class ChordProParser {
   applyTag(tag) {
     switch (tag.name) {
       case START_OF_CHORUS:
-        this.sectionType = CHORUS;
+        this.startSection(CHORUS, tag);
         break;
 
       case END_OF_CHORUS:
-        this.sectionType = NONE;
-        this.song.setCurrentLineType(this.sectionType);
+        this.endSection(CHORUS, tag);
         break;
 
       case START_OF_VERSE:
-        this.sectionType = VERSE;
+        this.startSection(VERSE, tag);
         break;
 
       case END_OF_VERSE:
-        this.sectionType = NONE;
-        this.song.setCurrentLineType(this.sectionType);
+        this.endSection(VERSE, tag);
+        break;
+
+      default:
         break;
     }
+  }
+
+  startSection(sectionType, tag) {
+    this.checkCurrentSectionType(NONE, tag);
+    this.sectionType = sectionType;
+  }
+
+  endSection(sectionType, tag) {
+    this.checkCurrentSectionType(sectionType, tag);
+    this.sectionType = NONE;
+    this.song.setCurrentLineType(this.sectionType);
+  }
+
+  checkCurrentSectionType(sectionType, tag) {
+    if (this.sectionType !== sectionType) {
+      this.addWarning(`Unexpected tag {${tag.originalName}, current section is: ${this.sectionType}`);
+    }
+  }
+
+  addWarning(message) {
+    const warning = new ParserWarning(message, this.lineNumber);
+    this.warnings.push(warning);
   }
 }
