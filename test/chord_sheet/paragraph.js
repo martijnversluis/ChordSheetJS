@@ -8,10 +8,8 @@ describe('Paragraph', () => {
     context('when all line types are equal or none', () => {
       it('returns the common type', () => {
         const paragraph = createParagraph([
-          createLine([], NONE),
           createLine([], VERSE),
           createLine([], VERSE),
-          createLine([], NONE),
         ]);
 
         expect(paragraph.type).to.equal(VERSE);
@@ -21,8 +19,6 @@ describe('Paragraph', () => {
     context('when the line types vary', () => {
       it('returns indeterminate', () => {
         const paragraph = createParagraph([
-          createLine([], NONE),
-          createLine([], VERSE),
           createLine([], VERSE),
           createLine([], CHORUS),
         ]);

@@ -53,7 +53,7 @@ export default class Song {
     if (this.currentLine !== null) {
       if (this.currentLine.isEmpty()) {
         this.addParagraph();
-      } else {
+      } else if (this.currentLine.hasContent()) {
         this.currentParagraph.addLine(this.currentLine);
       }
     }

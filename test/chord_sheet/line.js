@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import Line from '../../src/chord_sheet/line';
 import ItemStub from '../cloneable_stub';
-import { createLine } from '../utilities';
+import { createChordLyricsPair, createLine, createTag } from '../utilities';
 
 describe('Line', () => {
   describe('#clone', () => {
@@ -71,6 +71,30 @@ describe('Line', () => {
         line.type = 'verse';
 
         expect(line.isChorus()).to.be.false;
+      });
+    });
+  });
+
+  describe('#hasContent', () => {
+    context('when the line contains chord-lyric pairs', () => {
+      it('returns true', () => {
+        const line = createLine([
+          createTag('foo', 'bar'),
+          createChordLyricsPair('C', 'Let it be'),
+        ]);
+
+        expect(line.hasContent()).to.be.true;
+      });
+    });
+
+    context('when the line contains no chord-lyric pairs', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('foo', 'bar'),
+          createTag('bar', 'baz'),
+        ]);
+
+        expect(line.hasContent()).to.be.false;
       });
     });
   });

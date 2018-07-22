@@ -10,7 +10,7 @@ export default class Paragraph {
   }
 
   get type() {
-    const types = this.lines.map(line => line.type).filter(type => type !== NONE);
+    const types = this.lines.map(line => line.type);
     const uniqueTypes = [...new Set(types)];
 
     if (uniqueTypes.length === 1) {
