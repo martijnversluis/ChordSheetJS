@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import Line from '../../src/chord_sheet/line';
 import ItemStub from '../cloneable_stub';
-import { createLine } from '../utilities';
+import { createChordLyricsPair, createLine, createTag } from '../utilities';
 
 describe('Line', () => {
   describe('#clone', () => {
@@ -31,6 +31,36 @@ describe('Line', () => {
         const line = createLine([]);
 
         expect(line.isEmpty()).to.be.true;
+      });
+    });
+  });
+
+  describe('#hasRenderableItems', () => {
+    context('when the line has renderable items', () => {
+      it('returns true', () => {
+        const line = createLine([
+          {
+            isRenderable() {
+              return true;
+            },
+          },
+        ]);
+
+        expect(line.hasRenderableItems()).to.be.true;
+      });
+    });
+
+    context('when the line has no renderable items', () => {
+      it('returns false', () => {
+        const line = createLine([
+          {
+            isRenderable() {
+              return false;
+            },
+          },
+        ]);
+
+        expect(line.hasRenderableItems()).to.be.false;
       });
     });
   });

@@ -27,6 +27,7 @@
     "prepublish": "npm test && npm run build"
   },
   "dependencies": {
+    "babel-plugin-handlebars-inline-precompile": "^2.1.1",
     "html-entities": "^1.2.1"
   }
 }
