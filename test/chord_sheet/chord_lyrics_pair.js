@@ -12,4 +12,12 @@ describe('ChordLyricsPair', () => {
       expect(clonedChordLyricsPair.lyrics).to.equal('Let it');
     });
   });
+
+  describe('#isRenderable', () => {
+    it('returns true', () => {
+      const chordLyricsPair = new ChordLyricsPair();
+
+      expect(chordLyricsPair.isRenderable()).to.be.true;
+    });
+  });
 });

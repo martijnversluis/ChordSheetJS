@@ -15,6 +15,18 @@ export default class Song {
     this.metaData = metaData;
   }
 
+  get bodyLines() {
+    if (this._bodyLines === undefined) {
+      this._bodyLines = [...this.lines];
+
+      while (!this._bodyLines[0].hasRenderableItems()) {
+        this._bodyLines.shift();
+      }
+    }
+
+    return this._bodyLines;
+  }
+
   chords(chr) {
     this.currentLine.chords(chr);
   }

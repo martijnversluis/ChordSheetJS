@@ -39,6 +39,10 @@ export default class Line {
     return tag;
   }
 
+  hasRenderableItems() {
+    return this.items.some(item => item.isRenderable());
+  }
+
   clone() {
     const clonedLine = new Line();
     clonedLine.items = this.items.map(item => item.clone());

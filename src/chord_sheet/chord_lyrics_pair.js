@@ -4,6 +4,10 @@ export default class ChordLyricsPair {
     this.lyrics = lyrics;
   }
 
+  isRenderable() {
+    return true;
+  }
+
   clone() {
     return new ChordLyricsPair(this.chords, this.lyrics);
   }
