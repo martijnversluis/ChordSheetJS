@@ -1,8 +1,5 @@
-import FormatterBase from './formatter_base';
-
-export default class HtmlFormatter extends FormatterBase {
+export default class HtmlFormatter {
   constructor({ renderBlankLines = true } = {}) {
-    super();
     this.renderBlankLines = renderBlankLines;
   }
 }
