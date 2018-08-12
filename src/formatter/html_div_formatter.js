@@ -2,7 +2,6 @@ import hbs from 'handlebars-inline-precompile';
 import HandleBars from 'handlebars/runtime';
 
 import HtmlFormatter from './html_formatter';
-import htmlEntitiesEncode from './html_entities_encode';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
 
