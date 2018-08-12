@@ -79,7 +79,6 @@ export default class HtmlDivFormatter extends HtmlFormatter {
   constructor({ renderBlankLines = true } = {}) {
     super();
     this.renderBlankLines = renderBlankLines;
-    this.line = '';
   }
 
   format(song) {
