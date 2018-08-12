@@ -3,23 +3,13 @@ import HandleBars from 'handlebars/runtime';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
 
-const lineHasContents = (line) => {
-  return line.items.some((item) => {
-    return item instanceof ChordLyricsPair || (item instanceof Tag && item.isRenderable());
-  });
-};
+const lineHasContents = line => line.items.some(item => item.isRenderable());
 
-HandleBars.registerHelper('isChordLyricsPair', (item) => {
-  return item instanceof ChordLyricsPair;
-});
+HandleBars.registerHelper('isChordLyricsPair', item => item instanceof ChordLyricsPair);
 
-HandleBars.registerHelper('isTag', (item) => {
-  return item instanceof Tag;
-});
+HandleBars.registerHelper('isTag', item => item instanceof Tag);
 
-HandleBars.registerHelper('isComment', (item) => {
-  return item.name === 'comment';
-});
+HandleBars.registerHelper('isComment', item => item.name === 'comment');
 
 HandleBars.registerHelper('shouldRenderLine', (line, options) => {
   if (options.data.root.renderBlankLines) {
@@ -28,6 +18,14 @@ HandleBars.registerHelper('shouldRenderLine', (line, options) => {
 
   return lineHasContents(line);
 });
+
+HandleBars.registerHelper('hasChordContents', line => (
+  line.items.some(item => item instanceof ChordLyricsPair)
+));
+
+HandleBars.registerHelper('hasTextContents', line => (
+  line.items.some(item => (item instanceof ChordLyricsPair) || item.isRenderable())
+));
 
 HandleBars.registerHelper('lineHasContents', lineHasContents);
 

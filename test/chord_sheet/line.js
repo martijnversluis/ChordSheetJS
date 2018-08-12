@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import Line from '../../src/chord_sheet/line';
 import ItemStub from '../cloneable_stub';
-import { createChordLyricsPair, createLine, createTag } from '../utilities';
+import { createLine } from '../utilities';
 
 describe('Line', () => {
   describe('#clone', () => {

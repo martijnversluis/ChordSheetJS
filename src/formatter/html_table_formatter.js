@@ -1,71 +1,61 @@
+import hbs from 'handlebars-inline-precompile';
+
 import HtmlFormatter from './html_formatter';
-import htmlEntitiesEncode from './html_entities_encode';
+import '../handlebars_helpers';
+
+const template = hbs`
+{{~#with song~}}
+  {{~#if title~}}
+    <h1>{{~title~}}</h1>
+  {{~/if~}}
+
+  {{~#if subtitle~}}
+    <h2>{{~subtitle~}}</h2>
+  {{~/if~}}
+
+  {{~#if bodyLines~}}
+    <div class="chord-sheet">
+      {{~#each bodyLines as |line|~}}
+        {{~#if (shouldRenderLine line)~}}
+          <table class="{{lineClasses line}}">
+            {{~#if (hasChordContents line)~}}
+              <tr>
+                {{~#each items as |item|~}}
+                  {{~#if (isChordLyricsPair item)~}}
+                    <td class="chord">{{chords}}</td>
+                  {{~/if~}}
+                {{~/each~}}
+              </tr>
+            {{~/if~}}
+              
+            {{~#if (hasTextContents line)~}}
+              <tr>
+                {{~#each items as |item|~}}
+                  {{~#if (isChordLyricsPair item)~}}
+                    <td class="lyrics">{{lyrics}}</td>
+                  {{~/if~}}
+          
+                  {{~#if (isTag item)~}}
+                    {{~#if (isComment item)~}}
+                      <td class="comment">{{value}}</td>
+                    {{~/if~}}
+                  {{~/if~}}
+                {{~/each~}}
+              </tr>
+            {{~/if~}}
+          </table>
+        {{~/if~}}
+      {{~/each~}}
+    </div>
+  {{~/if~}}
+{{~/with~}}
+`;
 
 export default class HtmlTableFormatter extends HtmlFormatter {
-  constructor({ renderBlankLines = true } = {}) {
-    super();
-    this.renderBlankLines = renderBlankLines;
-    this.chordsLine = '';
-    this.lyricsLine = '';
-  }
-
-  hasDirtyLine() {
-    return this.chordsLine.length > 0 || this.lyricsLine.length > 0;
-  }
-
-  outputPair(chords, lyrics) {
-    this.chordsLine += this.cell('chord', chords);
-    this.lyricsLine += this.cell('lyrics', lyrics);
-  }
-
-  outputComment(comment) {
-    this.lyricsLine += this.comment(comment.value);
-  }
-
-  finishLine() {
-    this.output(this.table(this.rowContents()));
-    this.chordsLine = '';
-    this.lyricsLine = '';
-  }
-
-  emptyLine() {
-    this.output(this.table(''));
-  }
-
-  rowContents() {
-    let rowContents = '';
-
-    if (this.chordsLine.length) {
-      rowContents += this.row(this.chordsLine);
-    }
-
-    if (this.lyricsLine.length) {
-      rowContents += this.row(this.lyricsLine);
-    }
-
-    return rowContents;
-  }
-
-  comment(comment) {
-    return this.cell('comment', comment);
-  }
-
-  cell(cssClass, value) {
-    return `<td class="${cssClass}">${htmlEntitiesEncode(value)}</td>`;
-  }
-
-  row(contents) {
-    return `<tr>${contents}</tr>`;
-  }
-
-  table(contents) {
-    const hasContents = !!contents;
-
-    if (hasContents || this.renderBlankLines) {
-      const attr = hasContents ? '' : ' class="empty-line"';
-      return `<table${attr}>${contents}</table>`;
-    }
-
-    return '';
+  format(song) {
+    return template({
+      song,
+      renderBlankLines: this.renderBlankLines,
+    });
   }
 }

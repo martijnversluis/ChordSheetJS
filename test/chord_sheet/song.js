@@ -4,8 +4,8 @@ import Song from '../../src/chord_sheet/song';
 import LineStub from '../cloneable_stub';
 import { createSong } from '../utilities';
 
-const createLineStub = ({renderable}) => {
-  return {
+const createLineStub = ({ renderable }) => (
+  {
     hasRenderableItems() {
       return renderable;
     },
@@ -13,8 +13,8 @@ const createLineStub = ({renderable}) => {
     isEmpty() {
       return false;
     },
-  };
-};
+  }
+);
 
 describe('Song', () => {
   describe('#clone', () => {
