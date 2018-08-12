@@ -34,4 +34,34 @@ describe('Line', () => {
       });
     });
   });
+
+  describe('#hasRenderableItems', () => {
+    context('when the line has renderable items', () => {
+      it('returns true', () => {
+        const line = createLine([
+          {
+            isRenderable() {
+              return true;
+            },
+          },
+        ]);
+
+        expect(line.hasRenderableItems()).to.be.true;
+      });
+    });
+
+    context('when the line has no renderable items', () => {
+      it('returns false', () => {
+        const line = createLine([
+          {
+            isRenderable() {
+              return false;
+            },
+          },
+        ]);
+
+        expect(line.hasRenderableItems()).to.be.false;
+      });
+    });
+  });
 });

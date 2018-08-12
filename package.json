@@ -1,7 +1,7 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/chordsheet.js",
   "repository": {
@@ -27,6 +27,8 @@
     "prepublish": "npm test && npm run build"
   },
   "dependencies": {
+    "babel-plugin-handlebars-inline-precompile": "^2.1.1",
+    "handlebars": "^4.0.5",
     "html-entities": "^1.2.1"
   }
 }
