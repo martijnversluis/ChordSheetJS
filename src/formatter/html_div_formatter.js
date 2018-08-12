@@ -35,15 +35,10 @@ const template = hbs`
 {{~/with~}}`;
 
 export default class HtmlDivFormatter extends HtmlFormatter {
-  constructor({ renderBlankLines = true } = {}) {
-    super();
-    this.renderBlankLines = renderBlankLines;
-  }
-
   format(song) {
     return template({
       song,
-      renderBlankLines: this.renderBlankLines
+      renderBlankLines: this.renderBlankLines,
     });
   }
 }
