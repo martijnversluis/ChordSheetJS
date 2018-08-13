@@ -1,7 +1,7 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/chordsheet.js",
   "repository": {
@@ -24,7 +24,7 @@
   "scripts": {
     "test": "mocha --recursive --compilers js:babel-register",
     "build": "babel src --out-dir lib",
-    "prepublish": "npm test && npm run build"
+    "prepublishOnly": "npm install && npm test && npm run build"
   },
   "dependencies": {
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
