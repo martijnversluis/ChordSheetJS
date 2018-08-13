@@ -12,5 +12,5 @@ deploy:
   api_key:
     secure: irIeKn0WG5k+TYy3SLMvkZC/l8ShwesCftlM1sRjEBvLeJtBoQPas7fMMHhLn2e03mIxVub+DghgGUH5Drnx7KYwT73IZ6C6jYPSb+tvKowKT38p2Hx8m7IR3P8VioGPgkJAVEisMNW+FGe2oOwI53G7F9iUct+et9HwezyOg1Y=
   on:
-    branch: fix-autodeploy
+    tags: true
     repo: martijnversluis/ChordSheetJS
