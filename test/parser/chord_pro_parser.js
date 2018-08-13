@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import '../matchers';
 import ChordProParser from '../../src/parser/chord_pro_parser';
+import { CHORUS, NONE, VERSE } from '../../src/constants';
 
 const chordSheet = `
 {title: Let it be}
@@ -94,5 +95,71 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
     expect(paragraph1Line0Items[1]).to.be.chordLyricsPair('Bb', 'wisdom, let it ');
     expect(paragraph1Line0Items[2]).to.be.chordLyricsPair('F', 'be ');
     expect(paragraph1Line0Items[3]).to.be.chordLyricsPair('C', '');
+  });
+
+  it('adds the type to lines', () => {
+    const markedChordSheet = `
+{start_of_verse}
+Let it [Am]be
+{end_of_verse}
+C]Whisper words of [F]wis[G]dom
+{start_of_chorus}
+Let it [F]be [C]
+{end_of_chorus}`.substring(1);
+
+    const parser = new ChordProParser();
+    const song = parser.parse(markedChordSheet);
+    const lineTypes = song.lines.map(line => line.type);
+
+    expect(lineTypes).to.eql([NONE, VERSE, NONE, NONE, NONE, CHORUS, NONE]);
+    expect(parser.warnings).to.be.empty;
+  });
+
+  context('when encountering {end_of_chorus} while the current section type is not chorus', () => {
+    it('adds a parser warning', () => {
+      const invalidChordSheet = '{end_of_chorus}';
+
+      const parser = new ChordProParser();
+      parser.parse(invalidChordSheet);
+
+      expect(parser.warnings).to.have.lengthOf(1);
+      expect(parser.warnings[0].toString()).to.match(/unexpected.+end_of_chorus.+current.+none.+line 1/i);
+    });
+  });
+
+  context('when encountering {end_of_verse} while the current section type is not verse', () => {
+    it('adds a parser warning', () => {
+      const invalidChordSheet = '{end_of_verse}';
+
+      const parser = new ChordProParser();
+      parser.parse(invalidChordSheet);
+
+      expect(parser.warnings).to.have.lengthOf(1);
+      expect(parser.warnings[0].toString()).to.match(/unexpected.+end_of_verse.+current.+none.+line 1/i);
+    });
+  });
+
+  context('when encountering {start_of_chorus} while the current section type is not none', () => {
+    it('adds a parser warning', () => {
+      const invalidChordSheet = '{start_of_verse}\n{start_of_chorus}';
+
+      const parser = new ChordProParser();
+      parser.parse(invalidChordSheet);
+
+      expect(parser.warnings).to.have.lengthOf(1);
+      expect(parser.warnings[0].toString()).to.match(/unexpected.+start_of_chorus.+current.+verse.+line 2/i);
+    });
+  });
+
+  context('when encountering {start_of_chorus} while the current section type is not none', () => {
+    it('adds a parser warning', () => {
+      const invalidChordSheet = '{start_of_chorus}\n{start_of_verse}';
+
+      const parser = new ChordProParser();
+      parser.parse(invalidChordSheet);
+
+      expect(parser.warnings).to.have.lengthOf(1);
+      expect(parser.warnings[0].toString()).to.match(/unexpected.+start_of_verse.+current.+chorus.+line 2/i);
+    });
   });
 });

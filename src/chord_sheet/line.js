@@ -1,11 +1,13 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import { pushNew } from '../utilities';
+import { CHORUS, NONE, VERSE } from '../constants';
 
 export default class Line {
   constructor() {
     this.items = [];
     this.currentChordLyricsPair = null;
+    this.type = NONE;
   }
 
   isEmpty() {
@@ -47,5 +49,17 @@ export default class Line {
     const clonedLine = new Line();
     clonedLine.items = this.items.map(item => item.clone());
     return clonedLine;
+  }
+
+  isVerse() {
+    return this.type === VERSE;
+  }
+
+  isChorus() {
+    return this.type === CHORUS;
+  }
+
+  hasContent() {
+    return this.items.some(item => item instanceof ChordLyricsPair);
   }
 }

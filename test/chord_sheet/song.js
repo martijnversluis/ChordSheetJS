@@ -10,6 +10,10 @@ const createLineStub = ({ renderable }) => (
       return renderable;
     },
 
+    hasContent() {
+      return renderable;
+    },
+
     isEmpty() {
       return false;
     },

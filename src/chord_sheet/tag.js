@@ -1,20 +1,42 @@
-const META_TAGS = ['title', 'subtitle'];
-const RENDERABLE_TAGS = ['comment'];
+export const TITLE = 'title';
+export const SUBTITLE = 'subtitle';
+export const COMMENT = 'comment';
+export const START_OF_CHORUS = 'start_of_chorus';
+export const END_OF_CHORUS = 'end_of_chorus';
+export const START_OF_VERSE = 'start_of_verse';
+export const END_OF_VERSE = 'end_of_verse';
+
+const TITLE_SHORT = 't';
+const SUBTITLE_SHORT = 'st';
+const COMMENT_SHORT = 'c';
+const START_OF_CHORUS_SHORT = 'soc';
+const END_OF_CHORUS_SHORT = 'eoc';
+
+const META_TAGS = [TITLE, SUBTITLE];
+const RENDERABLE_TAGS = [COMMENT];
 
 const ALIASES = {
-  t: 'title',
-  st: 'subtitle',
-  c: 'comment',
+  [TITLE_SHORT]: TITLE,
+  [SUBTITLE_SHORT]: SUBTITLE,
+  [COMMENT_SHORT]: COMMENT,
+  [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
+  [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 
 const translateTagNameAlias = (name) => {
-  if (name in ALIASES) {
-    return ALIASES[name];
+  if (!name) {
+    return name;
   }
 
-  return name;
+  const sanitizedName = name.trim();
+
+  if (sanitizedName in ALIASES) {
+    return ALIASES[sanitizedName];
+  }
+
+  return sanitizedName;
 };
 
 export default class Tag {
