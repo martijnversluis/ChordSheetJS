@@ -22,9 +22,9 @@
     "mocha": "^5.2.0"
   },
   "scripts": {
-    "test": "mocha --recursive --compilers js:babel-register",
-    "build": "babel src --out-dir lib",
-    "prepublish": "npm run build"
+    "test": "./node_modules/.bin/mocha --recursive --compilers js:babel-register",
+    "build": "./node_modules/.bin/babel src --out-dir lib",
+    "prepublishOnly": "npm test && npm run build"
   },
   "dependencies": {
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
