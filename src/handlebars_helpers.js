@@ -2,6 +2,7 @@ import HandleBars from 'handlebars/runtime';
 
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
+import { INDETERMINATE, NONE } from './constants';
 import { hasChordContents, hasTextContents } from './utilities';
 
 const lineHasContents = line => line.items.some(item => item.isRenderable());
@@ -37,3 +38,13 @@ HandleBars.registerHelper('lineClasses', (line) => {
 });
 
 HandleBars.registerHelper('toUpperCase', line => line.toUpperCase());
+
+HandleBars.registerHelper('paragraphClasses', (paragraph) => {
+  const classes = ['paragraph'];
+
+  if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
+    classes.push(paragraph.type);
+  }
+
+  return classes.join(' ');
+});

@@ -15,63 +15,67 @@ describe('HtmlTableFormatter', () => {
       '<h1>Let it be</h1>' +
       '<h2>ChordSheetJS example version</h2>' +
       '<div class="chord-sheet">' +
-        '<table class="row">' +
-          '<tr>' +
-            '<td class="comment">Bridge</td>' +
-          '</tr>' +
-        '</table>' +
-        '<table class="row empty-line"></table>' +
-        '<table class="row">' +
-          '<tr>' +
-            '<td class="chord"></td>' +
-            '<td class="chord">Am</td>' +
-            '<td class="chord">C/G</td>' +
-            '<td class="chord">F</td>' +
-            '<td class="chord">C</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td class="lyrics">Let it </td>' +
-            '<td class="lyrics">be, let it </td>' +
-            '<td class="lyrics">be, let it </td>' +
-            '<td class="lyrics">be, let it </td>' +
-            '<td class="lyrics">be</td>' +
-          '</tr>' +
-        '</table>' +
-        '<table class="row">' +
-          '<tr>' +
-            '<td class="chord">C</td>' +
-            '<td class="chord">F</td>' +
-            '<td class="chord">G</td>' +
-            '<td class="chord">F</td>' +
-            '<td class="chord">C/E</td>' +
-            '<td class="chord">Dm</td>' +
-            '<td class="chord">C</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td class="lyrics">Whisper words of </td>' +
-            '<td class="lyrics">wis</td>' +
-            '<td class="lyrics">dom, let it </td>' +
-            '<td class="lyrics">be </td>' +
-            '<td class="lyrics"> </td>' +
-            '<td class="lyrics"> </td>' +
-            '<td class="lyrics"> </td>' +
-          '</tr>' +
-        '</table>' +
-        '<table class="row empty-line"></table>' +
-        '<table class="row">' +
-          '<tr>' +
-            '<td class="chord">Am</td>' +
-            '<td class="chord">Bb</td>' +
-            '<td class="chord">F</td>' +
-            '<td class="chord">C</td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td class="lyrics">Whisper words of </td>' +
-            '<td class="lyrics">wisdom, let it </td>' +
-            '<td class="lyrics">be </td>' +
-            '<td class="lyrics"></td>' +
-          '</tr>' +
-        '</table>' +
+        '<div class="paragraph">' +
+          '<table class="row">' +
+            '<tr>' +
+              '<td class="comment">Bridge</td>' +
+            '</tr>' +
+          '</table>' +
+        '</div>' +
+        '<div class="paragraph verse">' +
+          '<table class="row">' +
+            '<tr>' +
+              '<td class="chord"></td>' +
+              '<td class="chord">Am</td>' +
+              '<td class="chord">C/G</td>' +
+              '<td class="chord">F</td>' +
+              '<td class="chord">C</td>' +
+            '</tr>' +
+            '<tr>' +
+              '<td class="lyrics">Let it </td>' +
+              '<td class="lyrics">be, let it </td>' +
+              '<td class="lyrics">be, let it </td>' +
+              '<td class="lyrics">be, let it </td>' +
+              '<td class="lyrics">be</td>' +
+            '</tr>' +
+          '</table>' +
+          '<table class="row">' +
+            '<tr>' +
+              '<td class="chord">C</td>' +
+              '<td class="chord">F</td>' +
+              '<td class="chord">G</td>' +
+              '<td class="chord">F</td>' +
+              '<td class="chord">C/E</td>' +
+              '<td class="chord">Dm</td>' +
+              '<td class="chord">C</td>' +
+            '</tr>' +
+            '<tr>' +
+              '<td class="lyrics">Whisper words of </td>' +
+              '<td class="lyrics">wis</td>' +
+              '<td class="lyrics">dom, let it </td>' +
+              '<td class="lyrics">be </td>' +
+              '<td class="lyrics"> </td>' +
+              '<td class="lyrics"> </td>' +
+              '<td class="lyrics"> </td>' +
+            '</tr>' +
+          '</table>' +
+        '</div>' +
+        '<div class="paragraph chorus">' +
+          '<table class="row">' +
+            '<tr>' +
+              '<td class="chord">Am</td>' +
+              '<td class="chord">Bb</td>' +
+              '<td class="chord">F</td>' +
+              '<td class="chord">C</td>' +
+            '</tr>' +
+            '<tr>' +
+              '<td class="lyrics">Whisper words of </td>' +
+              '<td class="lyrics">wisdom, let it </td>' +
+              '<td class="lyrics">be </td>' +
+              '<td class="lyrics"></td>' +
+            '</tr>' +
+          '</table>' +
+        '</div>' +
       '</div>';
 
     expect(formatter.format(song)).to.equalText(expectedChordSheet);
@@ -93,22 +97,26 @@ describe('HtmlTableFormatter', () => {
 
       const expectedChordSheet =
         '<div class="chord-sheet">' +
-          '<table class="row">' +
-            '<tr>' +
-              '<td class="chord">C</td>' +
-            '</tr>' +
-            '<tr>' +
-              '<td class="lyrics">Whisper words of wisdom</td>' +
-            '</tr>' +
-          '</table>' +
-          '<table class="row">' +
-            '<tr>' +
-              '<td class="chord">Am</td>' +
-            '</tr>' +
-            '<tr>' +
-              '<td class="lyrics">Whisper words of wisdom</td>' +
-            '</tr>' +
-          '</table>' +
+        '<div class="paragraph">' +
+            '<table class="row">' +
+              '<tr>' +
+                '<td class="chord">C</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td class="lyrics">Whisper words of wisdom</td>' +
+              '</tr>' +
+            '</table>' +
+          '</div>' +
+        '<div class="paragraph">' +
+            '<table class="row">' +
+              '<tr>' +
+                '<td class="chord">Am</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td class="lyrics">Whisper words of wisdom</td>' +
+              '</tr>' +
+            '</table>' +
+          '</div>' +
         '</div>';
 
       const formatter = new HtmlTableFormatter({ renderBlankLines: false });

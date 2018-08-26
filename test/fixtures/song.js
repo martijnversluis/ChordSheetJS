@@ -1,4 +1,5 @@
 import { createSong, createLine, createChordLyricsPair, createTag } from '../utilities';
+import { CHORUS, VERSE } from '../../src/constants';
 
 // Mimic the following chord sheet:
 // {title: Let it be}
@@ -6,10 +7,14 @@ import { createSong, createLine, createChordLyricsPair, createTag } from '../uti
 // {x_some_setting: value}
 // {comment: Bridge}
 //
+// {start_of_verse}
 // Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 // [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
+// {end_of_verse}
 //
+// {start_of_chorus}
 // [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
+// {end_of_chorus}
 
 export default createSong([
   createLine([
@@ -31,12 +36,16 @@ export default createSong([
   createLine([]),
 
   createLine([
+    createTag('start_of_verse'),
+  ]),
+
+  createLine([
     createChordLyricsPair('', 'Let it '),
     createChordLyricsPair('Am', 'be, let it '),
     createChordLyricsPair('C/G', 'be, let it '),
     createChordLyricsPair('F', 'be, let it '),
     createChordLyricsPair('C', 'be'),
-  ]),
+  ], VERSE),
 
   createLine([
     createChordLyricsPair('C', 'Whisper words of '),
@@ -46,15 +55,27 @@ export default createSong([
     createChordLyricsPair('C/E', ' '),
     createChordLyricsPair('Dm', ' '),
     createChordLyricsPair('C', ' '),
+  ], VERSE),
+
+  createLine([
+    createTag('end_of_verse'),
   ]),
 
   createLine([]),
+
+  createLine([
+    createTag('start_of_chorus'),
+  ]),
 
   createLine([
     createChordLyricsPair('Am', 'Whisper words of '),
     createChordLyricsPair('Bb', 'wisdom, let it '),
     createChordLyricsPair('F', 'be '),
     createChordLyricsPair('C', ''),
+  ], CHORUS),
+
+  createLine([
+    createTag('end_of_chorus'),
   ]),
 ], {
   title: 'Let it be',
