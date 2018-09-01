@@ -2,6 +2,7 @@ import HandleBars from 'handlebars/runtime';
 
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
+import { hasChordContents, hasTextContents } from './utilities';
 
 const lineHasContents = line => line.items.some(item => item.isRenderable());
 
@@ -19,13 +20,9 @@ HandleBars.registerHelper('shouldRenderLine', (line, options) => {
   return lineHasContents(line);
 });
 
-HandleBars.registerHelper('hasChordContents', line => (
-  line.items.some(item => item instanceof ChordLyricsPair)
-));
+HandleBars.registerHelper('hasChordContents', hasChordContents);
 
-HandleBars.registerHelper('hasTextContents', line => (
-  line.items.some(item => (item instanceof ChordLyricsPair) || item.isRenderable())
-));
+HandleBars.registerHelper('hasTextContents', hasTextContents);
 
 HandleBars.registerHelper('lineHasContents', lineHasContents);
 
@@ -38,3 +35,5 @@ HandleBars.registerHelper('lineClasses', (line) => {
 
   return classes.join(' ');
 });
+
+HandleBars.registerHelper('toUpperCase', line => line.toUpperCase());
