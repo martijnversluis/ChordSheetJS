@@ -127,10 +127,10 @@ const disp = formatter.format(song);
 
 | Directive                    | Support                  |
 |:---------------------------- |:------------------------:|
-| start_of_chorus (short: soc) | :clock2:                 |
-| end_of_chorus (short: eoc)   | :clock2:                 |
-| start_of_verse               | :clock2:                 |
-| end_of_verse                 | :clock2:                 |
+| start_of_chorus (short: soc) | :heavy_check_mark:       |
+| end_of_chorus (short: eoc)   | :heavy_check_mark:       |
+| start_of_verse               | :heavy_check_mark:       |
+| end_of_verse                 | :heavy_check_mark:       |
 | start_of_tab (short: sot)    | :heavy_multiplication_x: |
 | end_of_tab (short: eot)      | :heavy_multiplication_x: |
 | start_of_grid                | :heavy_multiplication_x: |
