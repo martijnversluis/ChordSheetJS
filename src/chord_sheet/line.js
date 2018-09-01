@@ -60,6 +60,6 @@ export default class Line {
   }
 
   hasContent() {
-    return this.items.some(item => item instanceof ChordLyricsPair);
+    return this.items.some(item => (item instanceof ChordLyricsPair) || (item instanceof Tag && item.isRenderable()));
   }
 }

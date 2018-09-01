@@ -1,92 +1,120 @@
-import FormatterBase from './formatter_base';
+import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
+import { hasChordContents, hasTextContents, padLeft } from '../utilities';
 
-const NEW_LINE = '\n';
-
-export default class TextFormatter extends FormatterBase {
-  constructor() {
-    super();
-    this.dirtyLine = false;
-    this.chordsLine = '';
-    this.lyricsLine = '';
+export default class TextFormatter {
+  format(song) {
+    return [
+      this.formatHeader(song),
+      this.formatParagraphs(song),
+    ].join('');
   }
 
-  finishLine() {
-    let output = '';
-    const hasChords = !!this.chordsLine.trim().length;
-    const hasLyrics = !!this.lyricsLine.trim().length;
+  formatHeader(song) {
+    const { title, subtitle } = song;
+    const separator = (title || subtitle) ? '\n' : '';
 
-    if (hasChords) {
-      output += this.chordsLine.trimRight() + NEW_LINE;
-    }
-
-    if (hasLyrics || !hasChords) {
-      output += this.lyricsLine.trimRight() + NEW_LINE;
-    }
-
-    this.output(output);
-    this.chordsLine = '';
-    this.lyricsLine = '';
+    return [
+      this.formatTitle(title),
+      this.formatSubTitle(subtitle),
+      separator,
+    ].join('');
   }
 
-  endOfSong() {
-    if (this.dirtyLine) {
-      this.finishLine();
-    } else {
-      this.output(NEW_LINE);
-    }
+  formatParagraphs(song) {
+    return song.paragraphs.map(paragraph => this.formatParagraph(paragraph)).join('\n\n');
   }
 
-  newLine() {
-    if (this.dirtyLine) {
-      this.finishLine();
-    }
+  formatParagraph(paragraph) {
+    const renderableLines = paragraph.lines.filter(line => line.hasRenderableItems());
+    const formattedLines = renderableLines.map(line => this.formatLine(line));
+    return formattedLines.join('\n');
   }
 
-  padString(str, length) {
-    let paddedString = str;
-    for (let l = str.length; l < length; l += 1, paddedString += ' ');
-    return paddedString;
+  formatLine(line) {
+    const parts = [
+      this.formatLineTop(line),
+      this.formatLineBottom(line),
+    ];
+
+    return parts
+      .filter(i => i !== null)
+      .map(part => part.trimRight())
+      .join('\n');
   }
 
-  outputMetaData(song) {
-    const title = song.title;
-    const subtitle = song.subtitle;
-
+  formatTitle(title) {
     if (title) {
-      this.output(title.toUpperCase() + NEW_LINE);
+      return `${title.toUpperCase()}\n`;
     }
 
+    return '';
+  }
+
+  formatSubTitle(subtitle) {
     if (subtitle) {
-      this.output(subtitle.trim() + NEW_LINE);
+      return `${subtitle}\n`;
     }
 
-    if (title || subtitle) {
-      this.output(NEW_LINE);
-    }
+    return '';
   }
 
-  outputItem(item) {
-    if (item instanceof Tag) {
-      this.outputTagIfRenderable(item);
-    } else {
-      let chordsLength = item.chords.length;
-
-      if (chordsLength) {
-        chordsLength += 1;
-      }
-
-      const length = Math.max(chordsLength, item.lyrics.length);
-      this.chordsLine += this.padString(item.chords, length);
-      this.lyricsLine += this.padString(item.lyrics, length);
-      this.dirtyLine = true;
+  formatLineTop(line) {
+    if (hasChordContents(line)) {
+      return this.formatLineWithFormatter(line, this.formatItemTop);
     }
+
+    return null;
   }
 
-  outputTagIfRenderable(tag) {
-    if (tag.isRenderable() && tag.hasValue()) {
-      this.lyricsLine += tag.value;
-      this.dirtyLine = true;
+  chordLyricsPairLength(chordLyricsPair) {
+    const chords = chordLyricsPair.chords;
+    const chordsLength = chords.length;
+    const lyricsLength = chordLyricsPair.lyrics.length;
+
+    if (chordsLength >= lyricsLength) {
+      return chordsLength + 1;
     }
+
+    return Math.max(chordsLength, lyricsLength);
+  }
+
+  formatItemTop(item) {
+    if (item instanceof Tag && item.isRenderable()) {
+      return padLeft('', item.value);
+    }
+
+    if (item instanceof ChordLyricsPair) {
+      return padLeft(item.chords, this.chordLyricsPairLength(item));
+    }
+
+    return '';
+  }
+
+  formatLineBottom(line) {
+    if (hasTextContents(line)) {
+      return this.formatLineWithFormatter(line, this.formatItemBottom);
+    }
+
+    return null;
+  }
+
+  formatLineWithFormatter(line, formatter) {
+    return line
+      .items
+      .map(item => formatter.call(this, item))
+      .join('');
+  }
+
+  formatItemBottom(item) {
+    if (item instanceof Tag && item.isRenderable()) {
+      return item.value;
+    }
+
+    if (item instanceof ChordLyricsPair) {
+      return padLeft(item.lyrics, this.chordLyricsPairLength(item));
+    }
+
+    return '';
   }
 }
