@@ -2,7 +2,6 @@ import chai, { expect } from 'chai';
 
 import '../matchers';
 import HtmlDivFormatter from '../../src/formatter/html_div_formatter';
-import htmlEntitiesEncode from '../../src/formatter/html_entities_encode';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createLine, createSong } from '../utilities';
 
@@ -94,28 +93,6 @@ describe('HtmlDivFormatter', () => {
       '</div>';
 
     expect(formatter.format(song)).to.equalText(expectedChordSheet);
-  });
-
-  it('encodes HTML entities', () => {
-    const formatter = new HtmlDivFormatter();
-
-    const songWithHtmlEntities = createSong([
-      createLine([
-        createChordLyricsPair('Am', '<h1>Let it</h1>'),
-      ]),
-    ]);
-
-    const expectedChordSheet =
-      '<div class="chord-sheet">' +
-        '<div class="row">' +
-          '<div class="column">' +
-            '<div class="chord">Am</div>' +
-            `<div class="lyrics">${htmlEntitiesEncode('<h1>Let it</h1>')}</div>` +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    expect(formatter.format(songWithHtmlEntities)).to.equalText(expectedChordSheet);
   });
 
   context('with option renderBlankLines:false', () => {
