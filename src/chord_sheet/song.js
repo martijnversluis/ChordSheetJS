@@ -9,7 +9,15 @@ class Song {
     this.currentLine = null;
     this.paragraphs = [];
     this.currentParagraph = null;
-    this.metaData = metaData;
+    this.assignMetaData(metaData);
+  }
+
+  assignMetaData(metaData) {
+    this.metaData = {};
+
+    Object.keys(metaData).forEach((key) => {
+      this.setMetaData(key, metaData[key]);
+    });
   }
 
   get bodyLines() {
@@ -86,7 +94,7 @@ class Song {
     const tag = Tag.parse(tagContents);
 
     if (tag.isMetaTag()) {
-      this.metaData[tag.name] = tag.value;
+      this.setMetaData(tag.name, tag.value);
     }
 
     this.ensureLine();
@@ -102,8 +110,28 @@ class Song {
     return clonedSong;
   }
 
+  setMetaData(name, value) {
+    if (!(name in this.metaData)) {
+      this.metaData[name] = new Set();
+    }
+
+    this.metaData[name].add(value);
+  }
+
   getMetaData(name) {
-    return this.metaData[name] || null;
+    const valueSet = this.metaData[name];
+
+    if (valueSet === undefined) {
+      return null;
+    }
+
+    const values = [...valueSet];
+
+    if (values.length === 1) {
+      return values[0];
+    }
+
+    return values;
   }
 }
 
