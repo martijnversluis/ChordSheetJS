@@ -33,6 +33,72 @@ describe('Song', () => {
     expect(song.subtitle).to.eq('Song subtitle');
   });
 
+  it('can have an artist', () => {
+    const song = new Song({ artist: 'Song artist' });
+
+    expect(song.artist).to.eq('Song artist');
+  });
+
+  it('can have a composer', () => {
+    const song = new Song({ composer: 'Song composer' });
+
+    expect(song.composer).to.eq('Song composer');
+  });
+
+  it('can have a lyricist', () => {
+    const song = new Song({ lyricist: 'Song lyricist' });
+
+    expect(song.lyricist).to.eq('Song lyricist');
+  });
+
+  it('can have a copyright', () => {
+    const song = new Song({ copyright: 'Song copyright' });
+
+    expect(song.copyright).to.eq('Song copyright');
+  });
+
+  it('can have an album', () => {
+    const song = new Song({ album: 'Song album' });
+
+    expect(song.album).to.eq('Song album');
+  });
+
+  it('can have a year', () => {
+    const song = new Song({ year: 'Song year' });
+
+    expect(song.year).to.eq('Song year');
+  });
+
+  it('can have a key', () => {
+    const song = new Song({ key: 'Song key' });
+
+    expect(song.key).to.eq('Song key');
+  });
+
+  it('can have a time', () => {
+    const song = new Song({ time: 'Song time' });
+
+    expect(song.time).to.eq('Song time');
+  });
+
+  it('can have a tempo', () => {
+    const song = new Song({ tempo: 'Song tempo' });
+
+    expect(song.tempo).to.eq('Song tempo');
+  });
+
+  it('can have a duration', () => {
+    const song = new Song({ duration: 'Song duration' });
+
+    expect(song.duration).to.eq('Song duration');
+  });
+
+  it('can have a capo', () => {
+    const song = new Song({ capo: 'Song capo' });
+
+    expect(song.capo).to.eq('Song capo');
+  });
+
   describe('#clone', () => {
     it('returns a clone of the song', () => {
       const song = new Song();

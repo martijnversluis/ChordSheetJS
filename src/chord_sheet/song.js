@@ -1,10 +1,21 @@
 import Line from './line';
-import Tag from './tag';
+import Tag, {
+  ALBUM,
+  ARTIST,
+  CAPO,
+  COMPOSER,
+  COPYRIGHT,
+  DURATION,
+  KEY,
+  LYRICIST,
+  SUBTITLE,
+  TEMPO,
+  TIME,
+  TITLE,
+  YEAR,
+} from './tag';
 import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
-
-const TITLE = 'title';
-const SUBTITLE = 'subtitle';
 
 export default class Song {
   constructor(metaData = {}) {
@@ -98,18 +109,66 @@ export default class Song {
     return tag;
   }
 
-  get title() {
-    return this.metaData[TITLE] || '';
-  }
-
-  get subtitle() {
-    return this.metaData[SUBTITLE] || '';
-  }
-
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
     clonedSong.metaData = { ...this.metaData };
     return clonedSong;
+  }
+
+  get album() {
+    return this.getMetaData(ALBUM);
+  }
+
+  get artist() {
+    return this.getMetaData(ARTIST);
+  }
+
+  get capo() {
+    return this.getMetaData(CAPO);
+  }
+
+  get composer() {
+    return this.getMetaData(COMPOSER);
+  }
+
+  get copyright() {
+    return this.getMetaData(COPYRIGHT);
+  }
+
+  get duration() {
+    return this.getMetaData(DURATION);
+  }
+
+  get key() {
+    return this.getMetaData(KEY);
+  }
+
+  get lyricist() {
+    return this.getMetaData(LYRICIST);
+  }
+
+  get tempo() {
+    return this.getMetaData(TEMPO);
+  }
+
+  get time() {
+    return this.getMetaData(TIME);
+  }
+
+  get title() {
+    return this.getMetaData(TITLE);
+  }
+
+  get subtitle() {
+    return this.getMetaData(SUBTITLE);
+  }
+
+  get year() {
+    return this.getMetaData(YEAR);
+  }
+
+  getMetaData(name) {
+    return this.metaData[name] || null;
   }
 }
