@@ -3,6 +3,8 @@ import { expect } from 'chai';
 import Line from '../../src/chord_sheet/line';
 import ItemStub from '../cloneable_stub';
 import { createChordLyricsPair, createLine, createTag } from '../utilities';
+import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
+import Tag from '../../src/chord_sheet/tag';
 
 describe('Line', () => {
   describe('#clone', () => {
@@ -19,7 +21,7 @@ describe('Line', () => {
   describe('#isEmpty', () => {
     context('when the line has items', () => {
       it('returns false', () => {
-        const item = new ItemStub();
+        const item = new ChordLyricsPair('C', 'Let it be');
         const line = createLine([item]);
 
         expect(line.isEmpty()).to.be.false;
@@ -103,11 +105,7 @@ describe('Line', () => {
     context('when the line has renderable items', () => {
       it('returns true', () => {
         const line = createLine([
-          {
-            isRenderable() {
-              return true;
-            },
-          },
+          new ChordLyricsPair('C', 'Let it'),
         ]);
 
         expect(line.hasRenderableItems()).to.be.true;
@@ -117,11 +115,7 @@ describe('Line', () => {
     context('when the line has no renderable items', () => {
       it('returns false', () => {
         const line = createLine([
-          {
-            isRenderable() {
-              return false;
-            },
-          },
+          new Tag('x_foo', 'bar'),
         ]);
 
         expect(line.hasRenderableItems()).to.be.false;

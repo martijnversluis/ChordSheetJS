@@ -14,7 +14,7 @@ export function createSong(lines, metaData) {
 
 export function createLine(items, type = NONE) {
   const line = new Line();
-  line.items = items;
+  items.forEach(item => line.addItem(item));
   line.type = type;
   return line;
 }

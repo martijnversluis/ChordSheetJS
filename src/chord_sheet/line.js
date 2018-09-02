@@ -1,6 +1,5 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
-import { pushNew } from '../utilities';
 import { CHORUS, NONE, VERSE } from '../constants';
 
 export default class Line {
@@ -14,8 +13,22 @@ export default class Line {
     return this.items.length === 0;
   }
 
-  addChordLyricsPair() {
-    this.currentChordLyricsPair = pushNew(this.items, ChordLyricsPair);
+  addItem(item) {
+    if (item instanceof Tag) {
+      this.addTag(item);
+    } else if (item instanceof ChordLyricsPair) {
+      this.addChordLyricsPair(item);
+    }
+  }
+
+  addChordLyricsPair(chords, lyrics) {
+    if (chords instanceof ChordLyricsPair) {
+      this.currentChordLyricsPair = chords;
+    } else {
+      this.currentChordLyricsPair = new ChordLyricsPair(chords, lyrics);
+    }
+
+    this.items.push(this.currentChordLyricsPair);
     return this.currentChordLyricsPair;
   }
 

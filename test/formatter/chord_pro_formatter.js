@@ -13,10 +13,14 @@ describe('ChordProFormatter', () => {
 {x_some_setting}
 {comment: Bridge}
 
+{start_of_verse}
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C] 
+{end_of_verse}
 
-[Am]Whisper words of [Bb]wisdom, let it [F]be [C]`.substring(1);
+{start_of_chorus}
+[Am]Whisper words of [Bb]wisdom, let it [F]be [C]
+{end_of_chorus}`.substring(1);
 
     expect(formatter.format(song)).to.equal(expectedChordSheet);
   });
