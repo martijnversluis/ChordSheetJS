@@ -1,12 +1,9 @@
 import Line from './line';
-import Tag from './tag';
+import Tag, { META_TAGS } from './tag';
 import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
 
-const TITLE = 'title';
-const SUBTITLE = 'subtitle';
-
-export default class Song {
+class Song {
   constructor(metaData = {}) {
     this.lines = [];
     this.currentLine = null;
@@ -98,18 +95,27 @@ export default class Song {
     return tag;
   }
 
-  get title() {
-    return this.metaData[TITLE] || '';
-  }
-
-  get subtitle() {
-    return this.metaData[SUBTITLE] || '';
-  }
-
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
     clonedSong.metaData = { ...this.metaData };
     return clonedSong;
   }
+
+  getMetaData(name) {
+    return this.metaData[name] || null;
+  }
 }
+
+const defineProperty = Object.defineProperty;
+const songPrototype = Song.prototype;
+
+META_TAGS.forEach((tagName) => {
+  defineProperty(songPrototype, tagName, {
+    get() {
+      return this.getMetaData(tagName);
+    },
+  });
+});
+
+export default Song;

@@ -1,10 +1,21 @@
-export const TITLE = 'title';
-export const SUBTITLE = 'subtitle';
+export const ALBUM = 'album';
+export const ARTIST = 'artist';
+export const CAPO = 'capo';
 export const COMMENT = 'comment';
-export const START_OF_CHORUS = 'start_of_chorus';
+export const COMPOSER = 'composer';
+export const COPYRIGHT = 'copyright';
+export const DURATION = 'duration';
 export const END_OF_CHORUS = 'end_of_chorus';
-export const START_OF_VERSE = 'start_of_verse';
 export const END_OF_VERSE = 'end_of_verse';
+export const KEY = 'key';
+export const LYRICIST = 'lyricist';
+export const START_OF_CHORUS = 'start_of_chorus';
+export const START_OF_VERSE = 'start_of_verse';
+export const SUBTITLE = 'subtitle';
+export const TEMPO = 'tempo';
+export const TIME = 'time';
+export const TITLE = 'title';
+export const YEAR = 'year';
 
 const TITLE_SHORT = 't';
 const SUBTITLE_SHORT = 'st';
@@ -12,8 +23,23 @@ const COMMENT_SHORT = 'c';
 const START_OF_CHORUS_SHORT = 'soc';
 const END_OF_CHORUS_SHORT = 'eoc';
 
-const META_TAGS = [TITLE, SUBTITLE];
 const RENDERABLE_TAGS = [COMMENT];
+
+export const META_TAGS = [
+  ALBUM,
+  ARTIST,
+  CAPO,
+  COMPOSER,
+  COPYRIGHT,
+  DURATION,
+  KEY,
+  LYRICIST,
+  TEMPO,
+  TIME,
+  TITLE,
+  SUBTITLE,
+  YEAR,
+];
 
 const ALIASES = {
   [TITLE_SHORT]: TITLE,
