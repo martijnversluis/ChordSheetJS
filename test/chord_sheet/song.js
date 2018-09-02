@@ -21,6 +21,18 @@ const createLineStub = ({ renderable }) => (
 );
 
 describe('Song', () => {
+  it('can have a title', () => {
+    const song = new Song({ title: 'Song title' });
+
+    expect(song.title).to.eq('Song title');
+  });
+
+  it('can have a subtitle', () => {
+    const song = new Song({ subtitle: 'Song subtitle' });
+
+    expect(song.subtitle).to.eq('Song subtitle');
+  });
+
   describe('#clone', () => {
     it('returns a clone of the song', () => {
       const song = new Song();
