@@ -54,6 +54,17 @@ describe('ChordProParser', () => {
     expect(song.subtitle).to.equal('ChordSheetJS example version');
   });
 
+  it('can have multiple values for a meta directive', () => {
+    const chordSheetWithMultipleComposers = `
+      {composer: John}
+      {composer: Jane}
+    `;
+
+    const song = new ChordProParser().parse(chordSheetWithMultipleComposers);
+
+    expect(song.composer).to.eql(['John', 'Jane']);
+  });
+
   it('ignores comments', () => {
     const chordSheetWithComment = '# this is a comment\nLet it [Am]be, let it [C/G]be';
     const song = new ChordProParser().parse(chordSheetWithComment);
