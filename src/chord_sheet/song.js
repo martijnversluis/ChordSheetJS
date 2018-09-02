@@ -1,23 +1,9 @@
 import Line from './line';
-import Tag, {
-  ALBUM,
-  ARTIST,
-  CAPO,
-  COMPOSER,
-  COPYRIGHT,
-  DURATION,
-  KEY,
-  LYRICIST,
-  SUBTITLE,
-  TEMPO,
-  TIME,
-  TITLE,
-  YEAR,
-} from './tag';
+import Tag, { META_TAGS } from './tag';
 import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
 
-export default class Song {
+class Song {
   constructor(metaData = {}) {
     this.lines = [];
     this.currentLine = null;
@@ -116,59 +102,20 @@ export default class Song {
     return clonedSong;
   }
 
-  get album() {
-    return this.getMetaData(ALBUM);
-  }
-
-  get artist() {
-    return this.getMetaData(ARTIST);
-  }
-
-  get capo() {
-    return this.getMetaData(CAPO);
-  }
-
-  get composer() {
-    return this.getMetaData(COMPOSER);
-  }
-
-  get copyright() {
-    return this.getMetaData(COPYRIGHT);
-  }
-
-  get duration() {
-    return this.getMetaData(DURATION);
-  }
-
-  get key() {
-    return this.getMetaData(KEY);
-  }
-
-  get lyricist() {
-    return this.getMetaData(LYRICIST);
-  }
-
-  get tempo() {
-    return this.getMetaData(TEMPO);
-  }
-
-  get time() {
-    return this.getMetaData(TIME);
-  }
-
-  get title() {
-    return this.getMetaData(TITLE);
-  }
-
-  get subtitle() {
-    return this.getMetaData(SUBTITLE);
-  }
-
-  get year() {
-    return this.getMetaData(YEAR);
-  }
-
   getMetaData(name) {
     return this.metaData[name] || null;
   }
 }
+
+const defineProperty = Object.defineProperty;
+const songPrototype = Song.prototype;
+
+META_TAGS.forEach((tagName) => {
+  defineProperty(songPrototype, tagName, {
+    get() {
+      return this.getMetaData(tagName);
+    },
+  });
+});
+
+export default Song;

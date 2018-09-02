@@ -25,7 +25,7 @@ const END_OF_CHORUS_SHORT = 'eoc';
 
 const RENDERABLE_TAGS = [COMMENT];
 
-const META_TAGS = [
+export const META_TAGS = [
   ALBUM,
   ARTIST,
   CAPO,
