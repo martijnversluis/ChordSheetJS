@@ -23,6 +23,7 @@ const ALIASES = {
   [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
 };
 
+const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 
 const translateTagNameAlias = (name) => {
@@ -46,9 +47,13 @@ export default class Tag {
   }
 
   static parse(tag) {
-    const matches = tag.match(TAG_REGEX);
+    return this.parseWithRegex(tag, META_TAG_REGEX) || this.parseWithRegex(tag, TAG_REGEX);
+  }
 
-    if (matches.length) {
+  static parseWithRegex(tag, regex) {
+    const matches = tag.match(regex);
+
+    if (matches !== null) {
       return new Tag(matches[1], matches[3] || null);
     }
 

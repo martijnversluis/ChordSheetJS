@@ -79,5 +79,19 @@ describe('Tag', () => {
       expect(tag.name).to.equal('foo');
       expect(tag.value).to.equal('bar ber');
     });
+
+    it('can parse {meta:name value}', () => {
+      const tag = Tag.parse('meta:foo bar ber');
+
+      expect(tag.name).to.equal('foo');
+      expect(tag.value).to.equal('bar ber');
+    });
+
+    it('can parse {meta: name value}', () => {
+      const tag = Tag.parse('meta: foo bar ber');
+
+      expect(tag.name).to.equal('foo');
+      expect(tag.value).to.equal('bar ber');
+    });
   });
 });
