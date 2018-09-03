@@ -13,7 +13,7 @@ class Song {
   }
 
   assignMetaData(metaData) {
-    this.metaData = {};
+    this.rawMetaData = {};
 
     Object.keys(metaData).forEach((key) => {
       this.setMetaData(key, metaData[key]);
@@ -106,21 +106,40 @@ class Song {
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
-    clonedSong.metaData = { ...this.metaData };
+    clonedSong.rawMetaData = { ...this.rawMetaData };
     return clonedSong;
   }
 
   setMetaData(name, value) {
-    if (!(name in this.metaData)) {
-      this.metaData[name] = new Set();
+    this.optimizedMetaData = null;
+
+    if (!(name in this.rawMetaData)) {
+      this.rawMetaData[name] = new Set();
     }
 
-    this.metaData[name].add(value);
+    this.rawMetaData[name].add(value);
   }
 
-  getMetaData(name) {
-    const valueSet = this.metaData[name];
+  get metaData() {
+    if (!this.optimizedMetaData) {
+      this.optimizedMetaData = this.getOptimizedMetaData();
+    }
 
+    return this.optimizedMetaData;
+  }
+
+  getOptimizedMetaData() {
+    const optimizedMetaData = {};
+
+    Object.keys(this.rawMetaData).forEach((key) => {
+      const valueSet = this.rawMetaData[key];
+      optimizedMetaData[key] = this.optimizeMetaDataValue(valueSet);
+    });
+
+    return optimizedMetaData;
+  }
+
+  optimizeMetaDataValue(valueSet) {
     if (valueSet === undefined) {
       return null;
     }
@@ -132,6 +151,10 @@ class Song {
     }
 
     return values;
+  }
+
+  getMetaData(name) {
+    return this.metaData[name] || null;
   }
 }
 

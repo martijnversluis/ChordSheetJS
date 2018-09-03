@@ -103,7 +103,7 @@ describe('Song', () => {
     it('returns a clone of the song', () => {
       const song = new Song();
       song.lines = ['foo', 'bar'].map(value => new LineStub(value));
-      song.metaData = { foo: 'bar' };
+      song.assignMetaData({ foo: 'bar' });
       const clonedSong = song.clone();
 
       const actualValues = clonedSong.lines.map(line => line.value);

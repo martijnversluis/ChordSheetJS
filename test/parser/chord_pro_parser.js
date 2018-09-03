@@ -54,6 +54,18 @@ describe('ChordProParser', () => {
     expect(song.subtitle).to.equal('ChordSheetJS example version');
   });
 
+  it('parses custom meta data', () => {
+    const chordSheetWithCustomMetaData = `
+      {x_one_directive: Foo}
+      {x_other_directive: Bar}
+    `;
+
+    const song = new ChordProParser().parse(chordSheetWithCustomMetaData);
+
+    expect(song.metaData.x_one_directive).to.equal('Foo');
+    expect(song.metaData.x_other_directive).to.equal('Bar');
+  });
+
   it('can have multiple values for a meta directive', () => {
     const chordSheetWithMultipleComposers = `
       {composer: John}

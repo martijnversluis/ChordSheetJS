@@ -51,6 +51,7 @@ const ALIASES = {
 
 const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
+const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
 const translateTagNameAlias = (name) => {
   if (!name) {
@@ -120,7 +121,7 @@ export default class Tag {
   }
 
   isMetaTag() {
-    return META_TAGS.indexOf(this.name) !== -1;
+    return CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
   }
 
   clone() {
