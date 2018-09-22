@@ -1,25 +1,25 @@
-import FormatterBase from './formatter_base';
 import Tag from '../chord_sheet/tag';
+import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 
 const NEW_LINE = '\n';
 
-export default class ChordProFormatter extends FormatterBase {
-  outputItem(item) {
-    if (item instanceof Tag) {
-      this.output(this.formatTag(item));
-    } else {
-      this.outputChordLyricsPair(item);
-    }
+export default class ChordProFormatter {
+  format(song) {
+    return song.lines.map(line => this.formatLine(line)).join(NEW_LINE);
   }
 
-  outputChordLyricsPair(item) {
-    if (item.chords) {
-      this.output(`[${item.chords}]`);
+  formatLine(line) {
+    return line.items.map(item => this.formatItem(item)).join('');
+  }
+
+  formatItem(item) {
+    if (item instanceof Tag) {
+      return this.formatTag(item);
+    } else if (item instanceof ChordLyricsPair) {
+      return this.formatChordLyricsPair(item);
     }
 
-    if (item.lyrics) {
-      this.output(item.lyrics);
-    }
+    return '';
   }
 
   formatTag(tag) {
@@ -30,11 +30,22 @@ export default class ChordProFormatter extends FormatterBase {
     return `{${tag.originalName}}`;
   }
 
-  endOfSong() { }
+  formatChordLyricsPair(chordLyricsPair) {
+    return [
+      this.formatChordLyricsPairChords(chordLyricsPair),
+      this.formatChordLyricsPairLyrics(chordLyricsPair),
+    ].join('');
+  }
 
-  newLine() {
-    if (this.stringOutput) {
-      this.output(NEW_LINE);
+  formatChordLyricsPairChords(chordLyricsPair) {
+    if (chordLyricsPair.chords) {
+      return `[${chordLyricsPair.chords}]`;
     }
+
+    return '';
+  }
+
+  formatChordLyricsPairLyrics(chordLyricsPair) {
+    return chordLyricsPair.lyrics || '';
   }
 }

@@ -1,6 +1,5 @@
 import hbs from 'handlebars-inline-precompile';
 
-import HtmlFormatter from './html_formatter';
 import '../handlebars_helpers';
 
 const template = hbs`
@@ -23,7 +22,7 @@ const template = hbs`
                 {{~#if (isChordLyricsPair item)~}}
                   <div class="column"><div class="chord">{{chords}}</div><div class="lyrics">{{lyrics}}</div></div>
                 {{~/if~}}
-        
+
                 {{~#if (isTag item)~}}
                   {{~#if (isComment item)~}}
                     <div class="comment">{{value}}</div>
@@ -38,11 +37,10 @@ const template = hbs`
   </div>
 {{~/with~}}`;
 
-export default class HtmlDivFormatter extends HtmlFormatter {
+class HtmlDivFormatter {
   format(song) {
-    return template({
-      song,
-      renderBlankLines: this.renderBlankLines,
-    });
+    return template({ song });
   }
 }
+
+export default HtmlDivFormatter;
