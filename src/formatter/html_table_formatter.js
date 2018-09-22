@@ -1,6 +1,5 @@
 import hbs from 'handlebars-inline-precompile';
 
-import HtmlFormatter from './html_formatter';
 import '../handlebars_helpers';
 
 const template = hbs`
@@ -55,11 +54,10 @@ const template = hbs`
 {{~/with~}}
 `;
 
-export default class HtmlTableFormatter extends HtmlFormatter {
+class HtmlTableFormatter {
   format(song) {
-    return template({
-      song,
-      renderBlankLines: this.renderBlankLines,
-    });
+    return template({ song });
   }
 }
+
+export default HtmlTableFormatter;
