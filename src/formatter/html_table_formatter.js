@@ -54,7 +54,16 @@ const template = hbs`
 {{~/with~}}
 `;
 
+/**
+ * Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
+ * PDF conversion.
+ */
 class HtmlTableFormatter {
+  /**
+   * Formats a song into HTML.
+   * @param {Song} song The song to be formatted
+   * @returns {string} The HTML string
+   */
   format(song) {
     return template({ song });
   }

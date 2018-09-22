@@ -3,13 +3,21 @@ import Song from '../chord_sheet/song';
 const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
+/**
+ * Parses a normal chord sheet
+ */
 export default class ChordSheetParser {
   constructor({ preserveWhitespace = true } = {}) {
     this.preserveWhitespace = (preserveWhitespace === true);
   }
 
-  parse(document) {
-    this.initialize(document);
+  /**
+   * Parses a chord sheet into a song
+   * @param {string} chordSheet The ChordPro chord sheet
+   * @returns {Song} The parsed song
+   */
+  parse(chordSheet) {
+    this.initialize(chordSheet);
 
     while (this.hasNextLine()) {
       const line = this.readLine();

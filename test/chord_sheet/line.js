@@ -11,10 +11,12 @@ describe('Line', () => {
     it('returns a clone of the line', () => {
       const line = new Line();
       line.items = ['foo', 'bar'].map(value => new ItemStub(value));
+      line.type = 'test_type';
       const clonedLine = line.clone();
 
       const actualValues = clonedLine.items.map(item => item.value);
       expect(actualValues).to.eql(['foo', 'bar']);
+      expect(clonedLine.type).to.eql('test_type');
     });
   });
 

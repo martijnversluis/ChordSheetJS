@@ -2,7 +2,15 @@ import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
 import { hasChordContents, hasTextContents, padLeft } from '../utilities';
 
-export default class TextFormatter {
+/**
+ * Formats a sonf into a plain text chord sheet
+ */
+class TextFormatter {
+  /**
+   * Formats a song into a plain text chord sheet
+   * @param {Song} song The song to be formatted
+   * @returns {string} the chord sheet
+   */
   format(song) {
     return [
       this.formatHeader(song),
@@ -118,3 +126,5 @@ export default class TextFormatter {
     return '';
   }
 }
+
+export default TextFormatter;

@@ -3,11 +3,26 @@ import Tag, { META_TAGS } from './tag';
 import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
 
+/**
+ * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
+ */
 class Song {
   constructor(metaData = {}) {
+    /**
+     * The {@link Line} items of which the song consists
+     * @member
+     * @type {Array<Line>}
+     */
     this.lines = [];
-    this.currentLine = null;
+
+    /**
+     * The {@link Paragraph} items of which the song consists
+     * @member
+     * @type {Array<Line>}
+     */
     this.paragraphs = [];
+
+    this.currentLine = null;
     this.currentParagraph = null;
     this.assignMetaData(metaData);
   }
@@ -20,6 +35,11 @@ class Song {
     });
   }
 
+  /**
+   * Returns the song lines, skipping the leading empty lines (empty as in not rendering any content). This is useful
+   * if you want to skip the "header lines": the lines that only contain meta data.
+   * @returns {Array<Line>} The song body lines
+   */
   get bodyLines() {
     if (this._bodyLines === undefined) {
       this._bodyLines = [...this.lines];
@@ -103,6 +123,10 @@ class Song {
     return tag;
   }
 
+  /**
+   * Returns a deep clone of the song
+   * @returns {Song} The cloned song
+   */
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
@@ -120,6 +144,11 @@ class Song {
     this.rawMetaData[name].add(value);
   }
 
+  /**
+   * Returns the song metadata. When there is only one value for an entry, the value is a string. Else, the value is
+   * an array containing all unique values for the entry.
+   * @returns {object} The metadata
+   */
   get metaData() {
     if (!this.optimizedMetaData) {
       this.optimizedMetaData = this.getOptimizedMetaData();
