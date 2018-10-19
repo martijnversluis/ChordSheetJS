@@ -99,7 +99,7 @@ const disp = formatter.format(song);
 
 :clock2: = will be supported in a future version
 
-:heavy_multiplication_x: = no plans to support it in the near future
+:heavy_multiplication_x: = currently no plans to support it in the near future
 
 ### Meta-data directives
 
@@ -107,18 +107,18 @@ const disp = formatter.format(song);
 |:---------------- |:------------------:|
 | title (short: t) | :heavy_check_mark: |
 | subtitle         | :heavy_check_mark: |
-| artist           | :clock2:           |
-| composer         | :clock2:           |
-| lyricist         | :clock2:           |
-| copyright        | :clock2:           |
-| album            | :clock2:           |
-| year             | :clock2:           |
-| key              | :clock2:           |
-| time             | :clock2:           |
-| tempo            | :clock2:           |
-| duration         | :clock2:           |
-| capo             | :clock2:           |
-| meta             | :clock2:           |
+| artist           | :heavy_check_mark: |
+| composer         | :heavy_check_mark: |
+| lyricist         | :heavy_check_mark: |
+| copyright        | :heavy_check_mark: |
+| album            | :heavy_check_mark: |
+| year             | :heavy_check_mark: |
+| key              | :heavy_check_mark: |
+| time             | :heavy_check_mark: |
+| tempo            | :heavy_check_mark: |
+| duration         | :heavy_check_mark: |
+| capo             | :heavy_check_mark: |
+| meta             | :heavy_check_mark: |
 
 ### Formatting directives
 
@@ -178,9 +178,9 @@ const disp = formatter.format(song);
 
 ### Custom extensions
 
-| Directive | Support  |
-|:--------- |:--------:|
-| x_        | :clock2: |
+| Directive | Support            |
+|:--------- |:------------------:|
+| x_        | :heavy_check_mark: |
 
 ## API docs
 
