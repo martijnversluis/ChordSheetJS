@@ -184,6 +184,9 @@ const disp = formatter.format(song);
 
 ## API docs
 
+Note: all classes, methods and constants that are documented here can be considered public API and will only be
+subject to breaking changes between major versions.
+
 ## Classes
 
 <dl>
