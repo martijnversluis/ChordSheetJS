@@ -1,7 +1,15 @@
 import { INDETERMINATE } from '../constants';
 
-export default class Paragraph {
+/**
+ * Represents a paragraph of lines in a chord sheet
+ */
+class Paragraph {
   constructor() {
+    /**
+     * The {@link Line} items of which the paragraph consists
+     * @member
+     * @type {Array<Line>}
+     */
     this.lines = [];
   }
 
@@ -9,6 +17,11 @@ export default class Paragraph {
     this.lines.push(line);
   }
 
+  /**
+   * Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
+   * If not, it returns {@link INDETERMINATE}
+   * @returns {string}
+   */
   get type() {
     const types = this.lines.map(line => line.type);
     const uniqueTypes = [...new Set(types)];
@@ -20,3 +33,5 @@ export default class Paragraph {
     return INDETERMINATE;
   }
 }
+
+export default Paragraph;

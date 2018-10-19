@@ -37,7 +37,16 @@ const template = hbs`
   </div>
 {{~/with~}}`;
 
+
+/**
+ * Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.
+ */
 class HtmlDivFormatter {
+  /**
+   * Formats a song into HTML.
+   * @param {Song} song The song to be formatted
+   * @returns {string} The HTML string
+   */
   format(song) {
     return template({ song });
   }

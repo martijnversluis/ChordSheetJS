@@ -3,7 +3,15 @@ import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 
 const NEW_LINE = '\n';
 
-export default class ChordProFormatter {
+/**
+ * Formats a song into a ChordPro chord sheet
+ */
+class ChordProFormatter {
+  /**
+   * Formats a song into a ChordPro chord sheet.
+   * @param {Song} song The song to be formatted
+   * @returns {string} The ChordPro string
+   */
   format(song) {
     return song.lines.map(line => this.formatLine(line)).join(NEW_LINE);
   }
@@ -49,3 +57,5 @@ export default class ChordProFormatter {
     return chordLyricsPair.lyrics || '';
   }
 }
+
+export default ChordProFormatter;

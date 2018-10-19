@@ -10,15 +10,29 @@ const CURLY_START = '{';
 const CURLY_END = '}';
 const SHARP_SIGN = '#';
 
-export default class ChordProParser {
-  parse(document) {
+/**
+ * Parses a ChordPro chord sheet
+ */
+class ChordProParser {
+  /**
+   * Parses a ChordPro chord sheet into a song
+   * @param {string} chordProChordSheet the ChordPro chord sheet
+   * @returns {Song} The parsed song
+   */
+  parse(chordProChordSheet) {
+    /**
+     * All warnings raised during parsing the ChordPro chord sheet
+     * @member
+     * @type {Array<ParserWarning>}
+     */
+    this.warnings = [];
+
     this.song = new Song();
     this.lineNumber = 1;
-    this.warnings = [];
     this.sectionType = NONE;
     this.resetTag();
     this.processor = this.readLyrics;
-    this.parseDocument(document);
+    this.parseDocument(chordProChordSheet);
     this.song.finish();
     return this.song;
   }
@@ -141,3 +155,5 @@ export default class ChordProParser {
     this.warnings.push(warning);
   }
 }
+
+export default ChordProParser;
