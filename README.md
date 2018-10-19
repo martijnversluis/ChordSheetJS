@@ -2,6 +2,13 @@
 
 A JavaScript library for parsing and formatting chord sheets
 
+**Contents**
+
+- [Installation](#installation)
+- [How to ...?](#how-to-)
+- [Supported ChordPro directives](#supported-chordpro-directives)
+- [API docs](#api-docs)
+
 ## Installation
 
 `ChordSheetJS` is on npm, to install run:
@@ -22,7 +29,7 @@ or `import` (es2015):
 import ChordSheetJS from 'chordsheetjs';
 ```
 
-## Functionalities
+## How to ...?
 
 ### Parse chord sheet
 
