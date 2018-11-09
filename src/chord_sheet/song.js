@@ -2,12 +2,13 @@ import Line from './line';
 import Tag, { META_TAGS } from './tag';
 import Paragraph from './paragraph';
 import { pushNew } from '../utilities';
+import Metadata from './metadata';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
  */
 class Song {
-  constructor(metaData = {}) {
+  constructor(metadata = {}) {
     /**
      * The {@link Line} items of which the song consists
      * @member
@@ -24,15 +25,7 @@ class Song {
 
     this.currentLine = null;
     this.currentParagraph = null;
-    this.assignMetaData(metaData);
-  }
-
-  assignMetaData(metaData) {
-    this.rawMetaData = {};
-
-    Object.keys(metaData).forEach((key) => {
-      this.setMetaData(key, metaData[key]);
-    });
+    this.metadata = new Metadata(metadata);
   }
 
   /**
@@ -130,18 +123,8 @@ class Song {
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
-    clonedSong.rawMetaData = { ...this.rawMetaData };
+    clonedSong.metadata = this.metadata.clone();
     return clonedSong;
-  }
-
-  setMetaData(name, value) {
-    this.optimizedMetaData = null;
-
-    if (!(name in this.rawMetaData)) {
-      this.rawMetaData[name] = new Set();
-    }
-
-    this.rawMetaData[name].add(value);
   }
 
   /**
@@ -150,40 +133,15 @@ class Song {
    * @returns {object} The metadata
    */
   get metaData() {
-    if (!this.optimizedMetaData) {
-      this.optimizedMetaData = this.getOptimizedMetaData();
-    }
-
-    return this.optimizedMetaData;
-  }
-
-  getOptimizedMetaData() {
-    const optimizedMetaData = {};
-
-    Object.keys(this.rawMetaData).forEach((key) => {
-      const valueSet = this.rawMetaData[key];
-      optimizedMetaData[key] = this.optimizeMetaDataValue(valueSet);
-    });
-
-    return optimizedMetaData;
-  }
-
-  optimizeMetaDataValue(valueSet) {
-    if (valueSet === undefined) {
-      return null;
-    }
-
-    const values = [...valueSet];
-
-    if (values.length === 1) {
-      return values[0];
-    }
-
-    return values;
+    return this.metadata.getAll();
   }
 
   getMetaData(name) {
-    return this.metaData[name] || null;
+    return this.metadata.get(name);
+  }
+
+  setMetaData(name, value) {
+    this.metadata.set(name, value);
   }
 }
 
