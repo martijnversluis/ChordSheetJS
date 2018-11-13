@@ -100,27 +100,10 @@ class ChordProParser {
   readExpression(chr) {
     switch (chr) {
       case CURLY_START:
-        this.expression += chr;
-
-        if (this.escapeMode) {
-          this.escapeMode = false;
-        } else {
-          this.expressionNestingLevel += 1;
-        }
+        this.readCurlyStart(chr);
         break;
       case CURLY_END:
-        if (this.escapeMode) {
-          this.escapeMode = false;
-        } else {
-          this.expressionNestingLevel -= 1;
-        }
-
-        if (this.expressionNestingLevel === 0) {
-          this.finishExpression();
-          this.processor = this.readLyrics;
-        } else {
-          this.expression += chr;
-        }
+        this.readCurlyEnd(chr);
 
         break;
       case BACK_SLASH:
@@ -129,6 +112,31 @@ class ChordProParser {
         break;
       default:
         this.expression += chr;
+    }
+  }
+
+  readCurlyEnd(chr) {
+    if (this.escapeMode) {
+      this.escapeMode = false;
+    } else {
+      this.expressionNestingLevel -= 1;
+    }
+
+    if (this.expressionNestingLevel === 0) {
+      this.finishExpression();
+      this.processor = this.readLyrics;
+    } else {
+      this.expression += chr;
+    }
+  }
+
+  readCurlyStart(chr) {
+    this.expression += chr;
+
+    if (this.escapeMode) {
+      this.escapeMode = false;
+    } else {
+      this.expressionNestingLevel += 1;
     }
   }
 

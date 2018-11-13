@@ -92,31 +92,44 @@ class TernaryExpression {
   }
 
   evaluate() {
+    const controllingItemName = this.getControllingItemName();
+    const controllingItem = this.getMetadata(controllingItemName);
+
+    if (controllingItem.length) {
+      return this.evaluatePresentControllingItem(controllingItem);
+    }
+
+    return this.evaluateAbsentControllingItem(controllingItemName);
+  }
+
+  getControllingItemName() {
     let controllingItemName = this.controllingItemExpression.evaluate();
 
     if (controllingItemName === '') {
       controllingItemName = this.parent.ternary.controllingItemExpression.evaluate();
     }
 
-    const controllingItem = this.getMetadata(controllingItemName);
+    return controllingItemName;
+  }
 
-    if (controllingItem.length) {
-      if (this.trueExpression) {
-        return this.trueExpression.evaluate();
-      }
-
-      return controllingItem;
-    } else {
-      if (this.falseExpression) {
-        return this.falseExpression.evaluate();
-      }
-
-      if (this.trueExpression) {
-        return '';
-      }
-
-      throw new ExpressionError(`Unknown metadata '${controllingItemName}'`);
+  evaluatePresentControllingItem(controllingItem) {
+    if (this.trueExpression) {
+      return this.trueExpression.evaluate();
     }
+
+    return controllingItem;
+  }
+
+  evaluateAbsentControllingItem(controllingItemName) {
+    if (this.falseExpression) {
+      return this.falseExpression.evaluate();
+    }
+
+    if (this.trueExpression) {
+      return '';
+    }
+
+    throw new ExpressionError(`Unknown metadata '${controllingItemName}'`);
   }
 
   getMetadata(key) {
@@ -169,12 +182,16 @@ class ChordProExpression {
     try {
       return this.root.evaluate();
     } catch (error) {
-      if (error.name === 'ExpressionError') {
-        error.column = this.column;
-      }
-
-      throw error;
+      throw this.supplementError(error);
     }
+  }
+
+  supplementError(error) {
+    if (error.name === 'ExpressionError') {
+      return new ExpressionError(error.message, this.column);
+    }
+
+    return error;
   }
 
   parseExpression(expression) {
@@ -191,23 +208,51 @@ class ChordProExpression {
 
   read(chr, nextChr) {
     if (chr === BACK_SLASH) {
-      if (ESCAPED_CHARACTERS.indexOf(nextChr) !== -1) {
-        this.currentComponent.read(chr);
-      }
-
-      this.currentComponent.read(nextChr);
-      this.skipNext();
+      this.readBackSlash(chr, nextChr);
     } else if (chr === PIPE) {
-      this.currentComponent = this.addNextTernaryExpressionComponent(this.currentComponent.ternary);
-    } else if (chr === PERCENT && nextChr === CURLY_START) {
-      const ternaryExpression = this.currentComponent.parent.addComponent(TernaryExpression);
-      this.currentComponent = ternaryExpression.addControllingItemExpression();
-      this.skipNext();
+      this.readPipe();
+    } else if (chr === PERCENT) {
+      this.readPercent(chr, nextChr);
     } else if (chr === CURLY_END) {
-      this.currentComponent = this.currentComponent.ternary.parent.addComponent(LiteralExpression);
+      this.readExpressionEnd();
     } else {
+      this.readLiteral(chr);
+    }
+  }
+
+  readBackSlash(chr, nextChr) {
+    if (ESCAPED_CHARACTERS.indexOf(nextChr) === -1) {
       this.currentComponent.read(chr);
     }
+
+    this.currentComponent.read(nextChr);
+    this.skipNext();
+  }
+
+  readPipe() {
+    this.currentComponent = this.addNextTernaryExpressionComponent(this.currentComponent.ternary);
+  }
+
+  readPercent(chr, nextChr) {
+    if (nextChr === CURLY_START) {
+      this.readExpressionStart();
+    } else {
+      this.readLiteral(chr);
+    }
+  }
+
+  readExpressionStart() {
+    const ternaryExpression = this.currentComponent.parent.addComponent(TernaryExpression);
+    this.currentComponent = ternaryExpression.addControllingItemExpression();
+    this.skipNext();
+  }
+
+  readExpressionEnd() {
+    this.currentComponent = this.currentComponent.ternary.parent.addComponent(LiteralExpression);
+  }
+
+  readLiteral(chr) {
+    this.currentComponent.read(chr);
   }
 
   addNextTernaryExpressionComponent(ternaryExpression) {
@@ -216,14 +261,12 @@ class ChordProExpression {
     if (controllingItemExpression === null) {
       return ternaryExpression.addControllingItemExpression();
     } else if (trueExpression === null) {
-      const trueExpression = ternaryExpression.addTrueExpression();
-      return trueExpression.addComponent(LiteralExpression);
+      return ternaryExpression.addTrueExpression().addComponent(LiteralExpression);
     } else if (falseExpression === null) {
-      const falseExpression = ternaryExpression.addFalseExpression();
-      return falseExpression.addComponent(LiteralExpression);
-    } else {
-      throw new ExpressionError('Unexpected \'|\', expected end of ternary expression', this.column);
+      return ternaryExpression.addFalseExpression().addComponent(LiteralExpression);
     }
+
+    throw new ExpressionError('Unexpected \'|\', expected end of ternary expression', this.column);
   }
 }
 
