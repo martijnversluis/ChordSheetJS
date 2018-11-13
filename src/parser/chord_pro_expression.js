@@ -191,7 +191,7 @@ class ChordProExpression {
 
   read(chr, nextChr) {
     if (chr === BACK_SLASH) {
-      if (!ESCAPED_CHARACTERS.includes(nextChr)) {
+      if (ESCAPED_CHARACTERS.indexOf(nextChr) !== -1) {
         this.currentComponent.read(chr);
       }
 
