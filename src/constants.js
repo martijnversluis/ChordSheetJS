@@ -25,3 +25,11 @@ export const NONE = 'none';
  * @type {string}
  */
 export const INDETERMINATE = 'indeterminate';
+
+export const SQUARE_START = '[';
+export const SQUARE_END = ']';
+export const CURLY_START = '{';
+export const CURLY_END = '}';
+export const PIPE = '|';
+export const BACK_SLASH = '\\';
+export const PERCENT = '%';

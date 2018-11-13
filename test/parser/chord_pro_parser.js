@@ -77,6 +77,26 @@ describe('ChordProParser', () => {
     expect(song.composer).to.eql(['John', 'Jane']);
   });
 
+  it('allows to use expressions in lyrics', () => {
+    const chordSheetWithSingleMetadata = `
+{x_word_type: wisdom}
+[Am]Whisper words of [Bb]%{x_word_type}, let it [F]be [C]`.substring(1);
+
+    const song = new ChordProParser().parse(chordSheetWithSingleMetadata);
+
+    expect(song.lines[1].items[1]).to.be.chordLyricsPair('Bb', 'wisdom, let it ');
+  });
+
+  it('adds a parser warning when expression evaluation fails', () => {
+    const invalidChordSheet = 'Some lyrics %{x_some_value}';
+
+    const parser = new ChordProParser();
+    parser.parse(invalidChordSheet);
+
+    expect(parser.warnings).to.have.lengthOf(1);
+    expect(parser.warnings[0].toString()).to.match(/unknown.+metadata.+x_some_value.+line 1.+column 12/i);
+  });
+
   it('ignores comments', () => {
     const chordSheetWithComment = '# this is a comment\nLet it [Am]be, let it [C/G]be';
     const song = new ChordProParser().parse(chordSheetWithComment);

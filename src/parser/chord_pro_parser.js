@@ -1,19 +1,30 @@
 import Song from '../chord_sheet/song';
 import { END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE } from '../chord_sheet/tag';
-import { CHORUS, NONE, VERSE } from '../constants';
+import {
+  BACK_SLASH,
+  CHORUS,
+  CURLY_END,
+  CURLY_START,
+  NONE,
+  PERCENT,
+  SQUARE_END,
+  SQUARE_START,
+  VERSE
+} from '../constants';
 import ParserWarning from './parser_warning';
+import ChordProExpression, { ExpressionError } from './chord_pro_expression';
 
 const NEW_LINE = '\n';
-const SQUARE_START = '[';
-const SQUARE_END = ']';
-const CURLY_START = '{';
-const CURLY_END = '}';
 const SHARP_SIGN = '#';
 
 /**
  * Parses a ChordPro chord sheet
  */
 class ChordProParser {
+  constructor(settings = { 'metadata.separator': ', ' }) {
+    this.settings = settings;
+  }
+
   /**
    * Parses a ChordPro chord sheet into a song
    * @param {string} chordProChordSheet the ChordPro chord sheet
@@ -30,6 +41,9 @@ class ChordProParser {
     this.song = new Song();
     this.lineNumber = 1;
     this.sectionType = NONE;
+    this.expression = '';
+    this.expressionNestingLevel = 0;
+    this.escapeMode = false;
     this.resetTag();
     this.processor = this.readLyrics;
     this.parseDocument(chordProChordSheet);
@@ -38,8 +52,10 @@ class ChordProParser {
   }
 
   parseDocument(document) {
-    for (let i = 0, count = document.length; i < count; i += 1) {
-      this.processor(document[i]);
+    this.column = 0;
+
+    for (let count = document.length; this.column < count; this.column += 1) {
+      this.processor(document[this.column]);
     }
   }
 
@@ -60,9 +76,75 @@ class ChordProParser {
       case CURLY_START:
         this.processor = this.readTag;
         break;
+      case PERCENT:
+        this.processor = this.waitForExpressionStart;
+        break;
       default:
         this.song.lyrics(chr);
     }
+  }
+
+  waitForExpressionStart(chr) {
+    switch (chr) {
+      case CURLY_START:
+        this.processor = this.readExpression;
+        this.expressionNestingLevel += 1;
+        break;
+      default:
+        this.readLyrics(PERCENT);
+        this.readLyrics(chr);
+        this.processor = this.readLyrics;
+    }
+  }
+
+  readExpression(chr) {
+    switch (chr) {
+      case CURLY_START:
+        this.expression += chr;
+
+        if (this.escapeMode) {
+          this.escapeMode = false;
+        } else {
+          this.expressionNestingLevel += 1;
+        }
+        break;
+      case CURLY_END:
+        if (this.escapeMode) {
+          this.escapeMode = false;
+        } else {
+          this.expressionNestingLevel -= 1;
+        }
+
+        if (this.expressionNestingLevel === 0) {
+          this.finishExpression();
+          this.processor = this.readLyrics;
+        } else {
+          this.expression += chr;
+        }
+
+        break;
+      case BACK_SLASH:
+        this.escapeMode = !this.escapeMode;
+        this.expression += chr;
+        break;
+      default:
+        this.expression += chr;
+    }
+  }
+
+  finishExpression() {
+    const expression = new ChordProExpression(this.expression, this.song.metadata, this.settings);
+
+    try {
+      this.song.lyrics(expression.evaluate());
+    } catch (error) {
+      if (error.name === 'ExpressionError') {
+        this.addWarning(error.message, this.column - this.expression.length - 2);
+      } else {
+        throw error;
+      }
+    }
+    this.expression = '';
   }
 
   readChords(chr) {
@@ -150,8 +232,8 @@ class ChordProParser {
     }
   }
 
-  addWarning(message) {
-    const warning = new ParserWarning(message, this.lineNumber);
+  addWarning(message, column = this.column) {
+    const warning = new ParserWarning(message, this.lineNumber, column);
     this.warnings.push(warning);
   }
 }

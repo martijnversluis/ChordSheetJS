@@ -53,3 +53,10 @@ Assertion.addMethod('equalText', function equalText(otherText) {
 
   new Assertion(actual).not.to.be.differentFrom(expected, { showSpace: true, context: 10 });
 });
+
+Assertion.addMethod('evaluateTo', function evaluateTo(expectedContent) {
+  const expression = this._obj;
+  const actualContent = expression.evaluate();
+
+  new Assertion(actualContent).to.eq(expectedContent);
+});

@@ -14,18 +14,25 @@
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-diff": "^1.0.1",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1",
     "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha --recursive --compilers js:babel-register",
     "build": "babel src --out-dir lib",
+    "lint": "eslint .",
     "readme": "jsdoc2md -f src/**/*.js --template README.hbs > README.md",
     "prepublishOnly": "npm install && npm test && npm run build"
   },
