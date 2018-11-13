@@ -9,10 +9,10 @@ import {
   PERCENT,
   SQUARE_END,
   SQUARE_START,
-  VERSE
+  VERSE,
 } from '../constants';
 import ParserWarning from './parser_warning';
-import ChordProExpression, { ExpressionError } from './chord_pro_expression';
+import ChordProExpression from './chord_pro_expression';
 
 const NEW_LINE = '\n';
 const SHARP_SIGN = '#';

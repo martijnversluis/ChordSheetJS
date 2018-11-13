@@ -19,14 +19,14 @@ describe('Metadata', () => {
     it('returns the metadata with scalar array values', () => {
       const metadata = new Metadata({
         list: ['one', 'two'],
-        key: 'value'
+        key: 'value',
       });
 
       expect(metadata.getExtended()).to.eql({
         list: ['one', 'two'],
         key: 'value',
         'list.1': 'one',
-        'list.2': 'two'
+        'list.2': 'two',
       });
     });
   });
@@ -38,5 +38,5 @@ describe('Metadata', () => {
 
       expect(clone.getAll()).to.eql({ foo: 'bar' });
     });
-  })
+  });
 });

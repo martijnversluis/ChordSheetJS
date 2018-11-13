@@ -67,7 +67,7 @@ class Metadata {
         return;
       }
 
-      values.forEach((value, index) => arrayValues[`${key}.${index + 1}`] = value);
+      values.forEach((value, index) => { arrayValues[`${key}.${index + 1}`] = value; });
     });
 
     return arrayValues;

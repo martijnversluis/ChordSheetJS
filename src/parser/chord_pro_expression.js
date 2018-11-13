@@ -16,8 +16,8 @@ class CompositeExpression {
     this.components = [];
   }
 
-  addComponent(componentClass) {
-    const component = new componentClass();
+  addComponent(ComponentClass) {
+    const component = new ComponentClass();
     component.parent = this;
     this.components.push(component);
     return component;
@@ -222,7 +222,7 @@ class ChordProExpression {
       const falseExpression = ternaryExpression.addFalseExpression();
       return falseExpression.addComponent(LiteralExpression);
     } else {
-      throw new ExpressionError(`Unexpected '|', expected end of ternary expression`, this.column);
+      throw new ExpressionError('Unexpected \'|\', expected end of ternary expression', this.column);
     }
   }
 }
