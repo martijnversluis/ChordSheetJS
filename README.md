@@ -17,16 +17,16 @@ A JavaScript library for parsing and formatting chord sheets
 npm install chordsheetjs
 ```
 
-Load with `require()`:
-
-```javascript
-var ChordSheetJS = require('chordsheetjs');
-```
-
-or `import` (es2015):
+Load with `import`:
 
 ```javascript
 import ChordSheetJS from 'chordsheetjs';
+```
+
+or `require()`:
+
+```javascript
+var ChordSheetJS = require('chordsheetjs').default;
 ```
 
 ## How to ...?
@@ -283,18 +283,6 @@ PDF conversion.</p>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-year.html">https://www.chordpro.org/chordpro/Directives-year.html</a></p>
 </dd>
-<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as verse</p>
-</dd>
-<dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as chorus</p>
-</dd>
-<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as not containing a line marked with a type</p>
-</dd>
-<dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
-</dd>
 </dl>
 
 ## Functions
@@ -382,7 +370,7 @@ The items ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag)) of which the line
 
 ### line.type : <code>string</code>
 The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
-Values can be [VERSE](#VERSE), [CHORUS](#CHORUS) or [NONE](#NONE)
+Values can be [VERSE](VERSE), [CHORUS](CHORUS) or [NONE](NONE)
 
 **Kind**: instance property of [<code>Line</code>](#Line)  
 <a name="Line+isEmpty"></a>
@@ -417,13 +405,13 @@ Returns a deep copy of the line and all of its items
 <a name="Line+isVerse"></a>
 
 ### line.isVerse() ⇒ <code>boolean</code>
-Indicates whether the line type is [VERSE](#VERSE)
+Indicates whether the line type is [VERSE](VERSE)
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+isChorus"></a>
 
 ### line.isChorus() ⇒ <code>boolean</code>
-Indicates whether the line type is [CHORUS](#CHORUS)
+Indicates whether the line type is [CHORUS](CHORUS)
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+hasContent"></a>
@@ -455,7 +443,7 @@ The [Line](#Line) items of which the paragraph consists
 
 ### paragraph.type ⇒ <code>string</code>
 Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
-If not, it returns [INDETERMINATE](#INDETERMINATE)
+If not, it returns [INDETERMINATE](INDETERMINATE)
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Song"></a>
@@ -805,30 +793,6 @@ Title meta directive. See https://www.chordpro.org/chordpro/Directives-title.htm
 
 ## YEAR : <code>string</code>
 Year meta directive. See https://www.chordpro.org/chordpro/Directives-year.html
-
-**Kind**: global constant  
-<a name="VERSE"></a>
-
-## VERSE : <code>string</code>
-Used to mark a paragraph as verse
-
-**Kind**: global constant  
-<a name="CHORUS"></a>
-
-## CHORUS : <code>string</code>
-Used to mark a paragraph as chorus
-
-**Kind**: global constant  
-<a name="NONE"></a>
-
-## NONE : <code>string</code>
-Used to mark a paragraph as not containing a line marked with a type
-
-**Kind**: global constant  
-<a name="INDETERMINATE"></a>
-
-## INDETERMINATE : <code>string</code>
-Used to mark a paragraph as containing lines with both verse and chorus type
 
 **Kind**: global constant  
 <a name="parse"></a>
