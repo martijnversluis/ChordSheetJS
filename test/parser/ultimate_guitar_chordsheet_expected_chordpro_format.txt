@@ -1,0 +1,40 @@
+{start_of_verse}
+[C]Lorem [G]ipsum dolor sit [Am]amet,
+[C]consectetur [G]adipiscing [F]elit.
+{end_of_verse}
+
+
+{start_of_chorus}
+ Tortor [Am]posuere [C]ac ut [F]consequat semper viverra [C]nam.
+[C]Non nisi est [G]sit amet facilisis [F]magna etiam tempor orci.
+{end_of_chorus}
+
+
+{start_of_verse}
+[C]Habitasse [G]platea dictumst [Am]vestibulum rhoncus.
+[C]Tristique et [G]egestas quis [F]ipsum.
+{end_of_verse}
+
+
+{start_of_chorus}
+ Tortor [Am]posuere [C]ac ut [F]consequat semper viverra [C]nam.
+[C]Non nisi est [G]sit amet facilisis [F]magna etiam tempor orci.
+{end_of_chorus}
+
+
+{comment: Instrumental}
+[F][C][Dm]
+
+
+{comment: Solo}
+[C][G][Am]
+
+
+{start_of_chorus}
+ Tortor [Am]posuere [C]ac ut [F]consequat semper viverra [C]nam.
+[C]Non nisi est [G]sit amet facilisis [F]magna etiam tempor orci.
+{end_of_chorus}
+
+
+{comment: Outro}
+[F][C][Dm]
