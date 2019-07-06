@@ -1,26 +1,35 @@
 import ChordSheetParser from './chord_sheet_parser';
 import { CHORUS, NONE, VERSE } from '../constants';
-import { END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE } from '../chord_sheet/tag';
+import {
+  END_OF_CHORUS,
+  END_OF_VERSE,
+  START_OF_CHORUS,
+  START_OF_VERSE,
+} from '../chord_sheet/tag';
 
-const logger = {
-  debug: console.debug,
-  error: console.error,
-  info: console.info,
-};
+const noop = () => {};
+const logger =
+  process && process.env === 'development'
+    ? console
+    : {
+      debug: noop,
+      error: noop,
+      info: noop,
+    };
 
 const VERSE_LINE_REGEX = /^\[Verse.*\]/;
 const CHORUS_LINE_REGEX = /^\[Chorus\]/;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)\]/;
 
-const sectionTypeToStartTag = new Map(Object.entries({
+const sectionTypeToStartTag = {
   [CHORUS]: START_OF_CHORUS,
   [VERSE]: START_OF_VERSE,
-}));
+};
 
-const sectionTypeToEndTag = new Map(Object.entries({
+const sectionTypeToEndTag = {
   [CHORUS]: END_OF_CHORUS,
   [VERSE]: END_OF_VERSE,
-}));
+};
 
 /**
  * Parses an Ultimate Guitar chord sheet with metadata
@@ -38,8 +47,8 @@ export default class UltimateGuitarParser extends ChordSheetParser {
 
     logger.debug(`Starting ${type} section`);
 
-    if (sectionTypeToStartTag.has(type)) {
-      const startTag = sectionTypeToStartTag.get(type);
+    if (type in sectionTypeToStartTag) {
+      const startTag = sectionTypeToStartTag[type];
       logger.debug(`Adding section start tag ${startTag}`);
       this.song.addTag(startTag);
     } else {
@@ -53,8 +62,8 @@ export default class UltimateGuitarParser extends ChordSheetParser {
   endSection(type) {
     logger.debug(`Ending ${type} section`);
 
-    if (sectionTypeToEndTag.has(type)) {
-      const endTag = sectionTypeToEndTag.get(type);
+    if (type in sectionTypeToEndTag) {
+      const endTag = sectionTypeToEndTag[type];
       logger.debug(`Adding section end tag ${endTag}`);
       this.song.addLine();
       this.song.addTag(endTag);

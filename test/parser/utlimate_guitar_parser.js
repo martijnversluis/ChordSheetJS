@@ -55,7 +55,7 @@ consectetur adipiscing elit.`.substring(1);
     const chordSheetInstrumental = `
 [Instrumental]
 F  C Dm
-`.substring(1); // TODO support chords-only line with no following lyrics or empty line
+`.substring(1); // to do: support chords-only line with no following lyrics or empty line
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetInstrumental);
