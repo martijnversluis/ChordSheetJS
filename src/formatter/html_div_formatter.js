@@ -20,8 +20,7 @@ const template = hbs`
             <div class="{{lineClasses line}}">
               {{~#each items as |item|~}}
                 {{~#if (isChordLyricsPair item)~}}
-                  <div class="column">
-                    <div class="chord">{{chords}}</div>
+                  <div class="column"><div class="chord">{{chords}}</div>
                     {{~#if (hasTextContents line)~}}
                       <div class="lyrics">{{lyrics}}</div>
                     {{~/if~}}
