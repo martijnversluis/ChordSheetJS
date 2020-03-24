@@ -24,19 +24,15 @@ describe('HtmlDivFormatter', () => {
           '<div class="row">' +
             '<div class="column">' +
               '<div class="chord">Am</div>' +
-              '<div class="lyrics"></div>' +
             '</div>' +
             '<div class="column">' +
               '<div class="chord">C</div>' +
-              '<div class="lyrics"></div>' +
             '</div>' +
             '<div class="column">' +
               '<div class="chord">F</div>' +
-              '<div class="lyrics"></div>' +
             '</div>' +
             '<div class="column">' +
               '<div class="chord">G</div>' +
-              '<div class="lyrics"></div>' +
             '</div>' +
           '</div>' +
         '</div>' +
