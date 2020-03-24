@@ -111,25 +111,12 @@ class ChordProParser {
   }
 
   applyTag(tag) {
-    switch (tag.name) {
-      case START_OF_CHORUS:
-        this.startSection(CHORUS, tag);
-        break;
-
-      case END_OF_CHORUS:
-        this.endSection(CHORUS, tag);
-        break;
-
-      case START_OF_VERSE:
-        this.startSection(VERSE, tag);
-        break;
-
-      case END_OF_VERSE:
-        this.endSection(VERSE, tag);
-        break;
-
-      default:
-        break;
+    if(tag.name.startsWith('start_of_')){
+      const sectionName = tag.name.replace('start_of_', '')
+      this.startSection(sectionName,tag);
+    } else if(tag.name.startsWith('end_of_')){
+      const sectionName = tag.name.replace('end_of_', '')
+      this.endSection(sectionName, tag);
     }
   }
 
