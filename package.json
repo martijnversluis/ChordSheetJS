@@ -21,10 +21,10 @@
     "chai": "^4.1.2",
     "chai-diff": "^1.0.1",
     "jsdoc-to-markdown": "^4.0.1",
-    "mocha": "^5.2.0"
+    "mocha": "^8.0.1"
   },
   "scripts": {
-    "test": "mocha --recursive --compilers js:babel-register",
+    "test": "mocha --recursive --require babel-core/register",
     "build": "babel src --out-dir lib",
     "readme": "jsdoc2md -f src/**/*.js --template README.hbs > README.md",
     "prepublishOnly": "npm install && npm test && npm run build"
