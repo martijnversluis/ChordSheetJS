@@ -30,6 +30,6 @@
     "prepublishOnly": "npm install && npm test && npm run build"
   },
   "dependencies": {
-    "handlebars": "^4.0.5"
+    "handlebars": "^4.7.6"
   }
 }
