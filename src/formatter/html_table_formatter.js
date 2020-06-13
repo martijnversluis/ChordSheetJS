@@ -65,7 +65,18 @@ class HtmlTableFormatter {
    * @returns {string} The HTML string
    */
   format(song) {
-    return template({ song });
+    return template(
+      { song },
+      {
+        allowedProtoProperties: {
+          bodyLines: true,
+          paragraphs: true,
+          subtitle: true,
+          title: true,
+          value: true,
+        }
+      }
+    );
   }
 }
 
