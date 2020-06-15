@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 import '../matchers';
 import ChordProParser from '../../src/parser/chord_pro_parser';
-import { CHORUS, NONE, VERSE } from '../../src/constants';
+import { CHORUS, INTRO, NONE, VERSE } from '../../src/constants';
 
 const chordSheet = `
 {title: Let it be}
@@ -122,6 +122,9 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 
   it('adds the type to lines', () => {
     const markedChordSheet = `
+{start_of_intro}
+[Am] [C] [F] [G]
+{end_of_intro}
 {start_of_verse}
 Let it [Am]be
 {end_of_verse}
@@ -134,7 +137,7 @@ Let it [F]be [C]
     const song = parser.parse(markedChordSheet);
     const lineTypes = song.lines.map(line => line.type);
 
-    expect(lineTypes).to.eql([NONE, VERSE, NONE, NONE, NONE, CHORUS, NONE]);
+    expect(lineTypes).to.eql([NONE, INTRO, NONE, NONE, VERSE, NONE, NONE, NONE, CHORUS, NONE]);
     expect(parser.warnings).to.be.empty;
   });
 

@@ -1,11 +1,15 @@
 import { createSong, createLine, createChordLyricsPair, createTag } from '../utilities';
-import { CHORUS, VERSE } from '../../src/constants';
+import { CHORUS, INTRO, VERSE } from '../../src/constants';
 
 // Mimic the following chord sheet:
 // {title: Let it be}
 // {subtitle: ChordSheetJS example version}
 // {x_some_setting: value}
 // {comment: Bridge}
+//
+// {start_of_intro}
+// [Am][C][F][G]
+// {end_of_intro}
 //
 // {start_of_verse}
 // Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
@@ -31,6 +35,23 @@ export default createSong([
 
   createLine([
     createTag('comment', 'Bridge'),
+  ]),
+
+  createLine([]),
+
+  createLine([
+    createTag('start_of_intro'),
+  ]),
+
+  createLine([
+    createChordLyricsPair('Am', ''),
+    createChordLyricsPair('C', ''),
+    createChordLyricsPair('F', ''),
+    createChordLyricsPair('G', ''),
+  ], INTRO),
+
+  createLine([
+    createTag('end_of_intro'),
   ]),
 
   createLine([]),

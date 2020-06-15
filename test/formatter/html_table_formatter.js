@@ -22,6 +22,16 @@ describe('HtmlTableFormatter', () => {
             '</tr>' +
           '</table>' +
         '</div>' +
+        '<div class="paragraph intro">' +
+          '<table class="row">' +
+            '<tr>' +
+              '<td class="chord">Am</td>' +
+              '<td class="chord">C</td>' +
+              '<td class="chord">F</td>' +
+              '<td class="chord">G</td>' +
+            '</tr>' +
+          '</table>' +
+        '</div>' +
         '<div class="paragraph verse">' +
           '<table class="row">' +
             '<tr>' +

@@ -15,6 +15,8 @@ ChordSheetJS example version
 
 Bridge
 
+Am C F G
+
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
 C                F  G           F  C/E Dm C

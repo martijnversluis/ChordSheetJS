@@ -13,6 +13,10 @@ describe('ChordProFormatter', () => {
 {x_some_setting}
 {comment: Bridge}
 
+{start_of_intro}
+[Am][C][F][G]
+{end_of_intro}
+
 {start_of_verse}
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C] 

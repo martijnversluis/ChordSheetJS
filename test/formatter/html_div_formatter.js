@@ -20,6 +20,22 @@ describe('HtmlDivFormatter', () => {
             '<div class="comment">Bridge</div>' +
           '</div>' +
         '</div>' +
+        '<div class="paragraph intro">' +
+          '<div class="row">' +
+            '<div class="column">' +
+              '<div class="chord">Am</div>' +
+            '</div>' +
+            '<div class="column">' +
+              '<div class="chord">C</div>' +
+            '</div>' +
+            '<div class="column">' +
+              '<div class="chord">F</div>' +
+            '</div>' +
+            '<div class="column">' +
+              '<div class="chord">G</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
         '<div class="paragraph verse">' +
           '<div class="row">' +
             '<div class="column">' +

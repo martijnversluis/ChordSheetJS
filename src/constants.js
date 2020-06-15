@@ -25,3 +25,10 @@ export const NONE = 'none';
  * @type {string}
  */
 export const INDETERMINATE = 'indeterminate';
+
+/**
+ * Used to mark a paragraph as intro
+ * @constant
+ * @type {string}
+ */
+export const INTRO = 'intro';
