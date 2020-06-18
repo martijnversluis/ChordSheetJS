@@ -206,7 +206,6 @@ class Tag {
     this._value = value;
   }
 
-
   /**
    * The tag value
    * @member

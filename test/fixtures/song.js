@@ -1,4 +1,6 @@
-import { createSong, createLine, createChordLyricsPair, createTag } from '../utilities';
+import {
+  createSong, createLine, createChordLyricsPair, createTag,
+} from '../utilities';
 import { CHORUS, VERSE } from '../../src/constants';
 
 // Mimic the following chord sheet:

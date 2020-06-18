@@ -50,7 +50,7 @@ class Line {
    * @returns {boolean}
    */
   hasRenderableItems() {
-    return this.items.some(item => item.isRenderable());
+    return this.items.some((item) => item.isRenderable());
   }
 
   /**
@@ -59,7 +59,7 @@ class Line {
    */
   clone() {
     const clonedLine = new Line();
-    clonedLine.items = this.items.map(item => item.clone());
+    clonedLine.items = this.items.map((item) => item.clone());
     clonedLine.type = this.type;
     return clonedLine;
   }

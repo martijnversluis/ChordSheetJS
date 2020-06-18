@@ -7,21 +7,21 @@ import Paragraph from '../src/chord_sheet/paragraph';
 
 export function createSong(lines, metaData) {
   const song = new SongStub(metaData);
-  lines.forEach(line => song.addLine(line));
+  lines.forEach((line) => song.addLine(line));
   song.finish();
   return song;
 }
 
 export function createLine(items, type = NONE) {
   const line = new Line();
-  items.forEach(item => line.addItem(item));
+  items.forEach((item) => line.addItem(item));
   line.type = type;
   return line;
 }
 
 export function createParagraph(lines) {
   const paragraph = new Paragraph();
-  lines.forEach(line => paragraph.addLine(line));
+  lines.forEach((line) => paragraph.addLine(line));
   return paragraph;
 }
 
