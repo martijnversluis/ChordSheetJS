@@ -7,10 +7,10 @@ export const pushNew = (collection, Klass) => {
   return newObject;
 };
 
-export const hasChordContents = line => line.items.some(item => item instanceof ChordLyricsPair && item.chords);
+export const hasChordContents = (line) => line.items.some((item) => item instanceof ChordLyricsPair && item.chords);
 
-export const hasTextContents = line => (
-  line.items.some(item => (
+export const hasTextContents = (line) => (
+  line.items.some((item) => (
     item instanceof ChordLyricsPair && item.lyrics) || (item instanceof Tag && item.isRenderable()
   ))
 );

@@ -30,12 +30,12 @@ class TextFormatter {
   }
 
   formatParagraphs(song) {
-    return song.paragraphs.map(paragraph => this.formatParagraph(paragraph)).join('\n\n');
+    return song.paragraphs.map((paragraph) => this.formatParagraph(paragraph)).join('\n\n');
   }
 
   formatParagraph(paragraph) {
-    const renderableLines = paragraph.lines.filter(line => line.hasRenderableItems());
-    const formattedLines = renderableLines.map(line => this.formatLine(line));
+    const renderableLines = paragraph.lines.filter((line) => line.hasRenderableItems());
+    const formattedLines = renderableLines.map((line) => this.formatLine(line));
     return formattedLines.join('\n');
   }
 
@@ -46,8 +46,8 @@ class TextFormatter {
     ];
 
     return parts
-      .filter(i => i !== null)
-      .map(part => part.trimRight())
+      .filter((i) => i !== null)
+      .map((part) => part.trimRight())
       .join('\n');
   }
 
@@ -76,7 +76,7 @@ class TextFormatter {
   }
 
   chordLyricsPairLength(chordLyricsPair) {
-    const chords = chordLyricsPair.chords;
+    const { chords } = chordLyricsPair;
     const chordsLength = chords.length;
     const lyricsLength = chordLyricsPair.lyrics.length;
 
@@ -110,7 +110,7 @@ class TextFormatter {
   formatLineWithFormatter(line, formatter) {
     return line
       .items
-      .map(item => formatter.call(this, item))
+      .map((item) => formatter.call(this, item))
       .join('');
   }
 

@@ -13,17 +13,17 @@ class ChordProFormatter {
    * @returns {string} The ChordPro string
    */
   format(song) {
-    return song.lines.map(line => this.formatLine(line)).join(NEW_LINE);
+    return song.lines.map((line) => this.formatLine(line)).join(NEW_LINE);
   }
 
   formatLine(line) {
-    return line.items.map(item => this.formatItem(item)).join('');
+    return line.items.map((item) => this.formatItem(item)).join('');
   }
 
   formatItem(item) {
     if (item instanceof Tag) {
       return this.formatTag(item);
-    } else if (item instanceof ChordLyricsPair) {
+    } if (item instanceof ChordLyricsPair) {
       return this.formatChordLyricsPair(item);
     }
 

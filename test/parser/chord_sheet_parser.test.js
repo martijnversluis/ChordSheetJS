@@ -11,7 +11,7 @@ describe('ChordSheetParser', () => {
   it('parses a regular chord sheet correctly', () => {
     const parser = new ChordSheetParser();
     const song = parser.parse(chordSheet);
-    const lines = song.lines;
+    const { lines } = song;
 
     expect(lines.length).toEqual(2);
 
@@ -44,7 +44,7 @@ Whisper words of wisdom, let it be`.substring(1);
 
     const parser = new ChordSheetParser();
     const song = parser.parse(chordSheetWithParagraphs);
-    const paragraphs = song.paragraphs;
+    const { paragraphs } = song;
 
     const paragraph0Lines = paragraphs[0].lines;
 
@@ -75,7 +75,7 @@ Whisper words of wisdom, let it be`.substring(1);
     it('parses a regular chord sheet correctly', () => {
       const parser = new ChordSheetParser({ preserveWhitespace: true });
       const song = parser.parse(chordSheet);
-      const lines = song.lines;
+      const { lines } = song;
 
       expect(lines.length).toEqual(2);
 
@@ -101,7 +101,7 @@ Whisper words of wisdom, let it be`.substring(1);
     it('parses a regular chord sheet correctly', () => {
       const parser = new ChordSheetParser({ preserveWhitespace: false });
       const song = parser.parse(chordSheet);
-      const lines = song.lines;
+      const { lines } = song;
 
       expect(lines.length).toEqual(2);
 

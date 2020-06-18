@@ -142,7 +142,7 @@ class Song {
    */
   clone() {
     const clonedSong = new Song();
-    clonedSong.lines = this.lines.map(line => line.clone());
+    clonedSong.lines = this.lines.map((line) => line.clone());
     clonedSong.metadata = this.metadata.clone();
     return clonedSong;
   }
@@ -166,7 +166,7 @@ class Song {
   }
 }
 
-const defineProperty = Object.defineProperty;
+const { defineProperty } = Object;
 const songPrototype = Song.prototype;
 
 META_TAGS.forEach((tagName) => {
