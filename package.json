@@ -13,21 +13,24 @@
   },
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-runtime": "^7.10.1",
+    "@babel/preset-env": "^7.10.2",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "chai": "^4.1.2",
-    "chai-diff": "^1.0.1",
-    "jsdoc-to-markdown": "^6.0.1",
-    "mocha": "^8.0.1"
+    "jest": "^26.0.1",
+    "jsdoc-to-markdown": "^6.0.1"
   },
   "scripts": {
-    "test": "mocha --recursive --require babel-core/register",
-    "build": "babel src --out-dir lib",
+    "test": "jest",
+    "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
+    "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
+    "build:sources": "babel src --out-dir lib",
+    "build": "yarn build:templates && yarn build:sources",
     "readme": "jsdoc2md -f src/**/*.js --template README.hbs > README.md",
-    "prepublishOnly": "npm install && npm test && npm run build"
+    "prepublishOnly": "yarn install && yarn test && yarn build",
+    "pretest": "yarn build:templates"
   },
   "dependencies": {
     "handlebars": "^4.7.6"

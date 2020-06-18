@@ -1,55 +1,52 @@
-import { Assertion } from 'chai';
-
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Tag from '../src/chord_sheet/tag';
 
-Assertion.addMethod('chordLyricsPair', function chordLyricsPair(chords, lyrics) {
-  const obj = this._obj;
+function toBeClassInstanceWithProperties(received, klass, properties) {
+  const propertyNames = Object.keys(properties);
+  const pass = (received instanceof klass) && propertyNames.every(name => received[name] === properties[name]);
+  const stringifiedProperties = propertyNames.map(name => `${name}=${properties[name]}`);
 
-  new Assertion(this._obj).to.be.instanceof(ChordLyricsPair);
+  if (pass) {
+    return {
+      message: () =>
+        `expected ${received} not to be a ${klass.name}(${stringifiedProperties})`,
+      pass: true,
+    };
+  } else {
+    return {
+      message: () => {
+        const errorBase = `expected ${received} to be a ${klass.name}(${stringifiedProperties})`;
+        const errors = [];
+        const type = typeof(received);
 
-  this.assert(
-    obj.chords === chords,
-    'expected #{this} chords to be #{exp} but got #{act}',
-    'expected #{this} chords not to be #{exp} but got #{act}',
-    chords,
-    obj.chords,
-  );
+        if (type !== 'object') {
+          errors.push(`it was a ${type} with value ${received}`);
+        } else if (!(received instanceof klass)) {
+          errors.push(`it was a instance of ${received.constructor.name}`);
+        } else {
+          propertyNames.forEach(name => {
+            if (received[name] !== properties[name]) {
+              errors.push(`its ${name} were: "${received[name]}"`);
+            }
+          });
+        }
 
-  this.assert(
-    obj.lyrics === lyrics,
-    'expected #{this} lyrics to be #{exp} but got #{act}',
-    'expected #{this} lyrics not to be #{exp} but got #{act}',
-    lyrics,
-    obj.lyrics,
-  );
-});
+        return `${errorBase}, but ${errors.join(' and ')}`;
+      },
+      pass: false,
+    };
+  }
+}
 
-Assertion.addMethod('tag', function tag(name, value) {
-  const obj = this._obj;
+function toBeChordLyricsPair (received, chords, lyrics) {
+  return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics });
+}
 
-  new Assertion(this._obj).to.be.instanceof(Tag);
+function toBeTag (received, name, value) {
+  return toBeClassInstanceWithProperties(received, Tag, { name, value });
+}
 
-  this.assert(
-    obj.name === name,
-    'expected #{this} name to be #{exp} but got #{act}',
-    'expected #{this} name not to be #{exp} but got #{act}',
-    name,
-    obj.name,
-  );
-
-  this.assert(
-    obj.value === value,
-    'expected #{this} value to be #{exp} but got #{act}',
-    'expected #{this} value not to be #{exp} but got #{act}',
-    value,
-    obj.value,
-  );
-});
-
-Assertion.addMethod('equalText', function equalText(otherText) {
-  const actual = this._obj.replace(/>/g, '>\n');
-  const expected = otherText.replace(/>/g, '>\n');
-
-  new Assertion(actual).not.to.be.differentFrom(expected, { showSpace: true, context: 10 });
+expect.extend({
+  toBeChordLyricsPair,
+  toBeTag,
 });

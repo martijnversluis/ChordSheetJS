@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import ChordProFormatter from '../../src/formatter/chord_pro_formatter';
 import song from '../fixtures/song';
 
@@ -22,6 +20,6 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
 {end_of_chorus}`.substring(1);
 
-    expect(formatter.format(song)).to.equal(expectedChordSheet);
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 });

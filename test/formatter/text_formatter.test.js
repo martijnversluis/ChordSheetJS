@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import '../matchers';
 import TextFormatter from '../../src/formatter/text_formatter';
 import song from '../fixtures/song';
@@ -24,7 +22,7 @@ Am               Bb             F  C
 Whisper words of wisdom, let it be`.substring(1);
 
 
-    expect(formatter.format(song)).to.equal(expectedChordSheet);
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
   it('omits the lyrics line when it is empty', () => {
@@ -35,6 +33,6 @@ Intro:  C
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be`.substring(1);
 
-    expect(formatter.format(songWithIntro)).to.equal(expectedChordSheet);
+    expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
   });
 });
