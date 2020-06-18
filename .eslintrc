@@ -12,10 +12,6 @@
   "extends": "airbnb",
 
   "rules": {
-    "max-len": [2, 120, 2],
-    "no-underscore-dangle": "off",
-    "class-methods-use-this": "off",
-    "import/prefer-default-export": "off",
-    "no-unused-expressions": "off"
+    "max-len": [2, 120, 2]
   }
 }
