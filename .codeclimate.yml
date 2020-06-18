@@ -49,7 +49,9 @@ plugins:
         - "test/"
   eslint:
     enabled: true
+    channel: "eslint-7"
     config:
+      config: .eslintrc
       extensions:
       - .js
   fixme:
