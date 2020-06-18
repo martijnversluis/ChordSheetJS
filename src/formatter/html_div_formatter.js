@@ -4,7 +4,7 @@ import '../handlebars_helpers';
 import HtmlFormatter from './html_formatter';
 import './templates/html_div_formatter.js';
 
-const template = Handlebars.templates['html_div_formatter'];
+const { html_div_formatter: template } = Handlebars.templates;
 
 /**
  * Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.

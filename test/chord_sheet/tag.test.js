@@ -10,13 +10,10 @@ describe('Tag', () => {
   Object.keys(expectedAliases).forEach((alias) => {
     const fullTagName = expectedAliases[alias];
 
-    it(
-      `translates the tag alias ${alias} to the full tag name ${fullTagName}`,
-      () => {
-        expect(new Tag(fullTagName, 'value').name).toEqual(fullTagName);
-        expect(new Tag(alias, 'value').name).toEqual(fullTagName);
-      }
-    );
+    it(`translates the tag alias ${alias} to the full tag name ${fullTagName}`, () => {
+      expect(new Tag(fullTagName, 'value').name).toEqual(fullTagName);
+      expect(new Tag(alias, 'value').name).toEqual(fullTagName);
+    });
   });
 
   describe('#originalName', () => {
