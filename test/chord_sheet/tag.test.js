@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import Tag from '../../src/chord_sheet/tag';
 
 describe('Tag', () => {
@@ -13,31 +11,31 @@ describe('Tag', () => {
     const fullTagName = expectedAliases[alias];
 
     it(`translates the tag alias ${alias} to the full tag name ${fullTagName}`, () => {
-      expect(new Tag(fullTagName, 'value').name).to.equal(fullTagName);
-      expect(new Tag(alias, 'value').name).to.equal(fullTagName);
+      expect(new Tag(fullTagName, 'value').name).toEqual(fullTagName);
+      expect(new Tag(alias, 'value').name).toEqual(fullTagName);
     });
   });
 
   describe('#originalName', () => {
     Object.keys(expectedAliases).forEach((alias) => {
       it(`returns the non-translated name for ${alias}`, () => {
-        expect(new Tag(alias, 'value').originalName).to.equal(alias);
+        expect(new Tag(alias, 'value').originalName).toEqual(alias);
       });
     });
   });
 
   describe('#hasValue', () => {
     it('checks whether the tag value is present', () => {
-      expect(new Tag('foo', '').hasValue()).to.be.false;
-      expect(new Tag('foo', '  ').hasValue()).to.be.false;
-      expect(new Tag('foo', 'bar').hasValue()).to.be.true;
+      expect(new Tag('foo', '').hasValue()).toBe(false);
+      expect(new Tag('foo', '  ').hasValue()).toBe(false);
+      expect(new Tag('foo', 'bar').hasValue()).toBe(true);
     });
   });
 
   describe('#isRenderable', () => {
     it('checks whether the tag should be rendered', () => {
-      expect(new Tag('comment', 'foobar').isRenderable()).to.be.true;
-      expect(new Tag('x_some_setting', 'foobar').isRenderable()).to.be.false;
+      expect(new Tag('comment', 'foobar').isRenderable()).toBe(true);
+      expect(new Tag('x_some_setting', 'foobar').isRenderable()).toBe(false);
     });
   });
 
@@ -46,8 +44,8 @@ describe('Tag', () => {
       const tag = new Tag('foo', 'bar');
       const clonedTag = tag.clone();
 
-      expect(clonedTag.name).to.equal('foo');
-      expect(clonedTag.value).to.equal('bar');
+      expect(clonedTag.name).toEqual('foo');
+      expect(clonedTag.value).toEqual('bar');
     });
   });
 
@@ -55,43 +53,43 @@ describe('Tag', () => {
     it('can parse {name}', () => {
       const tag = Tag.parse('foo');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.be.null;
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toBe(null);
     });
 
     it('can parse {name:value}', () => {
       const tag = Tag.parse('foo:bar ber');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.equal('bar ber');
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {name value}', () => {
       const tag = Tag.parse('foo bar ber');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.equal('bar ber');
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {name: value}', () => {
       const tag = Tag.parse('foo: bar ber');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.equal('bar ber');
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {meta:name value}', () => {
       const tag = Tag.parse('meta:foo bar ber');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.equal('bar ber');
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {meta: name value}', () => {
       const tag = Tag.parse('meta: foo bar ber');
 
-      expect(tag.name).to.equal('foo');
-      expect(tag.value).to.equal('bar ber');
+      expect(tag.name).toEqual('foo');
+      expect(tag.value).toEqual('bar ber');
     });
   });
 });

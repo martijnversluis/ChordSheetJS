@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 
 describe('ChordLyricsPair', () => {
@@ -8,8 +6,8 @@ describe('ChordLyricsPair', () => {
       const chordLyricsPair = new ChordLyricsPair('C', 'Let it');
       const clonedChordLyricsPair = chordLyricsPair.clone();
 
-      expect(clonedChordLyricsPair.chords).to.equal('C');
-      expect(clonedChordLyricsPair.lyrics).to.equal('Let it');
+      expect(clonedChordLyricsPair.chords).toEqual('C');
+      expect(clonedChordLyricsPair.lyrics).toEqual('Let it');
     });
   });
 
@@ -17,7 +15,7 @@ describe('ChordLyricsPair', () => {
     it('returns true', () => {
       const chordLyricsPair = new ChordLyricsPair();
 
-      expect(chordLyricsPair.isRenderable()).to.be.true;
+      expect(chordLyricsPair.isRenderable()).toBe(true);
     });
   });
 });

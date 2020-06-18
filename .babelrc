@@ -1,8 +1,11 @@
 {
- "presets": ["es2015"],
+  "presets": [["@babel/preset-env", {"modules": "commonjs"}]],
 
- "plugins": [
-   "transform-object-rest-spread",
-   "handlebars-inline-precompile"
- ]
+  "env": {
+    "test": {
+      "plugins": [
+        "@babel/plugin-transform-runtime"
+      ]
+    }
+  }
 }

@@ -1,11 +1,7 @@
-import chai, { expect } from 'chai';
-
 import '../matchers';
 import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createLine, createSong } from '../utilities';
-
-chai.use(require('chai-diff'));
 
 describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -78,10 +74,10 @@ describe('HtmlTableFormatter', () => {
         '</div>' +
       '</div>';
 
-    expect(formatter.format(song)).to.equalText(expectedChordSheet);
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
-  context('with option renderBlankLines:false', () => {
+  describe('with option renderBlankLines:false', () => {
     it('does not include HTML for blank lines', () => {
       const songWithBlankLine = createSong([
         createLine([
@@ -121,7 +117,7 @@ describe('HtmlTableFormatter', () => {
 
       const formatter = new HtmlTableFormatter({ renderBlankLines: false });
 
-      expect(formatter.format(songWithBlankLine)).to.equalText(expectedChordSheet);
+      expect(formatter.format(songWithBlankLine)).toEqual(expectedChordSheet);
     });
   });
 });

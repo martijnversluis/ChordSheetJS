@@ -1,4 +1,4 @@
-import HandleBars from 'handlebars/runtime';
+import HandleBars from 'handlebars';
 
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
