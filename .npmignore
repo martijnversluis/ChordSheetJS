@@ -3,8 +3,6 @@ src
 test
 .babelrc
 .codeclimate.yml
-.eslintrc.json
-.hound.yml
-.jshintrc
+.eslintrc
 .travis.yml
 .idea
