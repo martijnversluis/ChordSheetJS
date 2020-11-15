@@ -27,6 +27,16 @@ class Song {
     this.assignMetaData(metaData);
   }
 
+  get previousLine() {
+    const count = this.lines.length;
+
+    if (count >= 2) {
+      return this.lines[count - 2];
+    }
+
+    return null;
+  }
+
   assignMetaData(metaData) {
     this.rawMetaData = {};
 

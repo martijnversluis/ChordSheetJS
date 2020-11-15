@@ -1,0 +1,45 @@
+[Verse 1]
+C     G               Am
+Lorem ipsum dolor sit amet,
+C           G          F
+consectetur adipiscing elit.
+
+
+[Chorus]
+        Am      C     F                        C
+ Tortor posuere ac ut consequat semper viverra nam.
+C            G                  F
+Non nisi est sit amet facilisis magna etiam tempor orci.
+
+
+[Verse 2]
+C         G               Am
+Habitasse platea dictumst vestibulum rhoncus.
+C            G            F
+Tristique et egestas quis ipsum.
+
+
+[Chorus]
+        Am      C     F                        C
+ Tortor posuere ac ut consequat semper viverra nam.
+C            G                  F
+Non nisi est sit amet facilisis magna etiam tempor orci.
+
+
+[Instrumental]
+F  C Dm
+
+
+[Solo]
+C  G  Am
+
+
+[Chorus]
+        Am      C     F                        C
+ Tortor posuere ac ut consequat semper viverra nam.
+C            G                  F
+Non nisi est sit amet facilisis magna etiam tempor orci.
+
+
+[Outro]
+F C Dm

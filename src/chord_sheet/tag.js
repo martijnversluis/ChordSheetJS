@@ -166,6 +166,10 @@ class Tag {
   }
 
   static parse(tag) {
+    if (tag instanceof Tag) {
+      return tag;
+    }
+
     return this.parseWithRegex(tag, META_TAG_REGEX) || this.parseWithRegex(tag, TAG_REGEX);
   }
 
