@@ -11,7 +11,7 @@ describe('UltimateGuitarParser', () => {
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetVerseTag);
-    const lines = song.lines;
+    const { lines } = song;
 
     expect(lines.length).toEqual(2);
 
@@ -32,7 +32,7 @@ consectetur adipiscing elit.`.substring(1);
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetVerse);
-    const lines = song.lines;
+    const { lines } = song;
 
     expect(lines.length).toEqual(4);
 
@@ -57,7 +57,7 @@ F  C Dm
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetInstrumental);
-    const lines = song.lines;
+    const { lines } = song;
 
     expect(lines.length).toEqual(3);
 
