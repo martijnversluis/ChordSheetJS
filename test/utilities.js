@@ -5,8 +5,8 @@ import SongStub from './song_stub';
 import { NONE } from '../src/constants';
 import Paragraph from '../src/chord_sheet/paragraph';
 
-export function createSong(lines, metaData) {
-  const song = new SongStub(metaData);
+export function createSong(lines, metadata) {
+  const song = new SongStub(metadata);
   lines.forEach(line => song.addLine(line));
   song.finish();
   return song;

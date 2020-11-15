@@ -1,6 +1,7 @@
 import Song from '../../src/chord_sheet/song';
 import LineStub from '../cloneable_stub';
 import { createSong } from '../utilities';
+import Metadata from '../../src/chord_sheet/metadata';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -101,12 +102,12 @@ describe('Song', () => {
     it('returns a clone of the song', () => {
       const song = new Song();
       song.lines = ['foo', 'bar'].map(value => new LineStub(value));
-      song.assignMetaData({ foo: 'bar' });
+      song.metadata = new Metadata({ foo: 'bar' });
       const clonedSong = song.clone();
 
       const actualValues = clonedSong.lines.map(line => line.value);
       expect(actualValues).toEqual(['foo', 'bar']);
-      expect(clonedSong.metaData).toEqual({ foo: 'bar' });
+      expect(clonedSong.metadata).toEqual({ foo: 'bar' });
     });
   });
 

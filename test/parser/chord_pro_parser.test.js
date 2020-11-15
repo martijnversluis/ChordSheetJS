@@ -60,8 +60,8 @@ describe('ChordProParser', () => {
 
     const song = new ChordProParser().parse(chordSheetWithCustomMetaData);
 
-    expect(song.metaData.x_one_directive).toEqual('Foo');
-    expect(song.metaData.x_other_directive).toEqual('Bar');
+    expect(song.metadata.x_one_directive).toEqual('Foo');
+    expect(song.metadata.x_other_directive).toEqual('Bar');
   });
 
   it('can have multiple values for a meta directive', () => {

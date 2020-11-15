@@ -20,3 +20,9 @@ export const padLeft = (str, length) => {
   for (let l = str.length; l < length; l += 1, paddedString += ' ');
   return paddedString;
 };
+
+export const deprecate = (message) => {
+  if (process && process.emitWarning) {
+    process.emitWarning(message);
+  }
+};

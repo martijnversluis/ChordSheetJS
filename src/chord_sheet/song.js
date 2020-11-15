@@ -1,13 +1,18 @@
 import Line from './line';
 import Tag, { META_TAGS } from './tag';
 import Paragraph from './paragraph';
-import { pushNew } from '../utilities';
+import { deprecate, pushNew } from '../utilities';
+import Metadata from './metadata';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
  */
 class Song {
-  constructor(metaData = {}) {
+  /**
+   * Creates a new {Song} instance
+   * @param metadata {Object|Metadata} predefined metadata
+   */
+  constructor(metadata = {}) {
     /**
      * The {@link Line} items of which the song consists
      * @member
@@ -24,7 +29,13 @@ class Song {
 
     this.currentLine = null;
     this.currentParagraph = null;
-    this.assignMetaData(metaData);
+
+    /**
+     * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
+     * an array containing all unique values for the entry.
+     * @type {Metadata}
+     */
+    this.metadata = new Metadata(metadata);
   }
 
   get previousLine() {
@@ -35,14 +46,6 @@ class Song {
     }
 
     return null;
-  }
-
-  assignMetaData(metaData) {
-    this.rawMetaData = {};
-
-    Object.keys(metaData).forEach((key) => {
-      this.setMetaData(key, metaData[key]);
-    });
   }
 
   /**
@@ -140,60 +143,26 @@ class Song {
   clone() {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map(line => line.clone());
-    clonedSong.rawMetaData = { ...this.rawMetaData };
+    clonedSong.metadata = this.metadata.clone();
     return clonedSong;
   }
 
   setMetaData(name, value) {
-    this.optimizedMetaData = null;
-
-    if (!(name in this.rawMetaData)) {
-      this.rawMetaData[name] = new Set();
-    }
-
-    this.rawMetaData[name].add(value);
+    this.metadata.add(name, value);
   }
 
   /**
-   * Returns the song metadata. When there is only one value for an entry, the value is a string. Else, the value is
-   * an array containing all unique values for the entry.
-   * @returns {object} The metadata
+   * The song's metadata. Please use {@link metadata} instead.
+   * @deprecated
+   * @returns {@link Metadata} The metadata
    */
   get metaData() {
-    if (!this.optimizedMetaData) {
-      this.optimizedMetaData = this.getOptimizedMetaData();
-    }
-
-    return this.optimizedMetaData;
-  }
-
-  getOptimizedMetaData() {
-    const optimizedMetaData = {};
-
-    Object.keys(this.rawMetaData).forEach((key) => {
-      const valueSet = this.rawMetaData[key];
-      optimizedMetaData[key] = this.optimizeMetaDataValue(valueSet);
-    });
-
-    return optimizedMetaData;
-  }
-
-  optimizeMetaDataValue(valueSet) {
-    if (valueSet === undefined) {
-      return null;
-    }
-
-    const values = [...valueSet];
-
-    if (values.length === 1) {
-      return values[0];
-    }
-
-    return values;
+    deprecate('metaData has been deprecated, please use metadata instead (notice the lowercase "d")');
+    return this.metadata;
   }
 
   getMetaData(name) {
-    return this.metaData[name] || null;
+    return this.metadata[name] || null;
   }
 }
 
