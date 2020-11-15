@@ -1,5 +1,7 @@
 import Song from '../chord_sheet/song';
-import { END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE } from '../chord_sheet/tag';
+import {
+  END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE,
+} from '../chord_sheet/tag';
 import { CHORUS, NONE, VERSE } from '../constants';
 import ParserWarning from './parser_warning';
 

@@ -2,7 +2,7 @@ import Handlebars from 'handlebars';
 
 import '../handlebars_helpers';
 import HtmlFormatter from './html_formatter';
-import './templates/html_div_formatter.js';
+import './templates/html_div_formatter';
 
 const { html_div_formatter: template } = Handlebars.templates;
 

@@ -47,14 +47,6 @@ plugins:
     enabled: true
     exclude_patterns:
         - "test/"
-  eslint:
-    enabled: true
-    config:
-      config: .eslintrc.json
-      extensions:
-      - .es6
-      - .js
-      - .jsx
   fixme:
     enabled: true
   nodesecurity:

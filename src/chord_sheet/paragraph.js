@@ -23,7 +23,7 @@ class Paragraph {
    * @returns {string}
    */
   get type() {
-    const types = this.lines.map(line => line.type);
+    const types = this.lines.map((line) => line.type);
     const uniqueTypes = [...new Set(types)];
 
     if (uniqueTypes.length === 1) {

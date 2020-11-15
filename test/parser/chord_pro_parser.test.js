@@ -13,7 +13,7 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {
     const song = new ChordProParser().parse(chordSheet);
-    const lines = song.lines;
+    const { lines } = song;
 
     expect(lines.length).toEqual(6);
 
@@ -91,7 +91,7 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 
     const parser = new ChordProParser();
     const song = parser.parse(chordSheetWithParagraphs);
-    const paragraphs = song.paragraphs;
+    const { paragraphs } = song;
 
     const paragraph0Lines = paragraphs[0].lines;
 
@@ -130,7 +130,7 @@ Let it [F]be [C]
 
     const parser = new ChordProParser();
     const song = parser.parse(markedChordSheet);
-    const lineTypes = song.lines.map(line => line.type);
+    const lineTypes = song.lines.map((line) => line.type);
 
     expect(lineTypes).toEqual([NONE, VERSE, NONE, NONE, NONE, CHORUS, NONE]);
     expect(parser.warnings).toHaveLength(0);

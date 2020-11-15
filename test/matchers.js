@@ -3,13 +3,12 @@ import Tag from '../src/chord_sheet/tag';
 
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
-  const pass = (received instanceof klass) && propertyNames.every(name => received[name] === properties[name]);
-  const stringifiedProperties = propertyNames.map(name => `${name}=${properties[name]}`);
+  const pass = (received instanceof klass) && propertyNames.every((name) => received[name] === properties[name]);
+  const stringifiedProperties = propertyNames.map((name) => `${name}=${properties[name]}`);
 
   if (pass) {
     return {
-      message: () =>
-        `expected ${received} not to be a ${klass.name}(${stringifiedProperties})`,
+      message: () => `expected ${received} not to be a ${klass.name}(${stringifiedProperties})`,
       pass: true,
     };
   }

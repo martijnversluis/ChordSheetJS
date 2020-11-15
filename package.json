@@ -19,11 +19,16 @@
     "@babel/preset-env": "^7.10.2",
     "babel-eslint": "^10.1.0",
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
     "jest": "^26.0.1",
     "jsdoc-to-markdown": "^6.0.1"
   },
   "scripts": {
-    "test": "jest",
+    "test": "yarn lint && jest",
+    "lint": "node_modules/.bin/eslint --ext .js .",
+    "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
     "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
     "build:sources": "babel src --out-dir lib",
