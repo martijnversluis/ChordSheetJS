@@ -46,6 +46,20 @@ const parser = new ChordSheetJS.ChordSheetParser();
 const song = parser.parse(chordSheet);
 ```
 
+#### Ultimate Guitar chord sheets
+
+```javascript
+const chordSheet = `
+[Chorus]
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be`.substring(1);
+
+const parser = new ChordSheetJS.UltimateGuitarParser();
+const song = parser.parse(chordSheet);
+```
+
 #### Chord pro format
 
 ```javascript
@@ -168,7 +182,7 @@ const disp = formatter.format(song);
 
 | Directive                      | Support                  |
 |:------------------------------ |:------------------------:|
-| new_page (short: np)           | :heavy_multiplication_x: | 
+| new_page (short: np)           | :heavy_multiplication_x: |
 | new_physical_page (short: npp) | :heavy_multiplication_x: |
 | column_break (short: cb)       | :heavy_multiplication_x: |
 | grid (short: g)                | :heavy_multiplication_x: |

@@ -25,8 +25,9 @@ const endSectionTags = {
 
 /**
  * Parses an Ultimate Guitar chord sheet with metadata
+ * Inherits from {@link ChordSheetParser}
  */
-export default class UltimateGuitarParser extends ChordSheetParser {
+class UltimateGuitarParser extends ChordSheetParser {
   parseLine(line) {
     if (this.isSectionEnd()) {
       this.endSection();
@@ -90,3 +91,5 @@ export default class UltimateGuitarParser extends ChordSheetParser {
     this.songLine = this.song.addLine();
   }
 }
+
+export default UltimateGuitarParser;
