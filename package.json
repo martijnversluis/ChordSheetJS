@@ -26,7 +26,7 @@
     "jsdoc-to-markdown": "^6.0.1"
   },
   "scripts": {
-    "test": "jest",
+    "test": "yarn lint && jest",
     "lint": "node_modules/.bin/eslint --ext .js .",
     "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
