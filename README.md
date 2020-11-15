@@ -46,6 +46,20 @@ const parser = new ChordSheetJS.ChordSheetParser();
 const song = parser.parse(chordSheet);
 ```
 
+#### Ultimate Guitar chord sheets
+
+```javascript
+const chordSheet = `
+[Chorus]
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be`.substring(1);
+
+const parser = new ChordSheetJS.UltimateGuitarParser();
+const song = parser.parse(chordSheet);
+```
+
 #### Chord pro format
 
 ```javascript
@@ -168,7 +182,7 @@ const disp = formatter.format(song);
 
 | Directive                      | Support                  |
 |:------------------------------ |:------------------------:|
-| new_page (short: np)           | :heavy_multiplication_x: | 
+| new_page (short: np)           | :heavy_multiplication_x: |
 | new_physical_page (short: npp) | :heavy_multiplication_x: |
 | column_break (short: cb)       | :heavy_multiplication_x: |
 | grid (short: g)                | :heavy_multiplication_x: |
@@ -211,6 +225,9 @@ subject to breaking changes between major versions.
 <dt><a href="#HtmlDivFormatter">HtmlDivFormatter</a></dt>
 <dd><p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p>
 </dd>
+<dt><a href="#HtmlFormatter">HtmlFormatter</a></dt>
+<dd><p>Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.</p>
+</dd>
 <dt><a href="#HtmlTableFormatter">HtmlTableFormatter</a></dt>
 <dd><p>Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
 PDF conversion.</p>
@@ -221,8 +238,15 @@ PDF conversion.</p>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
 <dd><p>Parses a ChordPro chord sheet</p>
 </dd>
+<dt><a href="#ChordSheetParser">ChordSheetParser</a></dt>
+<dd><p>Parses a normal chord sheet</p>
+</dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
 <dd><p>Represents a parser warning, currently only used by ChordProParser.</p>
+</dd>
+<dt><a href="#UltimateGuitarParser">UltimateGuitarParser</a></dt>
+<dd><p>Parses an Ultimate Guitar chord sheet with metadata
+Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 </dd>
 </dl>
 
@@ -282,14 +306,6 @@ PDF conversion.</p>
 </dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-year.html">https://www.chordpro.org/chordpro/Directives-year.html</a></p>
-</dd>
-</dl>
-
-## Functions
-
-<dl>
-<dt><a href="#parse">parse(chordSheet)</a> ⇒ <code><a href="#Song">Song</a></code></dt>
-<dd><p>Parses a chord sheet into a song</p>
 </dd>
 </dl>
 
@@ -590,6 +606,12 @@ Formats a song into HTML.
 | --- | --- | --- |
 | song | [<code>Song</code>](#Song) | The song to be formatted |
 
+<a name="HtmlFormatter"></a>
+
+## HtmlFormatter
+Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.
+
+**Kind**: global class  
 <a name="HtmlTableFormatter"></a>
 
 ## HtmlTableFormatter
@@ -656,6 +678,42 @@ Parses a ChordPro chord sheet into a song
 | --- | --- | --- |
 | chordProChordSheet | <code>string</code> | the ChordPro chord sheet |
 
+<a name="ChordSheetParser"></a>
+
+## ChordSheetParser
+Parses a normal chord sheet
+
+**Kind**: global class  
+
+* [ChordSheetParser](#ChordSheetParser)
+    * [new ChordSheetParser(options)](#new_ChordSheetParser_new)
+    * [.parse(chordSheet, options)](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="new_ChordSheetParser_new"></a>
+
+### new ChordSheetParser(options)
+Instantiate a chord sheet parser
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Object</code> | options |
+| options.preserveWhitespace | <code>boolean</code> | whether to preserve trailing whitespace for chords |
+
+<a name="ChordSheetParser+parse"></a>
+
+### chordSheetParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
+Parses a chord sheet into a song
+
+**Kind**: instance method of [<code>ChordSheetParser</code>](#ChordSheetParser)  
+**Returns**: [<code>Song</code>](#Song) - The parsed song  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| chordSheet | <code>string</code> | The ChordPro chord sheet |
+| options | <code>Object</code> | Optional parser options |
+| options.song | [<code>Song</code>](#Song) | The [Song](#Song) to store the song data in |
+
 <a name="ParserWarning"></a>
 
 ## ParserWarning
@@ -687,6 +745,13 @@ Returns a stringified version of the warning
 
 **Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
 **Returns**: <code>string</code> - The string warning  
+<a name="UltimateGuitarParser"></a>
+
+## UltimateGuitarParser
+Parses an Ultimate Guitar chord sheet with metadata
+Inherits from [ChordSheetParser](#ChordSheetParser)
+
+**Kind**: global class  
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
@@ -795,15 +860,3 @@ Title meta directive. See https://www.chordpro.org/chordpro/Directives-title.htm
 Year meta directive. See https://www.chordpro.org/chordpro/Directives-year.html
 
 **Kind**: global constant  
-<a name="parse"></a>
-
-## parse(chordSheet) ⇒ [<code>Song</code>](#Song)
-Parses a chord sheet into a song
-
-**Kind**: global function  
-**Returns**: [<code>Song</code>](#Song) - The parsed song  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| chordSheet | <code>string</code> | The ChordPro chord sheet |
-

@@ -6,7 +6,12 @@ const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+
 /**
  * Parses a normal chord sheet
  */
-export default class ChordSheetParser {
+class ChordSheetParser {
+  /**
+   * Instantiate a chord sheet parser
+   * @param {Object} options options
+   * @param {boolean} options.preserveWhitespace whether to preserve trailing whitespace for chords
+   */
   constructor({ preserveWhitespace = true } = {}) {
     this.preserveWhitespace = (preserveWhitespace === true);
   }
@@ -14,19 +19,24 @@ export default class ChordSheetParser {
   /**
    * Parses a chord sheet into a song
    * @param {string} chordSheet The ChordPro chord sheet
+   * @param {Object} options Optional parser options
+   * @param {Song} options.song The {@link Song} to store the song data in
    * @returns {Song} The parsed song
    */
-  parse(chordSheet) {
-    this.initialize(chordSheet);
+  parse(chordSheet, { song = null } = {}) {
+    this.initialize(chordSheet, { song });
 
     while (this.hasNextLine()) {
       const line = this.readLine();
       this.parseLine(line);
     }
 
+    this.endOfSong();
     this.song.finish();
     return this.song;
   }
+
+  endOfSong() { }
 
   parseLine(line) {
     this.songLine = this.song.addLine();
@@ -49,8 +59,8 @@ export default class ChordSheetParser {
     }
   }
 
-  initialize(document) {
-    this.song = new Song();
+  initialize(document, { song = null } = {}) {
+    this.song = (song || new Song());
     this.lines = document.split('\n');
     this.currentLine = 0;
     this.lineCount = this.lines.length;
@@ -115,3 +125,5 @@ export default class ChordSheetParser {
     }
   }
 }
+
+export default ChordSheetParser;

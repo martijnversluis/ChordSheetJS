@@ -1,5 +1,6 @@
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
+import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 import TextFormatter from './formatter/text_formatter';
 import HtmlTableFormatter from './formatter/html_table_formatter';
 import HtmlDivFormatter from './formatter/html_div_formatter';
@@ -12,6 +13,7 @@ import Tag from './chord_sheet/tag';
 export default {
   ChordProParser,
   ChordSheetParser,
+  UltimateGuitarParser,
   TextFormatter,
   HtmlTableFormatter,
   HtmlDivFormatter,
