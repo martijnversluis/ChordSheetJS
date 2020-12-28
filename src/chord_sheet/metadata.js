@@ -1,13 +1,12 @@
-/**
- * Stores song metadata
- */
-
 function appendValue(array, key, value) {
   if (!array.includes(value)) {
     array.push(value);
   }
 }
 
+/**
+ * Stores song metadata
+ */
 class Metadata {
   constructor(metadata = {}) {
     Object.keys(metadata).forEach((key) => {

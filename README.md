@@ -207,8 +207,15 @@ subject to breaking changes between major versions.
 <dt><a href="#ChordLyricsPair">ChordLyricsPair</a></dt>
 <dd><p>Represents a chord with the corresponding (partial) lyrics</p>
 </dd>
+<dt><a href="#Comment">Comment</a></dt>
+<dd><p>Represents a comment. See
+<a href="https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview">https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview</a></p>
+</dd>
 <dt><a href="#Line">Line</a></dt>
 <dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
+</dd>
+<dt><a href="#Metadata">Metadata</a></dt>
+<dd><p>Stores song metadata</p>
 </dd>
 <dt><a href="#Paragraph">Paragraph</a></dt>
 <dd><p>Represents a paragraph of lines in a chord sheet</p>
@@ -358,6 +365,30 @@ Indicates whether a ChordLyricsPair should be visible in a formatted chord sheet
 Returns a deep copy of the ChordLyricsPair, useful when programmatically transforming a song
 
 **Kind**: instance method of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
+<a name="Comment"></a>
+
+## Comment
+Represents a comment. See
+https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview
+
+**Kind**: global class  
+
+* [Comment](#Comment)
+    * [.isRenderable()](#Comment+isRenderable) ⇒ <code>boolean</code>
+    * [.clone()](#Comment+clone) ⇒ [<code>Comment</code>](#Comment)
+
+<a name="Comment+isRenderable"></a>
+
+### comment.isRenderable() ⇒ <code>boolean</code>
+Indicates whether a Comment should be visible in a formatted chord sheet (except for ChordPro sheets)
+
+**Kind**: instance method of [<code>Comment</code>](#Comment)  
+<a name="Comment+clone"></a>
+
+### comment.clone() ⇒ [<code>Comment</code>](#Comment)
+Returns a deep copy of the Comment, useful when programmatically transforming a song
+
+**Kind**: instance method of [<code>Comment</code>](#Comment)  
 <a name="Line"></a>
 
 ## Line
@@ -366,7 +397,7 @@ Represents a line in a chord sheet, consisting of items of type ChordLyricsPair 
 **Kind**: global class  
 
 * [Line](#Line)
-    * [.items](#Line+items) : <code>Array.&lt;(ChordLyricsPair\|Tag)&gt;</code>
+    * [.items](#Line+items) : <code>Array.&lt;(ChordLyricsPair\|Tag\|Comment)&gt;</code>
     * [.type](#Line+type) : <code>string</code>
     * [.isEmpty()](#Line+isEmpty) ⇒ <code>boolean</code>
     * [.addItem(item)](#Line+addItem)
@@ -378,8 +409,8 @@ Represents a line in a chord sheet, consisting of items of type ChordLyricsPair 
 
 <a name="Line+items"></a>
 
-### line.items : <code>Array.&lt;(ChordLyricsPair\|Tag)&gt;</code>
-The items ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag)) of which the line consists
+### line.items : <code>Array.&lt;(ChordLyricsPair\|Tag\|Comment)&gt;</code>
+The items ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag) or [Comment](#Comment)) of which the line consists
 
 **Kind**: instance property of [<code>Line</code>](#Line)  
 <a name="Line+type"></a>
@@ -438,6 +469,12 @@ Indicates whether the line type is [CHORUS](CHORUS)
 Indicates whether the line contains items that are renderable. Please use [hasRenderableItems](hasRenderableItems)
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Metadata"></a>
+
+## Metadata
+Stores song metadata
+
+**Kind**: global class  
 <a name="Paragraph"></a>
 
 ## Paragraph
@@ -470,11 +507,23 @@ Represents a song in a chord sheet. Currently a chord sheet can only have one so
 **Kind**: global class  
 
 * [Song](#Song)
+    * [new Song(metadata)](#new_Song_new)
     * [.lines](#Song+lines) : [<code>Array.&lt;Line&gt;</code>](#Line)
     * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Line&gt;</code>](#Line)
+    * [.metadata](#Song+metadata) : [<code>Metadata</code>](#Metadata)
     * [.bodyLines](#Song+bodyLines) ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
-    * [.metaData](#Song+metaData) ⇒ <code>object</code>
+    * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
+
+<a name="new_Song_new"></a>
+
+### new Song(metadata)
+Creates a new {Song} instance
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| metadata | <code>Object</code> \| [<code>Metadata</code>](#Metadata) | predefined metadata |
 
 <a name="Song+lines"></a>
 
@@ -488,6 +537,13 @@ The [Line](#Line) items of which the song consists
 The [Paragraph](#Paragraph) items of which the song consists
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
+<a name="Song+metadata"></a>
+
+### song.metadata : [<code>Metadata</code>](#Metadata)
+The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
+an array containing all unique values for the entry.
+
+**Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+bodyLines"></a>
 
 ### song.bodyLines ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
@@ -498,12 +554,13 @@ if you want to skip the "header lines": the lines that only contain meta data.
 **Returns**: [<code>Array.&lt;Line&gt;</code>](#Line) - The song body lines  
 <a name="Song+metaData"></a>
 
-### song.metaData ⇒ <code>object</code>
-Returns the song metadata. When there is only one value for an entry, the value is a string. Else, the value is
-an array containing all unique values for the entry.
+### ~~song.metaData ⇒~~
+***Deprecated***
+
+The song's metadata. Please use [metadata](metadata) instead.
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
-**Returns**: <code>object</code> - The metadata  
+**Returns**: [Metadata](#Metadata) The metadata  
 <a name="Song+clone"></a>
 
 ### song.clone() ⇒ [<code>Song</code>](#Song)

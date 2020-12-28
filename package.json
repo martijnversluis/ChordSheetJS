@@ -23,19 +23,22 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
     "jest": "^26.0.1",
-    "jsdoc-to-markdown": "^6.0.1"
+    "jsdoc-to-markdown": "^6.0.1",
+    "pegjs": "^0.10.0"
   },
   "scripts": {
-    "test": "yarn lint && jest",
-    "lint": "node_modules/.bin/eslint --ext .js .",
+    "jest": "jest",
+    "test": "yarn lint && yarn jest",
+    "lint": "yarn build:pegjs && node_modules/.bin/eslint --ext .js .",
     "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
     "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
     "build:sources": "babel src --out-dir lib",
-    "build": "yarn build:templates && yarn build:sources",
+    "build:pegjs": "pegjs -o src/parser/chord_pro_peg_parser.js src/parser/chord_pro_grammar.pegjs",
+    "build": "yarn build:templates && yarn build:pegjs && yarn build:sources",
     "readme": "jsdoc2md -f src/**/*.js --template README.hbs > README.md",
     "prepublishOnly": "yarn install && yarn test && yarn build",
-    "pretest": "yarn build:templates"
+    "pretest": "yarn build:templates && yarn build:pegjs"
   },
   "dependencies": {
     "handlebars": "^4.7.6"

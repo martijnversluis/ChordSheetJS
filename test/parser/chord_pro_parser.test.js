@@ -75,11 +75,14 @@ describe('ChordProParser', () => {
     expect(song.composer).toEqual(['John', 'Jane']);
   });
 
-  it('ignores comments', () => {
+  it('correctly parses comments', () => {
     const chordSheetWithComment = '# this is a comment\nLet it [Am]be, let it [C/G]be';
     const song = new ChordProParser().parse(chordSheetWithComment);
 
-    expect(song.lines.length).toEqual(1);
+    const line1Items = song.lines[0].items;
+    expect(line1Items.length).toEqual(1);
+    expect(line1Items[0]).toBeComment(' this is a comment');
+    expect(song.lines.length).toEqual(2);
   });
 
   it('groups lines by paragraph', () => {
@@ -123,7 +126,7 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 {start_of_verse}
 Let it [Am]be
 {end_of_verse}
-C]Whisper words of [F]wis[G]dom
+[C]Whisper words of [F]wis[G]dom
 {start_of_chorus}
 Let it [F]be [C]
 {end_of_chorus}`.substring(1);

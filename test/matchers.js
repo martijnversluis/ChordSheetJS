@@ -1,5 +1,6 @@
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Tag from '../src/chord_sheet/tag';
+import Comment from '../src/chord_sheet/comment';
 
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
@@ -45,7 +46,12 @@ function toBeTag(received, name, value) {
   return toBeClassInstanceWithProperties(received, Tag, { name, value });
 }
 
+function toBeComment(received, content) {
+  return toBeClassInstanceWithProperties(received, Comment, { content });
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeTag,
+  toBeComment,
 });
