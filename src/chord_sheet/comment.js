@@ -1,6 +1,5 @@
 /**
- * Represents a comment. See
- * https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html
+ * Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview
  */
 class Comment {
   constructor(content) {

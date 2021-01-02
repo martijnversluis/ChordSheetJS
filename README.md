@@ -208,8 +208,7 @@ subject to breaking changes between major versions.
 <dd><p>Represents a chord with the corresponding (partial) lyrics</p>
 </dd>
 <dt><a href="#Comment">Comment</a></dt>
-<dd><p>Represents a comment. See
-<a href="https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview">https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview</a></p>
+<dd><p>Represents a comment. See <a href="https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview">https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</a></p>
 </dd>
 <dt><a href="#Line">Line</a></dt>
 <dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
@@ -224,7 +223,7 @@ subject to breaking changes between major versions.
 <dd><p>Represents a song in a chord sheet. Currently a chord sheet can only have one song.</p>
 </dd>
 <dt><a href="#Tag">Tag</a></dt>
-<dd><p>Represents a tag/directive. See <a href="https://www.chordpro.org/chordpro/ChordPro-Directives.html">https://www.chordpro.org/chordpro/ChordPro-Directives.html</a></p>
+<dd><p>Represents a tag/directive. See <a href="https://www.chordpro.org/chordpro/chordpro-directives/">https://www.chordpro.org/chordpro/chordpro-directives/</a></p>
 </dd>
 <dt><a href="#ChordProFormatter">ChordProFormatter</a></dt>
 <dd><p>Formats a song into a ChordPro chord sheet</p>
@@ -261,58 +260,58 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 
 <dl>
 <dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
-<dd><p>Album meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-album.html">https://www.chordpro.org/chordpro/Directives-album.html</a></p>
+<dd><p>Album meta directive. See <a href="https://www.chordpro.org/chordpro/directives-album/">https://www.chordpro.org/chordpro/directives-album/</a></p>
 </dd>
 <dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
-<dd><p>Artist meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-artist.html">https://www.chordpro.org/chordpro/Directives-artist.html</a></p>
+<dd><p>Artist meta directive. See <a href="https://www.chordpro.org/chordpro/directives-artist/">https://www.chordpro.org/chordpro/directives-artist/</a></p>
 </dd>
 <dt><a href="#CAPO">CAPO</a> : <code>string</code></dt>
-<dd><p>Capo meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-capo.html">https://www.chordpro.org/chordpro/Directives-capo.html</a></p>
+<dd><p>Capo meta directive. See <a href="https://www.chordpro.org/chordpro/directives-capo/">https://www.chordpro.org/chordpro/directives-capo/</a></p>
 </dd>
 <dt><a href="#COMMENT">COMMENT</a> : <code>string</code></dt>
-<dd><p>Comment directive. See <a href="https://www.chordpro.org/chordpro/Directives-comment.html">https://www.chordpro.org/chordpro/Directives-comment.html</a></p>
+<dd><p>Comment directive. See <a href="https://www.chordpro.org/chordpro/directives-comment/">https://www.chordpro.org/chordpro/directives-comment/</a></p>
 </dd>
 <dt><a href="#COMPOSER">COMPOSER</a> : <code>string</code></dt>
-<dd><p>Composer meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-composer.html">https://www.chordpro.org/chordpro/Directives-composer.html</a></p>
+<dd><p>Composer meta directive. See <a href="https://www.chordpro.org/chordpro/directives-composer/">https://www.chordpro.org/chordpro/directives-composer/</a></p>
 </dd>
 <dt><a href="#COPYRIGHT">COPYRIGHT</a> : <code>string</code></dt>
-<dd><p>Copyright meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-copyright.html">https://www.chordpro.org/chordpro/Directives-copyright.html</a></p>
+<dd><p>Copyright meta directive. See <a href="https://www.chordpro.org/chordpro/directives-copyright/">https://www.chordpro.org/chordpro/directives-copyright/</a></p>
 </dd>
 <dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
-<dd><p>Duration meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-duration.html">https://www.chordpro.org/chordpro/Directives-duration.html</a></p>
+<dd><p>Duration meta directive. See <a href="https://www.chordpro.org/chordpro/directives-duration/">https://www.chordpro.org/chordpro/directives-duration/</a></p>
 </dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
-<dd><p>End of chorus directive. See <a href="https://www.chordpro.org/chordpro/Directives-env_chorus.html">https://www.chordpro.org/chordpro/Directives-env_chorus.html</a></p>
+<dd><p>End of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
 </dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
-<dd><p>End of verse directive. See <a href="https://www.chordpro.org/chordpro/Directives-env_verse.html">https://www.chordpro.org/chordpro/Directives-env_verse.html</a></p>
+<dd><p>End of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
 </dd>
 <dt><a href="#KEY">KEY</a> : <code>string</code></dt>
-<dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-key.html">https://www.chordpro.org/chordpro/Directives-key.html</a></p>
+<dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/directives-key/">https://www.chordpro.org/chordpro/directives-key/</a></p>
 </dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
-<dd><p>Lyricist meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-lyricist.html">https://www.chordpro.org/chordpro/Directives-lyricist.html</a></p>
+<dd><p>Lyricist meta directive. See <a href="https://www.chordpro.org/chordpro/directives-lyricist/">https://www.chordpro.org/chordpro/directives-lyricist/</a></p>
 </dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
-<dd><p>Start of chorus directive. See <a href="https://www.chordpro.org/chordpro/Directives-env_chorus.html">https://www.chordpro.org/chordpro/Directives-env_chorus.html</a></p>
+<dd><p>Start of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
 </dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
-<dd><p>Start of verse directive. See <a href="https://www.chordpro.org/chordpro/Directives-env_verse.html">https://www.chordpro.org/chordpro/Directives-env_verse.html</a></p>
+<dd><p>Start of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
 </dd>
 <dt><a href="#SUBTITLE">SUBTITLE</a> : <code>string</code></dt>
-<dd><p>Subtitle meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-subtitle.html">https://www.chordpro.org/chordpro/Directives-subtitle.html</a></p>
+<dd><p>Subtitle meta directive. See <a href="https://www.chordpro.org/chordpro/directives-subtitle/">https://www.chordpro.org/chordpro/directives-subtitle/</a></p>
 </dd>
 <dt><a href="#TEMPO">TEMPO</a> : <code>string</code></dt>
-<dd><p>Tempo meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-tempo.html">https://www.chordpro.org/chordpro/Directives-tempo.html</a></p>
+<dd><p>Tempo meta directive. See <a href="https://www.chordpro.org/chordpro/directives-tempo/">https://www.chordpro.org/chordpro/directives-tempo/</a></p>
 </dd>
 <dt><a href="#TIME">TIME</a> : <code>string</code></dt>
-<dd><p>Time meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-time.html">https://www.chordpro.org/chordpro/Directives-time.html</a></p>
+<dd><p>Time meta directive. See <a href="https://www.chordpro.org/chordpro/directives-time/">https://www.chordpro.org/chordpro/directives-time/</a></p>
 </dd>
 <dt><a href="#TITLE">TITLE</a> : <code>string</code></dt>
-<dd><p>Title meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-title.html">https://www.chordpro.org/chordpro/Directives-title.html</a></p>
+<dd><p>Title meta directive. See <a href="https://www.chordpro.org/chordpro/directives-title/">https://www.chordpro.org/chordpro/directives-title/</a></p>
 </dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
-<dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/Directives-year.html">https://www.chordpro.org/chordpro/Directives-year.html</a></p>
+<dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
 </dd>
 </dl>
 
@@ -368,8 +367,7 @@ Returns a deep copy of the ChordLyricsPair, useful when programmatically transfo
 <a name="Comment"></a>
 
 ## Comment
-Represents a comment. See
-https://web.archive.org/web/20181120125515/http://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html#overview
+Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview
 
 **Kind**: global class  
 
@@ -571,7 +569,7 @@ Returns a deep clone of the song
 <a name="Tag"></a>
 
 ## Tag
-Represents a tag/directive. See https://www.chordpro.org/chordpro/ChordPro-Directives.html
+Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
 
 **Kind**: global class  
 
@@ -812,108 +810,108 @@ Inherits from [ChordSheetParser](#ChordSheetParser)
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
-Album meta directive. See https://www.chordpro.org/chordpro/Directives-album.html
+Album meta directive. See https://www.chordpro.org/chordpro/directives-album/
 
 **Kind**: global constant  
 <a name="ARTIST"></a>
 
 ## ARTIST : <code>string</code>
-Artist meta directive. See https://www.chordpro.org/chordpro/Directives-artist.html
+Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
 
 **Kind**: global constant  
 <a name="CAPO"></a>
 
 ## CAPO : <code>string</code>
-Capo meta directive. See https://www.chordpro.org/chordpro/Directives-capo.html
+Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/
 
 **Kind**: global constant  
 <a name="COMMENT"></a>
 
 ## COMMENT : <code>string</code>
-Comment directive. See https://www.chordpro.org/chordpro/Directives-comment.html
+Comment directive. See https://www.chordpro.org/chordpro/directives-comment/
 
 **Kind**: global constant  
 <a name="COMPOSER"></a>
 
 ## COMPOSER : <code>string</code>
-Composer meta directive. See https://www.chordpro.org/chordpro/Directives-composer.html
+Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/
 
 **Kind**: global constant  
 <a name="COPYRIGHT"></a>
 
 ## COPYRIGHT : <code>string</code>
-Copyright meta directive. See https://www.chordpro.org/chordpro/Directives-copyright.html
+Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/
 
 **Kind**: global constant  
 <a name="DURATION"></a>
 
 ## DURATION : <code>string</code>
-Duration meta directive. See https://www.chordpro.org/chordpro/Directives-duration.html
+Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/
 
 **Kind**: global constant  
 <a name="END_OF_CHORUS"></a>
 
 ## END\_OF\_CHORUS : <code>string</code>
-End of chorus directive. See https://www.chordpro.org/chordpro/Directives-env_chorus.html
+End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
 
 **Kind**: global constant  
 <a name="END_OF_VERSE"></a>
 
 ## END\_OF\_VERSE : <code>string</code>
-End of verse directive. See https://www.chordpro.org/chordpro/Directives-env_verse.html
+End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
 
 **Kind**: global constant  
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
-Key meta directive. See https://www.chordpro.org/chordpro/Directives-key.html
+Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
 
 **Kind**: global constant  
 <a name="LYRICIST"></a>
 
 ## LYRICIST : <code>string</code>
-Lyricist meta directive. See https://www.chordpro.org/chordpro/Directives-lyricist.html
+Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/
 
 **Kind**: global constant  
 <a name="START_OF_CHORUS"></a>
 
 ## START\_OF\_CHORUS : <code>string</code>
-Start of chorus directive. See https://www.chordpro.org/chordpro/Directives-env_chorus.html
+Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
 
 **Kind**: global constant  
 <a name="START_OF_VERSE"></a>
 
 ## START\_OF\_VERSE : <code>string</code>
-Start of verse directive. See https://www.chordpro.org/chordpro/Directives-env_verse.html
+Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
 
 **Kind**: global constant  
 <a name="SUBTITLE"></a>
 
 ## SUBTITLE : <code>string</code>
-Subtitle meta directive. See https://www.chordpro.org/chordpro/Directives-subtitle.html
+Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
 
 **Kind**: global constant  
 <a name="TEMPO"></a>
 
 ## TEMPO : <code>string</code>
-Tempo meta directive. See https://www.chordpro.org/chordpro/Directives-tempo.html
+Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/
 
 **Kind**: global constant  
 <a name="TIME"></a>
 
 ## TIME : <code>string</code>
-Time meta directive. See https://www.chordpro.org/chordpro/Directives-time.html
+Time meta directive. See https://www.chordpro.org/chordpro/directives-time/
 
 **Kind**: global constant  
 <a name="TITLE"></a>
 
 ## TITLE : <code>string</code>
-Title meta directive. See https://www.chordpro.org/chordpro/Directives-title.html
+Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
 
 **Kind**: global constant  
 <a name="YEAR"></a>
 
 ## YEAR : <code>string</code>
-Year meta directive. See https://www.chordpro.org/chordpro/Directives-year.html
+Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
 
 **Kind**: global constant  
