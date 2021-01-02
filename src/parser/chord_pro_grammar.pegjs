@@ -38,7 +38,7 @@ ChordLyricsPair
 }
 
 Lyrics
-  = lyrics: Char+ {
+  = lyrics: LyricsChar+ {
   return lyrics.map(c => c.char || c).join("");
 }
 
@@ -75,6 +75,12 @@ MetaVariableName
 
 MetaExpression
   = ($(Char+) / MetaTernary)+
+
+LyricsChar
+  = Char
+  / "]" { return {type: "char", char: "]"}; }
+  / "}" { return {type: "char", char: "\x7d"}; }
+  / "%" { return {type: "char", char: "%"}; }
 
 Char
   = [^\|\[\]\\\{\}%#\r\n]

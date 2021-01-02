@@ -139,6 +139,32 @@ Let it [F]be [C]
     expect(parser.warnings).toHaveLength(0);
   });
 
+  describe('it is forgiving to syntax errors', () => {
+    it('allows dangling ]', () => {
+      const chordSheetWithError = `
+Let it [Am]be
+[C]Whisper wor]ds of [F]wis[G]dom`;
+
+      new ChordProParser().parse(chordSheetWithError);
+    });
+
+    it('allows dangling }', () => {
+      const chordSheetWithError = `
+Let it [Am]be
+[C]Whisper wor}ds of [F]wis[G]dom`;
+
+      new ChordProParser().parse(chordSheetWithError);
+    });
+
+    it('allows dangling %', () => {
+      const chordSheetWithError = `
+Let it [Am]be
+[C]Whisper wor%ds of [F]wis[G]dom`;
+
+      new ChordProParser().parse(chordSheetWithError);
+    });
+  });
+
   describe('when encountering {end_of_chorus} while the current section type is not chorus', () => {
     it('adds a parser warning', () => {
       const invalidChordSheet = '{end_of_chorus}';
