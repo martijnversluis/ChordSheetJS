@@ -1,107 +1,107 @@
 /**
- * Album meta directive. See https://www.chordpro.org/chordpro/Directives-album.html
+ * Album meta directive. See https://www.chordpro.org/chordpro/directives-album/
  * @type {string}
  */
 export const ALBUM = 'album';
 
 /**
- * Artist meta directive. See https://www.chordpro.org/chordpro/Directives-artist.html
+ * Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
  * @type {string}
  */
 export const ARTIST = 'artist';
 
 /**
- * Capo meta directive. See https://www.chordpro.org/chordpro/Directives-capo.html
+ * Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/
  * @type {string}
  */
 export const CAPO = 'capo';
 
 /**
- * Comment directive. See https://www.chordpro.org/chordpro/Directives-comment.html
+ * Comment directive. See https://www.chordpro.org/chordpro/directives-comment/
  * @type {string}
  */
 export const COMMENT = 'comment';
 
 /**
- * Composer meta directive. See https://www.chordpro.org/chordpro/Directives-composer.html
+ * Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/
  * @type {string}
  */
 export const COMPOSER = 'composer';
 
 /**
- * Copyright meta directive. See https://www.chordpro.org/chordpro/Directives-copyright.html
+ * Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/
  * @type {string}
  */
 export const COPYRIGHT = 'copyright';
 
 /**
- * Duration meta directive. See https://www.chordpro.org/chordpro/Directives-duration.html
+ * Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/
  * @type {string}
  */
 export const DURATION = 'duration';
 
 /**
- * End of chorus directive. See https://www.chordpro.org/chordpro/Directives-env_chorus.html
+ * End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
  * @type {string}
  */
 export const END_OF_CHORUS = 'end_of_chorus';
 
 /**
- * End of verse directive. See https://www.chordpro.org/chordpro/Directives-env_verse.html
+ * End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
  * @type {string}
  */
 export const END_OF_VERSE = 'end_of_verse';
 
 /**
- * Key meta directive. See https://www.chordpro.org/chordpro/Directives-key.html
+ * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
  * @type {string}
  */
 export const KEY = 'key';
 
 /**
- * Lyricist meta directive. See https://www.chordpro.org/chordpro/Directives-lyricist.html
+ * Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/
  * @type {string}
  */
 export const LYRICIST = 'lyricist';
 
 /**
- * Start of chorus directive. See https://www.chordpro.org/chordpro/Directives-env_chorus.html
+ * Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
  * @type {string}
  */
 export const START_OF_CHORUS = 'start_of_chorus';
 
 /**
- * Start of verse directive. See https://www.chordpro.org/chordpro/Directives-env_verse.html
+ * Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
  * @type {string}
  */
 export const START_OF_VERSE = 'start_of_verse';
 
 /**
- * Subtitle meta directive. See https://www.chordpro.org/chordpro/Directives-subtitle.html
+ * Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
  * @type {string}
  */
 export const SUBTITLE = 'subtitle';
 
 /**
- * Tempo meta directive. See https://www.chordpro.org/chordpro/Directives-tempo.html
+ * Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/
  * @type {string}
  */
 export const TEMPO = 'tempo';
 
 /**
- * Time meta directive. See https://www.chordpro.org/chordpro/Directives-time.html
+ * Time meta directive. See https://www.chordpro.org/chordpro/directives-time/
  * @type {string}
  */
 export const TIME = 'time';
 
 /**
- * Title meta directive. See https://www.chordpro.org/chordpro/Directives-title.html
+ * Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
  * @type {string}
  */
 export const TITLE = 'title';
 
 /**
- * Year meta directive. See https://www.chordpro.org/chordpro/Directives-year.html
+ * Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
  * @type {string}
  */
 export const YEAR = 'year';
@@ -157,7 +157,7 @@ const translateTagNameAlias = (name) => {
 };
 
 /**
- * Represents a tag/directive. See https://www.chordpro.org/chordpro/ChordPro-Directives.html
+ * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
  */
 class Tag {
   constructor(name, value) {
