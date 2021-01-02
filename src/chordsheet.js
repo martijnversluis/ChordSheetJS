@@ -9,6 +9,7 @@ import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Line from './chord_sheet/line';
 import Song from './chord_sheet/song';
 import Tag from './chord_sheet/tag';
+import Comment from './chord_sheet/comment';
 
 export default {
   ChordProParser,
@@ -22,4 +23,5 @@ export default {
   Line,
   Song,
   Tag,
+  Comment,
 };

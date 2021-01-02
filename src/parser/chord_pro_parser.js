@@ -1,16 +1,15 @@
+import ChordProPegParser from './chord_pro_peg_parser';
 import Song from '../chord_sheet/song';
-import {
+import Tag, {
   END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE,
 } from '../chord_sheet/tag';
 import { CHORUS, NONE, VERSE } from '../constants';
 import ParserWarning from './parser_warning';
 
-const NEW_LINE = '\n';
-const SQUARE_START = '[';
-const SQUARE_END = ']';
-const CURLY_START = '{';
-const CURLY_END = '}';
-const SHARP_SIGN = '#';
+const CHORD_SHEET = 'chordSheet';
+const CHORD_LYRICS_PAIR = 'chordLyricsPair';
+const TAG = 'tag';
+const COMMENT = 'comment';
 
 /**
  * Parses a ChordPro chord sheet
@@ -29,87 +28,61 @@ class ChordProParser {
      */
     this.warnings = [];
 
-    this.song = new Song();
-    this.lineNumber = 1;
-    this.sectionType = NONE;
-    this.resetTag();
-    this.processor = this.readLyrics;
-    this.parseDocument(chordProChordSheet);
+    const ast = ChordProPegParser.parse(chordProChordSheet);
+    this.parseAstComponent(ast);
     this.song.finish();
     return this.song;
   }
 
-  parseDocument(document) {
-    for (let i = 0, count = document.length; i < count; i += 1) {
-      this.processor(document[i]);
+  parseAstComponent(astComponent) {
+    const { type } = astComponent;
+
+    switch (type) {
+      case CHORD_SHEET:
+        this.parseChordSheet(astComponent);
+        break;
+      case CHORD_LYRICS_PAIR:
+        this.parseChordLyricsPair(astComponent);
+        break;
+      case TAG:
+        this.parseTag(astComponent);
+        break;
+      case COMMENT:
+        this.parseComment(astComponent);
+        break;
+      default: console.warn(`Unhandled AST component "${type}"`);
     }
   }
 
-  readLyrics(chr) {
-    switch (chr) {
-      case SHARP_SIGN:
-        this.processor = this.readComment;
-        break;
-      case NEW_LINE:
-        this.lineNumber += 1;
-        this.song.addLine();
-        this.song.setCurrentLineType(this.sectionType);
-        break;
-      case SQUARE_START:
-        this.song.addChordLyricsPair();
-        this.processor = this.readChords;
-        break;
-      case CURLY_START:
-        this.processor = this.readTag;
-        break;
-      default:
-        this.song.lyrics(chr);
-    }
+  parseChordSheet(astComponent) {
+    const { lines } = astComponent;
+    this.song = new Song();
+    this.sectionType = NONE;
+    lines.forEach((line, index) => this.parseLine(line, index));
   }
 
-  readChords(chr) {
-    switch (chr) {
-      case NEW_LINE:
-        break;
-      case SQUARE_START:
-        break;
-      case SQUARE_END:
-        this.processor = this.readLyrics;
-        break;
-      default:
-        this.song.chords(chr);
-    }
+  parseLine(astComponent, lineNumber) {
+    const { items } = astComponent;
+    this.lineNumber = lineNumber + 1;
+    this.song.addLine();
+    this.song.setCurrentLineType(this.sectionType);
+    items.forEach((item) => this.parseAstComponent(item));
   }
 
-  readTag(chr) {
-    switch (chr) {
-      case CURLY_END:
-        this.finishTag();
-        this.processor = this.readLyrics;
-        break;
-      default:
-        this.tag += chr;
-    }
+  parseChordLyricsPair(astComponent) {
+    const { chord, lyrics } = astComponent;
+    this.song.addChordLyricsPair(chord, lyrics);
   }
 
-  readComment(chr) {
-    switch (chr) {
-      case NEW_LINE:
-        this.processor = this.readLyrics;
-        break;
-      default:
-        break;
-    }
-  }
-
-  finishTag() {
-    const parsedTag = this.song.addTag(this.tag);
+  parseTag(astComponent) {
+    const { name, value } = astComponent;
+    const parsedTag = this.song.addTag(new Tag(name, value));
     this.applyTag(parsedTag);
-    this.resetTag();
   }
 
-  resetTag() {
-    this.tag = '';
+  parseComment(astComponent) {
+    const { comment } = astComponent;
+    this.song.addComment(comment);
   }
 
   applyTag(tag) {

@@ -1,3 +1,4 @@
 lib
 node_modules
 src/formatter/templates/*.js
+src/parser/chord_pro_peg_parser.js

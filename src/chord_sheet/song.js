@@ -101,9 +101,9 @@ class Song {
     this.flushLine();
   }
 
-  addChordLyricsPair() {
+  addChordLyricsPair(chords = '', lyrics = '') {
     this.ensureLine();
-    return this.currentLine.addChordLyricsPair();
+    return this.currentLine.addChordLyricsPair(chords, lyrics);
   }
 
   ensureLine() {
@@ -134,6 +134,11 @@ class Song {
     this.currentLine.addTag(tag);
 
     return tag;
+  }
+
+  addComment(comment) {
+    this.ensureLine();
+    this.currentLine.addComment(comment);
   }
 
   /**

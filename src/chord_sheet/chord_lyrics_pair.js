@@ -13,14 +13,14 @@ class ChordLyricsPair {
      * @member
      * @type {string}
      */
-    this.chords = chords;
+    this.chords = chords || '';
 
     /**
      * The lyrics
      * @member
      * @type {string}
      */
-    this.lyrics = lyrics;
+    this.lyrics = lyrics || '';
   }
 
   /**

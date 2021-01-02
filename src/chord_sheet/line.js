@@ -1,5 +1,6 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
+import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
 
 /**
@@ -8,9 +9,9 @@ import { CHORUS, NONE, VERSE } from '../constants';
 class Line {
   constructor() {
     /**
-     * The items ({@link ChordLyricsPair} or {@link Tag}) of which the line consists
+     * The items ({@link ChordLyricsPair} or {@link Tag} or {@link Comment}) of which the line consists
      * @member
-     * @type {Array.<(ChordLyricsPair|Tag)>}
+     * @type {Array.<(ChordLyricsPair|Tag|Comment)>}
      */
     this.items = [];
 
@@ -42,6 +43,8 @@ class Line {
       this.addTag(item);
     } else if (item instanceof ChordLyricsPair) {
       this.addChordLyricsPair(item);
+    } else if (item instanceof Comment) {
+      this.addComment(item);
     }
   }
 
@@ -120,6 +123,12 @@ class Line {
     const tag = (name instanceof Tag) ? name : new Tag(name, value);
     this.items.push(tag);
     return tag;
+  }
+
+  addComment(content) {
+    const comment = (content instanceof Comment) ? content : new Comment(content);
+    this.items.push(comment);
+    return comment;
   }
 }
 
