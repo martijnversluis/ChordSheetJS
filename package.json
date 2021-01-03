@@ -36,7 +36,7 @@
     "build:sources": "babel src --out-dir lib",
     "build:pegjs": "pegjs -o src/parser/chord_pro_peg_parser.js src/parser/chord_pro_grammar.pegjs",
     "build": "yarn build:templates && yarn build:pegjs && yarn build:sources",
-    "readme": "jsdoc2md -f src/**/*.js --template README.hbs > README.md",
+    "readme": "jsdoc2md -f src/**/*.js --template doc/README.hbs > README.md",
     "prepublishOnly": "yarn install && yarn test && yarn build",
     "pretest": "yarn build:templates && yarn build:pegjs"
   },
