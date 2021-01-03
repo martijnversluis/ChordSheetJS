@@ -507,7 +507,7 @@ Represents a song in a chord sheet. Currently a chord sheet can only have one so
 * [Song](#Song)
     * [new Song(metadata)](#new_Song_new)
     * [.lines](#Song+lines) : [<code>Array.&lt;Line&gt;</code>](#Line)
-    * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Line&gt;</code>](#Line)
+    * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * [.metadata](#Song+metadata) : [<code>Metadata</code>](#Metadata)
     * [.bodyLines](#Song+bodyLines) ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
     * ~~[.metaData](#Song+metaData) ⇒~~
@@ -531,7 +531,7 @@ The [Line](#Line) items of which the song consists
 **Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+paragraphs"></a>
 
-### song.paragraphs : [<code>Array.&lt;Line&gt;</code>](#Line)
+### song.paragraphs : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
 The [Paragraph](#Paragraph) items of which the song consists
 
 **Kind**: instance property of [<code>Song</code>](#Song)  

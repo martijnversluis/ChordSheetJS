@@ -23,7 +23,7 @@ class Song {
     /**
      * The {@link Paragraph} items of which the song consists
      * @member
-     * @type {Array<Line>}
+     * @type {Array<Paragraph>}
      */
     this.paragraphs = [];
 
