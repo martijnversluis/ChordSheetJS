@@ -1,8 +1,11 @@
+doc
 node_modules
 src
 test
 .babelrc
 .codeclimate.yml
+.eslintignore
 .eslintrc
-.travis.yml
+.github
 .idea
+.travis.yml
