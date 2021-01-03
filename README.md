@@ -501,6 +501,12 @@ metadata.get('author')   // => ['John', 'Mary']
 metadata.get('author.1') // => 'John'
 metadata.get('author.2') // => 'Mary'
 
+Using a negative index will start counting at the end of the list:
+
+const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
+metadata.get('author.-1') // => 'Mary'
+metadata.get('author.-2') // => 'John'
+
 **Kind**: instance method of [<code>Metadata</code>](#Metadata)  
 **Returns**: <code>Array.&lt;String&gt;</code> \| <code>String</code> - the metadata value(s). If there is only one value, it will return a String,
 else it returns an array of strings.  

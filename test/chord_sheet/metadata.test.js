@@ -54,6 +54,12 @@ describe('Metadata', () => {
       expect(metadata.get('author.2')).toEqual('Mary');
     });
 
+    it('reads a single counting from the end', () => {
+      const metadata = new Metadata({ author: ['John', 'Mary'] });
+      expect(metadata.get('author.-1')).toEqual('Mary');
+      expect(metadata.get('author.-2')).toEqual('John');
+    });
+
     describe('when a single value does not exist', () => {
       it('returns undefined', () => {
         const metadata = new Metadata({});

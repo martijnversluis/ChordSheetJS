@@ -58,6 +58,12 @@ class Metadata {
    * metadata.get('author.1') // => 'John'
    * metadata.get('author.2') // => 'Mary'
    *
+   * Using a negative index will start counting at the end of the list:
+   *
+   * const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
+   * metadata.get('author.-1') // => 'Mary'
+   * metadata.get('author.-2') // => 'John'
+   *
    * @param prop the property name
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
    * else it returns an array of strings.
@@ -67,18 +73,33 @@ class Metadata {
       return this[prop];
     }
 
-    const match = prop.match(/(.+)\.(\d+)$/);
+    const match = prop.match(/(.+)\.(-?\d+)$/);
 
-    if (match) {
-      const key = match[1];
-      const index = parseInt(match[2], 10);
-
-      if (key in this) {
-        return (this[key] || [])[index - 1];
-      }
+    if (!match) {
+      return undefined;
     }
 
-    return undefined;
+    const key = match[1];
+
+    if (!(key in this)) {
+      return undefined;
+    }
+
+    const index = parseInt(match[2], 10);
+    return this.getArrayItem(key, index);
+  }
+
+  getArrayItem(key, index) {
+    const arrayValue = (this[key] || []);
+    let itemIndex = index;
+
+    if (itemIndex < 0) {
+      itemIndex = arrayValue.length + itemIndex;
+    } else if (itemIndex > 0) {
+      itemIndex -= 1;
+    }
+
+    return arrayValue[itemIndex];
   }
 
   /**
