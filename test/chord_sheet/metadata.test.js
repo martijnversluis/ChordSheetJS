@@ -5,6 +5,7 @@ describe('Metadata', () => {
   describe('new', () => {
     it('creates a new instance', () => {
       const metadata = new Metadata();
+      expect(metadata).toBeInstanceOf(Metadata);
       expect(Object.keys(metadata)).toHaveLength(0);
     });
 
@@ -23,6 +24,7 @@ describe('Metadata', () => {
       metadata.add('author', 'Steve');
       expect(Object.keys(metadata)).toHaveLength(1);
       expect(metadata).toEqual({ author: 'Steve' });
+      expect(metadata.author).toEqual('Steve');
     });
 
     it('appends a value', () => {
@@ -32,6 +34,38 @@ describe('Metadata', () => {
       expect(Object.keys(metadata)).toHaveLength(2);
       expect(metadata.title).toEqual('Another Song');
       expect(metadata.author).toEqual(['John', 'Steve']);
+    });
+  });
+
+  describe('get', () => {
+    it('reads a string value', () => {
+      const metadata = new Metadata({ author: 'John' });
+      expect(metadata.get('author')).toEqual('John');
+    });
+
+    it('reads an array value', () => {
+      const metadata = new Metadata({ author: ['John', 'Mary'] });
+      expect(metadata.get('author')).toEqual(['John', 'Mary']);
+    });
+
+    it('reads a single array item', () => {
+      const metadata = new Metadata({ author: ['John', 'Mary'] });
+      expect(metadata.get('author.1')).toEqual('John');
+      expect(metadata.get('author.2')).toEqual('Mary');
+    });
+
+    describe('when a single value does not exist', () => {
+      it('returns undefined', () => {
+        const metadata = new Metadata({});
+        expect(metadata.get('author')).toBeUndefined();
+      });
+    });
+
+    describe('when an array item does not exist', () => {
+      it('returns undefined', () => {
+        const metadata = new Metadata({ author: ['John', 'Mary'] });
+        expect(metadata.get('author.5')).toBeUndefined();
+      });
     });
   });
 });

@@ -214,7 +214,10 @@ subject to breaking changes between major versions.
 <dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
 </dd>
 <dt><a href="#Metadata">Metadata</a></dt>
-<dd><p>Stores song metadata</p>
+<dd><p>Stores song metadata. Properties can be accessed using the get() method:</p>
+<p>const metadata = new Metadata({ author: &#39;John&#39; });
+metadata.get(&#39;author&#39;)   // =&gt; &#39;John&#39;</p>
+<p>See <a href="#Metadata+get">get</a></p>
 </dd>
 <dt><a href="#Paragraph">Paragraph</a></dt>
 <dd><p>Represents a paragraph of lines in a chord sheet</p>
@@ -470,9 +473,49 @@ Indicates whether the line contains items that are renderable. Please use [hasRe
 <a name="Metadata"></a>
 
 ## Metadata
-Stores song metadata
+Stores song metadata. Properties can be accessed using the get() method:
+
+const metadata = new Metadata({ author: 'John' });
+metadata.get('author')   // => 'John'
+
+See [get](#Metadata+get)
 
 **Kind**: global class  
+
+* [Metadata](#Metadata)
+    * [.get(prop)](#Metadata+get) ⇒ <code>Array.&lt;String&gt;</code> \| <code>String</code>
+    * [.clone()](#Metadata+clone) ⇒ [<code>Metadata</code>](#Metadata)
+
+<a name="Metadata+get"></a>
+
+### metadata.get(prop) ⇒ <code>Array.&lt;String&gt;</code> \| <code>String</code>
+Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.
+
+This method deprecates direct property access, eg: metadata['author']
+
+Examples:
+
+const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
+metadata.get('lyricist') // => 'Pete'
+metadata.get('author')   // => ['John', 'Mary']
+metadata.get('author.1') // => 'John'
+metadata.get('author.2') // => 'Mary'
+
+**Kind**: instance method of [<code>Metadata</code>](#Metadata)  
+**Returns**: <code>Array.&lt;String&gt;</code> \| <code>String</code> - the metadata value(s). If there is only one value, it will return a String,
+else it returns an array of strings.  
+
+| Param | Description |
+| --- | --- |
+| prop | the property name |
+
+<a name="Metadata+clone"></a>
+
+### metadata.clone() ⇒ [<code>Metadata</code>](#Metadata)
+Returns a deep clone of this Metadata object
+
+**Kind**: instance method of [<code>Metadata</code>](#Metadata)  
+**Returns**: [<code>Metadata</code>](#Metadata) - the cloned Metadata object  
 <a name="Paragraph"></a>
 
 ## Paragraph
