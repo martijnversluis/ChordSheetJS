@@ -83,7 +83,7 @@ LyricsChar
   / "%" { return {type: "char", char: "%"}; }
 
 Char
-  = [^\|\[\]\\\{\}%#\r\n]
+  = [^\|\[\]\\\{\}%\r\n]
   / Escape
     sequence:(
         "\\" { return {type: "char", char: "\\"}; }
@@ -93,7 +93,6 @@ Char
       / "{" { return {type: "char", char: "\x7b"}; }
       / "}" { return {type: "char", char: "\x7d"}; }
       / "%" { return {type: "char", char: "%"}; }
-      / "#" { return {type: "char", char: "#"}; }
     )
     { return sequence; }
 
@@ -137,6 +136,3 @@ CarriageReturn
 
 Escape
   = "\\"
-
-Pound
-  = "#"
