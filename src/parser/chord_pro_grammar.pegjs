@@ -136,3 +136,6 @@ CarriageReturn
 
 Escape
   = "\\"
+
+Pound
+  = "#"
