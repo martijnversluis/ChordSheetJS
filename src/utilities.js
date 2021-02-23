@@ -9,9 +9,13 @@ export const pushNew = (collection, Klass) => {
 
 export const hasChordContents = (line) => line.items.some((item) => item instanceof ChordLyricsPair && item.chords);
 
+export const isEvaluatable = (item) => typeof item.evaluate === 'function';
+
 export const hasTextContents = (line) => (
   line.items.some((item) => (
-    item instanceof ChordLyricsPair && item.lyrics) || (item instanceof Tag && item.isRenderable()
+    (item instanceof ChordLyricsPair && item.lyrics)
+      || (item instanceof Tag && item.isRenderable())
+      || isEvaluatable(item)
   ))
 );
 
@@ -26,3 +30,7 @@ export const deprecate = (message) => {
     process.emitWarning(message);
   }
 };
+
+export const isPresent = (object) => object && object.length > 0;
+
+export const presence = (object) => (isPresent(object) ? object : null);

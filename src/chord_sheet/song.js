@@ -141,6 +141,19 @@ class Song {
     this.currentLine.addComment(comment);
   }
 
+  addItem(item) {
+    if (item instanceof Tag) {
+      this.addTag(item);
+    } else {
+      if (!item) {
+        throw new Error('You tried to add a falsy item!');
+      }
+
+      this.ensureLine();
+      this.currentLine.addItem(item);
+    }
+  }
+
   /**
    * Returns a deep clone of the song
    * @returns {Song} The cloned song

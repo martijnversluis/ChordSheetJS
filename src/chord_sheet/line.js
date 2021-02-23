@@ -45,6 +45,8 @@ class Line {
       this.addChordLyricsPair(item);
     } else if (item instanceof Comment) {
       this.addComment(item);
+    } else {
+      this.items.push(item);
     }
   }
 

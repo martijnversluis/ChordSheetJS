@@ -57,26 +57,37 @@ ChordChar
     { return sequence; }
 
 MetaTernary
-  = "%{" _ variableName:$(MetaVariableName?) _ expressions:MetaTernaryTrueFalseExpressions? _ "}" {
+  = "%{" _ variableName:$(MetaVariableName?) valueTest:MetaValueTest? _ expressions:MetaTernaryTrueFalseExpressions? _ "}" {
   return {
     "type": "metaTernary",
     variable: variableName,
-    expressions
+    valueTest,
+    ...expressions,
+    location: location()
   };
 }
+
+MetaValueTest
+  = "=" _ testValue:MetaTestValue {
+  return testValue;
+}
+
+MetaTestValue
+  = $(Char+)
 
 MetaTernaryTrueFalseExpressions
   = "|" _ trueExpression:MetaExpression _ falseExpression:MetaTernaryFalseExpression? _ {
   return {
-    "type": "trueFalseExpression",
+    "type": "metaTernary",
     trueExpression,
-    falseExpression
+    falseExpression,
+    location: location()
   }
 }
 
 MetaTernaryFalseExpression
   = "|" _ falseExpression:MetaExpression {
-  return {"type": "falseExpression", falseExpression: falseExpression };
+  return falseExpression;
 }
 
 MetaVariableName
@@ -89,7 +100,6 @@ LyricsChar
   = Char
   / "]" { return {type: "char", char: "]"}; }
   / "}" { return {type: "char", char: "\x7d"}; }
-  / "%" { return {type: "char", char: "%"}; }
 
 Char
   = [^\|\[\]\\\{\}%#\r\n]
@@ -132,6 +142,7 @@ TagValueChar
     sequence:(
         "\\" { return {type: "char", char: "\\"}; }
       / "}" { return {type: "char", char: "\x7d"}; }
+      / "{" { return {type: "char", char: "\x7b"}; }
     )
     { return sequence; }
 
@@ -158,3 +169,6 @@ Escape
 
 Pound
   = "#"
+
+Percent
+  = "%"

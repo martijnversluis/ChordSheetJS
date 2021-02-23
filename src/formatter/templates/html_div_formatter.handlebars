@@ -23,6 +23,10 @@
                     <div class="comment">{{value}}</div>
                   {{~/if~}}
                 {{~/if~}}
+
+                {{~#if (isEvaluatable item)~}}
+                  <div class="column"><div class="chord"></div><div class="lyrics">{{evaluate item ../../../../song/metadata}}</div></div>
+                {{~/if~}}
               {{~/each~}}
             </div>
           {{~/if~}}
