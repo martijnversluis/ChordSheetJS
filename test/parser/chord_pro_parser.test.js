@@ -7,7 +7,7 @@ const chordSheet = `
 {subtitle: ChordSheetJS example version}
 {Chorus}
 
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+Let it [Am]be, let it [C/A][C/G]be, let it [F]be, let it [C]be
 [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`.substring(1);
 
 describe('ChordProParser', () => {
@@ -31,9 +31,10 @@ describe('ChordProParser', () => {
     const line4Pairs = lines[4].items;
     expect(line4Pairs[0]).toBeChordLyricsPair('', 'Let it ');
     expect(line4Pairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
-    expect(line4Pairs[2]).toBeChordLyricsPair('C/G', 'be, let it ');
-    expect(line4Pairs[3]).toBeChordLyricsPair('F', 'be, let it ');
-    expect(line4Pairs[4]).toBeChordLyricsPair('C', 'be');
+    expect(line4Pairs[2]).toBeChordLyricsPair('C/A', '');
+    expect(line4Pairs[3]).toBeChordLyricsPair('C/G', 'be, let it ');
+    expect(line4Pairs[4]).toBeChordLyricsPair('F', 'be, let it ');
+    expect(line4Pairs[5]).toBeChordLyricsPair('C', 'be');
 
     const lines5Pairs = lines[5].items;
     expect(lines5Pairs[0]).toBeChordLyricsPair('C', 'Whisper words of ');
