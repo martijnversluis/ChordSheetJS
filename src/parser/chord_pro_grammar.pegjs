@@ -115,7 +115,16 @@ TagName
   = [a-zA-Z-_]+
 
 TagValue
-  = [a-zA-Z0-9 ]+
+  = TagValueChar+
+
+TagValueChar
+  = [^\}\r\n]
+  / Escape
+    sequence:(
+        "\\" { return {type: "char", char: "\\"}; }
+      / "}" { return {type: "char", char: "\x7d"}; }
+    )
+    { return sequence; }
 
 _ "whitespace"
   = [ \t\n\r]*
