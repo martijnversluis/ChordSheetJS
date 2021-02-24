@@ -43,9 +43,18 @@ Lyrics
 }
 
 Chord
-  = !Escape "[" chord:Char* "]" {
+  = !Escape "[" chord:ChordChar* "]" {
   return chord.map(c => c.char || c).join("");
 }
+
+ChordChar
+  = [^\]\r\n]
+  / Escape
+    sequence:(
+        "\\" { return {type: "char", char: "\\"}; }
+      / "]" { return {type: "char", char: "]"}; }
+    )
+    { return sequence; }
 
 MetaTernary
   = "%{" _ variableName:$(MetaVariableName?) _ expressions:MetaTernaryTrueFalseExpressions? _ "}" {
