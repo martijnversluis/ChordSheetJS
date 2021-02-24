@@ -26,8 +26,15 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
         errors.push(`it was a instance of ${received.constructor.name}`);
       } else {
         propertyNames.forEach((name) => {
-          if (received[name] !== properties[name]) {
-            errors.push(`its ${name} were: "${received[name]}"`);
+          const actualProperty = received[name];
+          const expectedProperty = properties[name];
+          const actualType = typeof actualProperty;
+          const expectedType = typeof expectedProperty;
+
+          if (actualType !== expectedType) {
+            errors.push(`expected ${name} to be a ${expectedType} but it was a ${actualType}`);
+          } else if (actualProperty !== expectedProperty) {
+            errors.push(`its ${name} were: "${actualProperty}" vs "${expectedProperty}"`);
           }
         });
       }

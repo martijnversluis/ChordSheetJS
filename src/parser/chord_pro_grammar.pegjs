@@ -33,7 +33,7 @@ Comment
 }
 
 ChordLyricsPair
-  = chord: Chord lyrics: Lyrics {
+  = chord: Chord lyrics:$(Lyrics*) {
   return { type: "chordLyricsPair", chord, lyrics }
 }
 
