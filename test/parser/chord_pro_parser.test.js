@@ -2,7 +2,9 @@ import '../matchers';
 import ChordProParser from '../../src/parser/chord_pro_parser';
 import { CHORUS, NONE, VERSE } from '../../src/constants';
 
-const chordSheet = `
+describe('ChordProParser', () => {
+  it('parses a ChordPro chord sheet correctly', () => {
+    const chordSheet = `
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
 {Chorus}
@@ -10,8 +12,6 @@ const chordSheet = `
 Let it [Am]be, let it [C/A][C/G]be, let it [F]be, let it [C]be
 [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`.substring(1);
 
-describe('ChordProParser', () => {
-  it('parses a ChordPro chord sheet correctly', () => {
     const song = new ChordProParser().parse(chordSheet);
     const { lines } = song;
 
@@ -46,7 +46,18 @@ describe('ChordProParser', () => {
     expect(lines5Pairs[6]).toBeChordLyricsPair('C', '');
   });
 
+  it('correctly parses a directive with special characters', () => {
+    const chordSheet = '{comment: Intro [Dm7] [F6/B] [Cmaj7] }';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeTag('comment', 'Intro [Dm7] [F6/B] [Cmaj7]');
+  });
+
   it('parses meta data', () => {
+    const chordSheet = `
+{title: Let it be}
+{subtitle: ChordSheetJS example version}`.substring(1);
+
     const song = new ChordProParser().parse(chordSheet);
 
     expect(song.title).toEqual('Let it be');
