@@ -53,6 +53,13 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
     expect(song.lines[0].items[0]).toBeTag('comment', 'Intro [Dm7] [F6/B] [Cmaj7]');
   });
 
+  it('correctly parses a directive containing curly brackets', () => {
+    const chordSheet = '{comment: Some {comment\\} }';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
+  });
+
   it('parses meta data', () => {
     const chordSheet = `
 {title: Let it be}
