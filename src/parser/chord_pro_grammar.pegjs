@@ -116,8 +116,8 @@ Tag
 }
 
 TagColonWithValue
-  = ":" _ tagValue:$(TagValue) {
-  return tagValue;
+  = ":" _ tagValue:TagValue {
+  return tagValue.map(c => c.char || c).join('');
 }
 
 TagName
@@ -127,7 +127,7 @@ TagValue
   = TagValueChar+
 
 TagValueChar
-  = [^\}\r\n]
+  = [^}\\\r\n]
   / Escape
     sequence:(
         "\\" { return {type: "char", char: "\\"}; }
