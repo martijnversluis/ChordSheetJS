@@ -3,7 +3,7 @@ import HandleBars from 'handlebars';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
 import { INDETERMINATE, NONE } from './constants';
-import { hasChordContents, hasTextContents } from './utilities';
+import { hasChordContents, hasTextContents, isEvaluatable } from './utilities';
 
 const lineHasContents = (line) => line.items.some((item) => item.isRenderable());
 
@@ -47,4 +47,14 @@ HandleBars.registerHelper('paragraphClasses', (paragraph) => {
   }
 
   return classes.join(' ');
+});
+
+HandleBars.registerHelper('isEvaluatable', isEvaluatable);
+
+HandleBars.registerHelper('evaluate', (item, metadata) => {
+  if (!metadata) {
+    throw new Error('cannot evaluate, metadata is null');
+  }
+
+  return item.evaluate(metadata);
 });

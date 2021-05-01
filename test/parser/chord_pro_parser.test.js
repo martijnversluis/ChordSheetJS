@@ -158,6 +158,88 @@ Let it [F]be [C]
     expect(parser.warnings).toHaveLength(0);
   });
 
+  it('allows escaped special characters in tags', () => {
+    const chordSheet = '{title: my \\{title\\}}';
+    const song = new ChordProParser().parse(chordSheet);
+    expect(song.title).toEqual('my {title}');
+  });
+
+  it('parses simple ternaries', () => {
+    const chordSheet = '%{title}';
+    const song = new ChordProParser().parse(chordSheet);
+    const expression = song.lines[0].items[0];
+
+    expect(expression).toBeTernary({
+      variable: 'title',
+      valueTest: null,
+      trueExpression: null,
+      falseExpression: null,
+    });
+  });
+
+  it('parses ternaries with a self-referencing true expression', () => {
+    const chordSheet = '%{artist|%{}}';
+    const song = new ChordProParser().parse(chordSheet);
+    const expression = song.lines[0].items[0];
+
+    expect(expression).toBeTernary({
+      variable: 'artist',
+      valueTest: null,
+      falseExpression: null,
+    });
+
+    expect(expression.trueExpression).toHaveLength(1);
+    expect(expression.trueExpression[0]).toBeTernary({
+      variable: null,
+      valueTest: null,
+      trueExpression: null,
+      falseExpression: null,
+    });
+  });
+
+  it('parses ternaries with value test', () => {
+    const chordSheet = '%{artist=X|artist is X|artist is not X}';
+    const song = new ChordProParser().parse(chordSheet);
+    const expression = song.lines[0].items[0];
+
+    expect(expression).toBeTernary({
+      variable: 'artist',
+      valueTest: 'X',
+    });
+
+    expect(expression.trueExpression).toHaveLength(1);
+    expect(expression.trueExpression[0]).toBeLiteral('artist is X');
+    expect(expression.falseExpression).toHaveLength(1);
+    expect(expression.falseExpression[0]).toBeLiteral('artist is not X');
+  });
+
+  it('parses nested ternaries', () => {
+    const chordSheet = '%{title|title is set and c is %{c|set|unset}|title is unset}';
+    const song = new ChordProParser().parse(chordSheet);
+    const expression = song.lines[0].items[0];
+
+    expect(expression).toBeTernary({
+      variable: 'title',
+      valueTest: null,
+    });
+
+    expect(expression.trueExpression).toHaveLength(2);
+    expect(expression.trueExpression[0]).toBeLiteral('title is set and c is ');
+    expect(expression.trueExpression[1]).toBeTernary({
+      variable: 'c',
+      valueTest: null,
+    });
+
+    expect(expression.trueExpression[1].trueExpression).toHaveLength(1);
+    expect(expression.trueExpression[1].trueExpression[0]).toBeLiteral('set');
+
+    expect(expression.trueExpression[1].falseExpression).toHaveLength(1);
+    expect(expression.trueExpression[1].falseExpression[0]).toBeLiteral('unset');
+
+    expect(expression.falseExpression).toHaveLength(1);
+    expect(expression.falseExpression[0]).toBeLiteral('title is unset');
+  });
+
   describe('it is forgiving to syntax errors', () => {
     it('allows dangling ]', () => {
       const chordSheetWithError = `
@@ -171,14 +253,6 @@ Let it [Am]be
       const chordSheetWithError = `
 Let it [Am]be
 [C]Whisper wor}ds of [F]wis[G]dom`;
-
-      new ChordProParser().parse(chordSheetWithError);
-    });
-
-    it('allows dangling %', () => {
-      const chordSheetWithError = `
-Let it [Am]be
-[C]Whisper wor%ds of [F]wis[G]dom`;
 
       new ChordProParser().parse(chordSheetWithError);
     });

@@ -36,6 +36,10 @@
                           <td class="comment">{{value}}</td>
                         {{~/if~}}
                       {{~/if~}}
+
+                      {{~#if (isEvaluatable item)~}}
+                        <td class="lyrics">{{evaluate item ../../../../song/metadata}}</td>
+                      {{~/if~}}
                     {{~/each~}}
                   </tr>
                 {{~/if~}}

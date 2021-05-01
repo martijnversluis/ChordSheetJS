@@ -5,11 +5,17 @@ import Tag, {
 } from '../chord_sheet/tag';
 import { CHORUS, NONE, VERSE } from '../constants';
 import ParserWarning from './parser_warning';
+import Ternary from '../chord_sheet/chord_pro/ternary';
+import Literal from '../chord_sheet/chord_pro/literal';
+import { presence } from '../utilities';
+import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
+import Comment from '../chord_sheet/comment';
 
 const CHORD_SHEET = 'chordSheet';
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const TAG = 'tag';
 const COMMENT = 'comment';
+const TERNARY = 'metaTernary';
 
 /**
  * Parses a ChordPro chord sheet
@@ -27,31 +33,41 @@ class ChordProParser {
      * @type {Array<ParserWarning>}
      */
     this.warnings = [];
-
     const ast = ChordProPegParser.parse(chordProChordSheet);
+
     this.parseAstComponent(ast);
+
     this.song.finish();
     return this.song;
   }
 
   parseAstComponent(astComponent) {
+    if (!astComponent) {
+      return null;
+    }
+
+    if (typeof astComponent === 'string') {
+      return new Literal(astComponent);
+    }
+
     const { type } = astComponent;
 
     switch (type) {
       case CHORD_SHEET:
-        this.parseChordSheet(astComponent);
-        break;
+        return this.parseChordSheet(astComponent);
       case CHORD_LYRICS_PAIR:
-        this.parseChordLyricsPair(astComponent);
-        break;
+        return this.parseChordLyricsPair(astComponent);
       case TAG:
-        this.parseTag(astComponent);
-        break;
+        return this.parseTag(astComponent);
       case COMMENT:
-        this.parseComment(astComponent);
-        break;
-      default: console.warn(`Unhandled AST component "${type}"`);
+        return this.parseComment(astComponent);
+      case TERNARY:
+        return this.parseTernary(astComponent);
+      default:
+        console.warn(`Unhandled AST component "${type}"`, astComponent);
     }
+
+    return null;
   }
 
   parseChordSheet(astComponent) {
@@ -66,23 +82,55 @@ class ChordProParser {
     this.lineNumber = lineNumber + 1;
     this.song.addLine();
     this.song.setCurrentLineType(this.sectionType);
-    items.forEach((item) => this.parseAstComponent(item));
+
+    items.forEach((item) => {
+      const parsedItem = this.parseAstComponent(item);
+      this.song.addItem(parsedItem);
+    });
   }
 
   parseChordLyricsPair(astComponent) {
     const { chord, lyrics } = astComponent;
-    this.song.addChordLyricsPair(chord, lyrics);
+    return new ChordLyricsPair(chord, lyrics);
   }
 
   parseTag(astComponent) {
     const { name, value } = astComponent;
-    const parsedTag = this.song.addTag(new Tag(name, value));
+    const parsedTag = new Tag(name, value);
     this.applyTag(parsedTag);
+    return parsedTag;
   }
 
   parseComment(astComponent) {
     const { comment } = astComponent;
-    this.song.addComment(comment);
+    return new Comment(comment);
+  }
+
+  parseTernary(astComponent) {
+    const {
+      variable,
+      valueTest,
+      trueExpression,
+      falseExpression,
+      location: {
+        start: { offset, line, column },
+      },
+    } = astComponent;
+
+    return new Ternary({
+      variable,
+      valueTest,
+      trueExpression: this.parseExpression(trueExpression),
+      falseExpression: this.parseExpression(falseExpression),
+      offset,
+      line,
+      column,
+    });
+  }
+
+  parseExpression(expression) {
+    const parsedParts = (expression || []).map((part) => this.parseAstComponent(part));
+    return presence(parsedParts);
   }
 
   applyTag(tag) {
