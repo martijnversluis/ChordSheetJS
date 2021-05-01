@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-- '10'
-- '12'
 - node
+- lts/*
+- 15
+- 14
 deploy:
   provider: npm
   email: martijnversluis@gmail.com
