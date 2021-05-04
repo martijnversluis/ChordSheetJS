@@ -99,6 +99,7 @@ MetaExpression
 LyricsChar
   = Char
   / "]" { return {type: "char", char: "]"}; }
+  / "|" { return {type: "char", char: "|"}; }
   / "}" { return {type: "char", char: "\x7d"}; }
 
 Char

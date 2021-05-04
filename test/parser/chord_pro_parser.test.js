@@ -240,6 +240,13 @@ Let it [F]be [C]
     expect(expression.falseExpression[0]).toBeLiteral('title is unset');
   });
 
+  it('Allows unescaped pipe characters outside of meta expressions', () => {
+    const chordSheet = '|: Let it be :|';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeChordLyricsPair('', '|: Let it be :|');
+  });
+
   describe('it is forgiving to syntax errors', () => {
     it('allows dangling ]', () => {
       const chordSheetWithError = `
