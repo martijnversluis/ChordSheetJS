@@ -51,18 +51,32 @@ class Song {
   /**
    * Returns the song lines, skipping the leading empty lines (empty as in not rendering any content). This is useful
    * if you want to skip the "header lines": the lines that only contain meta data.
-   * @returns {Array<Line>} The song body lines
+   * @returns {Line[]} The song body lines
    */
   get bodyLines() {
-    if (this._bodyLines === undefined) {
-      this._bodyLines = [...this.lines];
+    return this.selectRenderableItems('_bodyLines', 'lines');
+  }
 
-      while (!this._bodyLines[0].hasRenderableItems()) {
-        this._bodyLines.shift();
+  /**
+   * Returns the song paragraphs, skipping the paragraphs that only contain empty lines
+   * (empty as in not rendering any content)
+   * @see {@link bodyLines}
+   * @returns {Paragraph[]}
+   */
+  get bodyParagraphs() {
+    return this.selectRenderableItems('_bodyParagraphs', 'paragraphs');
+  }
+
+  selectRenderableItems(targetProp, sourceProp) {
+    if (this[targetProp] === undefined) {
+      this[targetProp] = [...this[sourceProp]];
+
+      while (!this[targetProp][0].hasRenderableItems()) {
+        this[targetProp].shift();
       }
     }
 
-    return this._bodyLines;
+    return this[targetProp];
   }
 
   chords(chr) {
