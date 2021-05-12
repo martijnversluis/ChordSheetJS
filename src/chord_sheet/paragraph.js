@@ -32,6 +32,15 @@ class Paragraph {
 
     return INDETERMINATE;
   }
+
+  /**
+   * Indicates whether the paragraph contains lines with renderable items.
+   * @see {@link Line.hasRenderableItems}
+   * @returns {boolean}
+   */
+  hasRenderableItems() {
+    return this.lines.some((line) => line.hasRenderableItems());
+  }
 }
 
 export default Paragraph;

@@ -30,9 +30,9 @@ class TextFormatter {
   }
 
   formatParagraphs(song) {
-    const { paragraphs, metadata } = song;
+    const { bodyParagraphs, metadata } = song;
 
-    return paragraphs
+    return bodyParagraphs
       .map((paragraph) => this.formatParagraph(paragraph, metadata))
       .join('\n\n');
   }
