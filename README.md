@@ -242,7 +242,7 @@ metadata.get(&#39;author&#39;)   // =&gt; &#39;John&#39;</p>
 PDF conversion.</p>
 </dd>
 <dt><a href="#TextFormatter">TextFormatter</a></dt>
-<dd><p>Formats a sonf into a plain text chord sheet</p>
+<dd><p>Formats a song into a plain text chord sheet</p>
 </dd>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
 <dd><p>Parses a ChordPro chord sheet</p>
@@ -532,6 +532,7 @@ Represents a paragraph of lines in a chord sheet
 * [Paragraph](#Paragraph)
     * [.lines](#Paragraph+lines) : [<code>Array.&lt;Line&gt;</code>](#Line)
     * [.type](#Paragraph+type) ⇒ <code>string</code>
+    * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
 <a name="Paragraph+lines"></a>
 
@@ -546,6 +547,13 @@ Tries to determine the common type for all lines. If the types for all lines are
 If not, it returns [INDETERMINATE](INDETERMINATE)
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+hasRenderableItems"></a>
+
+### paragraph.hasRenderableItems() ⇒ <code>boolean</code>
+Indicates whether the paragraph contains lines with renderable items.
+
+**Kind**: instance method of [<code>Paragraph</code>](#Paragraph)  
+**See**: [Line.hasRenderableItems](Line.hasRenderableItems)  
 <a name="Song"></a>
 
 ## Song
@@ -559,6 +567,7 @@ Represents a song in a chord sheet. Currently a chord sheet can only have one so
     * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * [.metadata](#Song+metadata) : [<code>Metadata</code>](#Metadata)
     * [.bodyLines](#Song+bodyLines) ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
+    * [.bodyParagraphs](#Song+bodyParagraphs) ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
 
@@ -599,6 +608,14 @@ if you want to skip the "header lines": the lines that only contain meta data.
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
 **Returns**: [<code>Array.&lt;Line&gt;</code>](#Line) - The song body lines  
+<a name="Song+bodyParagraphs"></a>
+
+### song.bodyParagraphs ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
+Returns the song paragraphs, skipping the paragraphs that only contain empty lines
+(empty as in not rendering any content)
+
+**Kind**: instance property of [<code>Song</code>](#Song)  
+**See**: [bodyLines](bodyLines)  
 <a name="Song+metaData"></a>
 
 ### ~~song.metaData ⇒~~
@@ -680,6 +697,22 @@ Returns a clone of the tag.
 Formats a song into a ChordPro chord sheet
 
 **Kind**: global class  
+
+* [ChordProFormatter](#ChordProFormatter)
+    * [new ChordProFormatter(options)](#new_ChordProFormatter_new)
+    * [.format(song)](#ChordProFormatter+format) ⇒ <code>string</code>
+
+<a name="new_ChordProFormatter_new"></a>
+
+### new ChordProFormatter(options)
+Instantiate
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Object</code> | options |
+| options.evaluate | <code>boolean</code> | Whether or not to evaluate meta expressions. For more info about meta expression, see: https://bit.ly/2SC9c2u |
+
 <a name="ChordProFormatter+format"></a>
 
 ### chordProFormatter.format(song) ⇒ <code>string</code>
@@ -738,7 +771,7 @@ Formats a song into HTML.
 <a name="TextFormatter"></a>
 
 ## TextFormatter
-Formats a sonf into a plain text chord sheet
+Formats a song into a plain text chord sheet
 
 **Kind**: global class  
 <a name="TextFormatter+format"></a>

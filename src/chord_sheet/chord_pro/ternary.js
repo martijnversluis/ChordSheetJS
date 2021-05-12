@@ -23,6 +23,11 @@ class Ternary {
     this.offset = offset;
   }
 
+  /**
+   * Evaluate the meta expression
+   * @param {Metadata} metadata The metadata object to use for evaluating the expression
+   * @returns {string} The evaluated expression
+   */
   evaluate(metadata, upperContext = null) {
     if (this.variable) {
       return this.evaluateWithVariable(metadata);

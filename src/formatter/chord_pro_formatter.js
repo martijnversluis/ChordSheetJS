@@ -9,6 +9,12 @@ const NEW_LINE = '\n';
  * Formats a song into a ChordPro chord sheet
  */
 class ChordProFormatter {
+  /**
+   * Instantiate
+   * @param {Object} options options
+   * @param {boolean} options.evaluate Whether or not to evaluate meta expressions. For more info about meta
+   * expression, see: https://bit.ly/2SC9c2u
+   */
   constructor({ evaluate = false } = {}) {
     this.evaluate = (evaluate === true);
   }
