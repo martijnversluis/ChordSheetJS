@@ -8,7 +8,7 @@ class HtmlFormatter {
       {
         allowedProtoProperties: {
           bodyLines: true,
-          paragraphs: true,
+          bodyParagraphs: true,
           subtitle: true,
           title: true,
           value: true,
