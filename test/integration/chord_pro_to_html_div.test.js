@@ -62,4 +62,11 @@ describe('chordpro to HTML with DIVs', () => {
 
     expect(formatted).toEqual(expectedChordSheet);
   });
+
+  it('does not fail on empty chord sheet', () => {
+    const song = new ChordProParser().parse('');
+    const formatted = new HtmlDivFormatter().format(song);
+
+    expect(formatted).toEqual('<div class="chord-sheet"></div>');
+  });
 });

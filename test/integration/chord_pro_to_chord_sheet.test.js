@@ -52,4 +52,11 @@ Whisper words of wisdom, let it be`.substring(1);
 
     expect(formatted).toEqual(expectedChordSheet);
   });
+
+  it('does not fail on empty chord sheet', () => {
+    const song = new ChordProParser().parse('');
+    const formatted = new TextFormatter().format(song);
+
+    expect(formatted).toEqual('');
+  });
 });
