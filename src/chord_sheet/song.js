@@ -70,8 +70,9 @@ class Song {
   selectRenderableItems(targetProp, sourceProp) {
     if (this[targetProp] === undefined) {
       this[targetProp] = [...this[sourceProp]];
+      const collection = this[targetProp];
 
-      while (!this[targetProp][0].hasRenderableItems()) {
+      while (collection.length > 0 && !collection[0].hasRenderableItems()) {
         this[targetProp].shift();
       }
     }

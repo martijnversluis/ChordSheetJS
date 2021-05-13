@@ -54,4 +54,11 @@ describe('chordpro to HTML with TABLEs', () => {
 
     expect(formatted).toEqual(expectedChordSheet);
   });
+
+  it('does not fail on empty chord sheet', () => {
+    const song = new ChordProParser().parse('');
+    const formatted = new HtmlTableFormatter().format(song);
+
+    expect(formatted).toEqual('');
+  });
 });

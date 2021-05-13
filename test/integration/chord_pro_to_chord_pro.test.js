@@ -45,4 +45,11 @@ title is set and c is unset`.substring(1);
 
     expect(formatted).toEqual(chordSheet);
   });
+
+  it('does not fail on empty chord sheet', () => {
+    const song = new ChordProParser().parse('');
+    const formatted = new ChordProFormatter().format(song);
+
+    expect(formatted).toEqual('');
+  });
 });
