@@ -80,7 +80,7 @@ class ChordProFormatter {
 
     return [
       '%{',
-      variable,
+      variable || '',
       this.formatValueTest(valueTest),
       this.formatExpressionRange(trueExpression),
       this.formatExpressionRange(falseExpression),

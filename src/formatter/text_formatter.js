@@ -81,9 +81,9 @@ class TextFormatter {
   }
 
   chordLyricsPairLength(chordLyricsPair) {
-    const { chords } = chordLyricsPair;
-    const chordsLength = chords.length;
-    const lyricsLength = chordLyricsPair.lyrics.length;
+    const { chords, lyrics } = chordLyricsPair;
+    const chordsLength = (chords || '').length;
+    const lyricsLength = (lyrics || '').length;
 
     if (chordsLength >= lyricsLength) {
       return chordsLength + 1;
@@ -98,7 +98,7 @@ class TextFormatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(item.chords, this.chordLyricsPairLength(item));
+      return padLeft(item.chords || '', this.chordLyricsPairLength(item));
     }
 
     return '';

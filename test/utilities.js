@@ -38,16 +38,13 @@ export function createParagraph(lines) {
 }
 
 export function createChordLyricsPair(chords, lyrics) {
-  const chordLyricsPair = new ChordLyricsPair();
-  chordLyricsPair.chords = chords;
-  chordLyricsPair.lyrics = lyrics;
-  return chordLyricsPair;
+  return new ChordLyricsPair(chords, lyrics);
 }
 
 export function createTag(name, value) {
   const tag = new Tag();
   tag.name = name;
-  tag.value = value;
+  tag.value = value || null;
   return tag;
 }
 
@@ -61,7 +58,7 @@ export function createLiteral(expression) {
 
 export function createTernary(
   {
-    variable = null,
+    variable = '',
     valueTest = null,
     trueExpression = null,
     falseExpression = null,

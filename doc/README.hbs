@@ -107,6 +107,16 @@ const formatter = new ChordSheetJS.ChordProFormatter();
 const disp = formatter.format(song);
 ```
 
+### Serialize/deserialize
+
+Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by
+third-party libraries. The serialized object can also be deserialized back into a `Song`.
+
+```javascript
+const serializedSong = new ChordSheetSerializer().serialize(song);
+const deserialized = new ChordSheetSerializer().deserialize(serializedSong);
+```
+
 ## Supported ChordPro directives
 
 :heavy_check_mark: = supported

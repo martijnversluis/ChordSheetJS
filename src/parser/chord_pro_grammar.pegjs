@@ -12,13 +12,13 @@ LineWithNewline
 }
 
 Line
-  = lyrics:Lyrics? tokens:Token* chord:Chord? comment:Comment? {
+  = lyrics:Lyrics? tokens:Token* chords:Chord? comment:Comment? {
   return {
     type: "line",
     items: [
-      lyrics ? {type: "chordLyricsPair", chord: null, lyrics} : null,
+      lyrics ? {type: "chordLyricsPair", chords: '', lyrics} : null,
       ...tokens,
-      chord ? {type: "chordLyricsPair", chord, lyrics: null} : null,
+      chords ? {type: "chordLyricsPair", chords, lyrics: ''} : null,
       comment ? {type: "comment", comment} : null
     ].filter(x => x)
   }
@@ -33,8 +33,8 @@ Comment
 }
 
 ChordLyricsPair
-  = chord: Chord lyrics:$(Lyrics*) {
-  return { type: "chordLyricsPair", chord, lyrics }
+  = chords: Chord lyrics:$(Lyrics*) {
+  return { type: "chordLyricsPair", chords: chords || '', lyrics }
 }
 
 Lyrics
@@ -43,8 +43,8 @@ Lyrics
 }
 
 Chord
-  = !Escape "[" chord:ChordChar* "]" {
-  return chord.map(c => c.char || c).join("");
+  = !Escape "[" chords:ChordChar* "]" {
+  return chords.map(c => c.char || c).join("");
 }
 
 ChordChar
@@ -59,11 +59,11 @@ ChordChar
 MetaTernary
   = "%{" _ variableName:$(MetaVariableName?) valueTest:MetaValueTest? _ expressions:MetaTernaryTrueFalseExpressions? _ "}" {
   return {
-    "type": "metaTernary",
-    variable: variableName,
+    "type": "ternary",
+    variable: variableName.length > 0 ? variableName : null,
     valueTest,
     ...expressions,
-    location: location()
+    location: location().start
   };
 }
 
@@ -78,10 +78,10 @@ MetaTestValue
 MetaTernaryTrueFalseExpressions
   = "|" _ trueExpression:MetaExpression _ falseExpression:MetaTernaryFalseExpression? _ {
   return {
-    "type": "metaTernary",
+    "type": "ternary",
     trueExpression,
     falseExpression,
-    location: location()
+    location: location().start
   }
 }
 
@@ -123,7 +123,7 @@ Tag
     type: "tag",
     name: tagName,
     value: tagColonWithValue,
-    location: location()
+    location: location().start
   }
 }
 

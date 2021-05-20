@@ -1,0 +1,252 @@
+{
+  "type": "chordSheet",
+  "lines": [
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "title",
+          "value": "Let it be"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "subtitle",
+          "value": "ChordSheetJS example version"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "x_some_setting",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "composer",
+          "value": "John Lennon"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "composer",
+          "value": "Paul McCartney"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": []
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "chordLyricsPair",
+          "chords": "",
+          "lyrics": "Written by: "
+        },
+        {
+          "type": "ternary",
+          "variable": "composer",
+          "valueTest": null,
+          "trueExpression": [
+            {
+              "type": "ternary",
+              "variable": null,
+              "valueTest": null
+            }
+          ],
+          "falseExpression": [
+            "No composer defined for ",
+            {
+              "type": "ternary",
+              "variable": "title",
+              "valueTest": null,
+              "trueExpression": [
+                {
+                  "type": "ternary",
+                  "variable": null,
+                  "valueTest": null
+                }
+              ],
+              "falseExpression": [
+                "Untitled song"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": []
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "start_of_verse",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "chordLyricsPair",
+          "chords": "",
+          "lyrics": "Let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "Am",
+          "lyrics": "be, let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "C/G",
+          "lyrics": "be, let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "F",
+          "lyrics": "be, let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "C",
+          "lyrics": "be"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "chordLyricsPair",
+          "chords": "C",
+          "lyrics": "Whisper words of "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "F",
+          "lyrics": "wis"
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "G",
+          "lyrics": "dom, let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "F",
+          "lyrics": "be "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "C/E",
+          "lyrics": " "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "Dm",
+          "lyrics": " "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "C",
+          "lyrics": ""
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "end_of_verse",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": []
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "start_of_chorus",
+          "value": null
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "comment",
+          "value": "Breakdown"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "chordLyricsPair",
+          "chords": "Am",
+          "lyrics": "Whisper words of "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "Bb",
+          "lyrics": "wisdom, let it "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "F",
+          "lyrics": "be "
+        },
+        {
+          "type": "chordLyricsPair",
+          "chords": "C",
+          "lyrics": ""
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "end_of_chorus",
+          "value": null
+        }
+      ]
+    }
+  ]
+}
