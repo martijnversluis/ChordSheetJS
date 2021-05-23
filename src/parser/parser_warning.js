@@ -5,7 +5,7 @@ class ParserWarning {
   /**
    * @hideconstructor
    */
-  constructor(message, lineNumber) {
+  constructor(message, lineNumber, column) {
     /**
      * The warning message
      * @member
@@ -16,9 +16,16 @@ class ParserWarning {
     /**
      * The chord sheet line number on which the warning occurred
      * @member
-     * @type {integer}
+     * @type {number}
      */
     this.lineNumber = lineNumber;
+
+    /**
+     * The chord sheet column on which the warning occurred
+     * @member
+     * @type {number}
+     */
+    this.column = column;
   }
 
   /**
@@ -26,7 +33,7 @@ class ParserWarning {
    * @returns {string} The string warning
    */
   toString() {
-    return `Warning: ${this.message} on line ${this.lineNumber}`;
+    return `Warning: ${this.message} on line ${this.lineNumber} column ${this.column}`;
   }
 }
 

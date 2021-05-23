@@ -11,13 +11,14 @@ describe('TextFormatter', () => {
 LET IT BE
 ChordSheetJS example version
 
-Bridge
+Written by: John Lennon,Paul McCartney
 
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
 C                F  G           F  C/E Dm C
 Whisper words of wisdom, let it be
 
+Breakdown
 Am               Bb             F  C
 Whisper words of wisdom, let it be`.substring(1);
 

@@ -1,7 +1,7 @@
 import '../matchers';
 import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
 import song from '../fixtures/song';
-import { createChordLyricsPair, createLine, createSong } from '../utilities';
+import { createChordLyricsPair, createSong } from '../utilities';
 
 describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -13,7 +13,8 @@ describe('HtmlTableFormatter', () => {
         + '<div class="paragraph">'
           + '<table class="row">'
             + '<tr>'
-              + '<td class="comment">Bridge</td>'
+              + '<td class="lyrics">Written by: </td>'
+              + '<td class="lyrics">John Lennon,Paul McCartney</td>'
             + '</tr>'
           + '</table>'
         + '</div>'
@@ -51,11 +52,16 @@ describe('HtmlTableFormatter', () => {
               + '<td class="lyrics">be </td>'
               + '<td class="lyrics"> </td>'
               + '<td class="lyrics"> </td>'
-              + '<td class="lyrics"> </td>'
+              + '<td class="lyrics"></td>'
             + '</tr>'
           + '</table>'
         + '</div>'
         + '<div class="paragraph chorus">'
+          + '<table class="row">'
+            + '<tr>'
+              + '<td class="comment">Breakdown</td>'
+            + '</tr>'
+          + '</table>'
           + '<table class="row">'
             + '<tr>'
               + '<td class="chord">Am</td>'
@@ -79,15 +85,15 @@ describe('HtmlTableFormatter', () => {
   describe('with option renderBlankLines:false', () => {
     it('does not include HTML for blank lines', () => {
       const songWithBlankLine = createSong([
-        createLine([
+        [
           createChordLyricsPair('C', 'Whisper words of wisdom'),
-        ]),
+        ],
 
-        createLine([]),
+        [],
 
-        createLine([
+        [
           createChordLyricsPair('Am', 'Whisper words of wisdom'),
-        ]),
+        ],
       ]);
 
       const expectedChordSheet = '<div class="chord-sheet">'

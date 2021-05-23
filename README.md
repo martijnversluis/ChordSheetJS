@@ -860,7 +860,8 @@ Represents a parser warning, currently only used by ChordProParser.
 
 * [ParserWarning](#ParserWarning)
     * [.message](#ParserWarning+message) : <code>string</code>
-    * [.lineNumber](#ParserWarning+lineNumber) : <code>integer</code>
+    * [.lineNumber](#ParserWarning+lineNumber) : <code>number</code>
+    * [.column](#ParserWarning+column) : <code>number</code>
     * [.toString()](#ParserWarning+toString) ⇒ <code>string</code>
 
 <a name="ParserWarning+message"></a>
@@ -871,8 +872,14 @@ The warning message
 **Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
 <a name="ParserWarning+lineNumber"></a>
 
-### parserWarning.lineNumber : <code>integer</code>
+### parserWarning.lineNumber : <code>number</code>
 The chord sheet line number on which the warning occurred
+
+**Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
+<a name="ParserWarning+column"></a>
+
+### parserWarning.column : <code>number</code>
+The chord sheet column on which the warning occurred
 
 **Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
 <a name="ParserWarning+toString"></a>

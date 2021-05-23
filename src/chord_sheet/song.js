@@ -1,8 +1,12 @@
 import Line from './line';
-import Tag, { META_TAGS } from './tag';
+import Tag, {
+  END_OF_CHORUS, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_VERSE,
+} from './tag';
 import Paragraph from './paragraph';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
+import { CHORUS, NONE, VERSE } from '../constants';
+import ParserWarning from '../parser/parser_warning';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -23,12 +27,9 @@ class Song {
     /**
      * The {@link Paragraph} items of which the song consists
      * @member
-     * @type {Array<Paragraph>}
+     * @type {Paragraph[]}
      */
     this.paragraphs = [];
-
-    this.currentLine = null;
-    this.currentParagraph = null;
 
     /**
      * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
@@ -36,6 +37,11 @@ class Song {
      * @type {Metadata}
      */
     this.metadata = new Metadata(metadata);
+
+    this.currentLine = null;
+    this.currentParagraph = null;
+    this.warnings = [];
+    this.sectionType = NONE;
   }
 
   get previousLine() {
@@ -93,13 +99,12 @@ class Song {
     this.ensureParagraph();
     this.flushLine();
     this.currentLine = pushNew(this.lines, Line);
+    this.setCurrentLineType(this.sectionType);
     return this.currentLine;
   }
 
-  setCurrentLineType(type) {
-    if (this.currentLine) {
-      this.currentLine.type = type;
-    }
+  setCurrentLineType(sectionType) {
+    this.currentLine.type = sectionType;
   }
 
   flushLine() {
@@ -143,12 +148,59 @@ class Song {
 
     if (tag.isMetaTag()) {
       this.setMetaData(tag.name, tag.value);
+    } else {
+      this.setSectionTypeFromTag(tag);
     }
 
     this.ensureLine();
     this.currentLine.addTag(tag);
 
     return tag;
+  }
+
+  setSectionTypeFromTag(tag) {
+    switch (tag.name) {
+      case START_OF_CHORUS:
+        this.startSection(CHORUS, tag);
+        break;
+
+      case END_OF_CHORUS:
+        this.endSection(CHORUS, tag);
+        break;
+
+      case START_OF_VERSE:
+        this.startSection(VERSE, tag);
+        break;
+
+      case END_OF_VERSE:
+        this.endSection(VERSE, tag);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  startSection(sectionType, tag) {
+    this.checkCurrentSectionType(NONE, tag);
+    this.sectionType = sectionType;
+    this.setCurrentLineType(sectionType);
+  }
+
+  endSection(sectionType, tag) {
+    this.checkCurrentSectionType(sectionType, tag);
+    this.sectionType = NONE;
+  }
+
+  checkCurrentSectionType(sectionType, tag) {
+    if (this.sectionType !== sectionType) {
+      this.addWarning(`Unexpected tag {${tag.originalName}, current section is: ${this.sectionType}`, tag);
+    }
+  }
+
+  addWarning(message, { line, column }) {
+    const warning = new ParserWarning(message, line, column);
+    this.warnings.push(warning);
   }
 
   addComment(comment) {
