@@ -122,7 +122,8 @@ Tag
   return {
     type: "tag",
     name: tagName,
-    value: tagColonWithValue
+    value: tagColonWithValue,
+    location: location()
   }
 }
 

@@ -160,9 +160,12 @@ const translateTagNameAlias = (name) => {
  * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
  */
 class Tag {
-  constructor(name, value) {
+  constructor(name, value, { line = null, column = null, offset = null } = {}) {
     this.name = name;
     this.value = value;
+    this.line = line;
+    this.column = column;
+    this.offset = offset;
   }
 
   static parse(tag) {

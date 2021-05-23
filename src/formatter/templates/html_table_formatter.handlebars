@@ -9,7 +9,7 @@
 
   {{~#if bodyLines~}}
     <div class="chord-sheet">
-      {{~#each paragraphs as |paragraph|~}}
+      {{~#each bodyParagraphs as |paragraph|~}}
         <div class="{{paragraphClasses paragraph}}">
           {{~#each lines as |line|~}}
             {{~#if (shouldRenderLine line)~}}

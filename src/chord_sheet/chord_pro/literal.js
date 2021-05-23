@@ -6,6 +6,10 @@ class Literal {
   evaluate() {
     return this.string;
   }
+
+  isRenderable() {
+    return true;
+  }
 }
 
 export default Literal;

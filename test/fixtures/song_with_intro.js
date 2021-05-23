@@ -1,4 +1,4 @@
-import { createSong, createLine, createChordLyricsPair } from '../utilities';
+import { createSong, createChordLyricsPair } from '../utilities';
 
 // Mimic the following chord sheet:
 // [Intro: ][C]
@@ -6,16 +6,16 @@ import { createSong, createLine, createChordLyricsPair } from '../utilities';
 // [C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]
 
 export default createSong([
-  createLine([
+  [
     createChordLyricsPair('Intro: ', ''),
     createChordLyricsPair('C', ''),
-  ]),
+  ],
 
-  createLine([
+  [
     createChordLyricsPair('', 'Let it '),
     createChordLyricsPair('Am', 'be, let it '),
     createChordLyricsPair('C/G', 'be, let it '),
     createChordLyricsPair('F', 'be, let it '),
     createChordLyricsPair('C', 'be'),
-  ]),
+  ],
 ]);

@@ -47,19 +47,27 @@ class ChordProFormatter {
       return this.formatChordLyricsPair(item);
     }
 
-    if (item instanceof Ternary) {
-      return this.formatOrEvaluateTernary(item, metadata);
+    if (typeof item.evaluate === 'function') {
+      return this.formatOrEvaluateItem(item, metadata);
     }
 
-    return '';
+    throw new Error(`Don't know how to format a ${item.constructor.name}`);
   }
 
-  formatOrEvaluateTernary(ternary, metadata) {
+  formatOrEvaluateItem(item, metadata) {
     if (this.evaluate) {
-      return ternary.evaluate(metadata);
+      return item.evaluate(metadata);
     }
 
-    return this.formatTernary(ternary);
+    if (item instanceof Ternary) {
+      return this.formatTernary(item);
+    }
+
+    if (item instanceof Literal) {
+      return item.evaluate();
+    }
+
+    throw new Error(`Don't know how to format a ${item.constructor.name}`);
   }
 
   formatTernary(ternary) {

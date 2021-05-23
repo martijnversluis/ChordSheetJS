@@ -1,7 +1,7 @@
 import '../matchers';
 import HtmlDivFormatter from '../../src/formatter/html_div_formatter';
 import song from '../fixtures/song';
-import { createChordLyricsPair, createLine, createSong } from '../utilities';
+import { createChordLyricsPair, createSong } from '../utilities';
 
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -12,7 +12,14 @@ describe('HtmlDivFormatter', () => {
       + '<div class="chord-sheet">'
         + '<div class="paragraph">'
           + '<div class="row">'
-            + '<div class="comment">Bridge</div>'
+            + '<div class="column">'
+              + '<div class="chord"></div>'
+              + '<div class="lyrics">Written by: </div>'
+            + '</div>'
+            + '<div class="column">'
+              + '<div class="chord"></div>'
+              + '<div class="lyrics">John Lennon,Paul McCartney</div>'
+            + '</div>'
           + '</div>'
         + '</div>'
         + '<div class="paragraph verse">'
@@ -65,11 +72,14 @@ describe('HtmlDivFormatter', () => {
             + '</div>'
             + '<div class="column">'
               + '<div class="chord">C</div>'
-              + '<div class="lyrics"> </div>'
+              + '<div class="lyrics"></div>'
             + '</div>'
           + '</div>'
         + '</div>'
         + '<div class="paragraph chorus">'
+          + '<div class="row">'
+            + '<div class="comment">Breakdown</div>'
+          + '</div>'
           + '<div class="row">'
             + '<div class="column">'
               + '<div class="chord">Am</div>'
@@ -97,15 +107,15 @@ describe('HtmlDivFormatter', () => {
   describe('with option renderBlankLines:false', () => {
     it('does not include HTML for blank lines', () => {
       const songWithBlankLine = createSong([
-        createLine([
+        [
           createChordLyricsPair('C', 'Whisper words of wisdom'),
-        ]),
+        ],
 
-        createLine([]),
+        [],
 
-        createLine([
+        [
           createChordLyricsPair('Am', 'Whisper words of wisdom'),
-        ]),
+        ],
       ]);
 
       const expectedChordSheet = '<div class="chord-sheet">'

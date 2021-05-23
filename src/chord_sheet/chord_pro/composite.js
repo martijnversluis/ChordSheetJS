@@ -9,6 +9,10 @@ class Composite {
       expression.evaluate(metadata, this.variable)
     )).join('');
   }
+
+  isRenderable() {
+    return true;
+  }
 }
 
 export default Composite;

@@ -1,13 +1,25 @@
 import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
 import Line from '../src/chord_sheet/line';
 import Tag from '../src/chord_sheet/tag';
-import SongStub from './song_stub';
 import { NONE } from '../src/constants';
 import Paragraph from '../src/chord_sheet/paragraph';
+import Literal from '../src/chord_sheet/chord_pro/literal';
+import Composite from '../src/chord_sheet/chord_pro/composite';
+import Ternary from '../src/chord_sheet/chord_pro/ternary';
+import Song from '../src/chord_sheet/song';
 
 export function createSong(lines, metadata) {
-  const song = new SongStub(metadata);
-  lines.forEach((line) => song.addLine(line));
+  const song = new Song(metadata);
+
+  lines.forEach((line) => {
+    if (Array.isArray(line)) {
+      song.addLine();
+      line.forEach((item) => song.addItem(item));
+    } else {
+      song.lines.push(line);
+    }
+  });
+
   song.finish();
   return song;
 }
@@ -37,4 +49,34 @@ export function createTag(name, value) {
   tag.name = name;
   tag.value = value;
   return tag;
+}
+
+export function createComposite(expressions) {
+  return new Composite(expressions);
+}
+
+export function createLiteral(expression) {
+  return new Literal(expression);
+}
+
+export function createTernary(
+  {
+    variable = null,
+    valueTest = null,
+    trueExpression = null,
+    falseExpression = null,
+    line = null,
+    column = null,
+    offset = null,
+  },
+) {
+  return new Ternary({
+    variable,
+    valueTest,
+    trueExpression,
+    falseExpression,
+    line,
+    column,
+    offset,
+  });
 }

@@ -1,84 +1,101 @@
 import {
-  createSong, createLine, createChordLyricsPair, createTag,
+  createSong, createChordLyricsPair, createTag, createLiteral, createTernary,
 } from '../utilities';
-import { CHORUS, VERSE } from '../../src/constants';
 
-// Mimic the following chord sheet:
-// {title: Let it be}
-// {subtitle: ChordSheetJS example version}
-// {x_some_setting: value}
-// {comment: Bridge}
-//
-// {start_of_verse}
-// Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
-// [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
-// {end_of_verse}
-//
-// {start_of_chorus}
-// [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
-// {end_of_chorus}
-
+// This Song object mimics the chord pro sheet in chord_pro_sheet.js
 export default createSong([
-  createLine([
+  [
     createTag('title', 'Let it be'),
-  ]),
+  ],
 
-  createLine([
+  [
     createTag('subtitle', 'ChordSheetJS example version'),
-  ]),
+  ],
 
-  createLine([
+  [
     createTag('x_some_setting', ''),
-  ]),
+  ],
 
-  createLine([
-    createTag('comment', 'Bridge'),
-  ]),
+  [
+    createTag('composer', 'John Lennon'),
+  ],
 
-  createLine([]),
+  [
+    createTag('composer', 'Paul McCartney'),
+  ],
 
-  createLine([
+  [],
+
+  [
+    createLiteral('Written by: '),
+    createTernary({
+      variable: 'composer',
+      trueExpression: [
+        createTernary({ variable: null }),
+      ],
+      falseExpression: [
+        createLiteral('No composer defined for '),
+        createTernary({
+          variable: 'title',
+          trueExpression: [
+            createTernary({ variable: null }),
+          ],
+          falseExpression: [
+            createLiteral('Untitled song'),
+          ],
+        }),
+      ],
+    }),
+  ],
+
+  [],
+
+  [
     createTag('start_of_verse'),
-  ]),
+  ],
 
-  createLine([
+  [
     createChordLyricsPair('', 'Let it '),
     createChordLyricsPair('Am', 'be, let it '),
     createChordLyricsPair('C/G', 'be, let it '),
     createChordLyricsPair('F', 'be, let it '),
     createChordLyricsPair('C', 'be'),
-  ], VERSE),
+  ],
 
-  createLine([
+  [
     createChordLyricsPair('C', 'Whisper words of '),
     createChordLyricsPair('F', 'wis'),
     createChordLyricsPair('G', 'dom, let it '),
     createChordLyricsPair('F', 'be '),
     createChordLyricsPair('C/E', ' '),
     createChordLyricsPair('Dm', ' '),
-    createChordLyricsPair('C', ' '),
-  ], VERSE),
+    createChordLyricsPair('C', ''),
+  ],
 
-  createLine([
+  [
     createTag('end_of_verse'),
-  ]),
+  ],
 
-  createLine([]),
+  [],
 
-  createLine([
+  [
     createTag('start_of_chorus'),
-  ]),
+  ],
 
-  createLine([
+  [
+    createTag('comment', 'Breakdown'),
+  ],
+
+  [
     createChordLyricsPair('Am', 'Whisper words of '),
     createChordLyricsPair('Bb', 'wisdom, let it '),
     createChordLyricsPair('F', 'be '),
     createChordLyricsPair('C', ''),
-  ], CHORUS),
+  ],
 
-  createLine([
+  [
     createTag('end_of_chorus'),
-  ]),
+  ],
 ], {
   title: 'Let it be',
   subtitle: 'ChordSheetJS example version',

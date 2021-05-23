@@ -154,7 +154,7 @@ Let it [F]be [C]
     const song = parser.parse(markedChordSheet);
     const lineTypes = song.lines.map((line) => line.type);
 
-    expect(lineTypes).toEqual([NONE, VERSE, NONE, NONE, NONE, CHORUS, NONE]);
+    expect(lineTypes).toEqual([VERSE, VERSE, VERSE, NONE, CHORUS, CHORUS, CHORUS]);
     expect(parser.warnings).toHaveLength(0);
   });
 
