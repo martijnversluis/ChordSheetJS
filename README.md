@@ -107,6 +107,16 @@ const formatter = new ChordSheetJS.ChordProFormatter();
 const disp = formatter.format(song);
 ```
 
+### Serialize/deserialize
+
+Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by
+third-party libraries. The serialized object can also be deserialized back into a `Song`.
+
+```javascript
+const serializedSong = new ChordSheetSerializer().serialize(song);
+const deserialized = new ChordSheetSerializer().deserialize(serializedSong);
+```
+
 ## Supported ChordPro directives
 
 :heavy_check_mark: = supported
@@ -257,6 +267,9 @@ PDF conversion.</p>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
 Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 </dd>
+<dt><a href="#ChordSheetSerializer">ChordSheetSerializer</a></dt>
+<dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a <a href="#Song">Song</a></p>
+</dd>
 </dl>
 
 ## Constants
@@ -315,6 +328,18 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 </dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
+</dd>
+<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as verse</p>
+</dd>
+<dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as chorus</p>
+</dd>
+<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as not containing a line marked with a type</p>
+</dd>
+<dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
 </dd>
 </dl>
 
@@ -418,7 +443,7 @@ The items ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag) or [Comment](#Comm
 
 ### line.type : <code>string</code>
 The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
-Values can be [VERSE](VERSE), [CHORUS](CHORUS) or [NONE](NONE)
+Values can be [VERSE](#VERSE), [CHORUS](#CHORUS) or [NONE](#NONE)
 
 **Kind**: instance property of [<code>Line</code>](#Line)  
 <a name="Line+isEmpty"></a>
@@ -453,13 +478,13 @@ Returns a deep copy of the line and all of its items
 <a name="Line+isVerse"></a>
 
 ### line.isVerse() ⇒ <code>boolean</code>
-Indicates whether the line type is [VERSE](VERSE)
+Indicates whether the line type is [VERSE](#VERSE)
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+isChorus"></a>
 
 ### line.isChorus() ⇒ <code>boolean</code>
-Indicates whether the line type is [CHORUS](CHORUS)
+Indicates whether the line type is [CHORUS](#CHORUS)
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+hasContent"></a>
@@ -544,7 +569,7 @@ The [Line](#Line) items of which the paragraph consists
 
 ### paragraph.type ⇒ <code>string</code>
 Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
-If not, it returns [INDETERMINATE](INDETERMINATE)
+If not, it returns [INDETERMINATE](#INDETERMINATE)
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+hasRenderableItems"></a>
@@ -896,6 +921,37 @@ Parses an Ultimate Guitar chord sheet with metadata
 Inherits from [ChordSheetParser](#ChordSheetParser)
 
 **Kind**: global class  
+<a name="ChordSheetSerializer"></a>
+
+## ChordSheetSerializer
+Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)
+
+**Kind**: global class  
+
+* [ChordSheetSerializer](#ChordSheetSerializer)
+    * [.serialize()](#ChordSheetSerializer+serialize) ⇒
+    * [.deserialize(serializedSong)](#ChordSheetSerializer+deserialize) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordSheetSerializer+serialize"></a>
+
+### chordSheetSerializer.serialize() ⇒
+Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
+Can be deserialized using [deserialize](deserialize)
+
+**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
+**Returns**: object A plain JS object containing all chord sheet data  
+<a name="ChordSheetSerializer+deserialize"></a>
+
+### chordSheetSerializer.deserialize(serializedSong) ⇒ [<code>Song</code>](#Song)
+Deserializes a song that has been serialized using [serialize](serialize)
+
+**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
+**Returns**: [<code>Song</code>](#Song) - The deserialized song  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| serializedSong | <code>object</code> | The serialized song |
+
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
@@ -1002,5 +1058,29 @@ Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
 
 ## YEAR : <code>string</code>
 Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
+
+**Kind**: global constant  
+<a name="VERSE"></a>
+
+## VERSE : <code>string</code>
+Used to mark a paragraph as verse
+
+**Kind**: global constant  
+<a name="CHORUS"></a>
+
+## CHORUS : <code>string</code>
+Used to mark a paragraph as chorus
+
+**Kind**: global constant  
+<a name="NONE"></a>
+
+## NONE : <code>string</code>
+Used to mark a paragraph as not containing a line marked with a type
+
+**Kind**: global constant  
+<a name="INDETERMINATE"></a>
+
+## INDETERMINATE : <code>string</code>
+Used to mark a paragraph as containing lines with both verse and chorus type
 
 **Kind**: global constant  

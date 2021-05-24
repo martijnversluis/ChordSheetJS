@@ -27,7 +27,7 @@ export default createSong([
   [],
 
   [
-    createLiteral('Written by: '),
+    createChordLyricsPair('', 'Written by: '),
     createTernary({
       variable: 'composer',
       trueExpression: [

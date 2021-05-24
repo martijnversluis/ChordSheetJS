@@ -1,17 +1,5 @@
 import ChordProPegParser from './chord_pro_peg_parser';
-import Song from '../chord_sheet/song';
-import Ternary from '../chord_sheet/chord_pro/ternary';
-import Literal from '../chord_sheet/chord_pro/literal';
-import { presence } from '../utilities';
-import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
-import Comment from '../chord_sheet/comment';
-import Tag from '../chord_sheet/tag';
-
-const CHORD_SHEET = 'chordSheet';
-const CHORD_LYRICS_PAIR = 'chordLyricsPair';
-const TAG = 'tag';
-const COMMENT = 'comment';
-const TERNARY = 'metaTernary';
+import ChordSheetSerializer from '../chord_sheet_serializer';
 
 /**
  * Parses a ChordPro chord sheet
@@ -29,10 +17,7 @@ class ChordProParser {
      * @type {Array<ParserWarning>}
      */
     const ast = ChordProPegParser.parse(chordProChordSheet);
-
-    this.parseAstComponent(ast);
-
-    this.song.finish();
+    this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }
 
@@ -43,99 +28,6 @@ class ChordProParser {
    */
   get warnings() {
     return this.song.warnings;
-  }
-
-  parseAstComponent(astComponent) {
-    if (!astComponent) {
-      return null;
-    }
-
-    if (typeof astComponent === 'string') {
-      return new Literal(astComponent);
-    }
-
-    const { type } = astComponent;
-
-    switch (type) {
-      case CHORD_SHEET:
-        return this.parseChordSheet(astComponent);
-      case CHORD_LYRICS_PAIR:
-        return this.parseChordLyricsPair(astComponent);
-      case TAG:
-        return this.parseTag(astComponent);
-      case COMMENT:
-        return this.parseComment(astComponent);
-      case TERNARY:
-        return this.parseTernary(astComponent);
-      default:
-        console.warn(`Unhandled AST component "${type}"`, astComponent);
-    }
-
-    return null;
-  }
-
-  parseChordSheet(astComponent) {
-    const { lines } = astComponent;
-    this.song = new Song();
-    lines.forEach((line, index) => this.parseLine(line, index));
-  }
-
-  parseLine(astComponent) {
-    const { items } = astComponent;
-    this.song.addLine();
-
-    items.forEach((item) => {
-      const parsedItem = this.parseAstComponent(item);
-      this.song.addItem(parsedItem);
-    });
-  }
-
-  parseChordLyricsPair(astComponent) {
-    const { chord, lyrics } = astComponent;
-    return new ChordLyricsPair(chord, lyrics);
-  }
-
-  parseTag(astComponent) {
-    const {
-      name,
-      value,
-      location: {
-        start: { offset, line, column },
-      },
-    } = astComponent;
-    return new Tag(name, value, { line, column, offset });
-  }
-
-  parseComment(astComponent) {
-    const { comment } = astComponent;
-    return new Comment(comment);
-  }
-
-  parseTernary(astComponent) {
-    const {
-      variable,
-      valueTest,
-      trueExpression,
-      falseExpression,
-      location: {
-        start: { offset, line, column },
-      },
-    } = astComponent;
-
-    return new Ternary({
-      variable,
-      valueTest,
-      trueExpression: this.parseExpression(trueExpression),
-      falseExpression: this.parseExpression(falseExpression),
-      offset,
-      line,
-      column,
-    });
-  }
-
-  parseExpression(expression) {
-    const parsedParts = (expression || []).map((part) => this.parseAstComponent(part));
-    return presence(parsedParts);
   }
 }
 

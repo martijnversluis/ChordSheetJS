@@ -2,6 +2,9 @@ import Song from '../../src/chord_sheet/song';
 import LineStub from '../cloneable_stub';
 import { createSong } from '../utilities';
 import Metadata from '../../src/chord_sheet/metadata';
+import exampleSong from '../fixtures/song';
+import serializedSong from '../fixtures/serialized_song.json';
+import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -121,5 +124,13 @@ describe('Song', () => {
 
       expect(song.bodyLines).toEqual([renderableLine1, nonRenderableLine3]);
     });
+  });
+
+  it('can be serialized', () => {
+    expect(new ChordSheetSerializer().serialize(exampleSong)).toEqual(serializedSong);
+  });
+
+  it('can be deserialized', () => {
+    expect(new ChordSheetSerializer().deserialize(serializedSong)).toEqual(exampleSong);
   });
 });
