@@ -22,7 +22,7 @@
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
-    "jest": "^26.0.1",
+    "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.0.1",
     "pegjs": "^0.10.0"
   },
