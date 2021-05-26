@@ -5,6 +5,7 @@ import TextFormatter from './formatter/text_formatter';
 import HtmlTableFormatter from './formatter/html_table_formatter';
 import HtmlDivFormatter from './formatter/html_div_formatter';
 import ChordProFormatter from './formatter/chord_pro_formatter';
+import LatexFormatter from './formatter/latex_formatter';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Line from './chord_sheet/line';
 import Song from './chord_sheet/song';
@@ -19,6 +20,7 @@ export default {
   HtmlTableFormatter,
   HtmlDivFormatter,
   ChordProFormatter,
+  LatexFormatter,
   ChordLyricsPair,
   Line,
   Song,
