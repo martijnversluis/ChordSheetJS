@@ -1,10 +1,13 @@
-import Song from '../../src/chord_sheet/song';
+import {
+  Song,
+  Metadata,
+  ChordSheetSerializer,
+} from '../../src';
+
 import LineStub from '../cloneable_stub';
 import { createSong } from '../utilities';
-import Metadata from '../../src/chord_sheet/metadata';
 import exampleSong from '../fixtures/song';
 import serializedSong from '../fixtures/serialized_song.json';
-import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
 const createLineStub = ({ renderable }) => (
   {

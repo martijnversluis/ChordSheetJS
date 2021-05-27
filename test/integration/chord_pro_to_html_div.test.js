@@ -1,5 +1,7 @@
-import ChordProParser from '../../src/parser/chord_pro_parser';
-import HtmlDivFormatter from '../../src/formatter/html_div_formatter';
+import {
+  ChordProParser,
+  HtmlDivFormatter,
+} from '../../src';
 
 describe('chordpro to HTML with DIVs', () => {
   it('correctly parses and formats meta expressions', () => {

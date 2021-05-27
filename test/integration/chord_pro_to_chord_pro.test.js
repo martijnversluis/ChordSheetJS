@@ -1,5 +1,7 @@
-import ChordProParser from '../../src/parser/chord_pro_parser';
-import ChordProFormatter from '../../src/formatter/chord_pro_formatter';
+import {
+  ChordProParser,
+  ChordProFormatter,
+} from '../../src';
 
 describe('chordpro e2e', () => {
   it('correctly parses and evaluates meta expressions', () => {

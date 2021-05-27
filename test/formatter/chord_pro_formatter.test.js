@@ -1,4 +1,5 @@
-import ChordProFormatter from '../../src/formatter/chord_pro_formatter';
+import { ChordProFormatter } from '../../src';
+
 import song from '../fixtures/song';
 import chordProSheet from '../fixtures/chord_pro_sheet';
 

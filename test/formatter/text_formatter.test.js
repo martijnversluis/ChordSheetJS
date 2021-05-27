@@ -1,5 +1,6 @@
+import { TextFormatter } from '../../src';
+
 import '../matchers';
-import TextFormatter from '../../src/formatter/text_formatter';
 import song from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 

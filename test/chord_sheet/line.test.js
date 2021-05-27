@@ -1,8 +1,11 @@
-import Line from '../../src/chord_sheet/line';
+import {
+  Line,
+  ChordLyricsPair,
+  Tag,
+} from '../../src';
+
 import ItemStub from '../cloneable_stub';
 import { createChordLyricsPair, createLine, createTag } from '../utilities';
-import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
-import Tag from '../../src/chord_sheet/tag';
 
 describe('Line', () => {
   describe('#clone', () => {

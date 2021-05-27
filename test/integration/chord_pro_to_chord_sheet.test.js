@@ -1,5 +1,7 @@
-import ChordProParser from '../../src/parser/chord_pro_parser';
-import TextFormatter from '../../src/formatter/text_formatter';
+import {
+  ChordProParser,
+  TextFormatter,
+} from '../../src';
 
 describe('chordpro to chord sheet', () => {
   it('correctly parses and formats meta expressions', () => {

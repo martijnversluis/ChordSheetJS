@@ -1,5 +1,6 @@
+import { CHORUS, INDETERMINATE, VERSE } from '../../src';
+
 import { createLine, createParagraph } from '../utilities';
-import { CHORUS, INDETERMINATE, VERSE } from '../../src/constants';
 
 describe('Paragraph', () => {
   describe('#type', () => {

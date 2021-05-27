@@ -1,7 +1,9 @@
-import Metadata from '../../../src/chord_sheet/metadata';
-import Ternary from '../../../src/chord_sheet/chord_pro/ternary';
-import Composite from '../../../src/chord_sheet/chord_pro/composite';
-import Literal from '../../../src/chord_sheet/chord_pro/literal';
+import {
+  Metadata,
+  Ternary,
+  Composite,
+  Literal,
+} from '../../../src';
 
 describe('Composite', () => {
   describe('#evaluate', () => {

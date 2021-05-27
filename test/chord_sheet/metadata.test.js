@@ -1,5 +1,6 @@
+import { Metadata } from '../../src';
+
 import '../matchers';
-import Metadata from '../../src/chord_sheet/metadata';
 
 describe('Metadata', () => {
   describe('new', () => {

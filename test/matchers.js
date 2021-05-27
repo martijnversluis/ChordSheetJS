@@ -1,8 +1,10 @@
-import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
-import Tag from '../src/chord_sheet/tag';
-import Comment from '../src/chord_sheet/comment';
-import Ternary from '../src/chord_sheet/chord_pro/ternary';
-import Literal from '../src/chord_sheet/chord_pro/literal';
+import {
+  ChordLyricsPair,
+  Tag,
+  Comment,
+  Ternary,
+  Literal,
+} from '../src';
 
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
