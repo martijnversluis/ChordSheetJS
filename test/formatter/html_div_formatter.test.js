@@ -1,5 +1,6 @@
+import { HtmlDivFormatter } from '../../src';
+
 import '../matchers';
-import HtmlDivFormatter from '../../src/formatter/html_div_formatter';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
 

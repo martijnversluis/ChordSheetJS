@@ -1,5 +1,6 @@
+import { HtmlTableFormatter } from '../../src';
+
 import '../matchers';
-import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
 

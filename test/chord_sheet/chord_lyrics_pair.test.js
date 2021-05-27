@@ -1,4 +1,4 @@
-import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
+import { ChordLyricsPair } from '../../src';
 
 describe('ChordLyricsPair', () => {
   describe('#clone', () => {

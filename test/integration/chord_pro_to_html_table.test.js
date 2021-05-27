@@ -1,5 +1,7 @@
-import ChordProParser from '../../src/parser/chord_pro_parser';
-import HtmlTableFormatter from '../../src/formatter/html_table_formatter';
+import {
+  ChordProParser,
+  HtmlTableFormatter,
+} from '../../src';
 
 describe('chordpro to HTML with TABLEs', () => {
   it('correctly parses and formats meta expressions', () => {

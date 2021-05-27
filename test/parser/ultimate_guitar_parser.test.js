@@ -1,8 +1,11 @@
 import fs from 'fs';
 
+import {
+  UltimateGuitarParser,
+  ChordProFormatter,
+} from '../../src';
+
 import '../matchers';
-import UltimateGuitarParser from '../../src/parser/ultimate_guitar_parser';
-import ChordProFormatter from '../../src/formatter/chord_pro_formatter';
 
 describe('UltimateGuitarParser', () => {
   it('starts and ends a single verse tag correctly', () => {

@@ -1,5 +1,6 @@
+import { ChordSheetParser } from '../../src';
+
 import '../matchers';
-import ChordSheetParser from '../../src/parser/chord_sheet_parser';
 
 const chordSheet = `
        Am         C/G        F          C

@@ -1,12 +1,14 @@
-import ChordLyricsPair from '../src/chord_sheet/chord_lyrics_pair';
-import Line from '../src/chord_sheet/line';
-import Tag from '../src/chord_sheet/tag';
-import { NONE } from '../src/constants';
-import Paragraph from '../src/chord_sheet/paragraph';
-import Literal from '../src/chord_sheet/chord_pro/literal';
-import Composite from '../src/chord_sheet/chord_pro/composite';
-import Ternary from '../src/chord_sheet/chord_pro/ternary';
-import Song from '../src/chord_sheet/song';
+import {
+  ChordLyricsPair,
+  Line,
+  Tag,
+  NONE,
+  Paragraph,
+  Literal,
+  Composite,
+  Ternary,
+  Song,
+} from '../src';
 
 export function createSong(lines, metadata) {
   const song = new Song(metadata);

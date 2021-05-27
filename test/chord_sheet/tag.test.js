@@ -1,4 +1,4 @@
-import Tag from '../../src/chord_sheet/tag';
+import { Tag } from '../../src';
 
 describe('Tag', () => {
   const expectedAliases = {

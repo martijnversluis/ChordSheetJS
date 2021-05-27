@@ -10,3 +10,16 @@ export { default as Line } from './chord_sheet/line';
 export { default as Song } from './chord_sheet/song';
 export { default as Tag } from './chord_sheet/tag';
 export { default as Comment } from './chord_sheet/comment';
+export { default as Metadata } from './chord_sheet/metadata';
+export { default as Paragraph } from './chord_sheet/paragraph';
+export { default as Ternary } from './chord_sheet/chord_pro/ternary';
+export { default as Composite } from './chord_sheet/chord_pro/composite';
+export { default as Literal } from './chord_sheet/chord_pro/literal';
+export { default as ChordSheetSerializer } from './chord_sheet_serializer';
+
+export {
+  CHORUS,
+  INDETERMINATE,
+  VERSE,
+  NONE,
+} from './constants';

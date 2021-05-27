@@ -1,6 +1,11 @@
+import {
+  ChordProParser,
+  CHORUS,
+  NONE,
+  VERSE,
+} from '../../src';
+
 import '../matchers';
-import ChordProParser from '../../src/parser/chord_pro_parser';
-import { CHORUS, NONE, VERSE } from '../../src/constants';
 
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {
