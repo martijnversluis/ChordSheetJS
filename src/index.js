@@ -1,3 +1,29 @@
+import ChordProParser from './parser/chord_pro_parser';
+import ChordSheetParser from './parser/chord_sheet_parser';
+import UltimateGuitarParser from './parser/ultimate_guitar_parser';
+import TextFormatter from './formatter/text_formatter';
+import HtmlTableFormatter from './formatter/html_table_formatter';
+import HtmlDivFormatter from './formatter/html_div_formatter';
+import ChordProFormatter from './formatter/chord_pro_formatter';
+import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
+import Line from './chord_sheet/line';
+import Song from './chord_sheet/song';
+import Tag from './chord_sheet/tag';
+import Comment from './chord_sheet/comment';
+import Metadata from './chord_sheet/metadata';
+import Paragraph from './chord_sheet/paragraph';
+import Ternary from './chord_sheet/chord_pro/ternary';
+import Composite from './chord_sheet/chord_pro/composite';
+import Literal from './chord_sheet/chord_pro/literal';
+import ChordSheetSerializer from './chord_sheet_serializer';
+
+import {
+  CHORUS,
+  INDETERMINATE,
+  VERSE,
+  NONE,
+} from './constants';
+
 export { default as ChordProParser } from './parser/chord_pro_parser';
 export { default as ChordSheetParser } from './parser/chord_sheet_parser';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
@@ -23,3 +49,28 @@ export {
   VERSE,
   NONE,
 } from './constants';
+
+export default {
+  ChordProParser,
+  ChordSheetParser,
+  UltimateGuitarParser,
+  TextFormatter,
+  HtmlTableFormatter,
+  HtmlDivFormatter,
+  ChordProFormatter,
+  ChordLyricsPair,
+  Line,
+  Song,
+  Tag,
+  Comment,
+  Metadata,
+  Paragraph,
+  Ternary,
+  Composite,
+  Literal,
+  ChordSheetSerializer,
+  CHORUS,
+  INDETERMINATE,
+  VERSE,
+  NONE,
+};
