@@ -117,6 +117,27 @@ const serializedSong = new ChordSheetSerializer().serialize(song);
 const deserialized = new ChordSheetSerializer().deserialize(serializedSong);
 ```
 
+### Add styling
+
+The HTML formatters (HtmlTableFormatter and HtmlDivFormatter) can provide basic CSS to help with styling the output:
+
+```javascript
+HtmlTableFormatter.cssString();
+// .paragraph {
+//   margin-bottom: 1em;
+// }
+
+HtmlTableFormatter.cssString('.chordSheetViewer');
+// .chordSheetViewer .paragraph {
+//   margin-bottom: 1em;
+// }
+
+HtmlTableFormatter.cssObject();
+// '.paragraph': {
+//   marginBottom: '1em'
+// }
+```
+
 ## Supported ChordPro directives
 
 :heavy_check_mark: = supported

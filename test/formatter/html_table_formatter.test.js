@@ -125,4 +125,68 @@ describe('HtmlTableFormatter', () => {
       expect(formatter.format(songWithBlankLine)).toEqual(expectedChordSheet);
     });
   });
+
+  it('generates a CSS string', () => {
+    const expectedCss = `
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.1em;
+}
+
+table {
+  border-spacing: 0;
+  color: inherit;
+}
+
+td {
+  padding: 3px 0;
+}
+
+.chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.paragraph {
+  margin-bottom: 1em;
+}`.substring(1);
+
+    expect(HtmlTableFormatter.cssString()).toEqual(expectedCss);
+  });
+
+  it('generates a scoped CSS string', () => {
+    const expectedCss = `
+.someScope h1 {
+  font-size: 1.5em;
+}
+
+.someScope h2 {
+  font-size: 1.1em;
+}
+
+.someScope table {
+  border-spacing: 0;
+  color: inherit;
+}
+
+.someScope td {
+  padding: 3px 0;
+}
+
+.someScope .chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.someScope .paragraph {
+  margin-bottom: 1em;
+}`.substring(1);
+
+    expect(HtmlTableFormatter.cssString('.someScope')).toEqual(expectedCss);
+  });
+
+  it('generates a CSS object', () => {
+    expect(typeof HtmlTableFormatter.cssObject()).toEqual('object');
+  });
 });
