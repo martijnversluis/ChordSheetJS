@@ -143,4 +143,58 @@ describe('HtmlDivFormatter', () => {
       expect(formatter.format(songWithBlankLine)).toEqual(expectedChordSheet);
     });
   });
+
+  it('generates a CSS string', () => {
+    const expectedCss = `
+.chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.paragraph {
+  margin-bottom: 1em;
+}
+
+.row {
+  display: flex;
+}
+
+.chord:after {
+  content: '\\200b';
+}
+
+.lyrics:after {
+  content: '\\200b';
+}`.substring(1);
+
+    expect(HtmlDivFormatter.cssString()).toEqual(expectedCss);
+  });
+
+  it('generates a scoped CSS string', () => {
+    const expectedCss = `
+.someScope .chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.someScope .paragraph {
+  margin-bottom: 1em;
+}
+
+.someScope .row {
+  display: flex;
+}
+
+.someScope .chord:after {
+  content: '\\200b';
+}
+
+.someScope .lyrics:after {
+  content: '\\200b';
+}`.substring(1);
+
+    expect(HtmlDivFormatter.cssString('.someScope')).toEqual(expectedCss);
+  });
+
+  it('generates a CSS object', () => {
+    expect(typeof HtmlDivFormatter.cssObject()).toEqual('object');
+  });
 });

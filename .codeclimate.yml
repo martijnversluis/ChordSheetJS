@@ -43,6 +43,7 @@ plugins:
     enabled: true
     exclude_patterns:
         - "test/"
+        - "src/formatter/html_*_formatter.js"
   structure:
     enabled: true
     exclude_patterns:
