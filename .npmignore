@@ -9,3 +9,4 @@ test
 .github
 .idea
 .travis.yml
+.tool-versions
