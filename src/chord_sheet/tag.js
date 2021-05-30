@@ -59,6 +59,12 @@ export const END_OF_VERSE = 'end_of_verse';
 export const KEY = 'key';
 
 /**
+ * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
+ * @type {string}
+ */
+export const _KEY = '_key';
+
+/**
  * Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/
  * @type {string}
  */
@@ -130,6 +136,8 @@ export const META_TAGS = [
   YEAR,
 ];
 
+export const READ_ONLY_TAGS = [_KEY];
+
 const ALIASES = {
   [TITLE_SHORT]: TITLE,
   [SUBTITLE_SHORT]: SUBTITLE,
@@ -141,6 +149,10 @@ const ALIASES = {
 const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
+
+export function isReadonlyTag(tagName) {
+  return READ_ONLY_TAGS.includes(tagName);
+}
 
 const translateTagNameAlias = (name) => {
   if (!name) {
