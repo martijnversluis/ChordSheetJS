@@ -1,3 +1,12 @@
+import Chord from 'chordjs';
+
+import {
+  _KEY,
+  CAPO,
+  KEY,
+  isReadonlyTag,
+} from './tag';
+
 function appendValue(array, key, value) {
   if (!array.includes(value)) {
     array.push(value);
@@ -14,18 +23,25 @@ function appendValue(array, key, value) {
  */
 class Metadata {
   constructor(metadata = {}) {
-    Object.keys(metadata).forEach((key) => {
-      const value = metadata[key];
+    Object
+      .keys(metadata)
+      .filter((key) => !isReadonlyTag(key))
+      .forEach((key) => {
+        const value = metadata[key];
 
-      if (value instanceof Array) {
-        this[key] = [...value];
-      } else {
-        this[key] = value;
-      }
-    });
+        if (value instanceof Array) {
+          this[key] = [...value];
+        } else {
+          this[key] = value;
+        }
+      });
   }
 
   add(key, value) {
+    if (isReadonlyTag(key)) {
+      return;
+    }
+
     if (!(key in this)) {
       this[key] = value;
       return;
@@ -69,27 +85,36 @@ class Metadata {
    * else it returns an array of strings.
    */
   get(prop) {
+    if (prop === _KEY) {
+      return this.calculateKeyFromCapo();
+    }
+
     if (prop in this) {
       return this[prop];
     }
 
+    return this.getArrayItem(prop);
+  }
+
+  parseArrayKey(prop) {
     const match = prop.match(/(.+)\.(-?\d+)$/);
 
     if (!match) {
-      return undefined;
+      return [];
     }
 
     const key = match[1];
+    const index = parseInt(match[2], 10);
+    return [key, index];
+  }
 
-    if (!(key in this)) {
+  getArrayItem(prop) {
+    const [key, index] = this.parseArrayKey(prop);
+
+    if (!(key && index)) {
       return undefined;
     }
 
-    const index = parseInt(match[2], 10);
-    return this.getArrayItem(key, index);
-  }
-
-  getArrayItem(key, index) {
     const arrayValue = (this[key] || []);
     let itemIndex = index;
 
@@ -108,6 +133,17 @@ class Metadata {
    */
   clone() {
     return new Metadata(this);
+  }
+
+  calculateKeyFromCapo() {
+    const capo = this.get(CAPO);
+    const key = this.get(KEY);
+
+    if (capo && key) {
+      return Chord.parse(key).transpose(parseInt(capo, 10)).toString();
+    }
+
+    return undefined;
   }
 }
 
