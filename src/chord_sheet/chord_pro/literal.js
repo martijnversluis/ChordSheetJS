@@ -10,6 +10,10 @@ class Literal {
   isRenderable() {
     return true;
   }
+
+  clone() {
+    return new Literal(this.string);
+  }
 }
 
 export default Literal;

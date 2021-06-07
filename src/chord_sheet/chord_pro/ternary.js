@@ -65,6 +65,18 @@ class Ternary {
   isRenderable() {
     return true;
   }
+
+  clone() {
+    return new Ternary({
+      variable: this.variable,
+      valueTest: this.valueTest,
+      trueExpression: this.trueExpression?.map((part) => part.clone()),
+      falseExpression: this.falseExpression?.map((part) => part.clone()),
+      line: this.line,
+      column: this.column,
+      offset: this.offset,
+    });
+  }
 }
 
 export default Ternary;

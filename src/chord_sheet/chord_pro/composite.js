@@ -13,6 +13,13 @@ class Composite {
   isRenderable() {
     return true;
   }
+
+  clone() {
+    return new Composite({
+      expressions: this.expressions.map((expression) => expression.clone()),
+      variable: this.variable,
+    });
+  }
 }
 
 export default Composite;
