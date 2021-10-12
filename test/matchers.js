@@ -1,4 +1,5 @@
 import {
+  Chord,
   ChordLyricsPair,
   Tag,
   Comment,
@@ -69,10 +70,17 @@ function toBeLiteral(received, string) {
   return toBeClassInstanceWithProperties(received, Literal, { string });
 }
 
+function toBeChord(received, base, modifier, suffix, bassBase, bassModifier) {
+  return toBeClassInstanceWithProperties(received, Chord, {
+    base, modifier, suffix, bassBase, bassModifier,
+  });
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeTag,
   toBeComment,
   toBeTernary,
   toBeLiteral,
+  toBeChord,
 });

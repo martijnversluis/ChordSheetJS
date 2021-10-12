@@ -42,6 +42,9 @@ export { default as Ternary } from './chord_sheet/chord_pro/ternary';
 export { default as Composite } from './chord_sheet/chord_pro/composite';
 export { default as Literal } from './chord_sheet/chord_pro/literal';
 export { default as ChordSheetSerializer } from './chord_sheet_serializer';
+export { default as Chord } from './chord';
+export { default as parseChord } from './parse_chord';
+export { default as toChordSymbol } from './to_chord_symbol';
 
 export {
   CHORUS,
