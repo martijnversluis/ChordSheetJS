@@ -41,7 +41,6 @@
     "pretest": "yarn build:templates && yarn build:pegjs"
   },
   "dependencies": {
-    "chordjs": "^2.0.0",
     "handlebars": "^4.7.6"
   }
 }

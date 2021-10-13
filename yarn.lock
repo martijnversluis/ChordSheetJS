@@ -1860,11 +1860,6 @@ chokidar@^3.4.0:
   optionalDependencies:
     fsevents "~2.1.2"
 
-chordjs@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/chordjs/-/chordjs-2.0.1.tgz#6e45be70a2d0d3558790bd8884463e7f53ca3c8d"
-  integrity sha512-zlZhX6/OW+yNJTm3Jagrvps598LF0Q1XHZIxAvIk1qJXu7OzP5QDPhOAXLz99r+gESbzLnCaNtAHJqLQkfVxAw==
-
 ci-info@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.1.1.tgz#9a32fcefdf7bcdb6f0a7e1c0f8098ec57897b80a"
