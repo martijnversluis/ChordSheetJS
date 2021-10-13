@@ -1,4 +1,4 @@
-import { parse } from 'chordjs';
+import parseChord from '../parse_chord';
 
 import {
   _KEY,
@@ -140,7 +140,7 @@ class Metadata {
     const key = this.get(KEY);
 
     if (capo && key) {
-      return parse(key).transpose(parseInt(capo, 10)).toString();
+      return parseChord(key).transpose(parseInt(capo, 10)).toString();
     }
 
     return undefined;
