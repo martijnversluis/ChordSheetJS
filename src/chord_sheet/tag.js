@@ -47,6 +47,12 @@ export const DURATION = 'duration';
 export const END_OF_CHORUS = 'end_of_chorus';
 
 /**
+ * End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
+ * @type {string}
+ */
+export const END_OF_TAB = 'end_of_tab';
+
+/**
  * End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
  * @type {string}
  */
@@ -75,6 +81,12 @@ export const LYRICIST = 'lyricist';
  * @type {string}
  */
 export const START_OF_CHORUS = 'start_of_chorus';
+
+/**
+ * Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
+ * @type {string}
+ */
+export const START_OF_TAB = 'start_of_tab';
 
 /**
  * Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
@@ -117,6 +129,8 @@ const SUBTITLE_SHORT = 'st';
 const COMMENT_SHORT = 'c';
 const START_OF_CHORUS_SHORT = 'soc';
 const END_OF_CHORUS_SHORT = 'eoc';
+const START_OF_TAB_SHORT = 'sot';
+const END_OF_TAB_SHORT = 'eot';
 
 const RENDERABLE_TAGS = [COMMENT];
 
@@ -144,6 +158,8 @@ const ALIASES = {
   [COMMENT_SHORT]: COMMENT,
   [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
   [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
+  [START_OF_TAB_SHORT]: START_OF_TAB,
+  [END_OF_TAB_SHORT]: END_OF_TAB,
 };
 
 const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;

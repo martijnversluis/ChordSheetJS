@@ -3,6 +3,7 @@ import {
   CHORUS,
   NONE,
   VERSE,
+  TAB,
 } from '../../src';
 
 import '../matchers';
@@ -316,5 +317,29 @@ Let it [Am]be
       expect(parser.warnings).toHaveLength(1);
       expect(parser.warnings[0].toString()).toMatch(/unexpected.+start_of_verse.+current.+chorus.+line 2/i);
     });
+  });
+
+  it('parses start_of_tab', () => {
+    const markedChordSheet = `
+{start_of_tab: Intro}
+D                       G             A7
+e|---2-----0--2-----2--0------------0----------------------0----|
+B|---3--3--------3--------3--0--3--(0)--3--0--2--0--2--3--(2)---|
+G|---2-----------------------0-------------0--------------------|
+D|---0-----------------------0-------------2--------------------|
+A|---------------------------2-------------0--------------------|
+E|---------------------------3----------------------------------|
+{end_of_tab}
+
+{start_of_verse}
+[D]Here comes the sun [G]Here comes [E7]the sun
+{end_of_verse}`.substring(1);
+
+    const parser = new ChordProParser();
+    const song = parser.parse(markedChordSheet);
+    const paragraphTypes = song.paragraphs.map(line => line.type);
+
+    expect(paragraphTypes).toEqual([TAB, VERSE]);
+    expect(parser.warnings).toHaveLength(0);
   });
 });
