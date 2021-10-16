@@ -5,7 +5,9 @@ import Tag, {
 import Paragraph from './paragraph';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
-import { CHORUS, NONE, TAB, VERSE } from '../constants';
+import {
+  CHORUS, NONE, TAB, VERSE,
+} from '../constants';
 import ParserWarning from '../parser/parser_warning';
 
 /**

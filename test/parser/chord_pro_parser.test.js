@@ -337,7 +337,7 @@ E|---------------------------3----------------------------------|
 
     const parser = new ChordProParser();
     const song = parser.parse(markedChordSheet);
-    const paragraphTypes = song.paragraphs.map(line => line.type);
+    const paragraphTypes = song.paragraphs.map((line) => line.type);
 
     expect(paragraphTypes).toEqual([TAB, VERSE]);
     expect(parser.warnings).toHaveLength(0);
