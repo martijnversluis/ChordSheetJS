@@ -25,3 +25,10 @@ export const NONE = 'none';
  * @type {string}
  */
 export const INDETERMINATE = 'indeterminate';
+
+/**
+ * Used to mark a paragraph as tab
+ * @constant
+ * @type {string}
+ */
+export const TAB = 'tab';

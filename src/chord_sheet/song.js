@@ -1,11 +1,13 @@
 import Line from './line';
 import Tag, {
-  END_OF_CHORUS, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_VERSE,
+  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE,
 } from './tag';
 import Paragraph from './paragraph';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
-import { CHORUS, NONE, VERSE } from '../constants';
+import {
+  CHORUS, NONE, TAB, VERSE,
+} from '../constants';
 import ParserWarning from '../parser/parser_warning';
 
 /**
@@ -166,6 +168,14 @@ class Song {
 
       case END_OF_CHORUS:
         this.endSection(CHORUS, tag);
+        break;
+
+      case START_OF_TAB:
+        this.startSection(TAB, tag);
+        break;
+
+      case END_OF_TAB:
+        this.endSection(TAB, tag);
         break;
 
       case START_OF_VERSE:

@@ -22,6 +22,7 @@ import {
   INDETERMINATE,
   VERSE,
   NONE,
+  TAB,
 } from './constants';
 
 export { default as ChordProParser } from './parser/chord_pro_parser';
@@ -51,6 +52,7 @@ export {
   INDETERMINATE,
   VERSE,
   NONE,
+  TAB,
 } from './constants';
 
 export default {
@@ -74,6 +76,7 @@ export default {
   ChordSheetSerializer,
   CHORUS,
   INDETERMINATE,
+  TAB,
   VERSE,
   NONE,
 };
