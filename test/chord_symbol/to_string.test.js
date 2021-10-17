@@ -1,9 +1,9 @@
-import ChordSymbol from '../../src/chord_symbol';
+import Chord from '../../src/chord';
 
-describe('ChordSymbol', () => {
+describe('Chord', () => {
   describe('toString', () => {
     it('returns the right string representation', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'E',
         modifier: 'b',
         suffix: 'sus4',
@@ -16,7 +16,7 @@ describe('ChordSymbol', () => {
 
     describe('without bass modifier', () => {
       it('returns the right string representation', () => {
-        const chord = new ChordSymbol({
+        const chord = new Chord({
           base: 'E',
           modifier: 'b',
           suffix: 'sus4',
@@ -29,7 +29,7 @@ describe('ChordSymbol', () => {
 
     describe('without bass note', () => {
       it('returns the right string representation', () => {
-        const chord = new ChordSymbol({
+        const chord = new Chord({
           base: 'E',
           modifier: 'b',
           suffix: 'sus4',
@@ -41,7 +41,7 @@ describe('ChordSymbol', () => {
 
     describe('without modifier', () => {
       it('returns the right string representation', () => {
-        const chord = new ChordSymbol({
+        const chord = new Chord({
           base: 'E',
           suffix: 'sus4',
         });
@@ -52,7 +52,7 @@ describe('ChordSymbol', () => {
 
     describe('without suffix', () => {
       it('returns the right string representation', () => {
-        const chord = new ChordSymbol({
+        const chord = new Chord({
           base: 'E',
           modifier: 'b',
         });

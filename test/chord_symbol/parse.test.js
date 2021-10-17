@@ -1,70 +1,94 @@
-import { parseChord } from '../../src';
+import { Chord } from '../../src/index';
 
 import '../matchers';
 
-describe('ChordSymbol', () => {
+describe('Chord', () => {
   describe('parse', () => {
     describe('chord without bass', () => {
       it('parses a simple chord', () => {
-        const chord = parseChord('E');
-        expect(chord).toBeChord('E', null, null, null, null);
+        const chord = Chord.parse('E');
+        expect(chord).toBeChord({
+          base: 'E', modifier: null, suffix: null, bassBase: null, bassModifier: null,
+        });
       });
 
       it('parses a chord with suffix', () => {
-        const chord = parseChord('Esus4');
-        expect(chord).toBeChord('E', null, 'sus4', null, null);
+        const chord = Chord.parse('Esus4');
+        expect(chord).toBeChord({
+          base: 'E', modifier: null, suffix: 'sus4', bassBase: null, bassModifier: null,
+        });
       });
 
       it('parses a chord with modifier', () => {
-        const chord = parseChord('F#');
-        expect(chord).toBeChord('F', '#', null, null, null);
+        const chord = Chord.parse('F#');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: null, bassBase: null, bassModifier: null,
+        });
       });
 
       it('parses a chord with modifier and suffix', () => {
-        const chord = parseChord('F#sus4');
-        expect(chord).toBeChord('F', '#', 'sus4', null, null);
+        const chord = Chord.parse('F#sus4');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: 'sus4', bassBase: null, bassModifier: null,
+        });
       });
 
       it('parses a chord with confusing suffix', () => {
-        const chord = parseChord('Fmaj9#11');
-        expect(chord).toBeChord('F', null, 'maj9#11', null, null);
+        const chord = Chord.parse('Fmaj9#11');
+        expect(chord).toBeChord({
+          base: 'F', modifier: null, suffix: 'maj9#11', bassBase: null, bassModifier: null,
+        });
       });
 
       it('parses a chord with modifier and confusing suffix', () => {
-        const chord = parseChord('F#maj9b11');
-        expect(chord).toBeChord('F', '#', 'maj9b11', null, null);
+        const chord = Chord.parse('F#maj9b11');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: 'maj9b11', bassBase: null, bassModifier: null,
+        });
       });
     });
 
     describe('chord with bass', () => {
       it('parses a simple chord', () => {
-        const chord = parseChord('E/B');
-        expect(chord).toBeChord('E', null, null, 'B', null);
+        const chord = Chord.parse('E/B');
+        expect(chord).toBeChord({
+          base: 'E', modifier: null, suffix: null, bassBase: 'B', bassModifier: null,
+        });
       });
 
       it('parses a chord with suffix', () => {
-        const chord = parseChord('Esus4/B');
-        expect(chord).toBeChord('E', null, 'sus4', 'B', null);
+        const chord = Chord.parse('Esus4/B');
+        expect(chord).toBeChord({
+          base: 'E', modifier: null, suffix: 'sus4', bassBase: 'B', bassModifier: null,
+        });
       });
 
       it('parses a chord with modifier', () => {
-        const chord = parseChord('F#/C#');
-        expect(chord).toBeChord('F', '#', null, 'C', '#');
+        const chord = Chord.parse('F#/C#');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: null, bassBase: 'C', bassModifier: '#',
+        });
       });
 
       it('parses a chord with modifier and suffix', () => {
-        const chord = parseChord('F#sus4/C#');
-        expect(chord).toBeChord('F', '#', 'sus4', 'C', '#');
+        const chord = Chord.parse('F#sus4/C#');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: 'sus4', bassBase: 'C', bassModifier: '#',
+        });
       });
 
       it('parses a chord with confusing suffix', () => {
-        const chord = parseChord('Fmaj9#11/C#');
-        expect(chord).toBeChord('F', null, 'maj9#11', 'C', '#');
+        const chord = Chord.parse('Fmaj9#11/C#');
+        expect(chord).toBeChord({
+          base: 'F', modifier: null, suffix: 'maj9#11', bassBase: 'C', bassModifier: '#',
+        });
       });
 
       it('parses a chord with modifier and confusing suffix', () => {
-        const chord = parseChord('F#maj9b11/C#');
-        expect(chord).toBeChord('F', '#', 'maj9b11', 'C', '#');
+        const chord = Chord.parse('F#maj9b11/C#');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: 'maj9b11', bassBase: 'C', bassModifier: '#',
+        });
       });
     });
   });

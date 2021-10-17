@@ -1,58 +1,54 @@
-/* eslint quote-props: 0 */
+import Chord from '../../src/chord';
 
-import { toChordSymbol, parseChord } from '../../src';
+import '../matchers';
+import { Key } from '../../src';
 
-const examples = [
-  [
-    ['C', 'Am'],
-    {
-      '1': 'C',
-      'b1': 'B',
-      '#1': 'C#',
-      '1M': 'C',
-      '1m': 'Cm',
-      '#1m': 'C#m',
-      '2': 'Dm',
-      '2M': 'D',
-      '2m': 'Dm',
-      '#2M': 'D#',
-      '7': 'Bdim',
-      '#1sus4': 'C#sus4',
-    },
-  ],
-
-  [
-    ['C#', 'A#m'],
-    {
-      '2': 'D#m',
-      '#2': 'Em',
-      'b2': 'Dm',
-      'b5/#7': 'G/C#',
-    },
-  ],
-
-  [
-    ['Eb', 'Cm'],
-    {
-      '2': 'Fm',
-      '#2': 'Gbm',
-      'b2': 'Em',
-    },
-  ],
-];
-
-describe('numeric chords', () => {
-  describe('#toChordSymbol', () => {
-    examples.forEach(([keys, conversions]) => {
-      keys.forEach((key) => {
-        describe(`For key ${key}`, () => {
-          Object.entries(conversions).forEach(([numericChord, chordSymbol]) => {
-            it(`converts ${numericChord} to ${chordSymbol}`, () => {
-              const chord = parseChord(numericChord);
-              expect(toChordSymbol(chord, key).toString()).toEqual(chordSymbol);
-            });
-          });
+describe('Chord', () => {
+  describe('toChordSymbol', () => {
+    describe('for a numeric chord', () => {
+      it('returns a chord symbol version', () => {
+        const originalChord = new Chord({
+          base: 5,
+          modifier: 'b',
+          suffix: 'sus4',
+          bassBase: 7,
+          bassModifier: '#',
         });
+
+        const key = Key.parse('Ab');
+        const convertedChord = originalChord.toChordSymbol(key);
+
+        expect(convertedChord).toBeChord({
+          base: 'D',
+          modifier: null,
+          suffix: 'sus4',
+          bassBase: 'A',
+          bassModifier: 'b',
+        });
+
+        expect(convertedChord).not.toBe(originalChord);
+      });
+
+      it('accepts a string key', () => {
+        const originalChord = new Chord({
+          base: 5,
+          modifier: 'b',
+          suffix: 'sus4',
+          bassBase: 7,
+          bassModifier: '#',
+        });
+
+        const convertedChord = originalChord.toChordSymbol('Ab');
+
+        expect(convertedChord).toBeChord({
+          base: 'D',
+          modifier: null,
+          suffix: 'sus4',
+          bassBase: 'A',
+          bassModifier: 'b',
+        });
+
+        expect(convertedChord).not.toBe(originalChord);
       });
     });
   });

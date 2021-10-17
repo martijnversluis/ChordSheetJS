@@ -25,12 +25,6 @@ export const padLeft = (str, length) => {
   return paddedString;
 };
 
-export const deprecate = (message) => {
-  if (process && process.emitWarning) {
-    process.emitWarning(message);
-  }
-};
-
 export const isPresent = (object) => object && object.length > 0;
 
 export const presence = (object) => (isPresent(object) ? object : null);
@@ -56,4 +50,20 @@ ${scopedSelector} {
 }`.substring(1);
     })
     .join('\n\n');
+}
+
+export function deprecate(message) {
+  try {
+    throw new Error(`DEPRECATION: ${message}`);
+  } catch (e) {
+    if (typeof process === 'object' && typeof process.emitWarning === 'function') {
+      process.emitWarning(`${message}\n${e.stack}`);
+    } else {
+      console.warn(`${message}\n${e.stack}`);
+    }
+  }
+}
+
+export function isEmptyString(string) {
+  return (string === null || string === undefined || string === '');
 }
