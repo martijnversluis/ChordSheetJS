@@ -1,10 +1,10 @@
-import ChordSymbol from '../../src/chord_symbol';
+import Chord from '../../src/chord';
 import '../matchers';
 
-describe('ChordSymbol', () => {
+describe('Chord', () => {
   describe('clone', () => {
     it('assigns the right instance variables', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'E',
         modifier: 'b',
         suffix: 'sus4',
@@ -13,7 +13,9 @@ describe('ChordSymbol', () => {
       });
 
       const clonedChord = chord.clone();
-      expect(clonedChord).toBeChord('E', 'b', 'sus4', 'G', '#');
+      expect(clonedChord).toBeChord({
+        base: 'E', modifier: 'b', suffix: 'sus4', bassBase: 'G', bassModifier: '#',
+      });
     });
   });
 });

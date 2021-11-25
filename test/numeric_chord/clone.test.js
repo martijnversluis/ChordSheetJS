@@ -1,10 +1,10 @@
-import NumericChord from '../../src/numeric_chord';
+import Chord from '../../src/chord';
 import '../matchers';
 
-describe('NumericChord', () => {
+describe('Chord', () => {
   describe('clone', () => {
     it('assigns the right instance variables', () => {
-      const chord = new NumericChord({
+      const chord = new Chord({
         base: 1,
         modifier: 'b',
         suffix: 'sus4',
@@ -13,7 +13,9 @@ describe('NumericChord', () => {
       });
 
       const clonedChord = chord.clone();
-      expect(clonedChord).toBeChord(1, 'b', 'sus4', 3, '#');
+      expect(clonedChord).toBeChord({
+        base: 1, modifier: 'b', suffix: 'sus4', bassBase: 3, bassModifier: '#',
+      });
     });
   });
 });

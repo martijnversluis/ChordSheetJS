@@ -32,3 +32,6 @@ export const INDETERMINATE = 'indeterminate';
  * @type {string}
  */
 export const TAB = 'tab';
+
+export const SYMBOL = 'symbol';
+export const NUMERIC = 'numeric';

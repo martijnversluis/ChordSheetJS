@@ -1,10 +1,10 @@
-import ChordSymbol from '../../src/chord_symbol';
+import Chord from '../../src/chord';
 import '../matchers';
 
-describe('ChordSymbol', () => {
+describe('Chord', () => {
   describe('normalize', () => {
     it('normalizes E#', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'E',
         modifier: '#',
         suffix: null,
@@ -13,11 +13,13 @@ describe('ChordSymbol', () => {
       });
 
       const normalizedChord = chord.normalize();
-      expect(normalizedChord).toBeChord('F', null, null, 'F', null);
+      expect(normalizedChord).toBeChord({
+        base: 'F', modifier: null, suffix: null, bassBase: 'F', bassModifier: null,
+      });
     });
 
     it('normalizes B#', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'B',
         modifier: '#',
         suffix: null,
@@ -26,11 +28,13 @@ describe('ChordSymbol', () => {
       });
 
       const normalizedChord = chord.normalize();
-      expect(normalizedChord).toBeChord('C', null, null, 'C', null);
+      expect(normalizedChord).toBeChord({
+        base: 'C', modifier: null, suffix: null, bassBase: 'C', bassModifier: null,
+      });
     });
 
     it('normalizes Cb', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'C',
         modifier: 'b',
         suffix: null,
@@ -39,11 +43,13 @@ describe('ChordSymbol', () => {
       });
 
       const normalizedChord = chord.normalize();
-      expect(normalizedChord).toBeChord('B', null, null, 'B', null);
+      expect(normalizedChord).toBeChord({
+        base: 'B', modifier: null, suffix: null, bassBase: 'B', bassModifier: null,
+      });
     });
 
     it('normalizes Fb', () => {
-      const chord = new ChordSymbol({
+      const chord = new Chord({
         base: 'F',
         modifier: 'b',
         suffix: null,
@@ -52,7 +58,9 @@ describe('ChordSymbol', () => {
       });
 
       const normalizedChord = chord.normalize();
-      expect(normalizedChord).toBeChord('E', null, null, 'E', null);
+      expect(normalizedChord).toBeChord({
+        base: 'E', modifier: null, suffix: null, bassBase: 'E', bassModifier: null,
+      });
     });
   });
 });

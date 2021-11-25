@@ -1,11 +1,11 @@
-import parseChord from '../parse_chord';
-
 import {
   _KEY,
   CAPO,
   KEY,
   isReadonlyTag,
 } from './tag';
+
+import Chord from '../chord';
 
 function appendValue(array, key, value) {
   if (!array.includes(value)) {
@@ -140,7 +140,7 @@ class Metadata {
     const key = this.get(KEY);
 
     if (capo && key) {
-      return parseChord(key).transpose(parseInt(capo, 10)).toString();
+      return Chord.parse(key).transpose(parseInt(capo, 10)).toString();
     }
 
     return undefined;
