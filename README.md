@@ -138,6 +138,113 @@ HtmlTableFormatter.cssObject();
 // }
 ```
 
+### Parsing and modifying chords
+
+```javascript
+import { parseChord } from 'chordsheetjs';
+```
+
+#### Parse
+
+```javascript
+const chord = parseChord('Ebsus4/Bb');
+```
+
+Parse numeric chords (Nashville system):
+
+```javascript
+const chord = parseChord('b1sus4/#3');
+```
+
+#### Display with #toString
+
+Use #toString() to convert the chord to a chord string (eg Dsus/F#)
+
+```javascript
+const chord = parseChord('Ebsus4/Bb');
+chord.toString(); // --> "Ebsus4/Bb"
+```
+
+#### Clone
+
+```javascript
+var chord2 = chord.clone();
+```
+
+#### Normalize
+
+Normalizes keys B#, E#, Cb and Fb to C, F, B and E
+
+```javascript
+const chord = parseChord('E#/B#'),
+normalizedChord = chord.normalize();
+normalizedChord.toString(); // --> "F/C"
+```
+
+#### Switch modifier
+
+Convert # to b and vice versa
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.switchModifier();
+chord2.toString(); // --> "D#/A#"
+```
+
+#### Use specific modifier
+
+Set the chord to a specific modifier (# or b)
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.useModifier('#');
+chord2.toString(); // --> "D#/A#"
+```
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.useModifier('b');
+chord2.toString(); // --> "Eb/Bb"
+```
+
+#### Transpose up
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.transposeUp();
+chord2.toString(); // -> "E/B"
+```
+
+#### Transpose down
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.transposeDown();
+chord2.toString(); // -> "D/A"
+```
+
+#### Transpose
+
+```javascript
+const chord = parseChord('C/E');
+const chord2 = chord.transpose(4);
+chord2.toString(); // -> "E/G#"
+```
+
+```javascript
+const chord = parseChord('C/E');
+const chord2 = chord.transpose(-4);
+chord2.toString(); // -> "Ab/C"
+```
+
+#### Convert numeric chord to chord symbol
+
+```javascript
+const numericChord = parseChord('2/4');
+const chordSymbol = toChordSymbol(numericChord, 'E');
+chordSymbol.toString(); // -> "F#m/A"
+```
+
 ## Supported ChordPro directives
 
 :heavy_check_mark: = supported
@@ -288,6 +395,9 @@ PDF conversion.</p>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
 Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 </dd>
+<dt><a href="#Chord">Chord</a></dt>
+<dd><p>Represents a Chord, consisting of a root, suffix (quality) and bass</p>
+</dd>
 <dt><a href="#ChordSheetSerializer">ChordSheetSerializer</a></dt>
 <dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a <a href="#Song">Song</a></p>
 </dd>
@@ -320,10 +430,16 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
 </dd>
+<dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
+<dd><p>End of tab directive. See <a href="https://www.chordpro.org/chordpro/directives-env_tab/">https://www.chordpro.org/chordpro/directives-env_tab/</a></p>
+</dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>End of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
 </dd>
 <dt><a href="#KEY">KEY</a> : <code>string</code></dt>
+<dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/directives-key/">https://www.chordpro.org/chordpro/directives-key/</a></p>
+</dd>
+<dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
 <dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/directives-key/">https://www.chordpro.org/chordpro/directives-key/</a></p>
 </dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
@@ -331,6 +447,9 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 </dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
+</dd>
+<dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
+<dd><p>Start of tab directive. See <a href="https://www.chordpro.org/chordpro/directives-env_tab/">https://www.chordpro.org/chordpro/directives-env_tab/</a></p>
 </dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>Start of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
@@ -366,13 +485,19 @@ For a CSS string see <a href="#scopedCss">scopedCss</a></p>
 <dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
 </dd>
+<dt><a href="#TAB">TAB</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as tab</p>
+</dd>
 </dl>
 
 ## Functions
 
 <dl>
 <dt><a href="#scopedCss">scopedCss(scope)</a> ⇒ <code>string</code></dt>
-<dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by {@link }HtmlTableFormatter}</p>
+<dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by <a href="#HtmlTableFormatter">HtmlTableFormatter</a></p>
+</dd>
+<dt><del><a href="#parseChord">parseChord(chordString)</a> ⇒ <code>null</code> | <code><a href="#Chord">Chord</a></code></del></dt>
+<dd><p>Tries to parse a chord string into a chord</p>
 </dd>
 </dl>
 
@@ -1037,6 +1162,178 @@ Parses an Ultimate Guitar chord sheet with metadata
 Inherits from [ChordSheetParser](#ChordSheetParser)
 
 **Kind**: global class  
+<a name="Chord"></a>
+
+## Chord
+Represents a Chord, consisting of a root, suffix (quality) and bass
+
+**Kind**: global class  
+
+* [Chord](#Chord)
+    * _instance_
+        * [.clone()](#Chord+clone) ⇒ [<code>Chord</code>](#Chord)
+        * [.toChordSymbol(key)](#Chord+toChordSymbol) ⇒ [<code>Chord</code>](#Chord)
+        * [.toChordSymbolString(key)](#Chord+toChordSymbolString) ⇒ <code>string</code>
+        * [.isChordSymbol()](#Chord+isChordSymbol) ⇒ <code>boolean</code>
+        * [.toNumeric(key)](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
+        * [.isNumeric()](#Chord+isNumeric) ⇒ <code>boolean</code>
+        * [.toNumericString(key)](#Chord+toNumericString) ⇒ <code>string</code>
+        * [.toString()](#Chord+toString) ⇒ <code>string</code>
+        * [.normalize()](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
+        * [.useModifier(newModifier)](#Chord+useModifier) ⇒ [<code>Chord</code>](#Chord)
+        * [.transposeUp()](#Chord+transposeUp) ⇒ [<code>Chord</code>](#Chord)
+        * [.transposeDown()](#Chord+transposeDown) ⇒ [<code>Chord</code>](#Chord)
+        * [.transpose(delta)](#Chord+transpose) ⇒ [<code>Chord</code>](#Chord)
+    * _static_
+        * [.parse(chordString)](#Chord.parse) ⇒ <code>null</code> \| [<code>Chord</code>](#Chord)
+
+<a name="Chord+clone"></a>
+
+### chord.clone() ⇒ [<code>Chord</code>](#Chord)
+Returns a deep copy of the chord
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+<a name="Chord+toChordSymbol"></a>
+
+### chord.toChordSymbol(key) ⇒ [<code>Chord</code>](#Chord)
+Converts the chord to a chord symbol, using the supplied key as a reference.
+For example, a numeric chord `#4` with reference key `E` will return the chord symbol `A#`.
+When the chord is already a chord symbol, it will return a clone of the object.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the chord symbol  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | the reference key |
+
+<a name="Chord+toChordSymbolString"></a>
+
+### chord.toChordSymbolString(key) ⇒ <code>string</code>
+Converts the chord to a chord symbol string, using the supplied key as a reference.
+For example, a numeric chord `#4` with reference key `E` will return the chord symbol `A#`.
+When the chord is already a chord symbol, it will return a string version of the chord.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - the chord symbol string  
+**See**: {toChordSymbol}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | the reference key |
+
+<a name="Chord+isChordSymbol"></a>
+
+### chord.isChordSymbol() ⇒ <code>boolean</code>
+Determines whether the chord is a chord symbol
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+<a name="Chord+toNumeric"></a>
+
+### chord.toNumeric(key) ⇒ [<code>Chord</code>](#Chord)
+Converts the chord to a numeric chord, using the supplied kye as a reference.
+For example, a chord symbol A# with reference key E will return the numeric chord #4.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the numeric chord  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | the reference key |
+
+<a name="Chord+isNumeric"></a>
+
+### chord.isNumeric() ⇒ <code>boolean</code>
+Determines whether the chord is numeric
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+<a name="Chord+toNumericString"></a>
+
+### chord.toNumericString(key) ⇒ <code>string</code>
+Converts the chord to a numeric chord string, using the supplied kye as a reference.
+For example, a chord symbol A# with reference key E will return the numeric chord #4.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - the numeric chord string  
+**See**: {toNumeric}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | the reference key |
+
+<a name="Chord+toString"></a>
+
+### chord.toString() ⇒ <code>string</code>
+Converts the chord to a string, eg `Esus4/G#` or `1sus4/#3`
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - the chord string  
+<a name="Chord+normalize"></a>
+
+### chord.normalize() ⇒ [<code>Chord</code>](#Chord)
+Normalizes the chord:
+- Fb becomes E
+- Cb becomes B
+- B# becomes C
+- E# becomes F
+- 4b becomes 3
+- 1b becomes 7
+- 7# becomes 1
+- 3# becomes 4
+
+If the chord is already normalized, this will return a copy.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the normalized chord  
+<a name="Chord+useModifier"></a>
+
+### chord.useModifier(newModifier) ⇒ [<code>Chord</code>](#Chord)
+Switches to the specified modifier
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the new, changed chord  
+
+| Param | Description |
+| --- | --- |
+| newModifier | the modifier to use: `'#'` or `'b'` |
+
+<a name="Chord+transposeUp"></a>
+
+### chord.transposeUp() ⇒ [<code>Chord</code>](#Chord)
+Transposes the chord up by 1 semitone. Eg. A becomes A#, Eb becomes E
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+<a name="Chord+transposeDown"></a>
+
+### chord.transposeDown() ⇒ [<code>Chord</code>](#Chord)
+Transposes the chord down by 1 semitone. Eg. A# becomes A, E becomes Eb
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+<a name="Chord+transpose"></a>
+
+### chord.transpose(delta) ⇒ [<code>Chord</code>](#Chord)
+Transposes the chord by the specified number of semitones
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+
+| Param | Description |
+| --- | --- |
+| delta | de number of semitones |
+
+<a name="Chord.parse"></a>
+
+### Chord.parse(chordString) ⇒ <code>null</code> \| [<code>Chord</code>](#Chord)
+Tries to parse a chord string into a chord
+
+**Kind**: static method of [<code>Chord</code>](#Chord)  
+
+| Param | Description |
+| --- | --- |
+| chordString | the chord string, eg `Esus4/G#` or `1sus4/#3` |
+
 <a name="ChordSheetSerializer"></a>
 
 ## ChordSheetSerializer
@@ -1116,6 +1413,12 @@ Duration meta directive. See https://www.chordpro.org/chordpro/directives-durati
 End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
 
 **Kind**: global constant  
+<a name="END_OF_TAB"></a>
+
+## END\_OF\_TAB : <code>string</code>
+End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
+
+**Kind**: global constant  
 <a name="END_OF_VERSE"></a>
 
 ## END\_OF\_VERSE : <code>string</code>
@@ -1125,6 +1428,12 @@ End of verse directive. See https://www.chordpro.org/chordpro/directives-env_ver
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
+Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
+
+**Kind**: global constant  
+<a name="_KEY"></a>
+
+## \_KEY : <code>string</code>
 Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
 
 **Kind**: global constant  
@@ -1138,6 +1447,12 @@ Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyrici
 
 ## START\_OF\_CHORUS : <code>string</code>
 Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
+
+**Kind**: global constant  
+<a name="START_OF_TAB"></a>
+
+## START\_OF\_TAB : <code>string</code>
+Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
 
 **Kind**: global constant  
 <a name="START_OF_VERSE"></a>
@@ -1207,10 +1522,16 @@ Used to mark a paragraph as not containing a line marked with a type
 Used to mark a paragraph as containing lines with both verse and chorus type
 
 **Kind**: global constant  
+<a name="TAB"></a>
+
+## TAB : <code>string</code>
+Used to mark a paragraph as tab
+
+**Kind**: global constant  
 <a name="scopedCss"></a>
 
 ## scopedCss(scope) ⇒ <code>string</code>
-Generates basic CSS, scoped within the provided selector, to use with output generated by {@link }HtmlTableFormatter}
+Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)
 
 **Kind**: global function  
 **Returns**: <code>string</code> - the CSS string  
@@ -1218,4 +1539,17 @@ Generates basic CSS, scoped within the provided selector, to use with output gen
 | Param | Description |
 | --- | --- |
 | scope | the CSS scope to use, for example `.chordSheetViewer` |
+
+<a name="parseChord"></a>
+
+## ~~parseChord(chordString) ⇒ <code>null</code> \| [<code>Chord</code>](#Chord)~~
+***Deprecated***
+
+Tries to parse a chord string into a chord
+
+**Kind**: global function  
+
+| Param | Description |
+| --- | --- |
+| chordString | the chord string, eg Esus4/G# or 1sus4/#3 |
 

@@ -6,9 +6,24 @@ import {
   Literal,
 } from '../src';
 
+function typeRepresentation(type, value) {
+  if (type === 'object') {
+    if (value === null) {
+      return 'null';
+    }
+
+    return `${value.constructor} object`;
+  }
+
+  return value;
+}
+
+const anything = {};
+
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
-  const pass = (received instanceof klass) && propertyNames.every((name) => received[name] === properties[name]);
+  const pass = (!klass || received instanceof klass)
+    && propertyNames.every((name) => received[name] === properties[name]);
   const stringifiedProperties = propertyNames.map((name) => `${name}=${properties[name]}`);
 
   if (pass) {
@@ -20,13 +35,13 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
 
   return {
     message: () => {
-      const errorBase = `expected ${received} to be a ${klass.name}(${stringifiedProperties})`;
+      const errorBase = `expected ${received} to be a ${klass?.name || 'object'}(${stringifiedProperties})`;
       const errors = [];
       const type = typeof received;
 
       if (type !== 'object') {
         errors.push(`it was a ${type} with value ${received}`);
-      } else if (!(received instanceof klass)) {
+      } else if (klass && !(received instanceof klass)) {
         errors.push(`it was a instance of ${received.constructor.name}`);
       } else {
         propertyNames.forEach((name) => {
@@ -35,10 +50,17 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
           const actualType = typeof actualProperty;
           const expectedType = typeof expectedProperty;
 
+          if (expectedType === anything) {
+            return;
+          }
+
           if (actualType !== expectedType) {
-            errors.push(`expected ${name} to be a ${expectedType} but it was a ${actualType}`);
+            errors.push(
+              `expected ${name} to be a ${typeRepresentation(expectedType, expectedProperty)} 
+               but it was a ${typeRepresentation(actualType, actualProperty)}`,
+            );
           } else if (actualProperty !== expectedProperty) {
-            errors.push(`its ${name} were: "${actualProperty}" vs "${expectedProperty}"`);
+            errors.push(`its ${name} value was: "${actualProperty}" vs "${expectedProperty}"`);
           }
         });
       }
@@ -69,10 +91,48 @@ function toBeLiteral(received, string) {
   return toBeClassInstanceWithProperties(received, Literal, { string });
 }
 
+function toBeChord(
+  received,
+  {
+    base = anything,
+    modifier = anything,
+    suffix = anything,
+    bassBase = anything,
+    bassModifier = anything,
+  },
+) {
+  return toBeClassInstanceWithProperties(
+    {
+      base: received.root.note.note,
+      modifier: received.root.modifier,
+      suffix: received.suffix,
+      bassBase: received.bass?.note?.note || null,
+      bassModifier: received.bass?.modifier || null,
+    },
+    null,
+    {
+      base, modifier, suffix, bassBase, bassModifier,
+    },
+  );
+}
+
+function toBeKey(received, { note, modifier }) {
+  return toBeClassInstanceWithProperties(
+    {
+      note: received.note.note,
+      modifier: received.modifier,
+    },
+    null,
+    { note, modifier },
+  );
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeTag,
   toBeComment,
   toBeTernary,
   toBeLiteral,
+  toBeChord,
+  toBeKey,
 });

@@ -1,11 +1,11 @@
-import Chord from 'chordjs';
-
 import {
   _KEY,
   CAPO,
   KEY,
   isReadonlyTag,
 } from './tag';
+
+import Chord from '../chord';
 
 function appendValue(array, key, value) {
   if (!array.includes(value)) {

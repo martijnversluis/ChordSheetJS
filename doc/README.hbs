@@ -138,6 +138,113 @@ HtmlTableFormatter.cssObject();
 // }
 ```
 
+### Parsing and modifying chords
+
+```javascript
+import { parseChord } from 'chordsheetjs';
+```
+
+#### Parse
+
+```javascript
+const chord = parseChord('Ebsus4/Bb');
+```
+
+Parse numeric chords (Nashville system):
+
+```javascript
+const chord = parseChord('b1sus4/#3');
+```
+
+#### Display with #toString
+
+Use #toString() to convert the chord to a chord string (eg Dsus/F#)
+
+```javascript
+const chord = parseChord('Ebsus4/Bb');
+chord.toString(); // --> "Ebsus4/Bb"
+```
+
+#### Clone
+
+```javascript
+var chord2 = chord.clone();
+```
+
+#### Normalize
+
+Normalizes keys B#, E#, Cb and Fb to C, F, B and E
+
+```javascript
+const chord = parseChord('E#/B#'),
+normalizedChord = chord.normalize();
+normalizedChord.toString(); // --> "F/C"
+```
+
+#### Switch modifier
+
+Convert # to b and vice versa
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.switchModifier();
+chord2.toString(); // --> "D#/A#"
+```
+
+#### Use specific modifier
+
+Set the chord to a specific modifier (# or b)
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.useModifier('#');
+chord2.toString(); // --> "D#/A#"
+```
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.useModifier('b');
+chord2.toString(); // --> "Eb/Bb"
+```
+
+#### Transpose up
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.transposeUp();
+chord2.toString(); // -> "E/B"
+```
+
+#### Transpose down
+
+```javascript
+const chord = parseChord('Eb/Bb');
+const chord2 = chord.transposeDown();
+chord2.toString(); // -> "D/A"
+```
+
+#### Transpose
+
+```javascript
+const chord = parseChord('C/E');
+const chord2 = chord.transpose(4);
+chord2.toString(); // -> "E/G#"
+```
+
+```javascript
+const chord = parseChord('C/E');
+const chord2 = chord.transpose(-4);
+chord2.toString(); // -> "Ab/C"
+```
+
+#### Convert numeric chord to chord symbol
+
+```javascript
+const numericChord = parseChord('2/4');
+const chordSymbol = toChordSymbol(numericChord, 'E');
+chordSymbol.toString(); // -> "F#m/A"
+```
+
 ## Supported ChordPro directives
 
 :heavy_check_mark: = supported

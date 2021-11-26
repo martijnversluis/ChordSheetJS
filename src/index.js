@@ -22,6 +22,7 @@ import {
   INDETERMINATE,
   VERSE,
   NONE,
+  TAB,
 } from './constants';
 
 export { default as ChordProParser } from './parser/chord_pro_parser';
@@ -42,12 +43,17 @@ export { default as Ternary } from './chord_sheet/chord_pro/ternary';
 export { default as Composite } from './chord_sheet/chord_pro/composite';
 export { default as Literal } from './chord_sheet/chord_pro/literal';
 export { default as ChordSheetSerializer } from './chord_sheet_serializer';
+export { default as Chord, parseChord } from './chord';
+export { default as Key } from './key';
 
 export {
   CHORUS,
   INDETERMINATE,
   VERSE,
   NONE,
+  TAB,
+  SYMBOL,
+  NUMERIC,
 } from './constants';
 
 export default {
@@ -71,6 +77,7 @@ export default {
   ChordSheetSerializer,
   CHORUS,
   INDETERMINATE,
+  TAB,
   VERSE,
   NONE,
 };

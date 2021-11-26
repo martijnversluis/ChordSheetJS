@@ -1,4 +1,4 @@
-name: Run linters and specs
+name: CI
 
 on:
   push:

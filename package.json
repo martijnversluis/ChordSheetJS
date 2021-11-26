@@ -1,7 +1,7 @@
 {
   "name": "@praisecharts/chordchartjs",
   "author": "PraiseCharts",
-  "version": "4.7.1",
+  "version": "5.0.0",
   "description": "A JavaScript library for parsing and formatting chord charts",
   "main": "lib/index.js",
   "repository": {
@@ -20,10 +20,10 @@
     "babel-eslint": "^10.1.0",
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
     "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.21.2",
     "jest": "^27.0.1",
-    "jsdoc-to-markdown": "^7.0.1",
+    "jsdoc-to-markdown": "^7.1.0",
     "pegjs": "^0.10.0"
   },
   "scripts": {
@@ -41,7 +41,6 @@
     "pretest": "yarn build:templates && yarn build:pegjs"
   },
   "dependencies": {
-    "chordjs": "^2.0.0",
     "handlebars": "^4.7.6"
   }
 }
