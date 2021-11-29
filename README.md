@@ -1,4 +1,4 @@
-# ChordSheetJS [![Build Status](https://travis-ci.org/martijnversluis/ChordSheetJS.svg?branch=master)](https://travis-ci.org/martijnversluis/ChordSheetJS) [![npm version](https://badge.fury.io/js/chordsheetjs.svg)](https://badge.fury.io/js/chordsheetjs) [![Code Climate](https://codeclimate.com/github/martijnversluis/ChordSheetJS/badges/gpa.svg)](https://codeclimate.com/github/martijnversluis/ChordSheetJS)
+# ChordSheetJS (https://badge.fury.io/js/chordsheetjs) [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
