@@ -25,6 +25,11 @@ const examples = {
     'Gb': 'b3',
     'E': 'b2',
   },
+
+  'B': {
+    'F#': '5',
+    'A#': '7',
+  },
 };
 
 describe('Key', () => {
