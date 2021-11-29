@@ -8,23 +8,9 @@ import {
   SYMBOL,
 } from './constants';
 
-const MAJOR_SCALE = [null, 'M', 'm', 'm', 'M', 'M', 'm', 'dim'];
-
-function normalizeSuffix(suffix) {
-  if (suffix === 'M') {
-    return '';
-  }
-
+function normalizeSuffix(noteNumber, suffix) {
+  // TODO: Use a config to normalize the suffix so that G(add6) becomes G(6)
   return suffix;
-}
-
-function chordSuffix(noteNumber, suffix) {
-  if (isEmptyString(suffix)) {
-    const defaultSuffix = MAJOR_SCALE[noteNumber];
-    return normalizeSuffix(defaultSuffix);
-  }
-
-  return normalizeSuffix(suffix);
 }
 
 const chordRegex = (
@@ -93,7 +79,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     let chordSymbolChord = new Chord({
-      suffix: chordSuffix(this.#rootNote, this.suffix),
+      suffix: normalizeSuffix(this.#rootNote, this.suffix),
       root: this.root.toChordSymbol(keyObj),
       bass: this.bass?.toChordSymbol(keyObj),
     });
@@ -146,7 +132,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: chordSuffix(this.#rootNote, this.suffix),
+      suffix: normalizeSuffix(this.#rootNote, this.suffix),
       root: this.root.toNumeric(keyObj),
       bass: this.bass?.toNumeric(keyObj),
     });
