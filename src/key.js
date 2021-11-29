@@ -10,11 +10,11 @@ const MODIFIER_TRANSPOSITION = {
 };
 
 const symbolKeyRegex = (
-  /^(?<note>[A-G])(?<modifier>#|b)?$/i
+  /^(?<note>[A-G])(?<modifier>#|b)?(?<minor>m)?$/i
 );
 
 const numericKeyRegex = (
-  /^(?<modifier>#|b)?(?<note>[1-7])$/
+  /^(?<modifier>#|b)?(?<note>[1-7])(?<minor>m)?$/
 );
 
 const numeralKeyRegex = (
@@ -61,9 +61,10 @@ class Key {
     return delta;
   }
 
-  constructor({ note, modifier = null }) {
+  constructor({ note, modifier = null, minor = false }) {
     this.note = (note instanceof Note) ? note : Note.parse(note);
     this.modifier = modifier || null;
+    this.minor = !!minor || false;
   }
 
   isMinor() {
@@ -72,6 +73,20 @@ class Key {
 
   clone() {
     return this.#set({});
+  }
+
+  toChordSymbol(key) {
+    if (this.is(SYMBOL)) {
+      return this.clone();
+    }
+
+    const transposeDistance = this.note.getTransposeDistance(key.minor) + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
+
+    return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
+  }
+
+  toChordSymbolString(key) {
+    return this.toChordSymbol(key).toString();
   }
 
   is(type) {
@@ -92,23 +107,6 @@ class Key {
 
   equals({ note, modifier }) {
     return this.note.equals(note) && this.modifier === modifier;
-  }
-
-  toChordSymbol(key) {
-    if (this.is(SYMBOL)) {
-      return this.clone();
-    }
-
-    const transposeDistance = this.note.getTransposeDistance() + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
-
-    return key
-      .transpose(transposeDistance)
-      .normalize()
-      .useModifier(key.modifier);
-  }
-
-  toChordSymbolString(key) {
-    return this.toChordSymbol(key).toString();
   }
 
   toNumeric(key) {
@@ -271,6 +269,7 @@ class Key {
     return new this.constructor({
       note: this.note.clone(),
       modifier: this.modifier,
+      minor: !!this.minor,
       ...attributes,
     });
   }

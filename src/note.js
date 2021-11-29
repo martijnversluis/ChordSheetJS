@@ -5,7 +5,8 @@ import {
 const A = 'A'.charCodeAt(0);
 const G = 'G'.charCodeAt(0);
 
-const TRANSPOSE_DISTANCE = [null, 0, 2, 4, 5, 7, 9, 11];
+const TRANSPOSE_DISTANCE_MAJOR = [null, 0, 2, 4, 5, 7, 9, 11];
+const TRANSPOSE_DISTANCE_MINOR = [null, 0, 2, 3, 5, 7, 8, 10];
 
 function keyToCharCode(key) {
   return key.toUpperCase().charCodeAt(0);
@@ -132,8 +133,12 @@ class Note {
     return this.type === noteType;
   }
 
-  getTransposeDistance() {
-    return TRANSPOSE_DISTANCE[this._note];
+  getTransposeDistance(minorKey) {
+    // minor keys use a different scale
+    if(minorKey) {
+      return TRANSPOSE_DISTANCE_MINOR[this._note];
+    }
+    return TRANSPOSE_DISTANCE_MAJOR[this._note];
   }
 
   change(delta) {
