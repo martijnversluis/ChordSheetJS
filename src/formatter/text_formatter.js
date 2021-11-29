@@ -1,6 +1,12 @@
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
-import { hasChordContents, hasTextContents, padLeft } from '../utilities';
+import { renderChord } from '../helpers';
+
+import {
+  hasChordContents,
+  hasTextContents,
+  padLeft,
+} from '../utilities';
 
 /**
  * Formats a song into a plain text chord sheet
@@ -12,14 +18,16 @@ class TextFormatter {
    * @returns {string} the chord sheet
    */
   format(song) {
+    this.song = song;
+
     return [
-      this.formatHeader(song),
-      this.formatParagraphs(song),
+      this.formatHeader(),
+      this.formatParagraphs(),
     ].join('');
   }
 
-  formatHeader(song) {
-    const { title, subtitle } = song;
+  formatHeader() {
+    const { title, subtitle } = this.song;
     const separator = (title || subtitle) ? '\n' : '';
 
     return [
@@ -29,8 +37,8 @@ class TextFormatter {
     ].join('');
   }
 
-  formatParagraphs(song) {
-    const { bodyParagraphs, metadata } = song;
+  formatParagraphs() {
+    const { bodyParagraphs, metadata } = this.song;
 
     return bodyParagraphs
       .map((paragraph) => this.formatParagraph(paragraph, metadata))
@@ -80,8 +88,9 @@ class TextFormatter {
     return null;
   }
 
-  chordLyricsPairLength(chordLyricsPair) {
-    const { chords, lyrics } = chordLyricsPair;
+  chordLyricsPairLength(chordLyricsPair, line) {
+    const chords = renderChord(chordLyricsPair.chords, line.key, this.song.key);
+    const { lyrics } = chordLyricsPair;
     const chordsLength = (chords || '').length;
     const lyricsLength = (lyrics || '').length;
 
@@ -92,13 +101,14 @@ class TextFormatter {
     return Math.max(chordsLength, lyricsLength);
   }
 
-  formatItemTop(item) {
+  formatItemTop(item, metadata, line) {
     if (item instanceof Tag && item.isRenderable()) {
       return padLeft('', item.value);
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(item.chords || '', this.chordLyricsPairLength(item));
+      const chords = renderChord(item.chords, line.key, this.song.key);
+      return padLeft(chords, this.chordLyricsPairLength(item, line));
     }
 
     return '';
@@ -115,17 +125,17 @@ class TextFormatter {
   formatLineWithFormatter(line, formatter, metadata) {
     return line
       .items
-      .map((item) => formatter.call(this, item, metadata))
+      .map((item) => formatter.call(this, item, metadata, line))
       .join('');
   }
 
-  formatItemBottom(item, metadata) {
+  formatItemBottom(item, metadata, line) {
     if (item instanceof Tag && item.isRenderable()) {
       return item.value;
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(item.lyrics, this.chordLyricsPairLength(item));
+      return padLeft(item.lyrics, this.chordLyricsPairLength(item, line));
     }
 
     if (typeof item.evaluate === 'function') {

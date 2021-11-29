@@ -26,6 +26,16 @@
       "items": [
         {
           "type": "tag",
+          "name": "key",
+          "value": "C"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
           "name": "x_some_setting",
           "value": null
         }
@@ -143,6 +153,16 @@
       "type": "line",
       "items": [
         {
+          "type": "tag",
+          "name": "transpose",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
           "type": "chordLyricsPair",
           "chords": "C",
           "lyrics": "Whisper words of "
@@ -210,6 +230,16 @@
           "type": "tag",
           "name": "comment",
           "value": "Breakdown"
+        }
+      ]
+    },
+    {
+      "type": "line",
+      "items": [
+        {
+          "type": "tag",
+          "name": "transpose",
+          "value": "G"
         }
       ]
     },

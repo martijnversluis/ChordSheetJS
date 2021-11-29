@@ -12,6 +12,7 @@ class HtmlFormatter {
           subtitle: true,
           title: true,
           value: true,
+          key: true,
         },
       },
     );

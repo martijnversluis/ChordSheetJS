@@ -3942,6 +3942,11 @@ pretty-format@^27.4.2:
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
 
+print@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/print/-/print-1.2.0.tgz#bb00a4996b426367dd13dba70c052fa4f3e26167"
+  integrity sha512-mB2lIC1SVWGkSGfhuJjkG+9DmFnCOzY2F65GQyzOUFKRVRcUmlgb1rHLMu+BMKFkHUOwU3g7WKJ6+ll0kFr4yw==
+
 private@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"

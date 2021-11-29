@@ -1,20 +1,21 @@
-import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
-import Tag from './chord_sheet/tag';
-
 export const pushNew = (collection, Klass) => {
   const newObject = new Klass();
   collection.push(newObject);
   return newObject;
 };
 
-export const hasChordContents = (line) => line.items.some((item) => item instanceof ChordLyricsPair && item.chords);
+export const hasChordContents = (line) => line.items.some((item) => !!item.chords);
 
 export const isEvaluatable = (item) => typeof item.evaluate === 'function';
 
+function isInstanceOf(object, constructorName) {
+  return object?.constructor?.name === constructorName;
+}
+
 export const hasTextContents = (line) => (
   line.items.some((item) => (
-    (item instanceof ChordLyricsPair && item.lyrics)
-      || (item instanceof Tag && item.isRenderable())
+    (isInstanceOf(item, 'ChordLyricsPair') && item.lyrics)
+      || (isInstanceOf(item, 'Tag') && item.isRenderable())
       || isEvaluatable(item)
   ))
 );

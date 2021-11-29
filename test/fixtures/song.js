@@ -13,6 +13,10 @@ export default createSong([
   ],
 
   [
+    createTag('key', 'C'),
+  ],
+
+  [
     createTag('x_some_setting', ''),
   ],
 
@@ -63,6 +67,10 @@ export default createSong([
   ],
 
   [
+    createTag('transpose', '2'),
+  ],
+
+  [
     createChordLyricsPair('C', 'Whisper words of '),
     createChordLyricsPair('F', 'wis'),
     createChordLyricsPair('G', 'dom, let it '),
@@ -84,6 +92,10 @@ export default createSong([
 
   [
     createTag('comment', 'Breakdown'),
+  ],
+
+  [
+    createTag('transpose', 'G'),
   ],
 
   [

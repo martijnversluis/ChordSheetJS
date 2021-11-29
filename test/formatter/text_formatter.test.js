@@ -16,11 +16,11 @@ Written by: John Lennon,Paul McCartney
 
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
-C                F  G           F  C/E Dm C
+D                G  A           G  D/F# Em D
 Whisper words of wisdom, let it be
 
 Breakdown
-Am               Bb             F  C
+Em               F              C  G
 Whisper words of wisdom, let it be`.substring(1);
 
     expect(formatter.format(song)).toEqual(expectedChordSheet);
