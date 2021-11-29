@@ -1,4 +1,4 @@
-# ChordSheetJS (https://badge.fury.io/js/chordsheetjs) [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
+# ChordSheetJS [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
