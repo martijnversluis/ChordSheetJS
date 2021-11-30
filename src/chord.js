@@ -281,7 +281,7 @@ class Chord {
     },
   ) {
     this.suffix = presence(suffix);
-    this.root = root || new Key({ note: base, modifier: modifier, minor: suffix === 'm' });
+    this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
     this.bass = bass || (bassBase ? new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' }) : null);
   }
 
