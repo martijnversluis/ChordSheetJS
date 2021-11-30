@@ -1,4 +1,4 @@
-import { deprecate, isEmptyString, presence } from './utilities';
+import { deprecate, presence } from './utilities';
 import Key from './key';
 
 import {

@@ -135,7 +135,7 @@ class Note {
 
   getTransposeDistance(minorKey) {
     // minor keys use a different scale
-    if(minorKey) {
+    if (minorKey) {
       return TRANSPOSE_DISTANCE_MINOR[this._note];
     }
     return TRANSPOSE_DISTANCE_MAJOR[this._note];
