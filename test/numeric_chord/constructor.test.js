@@ -8,13 +8,13 @@ describe('Chord', () => {
         const chord = new Chord({
           base: 1,
           modifier: 'b',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 3,
           bassModifier: '#',
         });
 
         expect(chord).toBeChord({
-          base: 1, modifier: 'b', suffix: 'sus4', bassBase: 3, bassModifier: '#',
+          base: 1, modifier: 'b', suffix: 'sus', bassBase: 3, bassModifier: '#',
         });
       });
     });

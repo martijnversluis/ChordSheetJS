@@ -7,12 +7,12 @@ describe('Chord', () => {
         const chord = new Chord({
           base: 'E',
           modifier: 'b',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
         });
 
-        expect(chord.toString()).toEqual('Ebsus4/G#');
+        expect(chord.toString()).toEqual('Ebsus/G#');
       });
 
       describe('without bass modifier', () => {
@@ -20,11 +20,11 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             modifier: 'b',
-            suffix: 'sus4',
+            suffix: 'sus',
             bassBase: 'G',
           });
 
-          expect(chord.toString()).toEqual('Ebsus4/G');
+          expect(chord.toString()).toEqual('Ebsus/G');
         });
       });
 
@@ -33,10 +33,10 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             modifier: 'b',
-            suffix: 'sus4',
+            suffix: 'sus',
           });
 
-          expect(chord.toString()).toEqual('Ebsus4');
+          expect(chord.toString()).toEqual('Ebsus');
         });
       });
 
@@ -44,10 +44,10 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'E',
-            suffix: 'sus4',
+            suffix: 'sus',
           });
 
-          expect(chord.toString()).toEqual('Esus4');
+          expect(chord.toString()).toEqual('Esus');
         });
       });
 

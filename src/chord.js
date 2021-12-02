@@ -1,5 +1,6 @@
 import { deprecate, presence } from './utilities';
 import Key from './key';
+import SUFFIX_MAPPPING from './normalize_mappings/suffix-normalize-mapping';
 
 import {
   NUMERAL,
@@ -8,9 +9,11 @@ import {
   SYMBOL,
 } from './constants';
 
-function normalizeSuffix(noteNumber, suffix) {
-  // TODO: Use a config to normalize the suffix so that G(add6) becomes G(6)
-  return suffix;
+function normalizeSuffix(suffix) {
+  if (SUFFIX_MAPPPING[suffix] === '[blank]') {
+    return null;
+  }
+  return SUFFIX_MAPPPING[suffix] || suffix;
 }
 
 const chordRegex = (
@@ -79,7 +82,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     let chordSymbolChord = new Chord({
-      suffix: normalizeSuffix(this.#rootNote, this.suffix),
+      suffix: normalizeSuffix(this.suffix),
       root: this.root.toChordSymbol(keyObj),
       bass: this.bass?.toChordSymbol(keyObj),
     });
@@ -132,7 +135,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: normalizeSuffix(this.#rootNote, this.suffix),
+      suffix: normalizeSuffix(this.suffix),
       root: this.root.toNumeric(keyObj),
       bass: this.bass?.toNumeric(keyObj),
     });
@@ -280,7 +283,7 @@ class Chord {
       bass = null,
     },
   ) {
-    this.suffix = presence(suffix);
+    this.suffix = presence(normalizeSuffix(suffix));
     this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
     this.bass = bass || (bassBase ? new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' }) : null);
   }

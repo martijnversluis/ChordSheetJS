@@ -8,12 +8,12 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             modifier: 'b',
-            suffix: 'sus4',
+            suffix: 'sus',
             bassBase: 'G',
             bassModifier: '#',
           });
 
-          expect(chord.toChordSymbolString()).toEqual('Ebsus4/G#');
+          expect(chord.toChordSymbolString()).toEqual('Ebsus/G#');
         });
       });
     });

@@ -8,14 +8,14 @@ describe('Chord', () => {
         const chord = new Chord({
           base: 'E',
           modifier: 'b',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
         });
 
         const clonedChord = chord.clone();
         expect(clonedChord).toBeChord({
-          base: 'E', modifier: 'b', suffix: 'sus4', bassBase: 'G', bassModifier: '#',
+          base: 'E', modifier: 'b', suffix: 'sus', bassBase: 'G', bassModifier: '#',
         });
       });
     });

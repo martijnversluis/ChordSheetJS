@@ -9,7 +9,7 @@ describe('Chord', () => {
         const originalChord = new Chord({
           base: 'E',
           modifier: 'b',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
         });
@@ -19,7 +19,7 @@ describe('Chord', () => {
         expect(convertedChord).toBeChord({
           base: 'E',
           modifier: 'b',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
         });
