@@ -4,6 +4,7 @@
   "version": "5.3.0",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/index.js",
+  "license": "GNU GPLv3",
   "repository": {
     "type": "git",
     "url": "https://github.com/martijnversluis/ChordSheetJS.git"
@@ -30,7 +31,7 @@
   "scripts": {
     "jest": "jest",
     "test": "yarn lint && yarn jest",
-    "lint": "yarn build:templates && yarn build:pegjs && node_modules/.bin/eslint --ext .js .",
+    "lint": "yarn build:templates && yarn build:suffix-normalize && yarn build:pegjs && node_modules/.bin/eslint --ext .js .",
     "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
     "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
