@@ -1,25 +1,25 @@
 {
-  "name": "@praisecharts/chordchartjs",
-  "author": "PraiseCharts",
+  "name": "chordsheetjs",
+  "author": "Martijn Versluis",
   "version": "5.1.0",
-  "description": "A JavaScript library for parsing and formatting chord charts",
+  "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/praisecharts/ChordChartJS.git"
+    "url": "https://github.com/martijnversluis/ChordSheetJS.git"
   },
   "bugs": {
-    "url": "https://github.com/praisecharts/ChordChartJS/issues"
+    "url": "https://github.com/martijnversluis/ChordSheetJS/issues"
   },
-  "homepage": "https://github.com/praisecharts/ChordChartJS",
+  "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
-    "@babel/eslint-parser": "^7.16.3",
     "@babel/plugin-transform-runtime": "^7.10.1",
     "@babel/preset-env": "^7.10.2",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-handlebars-inline-precompile": "^2.1.1",
-    "eslint": "^8.3.0",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.21.2",
     "jest": "^27.0.1",
