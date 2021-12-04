@@ -40,6 +40,23 @@ class Key {
     return this.parse(keyStringOrObject);
   }
 
+  static distance(oneKey, otherKey) {
+    return this.wrap(oneKey).distanceTo(otherKey);
+  }
+
+  distanceTo(otherKey) {
+    const otherKeyObj = Key.wrap(otherKey);
+    let key = this.useModifier(otherKeyObj.modifier);
+    let delta = 0;
+
+    while (!key.equals(otherKeyObj) && delta < 20) {
+      key = key.transposeUp().useModifier(otherKeyObj.modifier);
+      delta += 1;
+    }
+
+    return delta;
+  }
+
   constructor({ note, modifier = null }) {
     this.note = (note instanceof Note) ? note : new Note(note);
     this.modifier = modifier || null;

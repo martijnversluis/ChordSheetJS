@@ -1,14 +1,16 @@
 import Line from './line';
-import Tag, {
-  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE,
-} from './tag';
 import Paragraph from './paragraph';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
+import ParserWarning from '../parser/parser_warning';
+
 import {
   CHORUS, NONE, TAB, VERSE,
 } from '../constants';
-import ParserWarning from '../parser/parser_warning';
+
+import Tag, {
+  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE, TRANSPOSE,
+} from './tag';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -44,6 +46,7 @@ class Song {
     this.currentParagraph = null;
     this.warnings = [];
     this.sectionType = NONE;
+    this.currentKey = null;
   }
 
   get previousLine() {
@@ -102,6 +105,7 @@ class Song {
     this.flushLine();
     this.currentLine = pushNew(this.lines, Line);
     this.setCurrentLineType(this.sectionType);
+    this.currentLine.key = this.currentKey;
     return this.currentLine;
   }
 
@@ -150,6 +154,8 @@ class Song {
 
     if (tag.isMetaTag()) {
       this.setMetaData(tag.name, tag.value);
+    } else if (tag.name === TRANSPOSE) {
+      this.currentKey = tag.value;
     } else {
       this.setSectionTypeFromTag(tag);
     }

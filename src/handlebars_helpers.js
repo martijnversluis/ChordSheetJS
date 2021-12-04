@@ -3,7 +3,13 @@ import HandleBars from 'handlebars';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
 import { INDETERMINATE, NONE } from './constants';
-import { hasChordContents, hasTextContents, isEvaluatable } from './utilities';
+import { renderChord } from './helpers';
+
+import {
+  hasChordContents,
+  hasTextContents,
+  isEvaluatable,
+} from './utilities';
 
 const lineHasContents = (line) => line.items.some((item) => item.isRenderable());
 
@@ -58,3 +64,5 @@ HandleBars.registerHelper('evaluate', (item, metadata) => {
 
   return item.evaluate(metadata);
 });
+
+HandleBars.registerHelper('renderChord', renderChord);

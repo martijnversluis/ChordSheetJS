@@ -24,7 +24,8 @@
     "eslint-plugin-import": "^2.21.2",
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
-    "pegjs": "^0.10.0"
+    "pegjs": "^0.10.0",
+    "print": "^1.2.0"
   },
   "scripts": {
     "jest": "jest",
