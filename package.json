@@ -1,7 +1,7 @@
 {
   "name": "@praisecharts/chordchartjs",
   "author": "PraiseCharts",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "A JavaScript library for parsing and formatting chord charts",
   "main": "lib/index.js",
   "repository": {
