@@ -164,6 +164,28 @@ Let it [F]be [C]
     expect(parser.warnings).toHaveLength(0);
   });
 
+  it('adds the key to lines', () => {
+    const chordSheetWithTranspose = `
+{key: A}
+
+This part is [A]key
+
+{transpose: 4}
+This part is [C#]key
+
+{transpose: D}
+This part is [D]key
+`.trim();
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheetWithTranspose);
+    const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
+
+    expect(keys[0]).toBe(null);
+    expect(keys[1]).toEqual('4');
+    expect(keys[2]).toEqual('D');
+  });
+
   it('allows escaped special characters in tags', () => {
     const chordSheet = '{title: my \\{title\\}}';
     const song = new ChordProParser().parse(chordSheet);

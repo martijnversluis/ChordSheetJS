@@ -119,6 +119,12 @@ export const TIME = 'time';
 export const TITLE = 'title';
 
 /**
+ * Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
+ * @type {string}
+ */
+export const TRANSPOSE = 'transpose';
+
+/**
  * Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
  * @type {string}
  */
