@@ -11,7 +11,7 @@ describe('Chord', () => {
       });
 
       it('normalizes a suffix', () => {
-        const chord = Chord.parse('Esus').toString();
+        const chord = Chord.parse('Esus4').toString();
         expect(chord).toBe('Esus');
       });
 
