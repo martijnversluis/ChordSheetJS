@@ -3,3 +3,4 @@ node_modules
 src/formatter/templates/*.js
 src/parser/chord_pro_peg_parser.js
 src/normalize_mappings/suffix-normalize-mapping.js
+src/normalize_mappings/enharmonic-normalize.js

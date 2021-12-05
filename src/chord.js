@@ -80,11 +80,12 @@ class Chord {
     }
 
     const keyObj = Key.wrap(key);
+    const rootKey = this.root.toChordSymbol(keyObj).normalizeEnharmonics(keyObj);
 
     let chordSymbolChord = new Chord({
       suffix: normalizeSuffix(this.suffix),
-      root: this.root.toChordSymbol(keyObj),
-      bass: this.bass?.toChordSymbol(keyObj),
+      root: rootKey,
+      bass: this.bass?.toChordSymbol(keyObj).normalizeEnharmonics(rootKey),
     });
 
     if (this.root.isMinor()) {
@@ -234,8 +235,12 @@ class Chord {
    * If the chord is already normalized, this will return a copy.
    * @returns {Chord} the normalized chord
    */
-  normalize() {
-    return this.#process('normalize');
+  normalize(key) {
+    // return this.#process('normalize', key);
+    return this.set({
+      root: this.root.normalize().normalizeEnharmonics(key),
+      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
+    });
   }
 
   /**

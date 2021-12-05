@@ -1,5 +1,6 @@
 import Note from './note';
 import { NUMERAL, NUMERIC, SYMBOL } from './constants';
+import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 
 const FLAT = 'b';
 const SHARP = '#';
@@ -122,11 +123,11 @@ class Key {
 
     let numericKey = new Key({ note: 1 });
     let symbolKey = key.clone();
-    const reference = this.clone().normalize().useModifier(key.modifier);
+    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
 
     while (!symbolKey.equals(reference)) {
       numericKey = numericKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier);
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
     }
 
     return numericKey;
@@ -262,6 +263,19 @@ class Key {
       });
     }
 
+    return this.clone();
+  }
+
+  normalizeEnharmonics(key) {
+    if (key) {
+      const rootKeyString = key.minor ? `${key.toString()}m` : key.toString();
+      const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
+      const thisKeyString = this.toString();
+
+      if (enharmonics && enharmonics[thisKeyString]) {
+        return Key.parse(enharmonics[thisKeyString]);
+      }
+    }
     return this.clone();
   }
 

@@ -6,7 +6,7 @@ const A = 'A'.charCodeAt(0);
 const G = 'G'.charCodeAt(0);
 
 const TRANSPOSE_DISTANCE_MAJOR = [null, 0, 2, 4, 5, 7, 9, 11];
-const TRANSPOSE_DISTANCE_MINOR = [null, 0, 2, 3, 5, 7, 8, 10];
+const TRANSPOSE_DISTANCE_MINOR = [null, 0, 2, 3, 5, 7, 8, 11];
 
 function keyToCharCode(key) {
   return key.toUpperCase().charCodeAt(0);
