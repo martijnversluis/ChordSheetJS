@@ -236,11 +236,13 @@ class Chord {
    * @returns {Chord} the normalized chord
    */
   normalize(key) {
-    // return this.#process('normalize', key);
-    return this.set({
-      root: this.root.normalize().normalizeEnharmonics(key),
-      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
-    });
+    if (presence(key)) {
+      return this.set({
+        root: this.root.normalize().normalizeEnharmonics(key),
+        bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
+      });
+    }
+    return this.#process('normalize');
   }
 
   /**
