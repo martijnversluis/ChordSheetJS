@@ -12,7 +12,7 @@ body:
       label: Background & Motivation
       description: |
         A quick, clear and concise description of what the problem is. 
-        **Please include links to relevant issues, Discord convos, and anything else.**
+        **Please include links to relevant issues, other conversations and anything else.**
       placeholder: I want to be able to...
     validations:
       required: true
@@ -28,23 +28,5 @@ body:
         ### Risks, downsides, and/or tradeoffs
 
         ### Open Questions
-    validations:
-      required: true
-  - type: textarea
-    attributes:
-      label: Detailed Design
-      description: |
-        🛑 **Just looking for feedback on an idea? Leave this section blank.**
-
-        Otherwise, explain the exact steps required to implement this change.
-        Include specific details that would help someone implement this feature.
-  - type: checkboxes
-    attributes:
-      label: Help make it happen!
-      description: 'Tip: RFCs with contributing authors are much more likely to get done!'
-      options:
-        - label: I am willing to submit a PR to implement this change.
-        - label: I am willing to submit a PR to implement this change, but would need some guidance.
-        - label: I am not willing to submit a PR to implement this change.
     validations:
       required: true
