@@ -2,19 +2,30 @@ import Chord from './chord';
 import { presence } from './utilities';
 import Key from './key';
 
-function transposeDistance(lineKey, songKey) {
-  if (/^\d+$/.test(lineKey)) {
-    return parseInt(lineKey, 10);
+function transposeDistance(transposeKey, songKey) {
+  if (/^\d+$/.test(transposeKey)) {
+    return parseInt(transposeKey, 10);
   }
 
-  return Key.distance(songKey, lineKey);
+  return Key.distance(songKey, transposeKey);
 }
 
 /* eslint import/prefer-default-export: 0 */
-export function renderChord(chord, lineKey, songKey) {
-  if (presence(chord) && presence(lineKey) && presence(songKey)) {
-    return Chord.parse(chord).transpose(transposeDistance(lineKey, songKey)).useModifier(lineKey.modifier).toString();
+export function renderChord(chord, lineKey, songKey, transposeKey) {
+  const distance = presence(transposeKey) ? transposeDistance(transposeKey, songKey) : 0;
+  let chordObj = Chord.parse(chord);
+
+  if (!chordObj) {
+    return chord;
   }
 
-  return chord;
+  if (presence(transposeKey) && presence(songKey)) {
+    chordObj = chordObj.transpose(distance).useModifier(transposeKey.modifier);
+  }
+
+  if (presence(lineKey)) {
+    chordObj = chordObj.normalize(lineKey); // normalize by key functionality not yet implemented.
+  }
+
+  return chordObj.toString();
 }
