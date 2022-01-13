@@ -9,7 +9,7 @@ import {
 } from '../constants';
 
 import Tag, {
-  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE, TRANSPOSE,
+  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE, TRANSPOSE, NEW_KEY,
 } from './tag';
 
 /**
@@ -47,6 +47,7 @@ class Song {
     this.warnings = [];
     this.sectionType = NONE;
     this.currentKey = null;
+    this.transposeKey = null;
   }
 
   get previousLine() {
@@ -105,6 +106,7 @@ class Song {
     this.flushLine();
     this.currentLine = pushNew(this.lines, Line);
     this.setCurrentLineType(this.sectionType);
+    this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey;
     return this.currentLine;
   }
@@ -155,6 +157,8 @@ class Song {
     if (tag.isMetaTag()) {
       this.setMetaData(tag.name, tag.value);
     } else if (tag.name === TRANSPOSE) {
+      this.transposeKey = tag.value;
+    } else if (tag.name === NEW_KEY) {
       this.currentKey = tag.value;
     } else {
       this.setSectionTypeFromTag(tag);
