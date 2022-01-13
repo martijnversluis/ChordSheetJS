@@ -114,5 +114,4 @@ export default {
     'A#': 'Bb',
     'D#': 'Eb',
   }
-  
 }

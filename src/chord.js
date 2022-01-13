@@ -13,6 +13,7 @@ function normalizeSuffix(suffix) {
   if (SUFFIX_MAPPPING[suffix] === '[blank]') {
     return null;
   }
+
   return SUFFIX_MAPPPING[suffix] || suffix;
 }
 
@@ -236,13 +237,14 @@ class Chord {
    * @returns {Chord} the normalized chord
    */
   normalize(key) {
-    if (presence(key)) {
-      return this.set({
-        root: this.root.normalize().normalizeEnharmonics(key),
-        bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
-      });
+    if (!presence(key)) {
+      return this.#process('normalize');
     }
-    return this.#process('normalize');
+
+    return this.set({
+      root: this.root.normalize().normalizeEnharmonics(key),
+      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
+    });
   }
 
   /**
@@ -292,7 +294,14 @@ class Chord {
   ) {
     this.suffix = presence(normalizeSuffix(suffix));
     this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
-    this.bass = bass || (bassBase ? new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' }) : null);
+
+    if (bass) {
+      this.bass = bass;
+    } else if (bassBase) {
+      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' });
+    } else {
+      this.bass = null;
+    }
   }
 
   makeMinor() {

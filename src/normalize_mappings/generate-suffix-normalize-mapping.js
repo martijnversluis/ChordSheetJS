@@ -23,7 +23,7 @@ fs.readFile('src/normalize_mappings/suffix-mapping.txt', (err, data) => {
   });
 
   const suffixMappingJson = JSON.stringify(flatObject, null, 2);
-  const suffixMappingJs = `export default ${suffixMappingJson};`;
+  const suffixMappingJs = `export default ${suffixMappingJson};\n`;
 
   fs.writeFile('src/normalize_mappings/suffix-normalize-mapping.js', suffixMappingJs, 'utf-8', (error) => {
     if (error) throw error;

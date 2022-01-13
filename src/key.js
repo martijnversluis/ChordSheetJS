@@ -268,7 +268,7 @@ class Key {
 
   normalizeEnharmonics(key) {
     if (key) {
-      const rootKeyString = key.minor ? `${key.toString()}m` : key.toString();
+      const rootKeyString = key.minor ? `${key}m` : key.toString();
       const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
       const thisKeyString = this.toString();
 
