@@ -1,6 +1,12 @@
 import { deprecate, isEmptyString, presence } from './utilities';
 import Key from './key';
-import { NUMERIC, SYMBOL } from './constants';
+
+import {
+  NUMERAL,
+  NUMERIC,
+  ROMAN_NUMERALS,
+  SYMBOL,
+} from './constants';
 
 const MAJOR_SCALE = [null, 'M', 'm', 'm', 'M', 'M', 'm', 'dim'];
 
@@ -29,7 +35,19 @@ const numericChordRegex = (
   /^(?<modifier>#|b)?(?<base>[1-7])(?<suffix>[^/\s]*)(\/(?<bassModifier>#|b)?(?<bassBase>[0-7]))?$/
 );
 
-const regexes = [numericChordRegex, chordRegex];
+const sortedNumerals = [...ROMAN_NUMERALS].sort((numeralA, numeralB) => numeralB.length - numeralA.length);
+
+const numerals = [
+  ...sortedNumerals,
+  ...sortedNumerals.map((numeral) => numeral.toLowerCase()),
+].join('|');
+
+const numeralChordRegex = (
+  // eslint-disable-next-line max-len
+  new RegExp(`^(?<modifier>#|b)?(?<base>${numerals})(?<suffix>[^/\\s]*)(\\/(?<bassModifier>#|b)?(?<bassBase>${numerals}))?$`)
+);
+
+const regexes = [numericChordRegex, numeralChordRegex, chordRegex];
 
 /**
  * Represents a Chord, consisting of a root, suffix (quality) and bass
@@ -74,11 +92,17 @@ class Chord {
 
     const keyObj = Key.wrap(key);
 
-    return new Chord({
+    let chordSymbolChord = new Chord({
       suffix: chordSuffix(this.#rootNote, this.suffix),
       root: this.root.toChordSymbol(keyObj),
       bass: this.bass?.toChordSymbol(keyObj),
     });
+
+    if (this.root.isMinor()) {
+      chordSymbolChord = chordSymbolChord.makeMinor();
+    }
+
+    return chordSymbolChord;
   }
 
   /**
@@ -102,7 +126,7 @@ class Chord {
   }
 
   /**
-   * Converts the chord to a numeric chord, using the supplied kye as a reference.
+   * Converts the chord to a numeric chord, using the supplied key as a reference.
    * For example, a chord symbol A# with reference key E will return the numeric chord #4.
    * @param {Key|string} key the reference key
    * @returns {Chord} the numeric chord
@@ -112,6 +136,13 @@ class Chord {
       return this.clone();
     }
 
+    if (this.isNumeral()) {
+      return this.set({
+        root: this.root.toNumeric(),
+        bass: this.bass?.toNumeric(),
+      });
+    }
+
     const keyObj = Key.wrap(key);
 
     return new Chord({
@@ -119,6 +150,44 @@ class Chord {
       root: this.root.toNumeric(keyObj),
       bass: this.bass?.toNumeric(keyObj),
     });
+  }
+
+  /**
+   * Converts the chord to a numeral chord, using the supplied key as a reference.
+   * For example, a chord symbol A# with reference key E will return the numeral chord #IV.
+   * @param {Key|string|null} key the reference key. The key is required when converting a chord symbol
+   * @returns {Chord} the numeral chord
+   */
+  toNumeral(key = null) {
+    if (this.isNumeral()) {
+      return this.clone();
+    }
+
+    if (this.isNumeric()) {
+      return this.set({
+        root: this.root.toNumeral(),
+        bass: this.bass?.toNumeral(),
+      });
+    }
+
+    const keyObj = Key.wrap(key);
+
+    return new Chord({
+      suffix: chordSuffix(this.#rootNote, this.suffix),
+      root: this.root.toNumeral(keyObj),
+      bass: this.bass?.toNumeral(keyObj),
+    });
+  }
+
+  /**
+   * Converts the chord to a numeral chord string, using the supplied kye as a reference.
+   * For example, a chord symbol A# with reference key E will return the numeral chord #4.
+   * @param {Key|string} key the reference key
+   * @returns {string} the numeral chord string
+   * @see {toNumeral}
+   */
+  toNumeralString(key) {
+    return this.toNumeral(key).toString();
   }
 
   /**
@@ -138,6 +207,14 @@ class Chord {
    */
   toNumericString(key) {
     return this.toNumeric(key).toString();
+  }
+
+  /**
+   * Determines whether the chord is a numeral
+   * @returns {boolean}
+   */
+  isNumeral() {
+    return this.#is(NUMERAL);
   }
 
   /**
@@ -220,6 +297,16 @@ class Chord {
     this.root = root || new Key({ note: base, modifier });
     this.suffix = presence(suffix);
     this.bass = bass || (bassBase ? new Key({ note: bassBase, modifier: bassModifier }) : null);
+  }
+
+  makeMinor() {
+    if (!this.suffix || this.suffix[0] !== 'm') {
+      return this.set({
+        suffix: `m${this.suffix || ''}`,
+      });
+    }
+
+    return this.clone();
   }
 
   set(properties) {

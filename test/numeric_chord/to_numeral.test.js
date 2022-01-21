@@ -1,47 +1,26 @@
-import { Chord, Key } from '../../src';
+import { Chord } from '../../src';
 
 import '../matchers';
 
 describe('Chord', () => {
-  describe('toNumeric', () => {
-    describe('for a chord symbol', () => {
-      it('returns a the numeric version', () => {
+  describe('numeric', () => {
+    describe('toNumeral', () => {
+      it('returns the numeral version', () => {
         const originalChord = new Chord({
-          base: 'D',
-          modifier: null,
+          base: 6,
+          modifier: '#',
           suffix: 'sus4',
-          bassBase: 'F',
-          bassModifier: '#',
-        });
-
-        const key = Key.parse('Ab');
-        const numericChord = originalChord.toNumeric(key);
-
-        expect(numericChord).toBeChord({
-          base: 5,
-          modifier: 'b',
-          suffix: 'sus4',
-          bassBase: 7,
+          bassBase: '4',
           bassModifier: 'b',
         });
-      });
 
-      it('accepts a string key', () => {
-        const originalChord = new Chord({
-          base: 'D',
-          modifier: null,
+        const numeralChord = originalChord.toNumeral();
+
+        expect(numeralChord).toBeChord({
+          base: 'VI',
+          modifier: '#',
           suffix: 'sus4',
-          bassBase: 'F',
-          bassModifier: '#',
-        });
-
-        const numericChord = originalChord.toNumeric('Ab');
-
-        expect(numericChord).toBeChord({
-          base: 5,
-          modifier: 'b',
-          suffix: 'sus4',
-          bassBase: 7,
+          bassBase: 'IV',
           bassModifier: 'b',
         });
       });

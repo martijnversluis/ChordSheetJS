@@ -35,3 +35,6 @@ export const TAB = 'tab';
 
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';
+export const NUMERAL = 'numeral';
+
+export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];

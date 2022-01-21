@@ -35,7 +35,7 @@ describe('Key', () => {
 
     describe('numeric key', () => {
       describe('when delta > 0', () => {
-        it('tranposes up', () => {
+        it('transposes up', () => {
           const key = new Key({ note: 2, modifier: 'b' });
 
           const transposedKey = key.transpose(5);
@@ -56,8 +56,37 @@ describe('Key', () => {
         it('Does not change the key', () => {
           const key = new Key({ note: 7, modifier: '#' });
 
+          const transposedKey = key.transpose(0);
+          expect(transposedKey).toBeKey({ note: 7, modifier: '#' });
+        });
+      });
+    });
+
+    describe('numeral key', () => {
+      describe('when delta > 0', () => {
+        it('transposes up', () => {
+          const key = new Key({ note: 'II', modifier: 'b' });
+
+          const transposedKey = key.transpose(5);
+          expect(transposedKey).toBeKey({ note: 'V', modifier: 'b' });
+        });
+      });
+
+      describe('when delta < 0', () => {
+        it('Does not change the key', () => {
+          const key = new Key({ note: 'VI', modifier: '#' });
+
+          const transposedKey = key.transpose(-4);
+          expect(transposedKey).toBeKey({ note: 'IV', modifier: '#' });
+        });
+      });
+
+      describe('when delta = 0', () => {
+        it('Does not change the key', () => {
+          const key = new Key({ note: 'VII', modifier: '#' });
+
           const tranposedKey = key.transpose(0);
-          expect(tranposedKey).toBeKey({ note: 7, modifier: '#' });
+          expect(tranposedKey).toBeKey({ note: 'VII', modifier: '#' });
         });
       });
     });
