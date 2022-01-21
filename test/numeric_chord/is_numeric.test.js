@@ -1,7 +1,7 @@
 import { Chord } from '../../src';
 
 describe('Chord', () => {
-  describe('chord symbol', () => {
+  describe('numeric', () => {
     describe('isNumeric', () => {
       describe('for a pure numeric chord', () => {
         it('returns true', () => {
