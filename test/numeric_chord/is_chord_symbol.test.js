@@ -1,13 +1,13 @@
 import { Chord } from '../../src';
 
 describe('Chord', () => {
-  describe('chord symbol', () => {
-    describe('isNumeric', () => {
+  describe('numeric', () => {
+    describe('isChordSymbol', () => {
       describe('for a pure numeric chord', () => {
-        it('returns true', () => {
+        it('returns false', () => {
           const chord = new Chord({ base: 1, bassBase: 3 });
 
-          expect(chord.isNumeric()).toBe(true);
+          expect(chord.isChordSymbol()).toBe(false);
         });
       });
 
@@ -15,7 +15,7 @@ describe('Chord', () => {
         it('returns false', () => {
           const chord = new Chord({ base: 'A', bassBase: 3 });
 
-          expect(chord.isNumeric()).toBe(false);
+          expect(chord.isChordSymbol()).toBe(false);
         });
       });
     });
