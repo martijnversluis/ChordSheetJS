@@ -3,24 +3,25 @@ import { Chord } from '../../src';
 import '../matchers';
 
 describe('Chord', () => {
-  describe('numeric', () => {
+  describe('numeral', () => {
     describe('toNumeral', () => {
-      it('returns the numeral version', () => {
+      it('returns a clone of the chord', () => {
         const originalChord = new Chord({
-          base: 6,
+          base: 'iii',
           modifier: '#',
           suffix: 'sus4',
-          bassBase: '4',
+          bassBase: 'V',
           bassModifier: 'b',
         });
 
         const numeralChord = originalChord.toNumeral();
+        expect(numeralChord).not.toBe(originalChord);
 
         expect(numeralChord).toBeChord({
-          base: 'VI',
+          base: 'iii',
           modifier: '#',
           suffix: 'sus4',
-          bassBase: 'IV',
+          bassBase: 'V',
           bassModifier: 'b',
         });
       });

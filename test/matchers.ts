@@ -140,6 +140,18 @@ function toBeNote(received, { note, type, minor = false }) {
   );
 }
 
+function toBeNote(received, { note, type, minor = false }) {
+  return toBeClassInstanceWithProperties(
+    {
+      note: received.note,
+      type: received.type,
+      minor: received.minor,
+    },
+    null,
+    { note, type, minor },
+  );
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeTag,
