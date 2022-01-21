@@ -17,5 +17,13 @@ describe('Key', () => {
         expect(key.isNumeric()).toBe(true);
       });
     });
+
+    describe('for a numeral', () => {
+      it('returns false', () => {
+        const key = new Key({ note: 'V', modifier: '#' });
+
+        expect(key.isNumeric()).toBe(false);
+      });
+    });
   });
 });

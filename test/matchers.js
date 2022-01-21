@@ -127,6 +127,18 @@ function toBeKey(received, { note, modifier }) {
   );
 }
 
+function toBeNote(received, { note, type, minor = false }) {
+  return toBeClassInstanceWithProperties(
+    {
+      note: received.note,
+      type: received.type,
+      minor: received.minor,
+    },
+    null,
+    { note, type, minor },
+  );
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeTag,
@@ -135,4 +147,5 @@ expect.extend({
   toBeLiteral,
   toBeChord,
   toBeKey,
+  toBeNote,
 });

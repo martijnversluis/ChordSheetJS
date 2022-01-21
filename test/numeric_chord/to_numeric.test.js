@@ -5,26 +5,24 @@ import '../matchers';
 describe('Chord', () => {
   describe('numeric', () => {
     describe('toNumeric', () => {
-      describe('for a numeric chord', () => {
-        it('returns a clone of the chord', () => {
-          const originalChord = new Chord({
-            base: 3,
-            modifier: '#',
-            suffix: 'sus4',
-            bassBase: 5,
-            bassModifier: 'b',
-          });
+      it('returns a clone of the chord', () => {
+        const originalChord = new Chord({
+          base: 3,
+          modifier: '#',
+          suffix: 'sus4',
+          bassBase: 5,
+          bassModifier: 'b',
+        });
 
-          const numericChord = originalChord.toNumeric();
-          expect(numericChord).not.toBe(originalChord);
+        const numericChord = originalChord.toNumeric();
+        expect(numericChord).not.toBe(originalChord);
 
-          expect(numericChord).toBeChord({
-            base: 3,
-            modifier: '#',
-            suffix: 'sus4',
-            bassBase: 5,
-            bassModifier: 'b',
-          });
+        expect(numericChord).toBeChord({
+          base: 3,
+          modifier: '#',
+          suffix: 'sus4',
+          bassBase: 5,
+          bassModifier: 'b',
         });
       });
     });

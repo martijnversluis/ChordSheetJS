@@ -1,12 +1,19 @@
 import Note from '../../src/note';
+import { SYMBOL } from '../../src';
+import { NUMERAL } from '../../src/constants';
 
 describe('Note', () => {
-  describe('is', () => {
-    it('checks whether the note is one of the supplied options', () => {
-      const note = new Note('E');
+  describe('#is', () => {
+    it('returns true when the provided type equals the note type', () => {
+      const note = new Note({ note: 'A', type: SYMBOL });
 
-      expect(note.isOneOf('A', 6, 'E')).toBe(true);
-      expect(note.isOneOf('F', 4, 'A')).toBe(false);
+      expect(note.is(SYMBOL)).toBe(true);
+    });
+
+    it('returns false when the provided type does not equal the note type', () => {
+      const note = new Note({ note: 'III', type: NUMERAL });
+
+      expect(note.is(SYMBOL)).toBe(false);
     });
   });
 });
