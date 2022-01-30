@@ -7,11 +7,19 @@ import { renderChord } from './helpers';
 
 import {
   hasChordContents,
-  hasTextContents,
   isEvaluatable,
 } from './utilities';
 
 const lineHasContents = (line) => line.items.some((item) => item.isRenderable());
+
+/* eslint import/prefer-default-export: 0 */
+export const hasTextContents = (line) => (
+  line.items.some((item) => (
+    (item instanceof ChordLyricsPair && item.lyrics)
+    || (item instanceof Tag && item.isRenderable())
+    || isEvaluatable(item)
+  ))
+);
 
 HandleBars.registerHelper('isChordLyricsPair', (item) => item instanceof ChordLyricsPair);
 
