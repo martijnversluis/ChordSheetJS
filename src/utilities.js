@@ -8,18 +8,6 @@ export const hasChordContents = (line) => line.items.some((item) => !!item.chord
 
 export const isEvaluatable = (item) => typeof item.evaluate === 'function';
 
-function isInstanceOf(object, constructorName) {
-  return object?.constructor?.name === constructorName;
-}
-
-export const hasTextContents = (line) => (
-  line.items.some((item) => (
-    (isInstanceOf(item, 'ChordLyricsPair') && item.lyrics)
-      || (isInstanceOf(item, 'Tag') && item.isRenderable())
-      || isEvaluatable(item)
-  ))
-);
-
 export const padLeft = (str, length) => {
   let paddedString = str;
   for (let l = str.length; l < length; l += 1, paddedString += ' ');

@@ -1,10 +1,10 @@
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
 import { renderChord } from '../helpers';
+import { hasTextContents } from '../template_helpers';
 
 import {
   hasChordContents,
-  hasTextContents,
   padLeft,
 } from '../utilities';
 
