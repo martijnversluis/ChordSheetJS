@@ -1,6 +1,6 @@
 import Handlebars from 'handlebars';
 
-import '../handlebars_helpers';
+import '../template_helpers';
 import HtmlFormatter from './html_formatter';
 import './templates/html_div_formatter';
 import { scopeCss } from '../utilities';
