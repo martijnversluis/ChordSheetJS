@@ -1,17 +1,17 @@
 {
-  "name": "@praisecharts/chordchartjs",
-  "author": "PraiseCharts",
-  "version": "5.0.0",
-  "description": "A JavaScript library for parsing and formatting chord charts",
+  "name": "chordsheetjs",
+  "author": "Martijn Versluis",
+  "version": "5.1.3",
+  "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/praisecharts/ChordChartJS.git"
+    "url": "https://github.com/martijnversluis/ChordSheetJS.git"
   },
   "bugs": {
-    "url": "https://github.com/praisecharts/ChordChartJS/issues"
+    "url": "https://github.com/martijnversluis/ChordSheetJS/issues"
   },
-  "homepage": "https://github.com/praisecharts/ChordChartJS",
+  "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
     "@babel/cli": "^7.10.1",
     "@babel/core": "^7.10.2",
