@@ -20,7 +20,7 @@ describe('Chord', () => {
         expect(numeralChord).toBeChord({
           base: 'iii',
           modifier: '#',
-          suffix: 'sus4',
+          suffix: 'sus',
           bassBase: 'V',
           bassModifier: 'b',
         });

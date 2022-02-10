@@ -164,7 +164,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: chordSuffix(this.#rootNote, this.suffix),
+      suffix: normalizeSuffix(this.suffix),
       root: this.root.toNumeral(keyObj),
       bass: this.bass?.toNumeral(keyObj),
     });
