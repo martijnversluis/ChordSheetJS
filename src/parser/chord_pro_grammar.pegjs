@@ -136,7 +136,7 @@ TagName
   = [a-zA-Z-_]+
 
 TagValue
-  = TagValueChar+
+  = TagValueChar*
 
 TagValueChar
   = [^}\\\r\n]

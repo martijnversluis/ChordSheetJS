@@ -66,6 +66,11 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
     expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
   });
 
+  it('parses directive with empty value', () => {
+    const song = new ChordProParser().parse('{c: }');
+    expect(song.lines[0].items[0]).toBeTag('comment', null);
+  });
+
   it('parses meta data', () => {
     const chordSheet = `
 {title: Let it be}
