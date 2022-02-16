@@ -12,7 +12,7 @@ LineWithNewline
 }
 
 Line
-  = lyrics:Lyrics? tokens:Token* chords:Chord? comment:Comment? {
+  = lyrics:Lyrics? tokens:Token* chords:Chord? comment:Comment? Space* {
   return {
     type: "line",
     items: [
@@ -136,7 +136,7 @@ TagName
   = [a-zA-Z-_]+
 
 TagValue
-  = TagValueChar+
+  = TagValueChar*
 
 TagValueChar
   = [^}\\\r\n]
