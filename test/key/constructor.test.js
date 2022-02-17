@@ -4,7 +4,7 @@ import Key from '../../src/key';
 describe('Key', () => {
   describe('constructor', () => {
     it('assigns a note object', () => {
-      const note = new Note('A');
+      const note = Note.parse('A');
       const key = new Key({ note });
 
       expect(key.note).toBe(note);

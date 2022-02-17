@@ -1,5 +1,5 @@
 import Note from './note';
-import { NUMERIC, SYMBOL } from './constants';
+import { NUMERAL, NUMERIC, SYMBOL } from './constants';
 
 const FLAT = 'b';
 const SHARP = '#';
@@ -17,7 +17,11 @@ const numericKeyRegex = (
   /^(?<modifier>#|b)?(?<note>[1-7])$/
 );
 
-const regexes = [symbolKeyRegex, numericKeyRegex];
+const numeralKeyRegex = (
+  /^(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2})$/
+);
+
+const regexes = [symbolKeyRegex, numericKeyRegex, numeralKeyRegex];
 
 class Key {
   static parse(keyString) {
@@ -58,34 +62,16 @@ class Key {
   }
 
   constructor({ note, modifier = null }) {
-    this.note = (note instanceof Note) ? note : new Note(note);
+    this.note = (note instanceof Note) ? note : Note.parse(note);
     this.modifier = modifier || null;
   }
 
-  #set(attributes) {
-    return new this.constructor({
-      note: this.note.clone(),
-      modifier: this.modifier,
-      ...attributes,
-    });
+  isMinor() {
+    return this.note.isMinor();
   }
 
   clone() {
     return this.#set({});
-  }
-
-  toChordSymbol(key) {
-    if (this.is(SYMBOL)) {
-      return this.clone();
-    }
-
-    const transposeDistance = this.note.getTransposeDistance() + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
-
-    return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
-  }
-
-  toChordSymbolString(key) {
-    return this.toChordSymbol(key).toString();
   }
 
   is(type) {
@@ -100,9 +86,40 @@ class Key {
     return this.is(SYMBOL);
   }
 
+  isNumeral() {
+    return this.is(NUMERAL);
+  }
+
+  equals({ note, modifier }) {
+    return this.note.equals(note) && this.modifier === modifier;
+  }
+
+  toChordSymbol(key) {
+    if (this.is(SYMBOL)) {
+      return this.clone();
+    }
+
+    const transposeDistance = this.note.getTransposeDistance() + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
+
+    return key
+      .transpose(transposeDistance)
+      .normalize()
+      .useModifier(key.modifier);
+  }
+
+  toChordSymbolString(key) {
+    return this.toChordSymbol(key).toString();
+  }
+
   toNumeric(key) {
     if (this.isNumeric()) {
       return this.clone();
+    }
+
+    if (this.isNumeral()) {
+      return this.#set({
+        note: this.note.toNumeric(),
+      });
     }
 
     let numericKey = new Key({ note: 1 });
@@ -117,20 +134,43 @@ class Key {
     return numericKey;
   }
 
-  equals({ note, modifier }) {
-    return this.note.equals(note) && this.modifier === modifier;
-  }
-
   toNumericString(key) {
     return this.toNumeric(key).toString();
   }
 
-  toString() {
-    if (this.is(NUMERIC)) {
-      return `${this.modifier || ''}${this.note}`;
+  toNumeral(key) {
+    if (this.isNumeral()) {
+      return this.clone();
     }
 
-    return `${this.note}${this.modifier || ''}`;
+    if (this.isNumeric()) {
+      return this.#set({
+        note: this.note.toNumeral(),
+      });
+    }
+
+    let numeralKey = new Key({ note: 'I' });
+    let symbolKey = key.clone();
+    const reference = this.clone().normalize().useModifier(key.modifier);
+
+    while (!symbolKey.equals(reference)) {
+      numeralKey = numeralKey.transposeUp().useModifier(key.modifier);
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier);
+    }
+
+    return numeralKey;
+  }
+
+  toNumeralString(key) {
+    return this.toNumeral(key).toString();
+  }
+
+  toString() {
+    if (this.isChordSymbol()) {
+      return `${this.note}${this.modifier || ''}`;
+    }
+
+    return `${this.modifier || ''}${this.note}`;
   }
 
   transpose(delta) {
@@ -225,6 +265,14 @@ class Key {
     }
 
     return this.clone();
+  }
+
+  #set(attributes) {
+    return new this.constructor({
+      note: this.note.clone(),
+      modifier: this.modifier,
+      ...attributes,
+    });
   }
 }
 

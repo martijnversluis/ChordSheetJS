@@ -10,7 +10,7 @@ describe('Note', () => {
         const to = notes[i + 1];
 
         it(`converts ${from} to ${to}`, () => {
-          expect(new Note(from).up().note).toEqual(to);
+          expect(Note.parse(from).up().note).toEqual(to);
         });
       }
     });
@@ -23,7 +23,33 @@ describe('Note', () => {
         const to = notes[i + 1];
 
         it(`converts ${from} to ${to}`, () => {
-          expect(new Note(from).up().note).toEqual(to);
+          expect(Note.parse(from).up().note).toEqual(to);
+        });
+      }
+    });
+
+    describe('major numerals', () => {
+      const notes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'I'];
+
+      for (let i = 0; i < 7; i += 1) {
+        const from = notes[i];
+        const to = notes[i + 1];
+
+        it(`converts ${from} to ${to}`, () => {
+          expect(Note.parse(from).up().note).toEqual(to);
+        });
+      }
+    });
+
+    describe('minor numerals', () => {
+      const notes = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'i'];
+
+      for (let i = 0; i < 7; i += 1) {
+        const from = notes[i];
+        const to = notes[i + 1];
+
+        it(`converts ${from} to ${to}`, () => {
+          expect(Note.parse(from).up().note).toEqual(to);
         });
       }
     });

@@ -49,6 +49,51 @@ describe('Key', () => {
       });
     });
 
+    describe('for I, II, IV, V and VI', () => {
+      it('returns the # version', () => {
+        const key = new Key({ note: 'VI', modifier: null });
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey).toBeKey({ note: 'VI', modifier: '#' });
+      });
+    });
+
+    describe('for #I, #II, #IV, #V and #VI', () => {
+      it('returns the next note without #', () => {
+        const key = new Key({ note: 'VI', modifier: '#' });
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey).toBeKey({ note: 'VII', modifier: null });
+      });
+    });
+
+    describe('for III and VII', () => {
+      it('returns the next note', () => {
+        const key = new Key({ note: 'III', modifier: null });
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey).toBeKey({ note: 'IV', modifier: null });
+      });
+    });
+
+    describe('for bII, bIII, bV, bVI and bVII', () => {
+      it('returns the note without b', () => {
+        const key = new Key({ note: 'II', modifier: 'b' });
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey).toBeKey({ note: 'II', modifier: null });
+      });
+    });
+
+    describe('for bI and bIV', () => {
+      it('returns the note without b', () => {
+        const key = new Key({ note: 'I', modifier: 'b' });
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey).toBeKey({ note: 'I', modifier: null });
+      });
+    });
+
     describe('for #E and #B', () => {
       it('returns the next note with #', () => {
         const key = new Key({ note: 3, modifier: '#' });

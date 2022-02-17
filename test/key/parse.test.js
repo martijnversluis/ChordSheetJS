@@ -28,6 +28,18 @@ describe('Key', () => {
       });
     });
 
+    describe('numeral key', () => {
+      it('parses a simple numeral key', () => {
+        const key = Key.parse('IV');
+        expect(key).toBeKey({ note: 'IV', modifier: null });
+      });
+
+      it('parses a numeral key with modifier', () => {
+        const key = Key.parse('#IV');
+        expect(key).toBeKey({ note: 'IV', modifier: '#' });
+      });
+    });
+
     describe('when a key can not be parsed', () => {
       it('returns null', () => {
         const key = Key.parse('oobar');

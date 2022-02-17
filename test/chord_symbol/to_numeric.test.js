@@ -3,8 +3,8 @@ import { Chord, Key } from '../../src';
 import '../matchers';
 
 describe('Chord', () => {
-  describe('toNumeric', () => {
-    describe('for a chord symbol', () => {
+  describe('chord symbol', () => {
+    describe('toNumeric', () => {
       it('returns a the numeric version', () => {
         const originalChord = new Chord({
           base: 'D',

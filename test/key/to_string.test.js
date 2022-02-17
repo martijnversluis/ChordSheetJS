@@ -2,6 +2,12 @@ import { Key } from '../../src';
 
 describe('Key', () => {
   describe('toString', () => {
+    it('converts a numeral key to a string', () => {
+      const key = new Key({ note: 'II', modifier: 'b' });
+
+      expect(key.toString()).toEqual('bII');
+    });
+
     it('converts a numeric key to a string', () => {
       const key = new Key({ note: 2, modifier: 'b' });
 

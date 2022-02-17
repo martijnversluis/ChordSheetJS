@@ -3,8 +3,8 @@ import Chord from '../../src/chord';
 import '../matchers';
 
 describe('Chord', () => {
-  describe('toChordSymbol', () => {
-    describe('when the chord is already a chord symbol', () => {
+  describe('chord symbol', () => {
+    describe('toChordSymbol', () => {
       it('returns a clone of the chord', () => {
         const originalChord = new Chord({
           base: 'E',

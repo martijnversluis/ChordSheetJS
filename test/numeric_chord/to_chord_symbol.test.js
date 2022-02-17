@@ -4,8 +4,8 @@ import '../matchers';
 import { Key } from '../../src';
 
 describe('Chord', () => {
-  describe('toChordSymbol', () => {
-    describe('for a numeric chord', () => {
+  describe('numeric', () => {
+    describe('toChordSymbol', () => {
       it('returns a chord symbol version', () => {
         const originalChord = new Chord({
           base: 5,
