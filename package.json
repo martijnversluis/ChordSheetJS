@@ -24,7 +24,7 @@
     "eslint-plugin-import": "^2.21.2",
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
-    "pegjs": "^0.10.0",
+    "peggy": "^1.2.0",
     "print": "^1.2.0"
   },
   "scripts": {
@@ -35,7 +35,7 @@
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
     "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
     "build:sources": "rm -rf lib && babel src --out-dir lib",
-    "build:pegjs": "pegjs -o src/parser/chord_pro_peg_parser.js src/parser/chord_pro_grammar.pegjs",
+    "build:pegjs": "peggy -o src/parser/chord_pro_peg_parser.js src/parser/chord_pro_grammar.pegjs && peggy src/parser/on_song_grammar.pegjs",
     "build": "yarn build:templates && yarn build:pegjs && yarn build:sources",
     "readme": "jsdoc2md -f src/**/*.js -f src/*.js --template doc/README.hbs > README.md",
     "prepublishOnly": "yarn install && yarn test && yarn build",

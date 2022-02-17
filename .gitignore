@@ -3,4 +3,5 @@ node_modules
 lib
 src/formatter/templates/*.js
 src/parser/chord_pro_peg_parser.js
+src/parser/on_song_grammar.js
 .tool-versions
