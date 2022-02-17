@@ -69,7 +69,7 @@ describe('Chord', () => {
       it('parses a numeral chord with confusing suffix', () => {
         const chord = Chord.parse('IVmaj9#11');
         expect(chord).toBeChord({
-          base: 'IV', modifier: null, suffix: 'ma9(#11)', bassBase: null, bassModifier: null,
+          base: 'IV', modifier: null, suffix: 'maj9#11', bassBase: null, bassModifier: null,
         });
       });
 
@@ -92,7 +92,7 @@ describe('Chord', () => {
       it('parses a numeral chord with suffix', () => {
         const chord = Chord.parse('IVsus4/I');
         expect(chord).toBeChord({
-          base: 'IV', modifier: null, suffix: 'sus', bassBase: 'I', bassModifier: null,
+          base: 'IV', modifier: null, suffix: 'sus4', bassBase: 'I', bassModifier: null,
         });
       });
 
@@ -106,14 +106,14 @@ describe('Chord', () => {
       it('parses a numeral chord with modifier and suffix', () => {
         const chord = Chord.parse('#IVsus4/#I');
         expect(chord).toBeChord({
-          base: 'IV', modifier: '#', suffix: 'sus', bassBase: 'I', bassModifier: '#',
+          base: 'IV', modifier: '#', suffix: 'sus4', bassBase: 'I', bassModifier: '#',
         });
       });
 
       it('parses a numeral chord with confusing suffix', () => {
         const chord = Chord.parse('IVmaj9#11/#I');
         expect(chord).toBeChord({
-          base: 'IV', modifier: null, suffix: 'ma9(#11)', bassBase: 'I', bassModifier: '#',
+          base: 'IV', modifier: null, suffix: 'maj9#11', bassBase: 'I', bassModifier: '#',
         });
       });
 

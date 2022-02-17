@@ -238,11 +238,12 @@ class Chord {
    */
   normalize(key) {
     if (!presence(key)) {
-      return this.#process('normalize');
+      return this.#process('normalize').set({ suffix: presence(normalizeSuffix(this.suffix)) });
     }
 
     return this.set({
       root: this.root.normalize().normalizeEnharmonics(key),
+      suffix: presence(normalizeSuffix(this.suffix)),
       bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
     });
   }
@@ -292,7 +293,7 @@ class Chord {
       bass = null,
     },
   ) {
-    this.suffix = presence(normalizeSuffix(suffix));
+    this.suffix = presence(suffix);
     this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
 
     if (bass) {
