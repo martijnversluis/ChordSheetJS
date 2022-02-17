@@ -242,9 +242,9 @@ class Chord {
     }
 
     return this.set({
-      root: this.root.normalize().normalizeEnharmonics(key),
+      root: this.root.normalizeEnharmonics(key),
       suffix: presence(normalizeSuffix(this.suffix)),
-      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(this.root.toString()) : null,
+      bass: this.bass ? this.bass.normalizeEnharmonics(this.root.toString()) : null,
     });
   }
 
