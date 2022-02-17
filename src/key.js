@@ -150,11 +150,11 @@ class Key {
 
     let numeralKey = new Key({ note: 'I' });
     let symbolKey = key.clone();
-    const reference = this.clone().normalize().useModifier(key.modifier);
+    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
 
     while (!symbolKey.equals(reference)) {
       numeralKey = numeralKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier);
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
     }
 
     return numeralKey;
