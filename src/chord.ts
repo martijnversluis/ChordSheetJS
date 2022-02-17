@@ -1,5 +1,5 @@
 import Key from './key';
-import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
+import SUFFIX_MAPPPING from './normalize_mappings/suffix-normalize-mapping';
 
 import {
   NUMERAL,
@@ -16,11 +16,11 @@ import {
 } from './utilities';
 
 function normalizeChordSuffix(suffix) {
-  if (SUFFIX_MAPPING[suffix] === '[blank]') {
+  if (SUFFIX_MAPPPING[suffix] === '[blank]') {
     return null;
   }
 
-  return SUFFIX_MAPPING[suffix] || suffix;
+  return SUFFIX_MAPPPING[suffix] || suffix;
 }
 
 const chordRegex = (
@@ -305,13 +305,12 @@ class Chord {
     },
   ) {
     this.suffix = presence(suffix);
-    const isMinor = suffix && suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
-    this.root = root || new Key({ note: base, modifier, minor: isMinor });
+    this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
 
     if (bass) {
       this.bass = bass;
     } else if (bassBase) {
-      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: false });
+      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' });
     } else {
       this.bass = null;
     }
