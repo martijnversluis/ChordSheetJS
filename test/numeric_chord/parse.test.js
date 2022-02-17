@@ -14,9 +14,9 @@ describe('Chord', () => {
         });
 
         it('parses a numeric chord with suffix', () => {
-          const chord = Chord.parse('4sus4');
+          const chord = Chord.parse('4sus');
           expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'sus4', bassBase: null, bassModifier: null,
+            base: 4, modifier: null, suffix: 'sus', bassBase: null, bassModifier: null,
           });
         });
 
@@ -28,16 +28,16 @@ describe('Chord', () => {
         });
 
         it('parses a numeric chord with modifier and suffix', () => {
-          const chord = Chord.parse('#4sus4');
+          const chord = Chord.parse('#4sus');
           expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'sus4', bassBase: null, bassModifier: null,
+            base: 4, modifier: '#', suffix: 'sus', bassBase: null, bassModifier: null,
           });
         });
 
         it('parses a numeric chord with confusing suffix', () => {
-          const chord = Chord.parse('4maj9#11');
+          const chord = Chord.parse('4ma9(#11)');
           expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'maj9#11', bassBase: null, bassModifier: null,
+            base: 4, modifier: null, suffix: 'ma9(#11)', bassBase: null, bassModifier: null,
           });
         });
 
@@ -58,9 +58,9 @@ describe('Chord', () => {
         });
 
         it('parses a numeric chord with suffix', () => {
-          const chord = Chord.parse('4sus4/1');
+          const chord = Chord.parse('4sus/1');
           expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'sus4', bassBase: 1, bassModifier: null,
+            base: 4, modifier: null, suffix: 'sus', bassBase: 1, bassModifier: null,
           });
         });
 
@@ -72,16 +72,16 @@ describe('Chord', () => {
         });
 
         it('parses a numeric chord with modifier and suffix', () => {
-          const chord = Chord.parse('#4sus4/#1');
+          const chord = Chord.parse('#4sus/#1');
           expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'sus4', bassBase: 1, bassModifier: '#',
+            base: 4, modifier: '#', suffix: 'sus', bassBase: 1, bassModifier: '#',
           });
         });
 
         it('parses a numeric chord with confusing suffix', () => {
-          const chord = Chord.parse('4maj9#11/#1');
+          const chord = Chord.parse('4ma9(#11)/#1');
           expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'maj9#11', bassBase: 1, bassModifier: '#',
+            base: 4, modifier: null, suffix: 'ma9(#11)', bassBase: 1, bassModifier: '#',
           });
         });
 
