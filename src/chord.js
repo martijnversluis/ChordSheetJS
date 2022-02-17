@@ -223,7 +223,7 @@ class Chord {
   }
 
   /**
-   * Normalizes the chord:
+   * Normalizes the chord root and bass notes:
    * - Fb becomes E
    * - Cb becomes B
    * - B# becomes C
@@ -233,7 +233,9 @@ class Chord {
    * - 7# becomes 1
    * - 3# becomes 4
    *
-   * If the chord is already normalized, this will return a copy.
+   * Besides that it normalizes the suffix. For example, `sus2` becomes `2`, `sus4` becomes `sus`.
+   * All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
+   *
    * @returns {Chord} the normalized chord
    */
   normalize(key) {
