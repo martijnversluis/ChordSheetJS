@@ -54,4 +54,16 @@ title is set and c is unset`.substring(1);
 
     expect(formatted).toEqual('');
   });
+
+  it('correctly parses and formats meta expressions', () => {
+    const chordSheet = `
+    {key: Numbers}
+    
+    [Ab] Hello`.substring(1);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordProFormatter({ evaluate: false }).format(song);
+
+    expect(formatted).toEqual(chordSheet);
+  });
 });

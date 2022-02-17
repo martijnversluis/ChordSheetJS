@@ -1,5 +1,6 @@
 import Note from './note';
 import { NUMERAL, NUMERIC, SYMBOL } from './constants';
+import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 
 const FLAT = 'b';
 const SHARP = '#';
@@ -10,11 +11,11 @@ const MODIFIER_TRANSPOSITION = {
 };
 
 const symbolKeyRegex = (
-  /^(?<note>[A-G])(?<modifier>#|b)?$/i
+  /^(?<note>[A-G])(?<modifier>#|b)?(?<minor>m)?$/i
 );
 
 const numericKeyRegex = (
-  /^(?<modifier>#|b)?(?<note>[1-7])$/
+  /^(?<modifier>#|b)?(?<note>[1-7])(?<minor>m)?$/
 );
 
 const numeralKeyRegex = (
@@ -61,9 +62,10 @@ class Key {
     return delta;
   }
 
-  constructor({ note, modifier = null }) {
+  constructor({ note, modifier = null, minor = false }) {
     this.note = (note instanceof Note) ? note : Note.parse(note);
     this.modifier = modifier || null;
+    this.minor = !!minor || false;
   }
 
   isMinor() {
@@ -72,6 +74,20 @@ class Key {
 
   clone() {
     return this.#set({});
+  }
+
+  toChordSymbol(key) {
+    if (this.is(SYMBOL)) {
+      return this.clone();
+    }
+
+    const transposeDistance = this.note.getTransposeDistance(key.minor) + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
+
+    return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
+  }
+
+  toChordSymbolString(key) {
+    return this.toChordSymbol(key).toString();
   }
 
   is(type) {
@@ -94,23 +110,6 @@ class Key {
     return this.note.equals(note) && this.modifier === modifier;
   }
 
-  toChordSymbol(key) {
-    if (this.is(SYMBOL)) {
-      return this.clone();
-    }
-
-    const transposeDistance = this.note.getTransposeDistance() + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
-
-    return key
-      .transpose(transposeDistance)
-      .normalize()
-      .useModifier(key.modifier);
-  }
-
-  toChordSymbolString(key) {
-    return this.toChordSymbol(key).toString();
-  }
-
   toNumeric(key) {
     if (this.isNumeric()) {
       return this.clone();
@@ -124,11 +123,11 @@ class Key {
 
     let numericKey = new Key({ note: 1 });
     let symbolKey = key.clone();
-    const reference = this.clone().normalize().useModifier(key.modifier);
+    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
 
     while (!symbolKey.equals(reference)) {
       numericKey = numericKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier);
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
     }
 
     return numericKey;
@@ -151,11 +150,11 @@ class Key {
 
     let numeralKey = new Key({ note: 'I' });
     let symbolKey = key.clone();
-    const reference = this.clone().normalize().useModifier(key.modifier);
+    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
 
     while (!symbolKey.equals(reference)) {
       numeralKey = numeralKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier);
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
     }
 
     return numeralKey;
@@ -267,10 +266,24 @@ class Key {
     return this.clone();
   }
 
+  normalizeEnharmonics(key) {
+    if (key) {
+      const rootKeyString = key.minor ? `${key}m` : key.toString();
+      const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
+      const thisKeyString = this.toString();
+
+      if (enharmonics && enharmonics[thisKeyString]) {
+        return Key.parse(enharmonics[thisKeyString]);
+      }
+    }
+    return this.clone();
+  }
+
   #set(attributes) {
     return new this.constructor({
       note: this.note.clone(),
       modifier: this.modifier,
+      minor: !!this.minor,
       ...attributes,
     });
   }
