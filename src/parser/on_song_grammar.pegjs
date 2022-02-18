@@ -1,7 +1,7 @@
 // https://www.onsongapp.com/docs/features/formats/onsong/
 
 ChordSheet
-  = metadata:Metadata __ sections:Section* {
+  = metadata:Metadata sections:Section* {
     return { type: "chordsheet", metadata, sections }
   }
 
@@ -16,6 +16,7 @@ Metadata
       return { type: "metatag", name: "artist", value }
     })?
     rest:(@Metatag __)*
+    __
   {
     return [ first, second, ...rest ].filter(Boolean)
   }
@@ -44,7 +45,7 @@ SectionName
   }
 
 SectionBody
-  = @Stanza __
+  = @(Tab / Stanza) __
 
 Stanza
   = lines:Line+ {
@@ -82,6 +83,20 @@ ChordChar
 Lyrics "lyrics"
   = $(Char+)
 
+Tab
+  = SotDirective NewLine content:$(!EotDirective TabLine __)+ EotDirective {
+      return { type: 'tab', content }
+    }
+  / StartOfTabDirective NewLine content:$(!EndOfTabDirective TabLine __)+ EndOfTabDirective {
+      return { type: 'tab', content }
+    }
+
+SotDirective = "{sot}"
+StartOfTabDirective = "{start_of_tab}"
+EotDirective = "{eot}"
+EndOfTabDirective = "{end_of_tab}"
+TabLine = [^\r\n]+ NewLine
+
 // MusicalInstruction // e.g. (Repeat 8x)
 //  = "(" [^)]+ ")"
 
@@ -92,7 +107,7 @@ Escape
   = "\\"
 
 Space
-  = "\t" / " "
+  = [ \t]
 
 NewLine "new line"
   = "\r\n" / "\r" / "\n"

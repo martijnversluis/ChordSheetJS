@@ -84,6 +84,14 @@ describe('OnSongGrammar', () => {
         ],
       },
 
+      'Intro:\n{sot}\ntab\n{eot}': {
+        type: 'section',
+        name: 'Intro',
+        items: [
+          { type: 'tab', content: 'tab\n' },
+        ],
+      },
+
       'Chord and lyrics': {
         type: 'section',
         name: null,
@@ -138,6 +146,23 @@ describe('OnSongGrammar', () => {
       '[D/F#]': 'D/F#',
       '[Bsus2]': 'Bsus2',
       '\\[notachord]': Error,
+    },
+
+    Tab: {
+      '{sot}\nthe tab\nis here\n{eot}': {
+        type: 'tab',
+        content: 'the tab\nis here\n',
+      },
+      '{start_of_tab}\ntab here\n{end_of_tab}': {
+        type: 'tab',
+        content: 'tab here\n',
+      },
+      '{sot}\npart1\n\npart2\n{eot}': {
+        type: 'tab',
+        content: 'part1\n\npart2\n',
+      },
+      '{sot}\ntab\n{end_of_tab}': Error,
+      '{start_of_tab}\ntab\n{eot}': Error,
     },
 
     ChordSheet: {
