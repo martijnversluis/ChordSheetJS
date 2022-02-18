@@ -27,6 +27,7 @@
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
     "pegjs": "^0.10.0",
+    "pinst": "^2.1.6",
     "print": "^1.2.0"
   },
   "scripts": {
