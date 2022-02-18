@@ -1420,6 +1420,11 @@ ajv@^6.10.0, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+annotate-code@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/annotate-code/-/annotate-code-2.0.1.tgz#42828010861e8c2c476d0a8ee5d849b60195dd97"
+  integrity sha512-5YgsWQu2aVLsBqEdOF8AeA/aXcWpo6sx8y3zdXRF14oR2xwxeTC3PqIQFCWCFeIvZlFBY8vgT9gDxFu/JEBt8A==
+
 ansi-escape-sequences@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/ansi-escape-sequences/-/ansi-escape-sequences-4.1.0.tgz#2483c8773f50dd9174dd9557e92b1718f1816097"

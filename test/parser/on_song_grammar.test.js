@@ -1,6 +1,7 @@
 import * as peggy from 'peggy';
 import '../matchers';
 import { readFileSync } from 'fs';
+import { annotate } from 'annotate-code';
 
 describe('OnSongGrammar', () => {
   const examples = {
@@ -183,7 +184,7 @@ describe('OnSongGrammar', () => {
   };
 
   const grammar = readFileSync('src/parser/on_song_grammar.pegjs', { encoding: 'utf-8' });
-  const { parse } = peggy.generate(grammar, {
+  const { parse, SyntaxError } = peggy.generate(grammar, {
     // Allow starting with these in tests
     allowedStartRules: Object.keys(examples),
   });
@@ -191,12 +192,22 @@ describe('OnSongGrammar', () => {
   Object.entries(examples).forEach(([startRule, ruleExamples]) => {
     describe(startRule, () => {
       Object.entries(ruleExamples).forEach(([input, expected]) => {
-        test(JSON.stringify(input), () => {
+        test(input, () => {
           try {
             const actual = parse(input, { startRule });
             expect(actual).toEqual(expected);
           } catch (e) {
-            if (expected !== Error) {
+            if (expected === Error) {
+              // expected, do nothing
+            } else if (e instanceof SyntaxError) {
+              const opts = {
+                message: e.message,
+                index: e.location.start.offset,
+                size: e.location.end.offset - e.location.start.offset,
+                input,
+              };
+              throw new Error(annotate(opts).message);
+            } else {
               throw e;
             }
           }
