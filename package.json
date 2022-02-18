@@ -26,6 +26,7 @@
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
     "peggy": "^1.2.0",
+    "pegjs-backtrace": "^0.2.1",
     "print": "^1.2.0"
   },
   "scripts": {

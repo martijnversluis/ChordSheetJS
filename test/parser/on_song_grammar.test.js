@@ -2,6 +2,7 @@ import * as peggy from 'peggy';
 import '../matchers';
 import { readFileSync } from 'fs';
 import { annotate } from 'annotate-code';
+import Tracer from 'pegjs-backtrace';
 
 describe('OnSongGrammar', () => {
   const examples = {
@@ -212,14 +213,17 @@ describe('OnSongGrammar', () => {
   const { parse, SyntaxError } = peggy.generate(grammar, {
     // Allow starting with these in tests
     allowedStartRules: Object.keys(examples),
+    trace: true,
   });
 
   Object.entries(examples).forEach(([startRule, ruleExamples]) => {
     describe(startRule, () => {
       Object.entries(ruleExamples).forEach(([input, expected]) => {
         test(input, () => {
+          const tracer = new Tracer(input);
+
           try {
-            const actual = parse(input, { startRule });
+            const actual = parse(input, { startRule, tracer });
             expect(actual).toEqual(expected);
           } catch (e) {
             if (expected === Error) {
@@ -231,7 +235,7 @@ describe('OnSongGrammar', () => {
                 size: e.location.end.offset - e.location.start.offset,
                 input,
               };
-              throw new Error(annotate(opts).message);
+              throw new Error([annotate(opts).message, tracer.getBacktraceString()].join("\n\n"));
             } else {
               throw e;
             }
