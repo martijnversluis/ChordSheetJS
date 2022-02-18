@@ -1,5 +1,4 @@
 // https://www.onsongapp.com/docs/features/formats/onsong/
-
 ChordSheet
   = metadata:Metadata sections:Section* {
     return { type: "chordsheet", metadata, sections }
@@ -7,27 +6,23 @@ ChordSheet
 
 // https://www.onsongapp.com/docs/features/formats/onsong/metadata/
 Metadata
-    // First line is implicitly title
-  = first:(!Metatag value:MetaValue EOL {
-      return { type: "metatag", name: "title", value }
-    })?
-    // Second line is implicitly artist
-    second:(!Metatag value:MetaValue EOL {
-      return { type: "metatag", name: "artist", value }
-    })?
-    rest:(@Metatag __)*
-    __
-  {
-    return [ first, second, ...rest ].filter(Boolean)
-  }
+  = (@Metatag __)*
 
 Metatag "metatag"
-  = name:MetaName _ ":" _ value:MetaValue EOL {
-    return { type: "metatag", name: name.toLowerCase().trim(), value }
-  }
+  = name:((@MetaName _ ":") / ImplicitMetaName) _ value:MetaValue EOL {
+      return { type: "metatag", name: name.toLowerCase().trim(), value }
+    }
 
 MetaName
   = $[^\r\n:]+
+
+ImplicitMetaName
+  = & { return location().start.line <= 2 } {
+      switch(location().start.line) {
+        case 1: return 'title'; // First line is implicitly title
+        case 2: return 'artist'; // Second line is implicitly artist
+      }
+    }
 
 MetaValue
   = $[^\r\n]+
