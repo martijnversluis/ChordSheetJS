@@ -29,13 +29,9 @@ describe('OnSongGrammar', () => {
         { type: 'metatag', name: 'a', value: '1' },
         { type: 'metatag', name: 'b', value: '2' },
       ],
-      // TODO:
-      // "{title: ChordPro}": [
-      //   { type: 'metatag', name: 'title', value: 'ChordPro' },
-      // ]
-      // "Notes:" : { // Known metatag without a value
-      //   { type: 'metatag', name: 'Notes', value: '' },
-      // }
+      '{title: ChordPro}': [
+        { type: 'metatag', name: 'title', value: 'ChordPro' },
+      ],
       'Unknown Tag:': Error, // Unknown metatag without a value
     },
 
@@ -235,7 +231,7 @@ describe('OnSongGrammar', () => {
                 size: e.location.end.offset - e.location.start.offset,
                 input,
               };
-              throw new Error([annotate(opts).message, tracer.getBacktraceString()].join("\n\n"));
+              throw new Error([annotate(opts).message, tracer.getBacktraceString()].join('\n\n'));
             } else {
               throw e;
             }

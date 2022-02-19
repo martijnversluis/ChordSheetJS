@@ -6,15 +6,16 @@ ChordSheet
 
 // https://www.onsongapp.com/docs/features/formats/onsong/metadata/
 Metadata
-  = (@Metatag __)*
+  = (@Metatag EOL __)*
 
 Metatag "metatag"
-  = name:((@MetaName _ ":") / ImplicitMetaName) _ value:MetaValue EOL {
+  = "{" _ @Metatag _ "}"
+  / name:((@MetaName _ ":") / ImplicitMetaName) _ value:MetaValue {
       return { type: "metatag", name: name.toLowerCase().trim(), value }
     }
 
 MetaName
-  = $[^\r\n:]+
+  = $[^\r\n:{]+
 
 ImplicitMetaName
   = & { return location().start.line <= 2 } {
@@ -25,7 +26,7 @@ ImplicitMetaName
     }
 
 MetaValue
-  = $[^\r\n]+
+  = $[^\r\n}]+
 
 // https://www.onsongapp.com/docs/features/formats/onsong/section/
 Section
