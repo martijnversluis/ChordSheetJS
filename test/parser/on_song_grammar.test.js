@@ -88,7 +88,10 @@ describe('OnSongGrammar', () => {
           { type: 'tab', content: 'tab\n' },
         ],
       },
-
+      '{start_of_verse}\nLyrics\n{end_of_verse}': 'todo',
+      '{start_of_verse: Verse 1}\nLyrics\n{end_of_verse}': 'todo',
+      '{start_of_chorus}\nLyrics\n{end_of_chorus}': 'todo',
+      '{start_of_verse}\nLyrics\n{start_of_chorus}': 'todo',
       'Chord and lyrics': {
         type: 'section',
         name: null,
@@ -131,11 +134,17 @@ describe('OnSongGrammar', () => {
           { type: 'ChordLyricsPair', chords: '', lyrics: 'Just lyrics' },
         ],
       },
-
       '[G]': {
         type: 'line',
         parts: [{ type: 'ChordLyricsPair', chords: 'G', lyrics: '' }],
       },
+      '[G]Line (2x)': {
+        type: 'line',
+        parts: [
+          { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Line ' },
+          { type: 'instruction', content: '2x' },
+        ],
+      }
     },
 
     Chord: {
@@ -202,6 +211,8 @@ describe('OnSongGrammar', () => {
           { items: [], name: 'Chorus', type: 'section' },
         ],
       },
+      'Title\nFlow: V1 C v1\n\nVerse 1:\nVerse\n\nChorus:\nChorus': 'todo',
+      'Title\n\nVerse:\n[G]Hello\n\n{transpose: 2}\n\nVerse': 'todo',
     },
   };
 
@@ -215,28 +226,32 @@ describe('OnSongGrammar', () => {
   Object.entries(examples).forEach(([startRule, ruleExamples]) => {
     describe(startRule, () => {
       Object.entries(ruleExamples).forEach(([input, expected]) => {
-        test(input, () => {
-          const tracer = new Tracer(input);
+        if (expected === 'todo') {
+          test.todo(input);
+        } else {
+          test(input, () => {
+            const tracer = new Tracer(input);
 
-          try {
-            const actual = parse(input, { startRule, tracer });
-            expect(actual).toEqual(expected);
-          } catch (e) {
-            if (expected === Error) {
-              // expected, do nothing
-            } else if (e instanceof SyntaxError) {
-              const opts = {
-                message: e.message,
-                index: e.location.start.offset,
-                size: e.location.end.offset - e.location.start.offset,
-                input,
-              };
-              throw new Error([annotate(opts).message, tracer.getBacktraceString()].join('\n\n'));
-            } else {
-              throw e;
+            try {
+              const actual = parse(input, { startRule, tracer });
+              expect(actual).toEqual(expected);
+            } catch (e) {
+              if (expected === Error) {
+                // expected, do nothing
+              } else if (e instanceof SyntaxError) {
+                const opts = {
+                  message: e.message,
+                  index: e.location.start.offset,
+                  size: e.location.end.offset - e.location.start.offset,
+                  input,
+                };
+                throw new Error([annotate(opts).message, tracer.getBacktraceString()].join('\n\n'));
+              } else {
+                throw e;
+              }
             }
-          }
-        });
+          });
+        }
       });
     });
   });
