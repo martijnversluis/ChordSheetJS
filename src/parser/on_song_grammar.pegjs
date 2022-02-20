@@ -49,23 +49,19 @@ Stanza
   }
 
 Line
-  = parts:(ChordLyricsPair / JustChords / JustLyrics)+ EOL {
+  = parts:(MusicalInstruction / ChordLyricsPair)+ EOL {
     return {type: 'line', parts }
-  }
-
-JustChords
-  = chords:Chord {
-    return { type: "ChordLyricsPair", chords, lyrics: "" }
-  }
-
-JustLyrics
-  = lyrics:Lyrics {
-    return { type: "ChordLyricsPair", lyrics, chords: "" }
   }
 
 ChordLyricsPair
   = chords:Chord lyrics:Lyrics {
-    return { type: "ChordLyricsPair", chords: chords || '', lyrics }
+      return { type: "ChordLyricsPair", chords: chords || '', lyrics }
+    }
+  / chords:Chord {
+      return { type: "ChordLyricsPair", chords, lyrics: "" }
+    }
+  / lyrics:Lyrics {
+    return { type: "ChordLyricsPair", lyrics, chords: "" }
   }
 
 Chord "chord"
@@ -77,7 +73,7 @@ ChordChar
   = [^\]]
 
 Lyrics "lyrics"
-  = $(Char+)
+  = $Char+
 
 Tab
   = SotDirective NewLine content:$(!EotDirective TabLine __)+ EotDirective {
@@ -93,11 +89,13 @@ EotDirective = "{eot}"
 EndOfTabDirective = "{end_of_tab}"
 TabLine = [^\r\n]+ NewLine
 
-// MusicalInstruction // e.g. (Repeat 8x)
-//  = "(" [^)]+ ")"
+MusicalInstruction // e.g. (Repeat 8x)
+  = "(" content:$[^)]+ ")" {
+      return { type: 'instruction', content }
+    }
 
 Char
-  = [^\|\[\]\\#\r\n]
+  = [^\|\[\]\\#\(\r\n]
 
 Escape
   = "\\"
