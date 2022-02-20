@@ -88,6 +88,9 @@ describe('OnSongGrammar', () => {
           { type: 'tab', content: 'tab\n' },
         ],
       },
+
+      'Intro:\n| [B] / / / | / / [C#m7] / | [E] / / / | / / [F#sus] / / |': 'todo',
+      'Intro:\n[| [D] /// | //// | [F#m] /// | [E] //// |]¬': 'todo',
       '{start_of_verse}\nLyrics\n{end_of_verse}': 'todo',
       '{start_of_verse: Verse 1}\nLyrics\n{end_of_verse}': 'todo',
       '{start_of_chorus}\nLyrics\n{end_of_chorus}': 'todo',
@@ -144,7 +147,15 @@ describe('OnSongGrammar', () => {
           { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Line ' },
           { type: 'instruction', content: '2x' },
         ],
-      }
+      },
+      // Poor formatting found in the wild. These should produce warnings but not raise errors
+      'Rogue [C#m]#pound sign': 'todo',
+      'Rogue C] square bracket': {
+        type: 'line',
+        parts: [ { "chords": "", "lyrics": "Rogue C] square bracket", "type": "ChordLyricsPair" } ]
+      },
+      'Empty []chord': 'todo',
+      'F#m Whoops forgot the brackets': 'todo',
     },
 
     Chord: {
