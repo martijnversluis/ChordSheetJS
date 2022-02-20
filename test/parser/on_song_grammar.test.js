@@ -152,7 +152,7 @@ describe('OnSongGrammar', () => {
       'Rogue [C#m]#pound sign': 'todo',
       'Rogue C] square bracket': {
         type: 'line',
-        parts: [ { "chords": "", "lyrics": "Rogue C] square bracket", "type": "ChordLyricsPair" } ]
+        parts: [{ chords: '', lyrics: 'Rogue C] square bracket', type: 'ChordLyricsPair' }],
       },
       'Empty []chord': 'todo',
       'F#m Whoops forgot the brackets': 'todo',

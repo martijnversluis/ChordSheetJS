@@ -95,12 +95,12 @@ MusicalInstruction // e.g. (Repeat 8x)
     }
 
 Char
-  = [^\|\[\]\\#\(\r\n]
+  = [^\|\[\\#\(\r\n]
 
 Escape
   = "\\"
 
-Space
+Space "space"
   = [ \t]
 
 NewLine "new line"
@@ -109,7 +109,7 @@ NewLine "new line"
 EOL "end of line" // Strict linebreak or end of file
   = _ (NewLine / EOF)
 
-EOF
+EOF "end of file"
   = !.
 
 _ // Insignificant space
