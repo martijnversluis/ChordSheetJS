@@ -97,7 +97,7 @@ describe('OnSongGrammar', () => {
         items: [
           {
             type: 'stanza',
-            lines: [{ type: 'line', parts: [{type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics'}]}]
+            lines: [{ type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics' }] }],
           },
         ],
       },
@@ -109,7 +109,7 @@ describe('OnSongGrammar', () => {
         items: [
           {
             type: 'stanza',
-            lines: [{ type: 'line', parts: [{type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics'}]}]
+            lines: [{ type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics' }] }],
           },
         ],
       },
@@ -126,22 +126,63 @@ describe('OnSongGrammar', () => {
           },
         ],
       },
-      'Verse 1:\n        D           G        D\nAmazing Grace, how sweet the sound': {
-        // type: 'section',
-        // name: 'Verse 1',
-        // items: [
-        //   {
-        //     type: 'stanza',
-        //     lines: [
-        //       { type: 'line', parts: [
-        //         { type: 'ChordLyricsPair', chords: '', lyrics: 'Amazing ' },
-        //         { type: 'ChordLyricsPair', chords: 'D', lyrics: 'Grace, how s' },
-        //         { type: 'ChordLyricsPair', chords: 'G', lyrics: 'weet the ' },
-        //         { type: 'ChordLyricsPair', chords: 'D', lyrics: 'sound' },
-        //       ]}
-        //     ]
-        //   }
-        // ]
+    },
+
+    SectionBody: {
+      [[
+        '        D           G        D',
+        'Amazing Grace, how sweet the sound',
+        '                         A7',
+        'That saved a wretch like me.',
+      ].join('\n')]: {
+        type: 'stanza',
+        lines: [
+          {
+            type: 'line',
+            parts: [
+              { type: 'ChordLyricsPair', chords: '', lyrics: 'Amazing ' },
+              { type: 'ChordLyricsPair', chords: 'D', lyrics: 'Grace, how s' },
+              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'weet the ' },
+              { type: 'ChordLyricsPair', chords: 'D', lyrics: 'sound' },
+            ],
+          },
+          {
+            type: 'line',
+            parts: [
+              { type: 'ChordLyricsPair', chords: '', lyrics: 'That saved a wretch like ' },
+              { type: 'ChordLyricsPair', chords: 'A7', lyrics: 'me.' },
+            ],
+          },
+        ],
+      },
+
+      'Am    F': {
+        type: 'stanza',
+        lines: [
+          {
+            type: 'line',
+            parts: [
+              { type: 'ChordLyricsPair', chords: 'Am', lyrics: '      ' },
+              { type: 'ChordLyricsPair', chords: 'F', lyrics: '' },
+            ],
+          },
+        ],
+      },
+
+      [[
+        'G      D',
+        'Lyric'
+      ].join('\n')]: {
+        type: 'stanza',
+        lines: [
+          {
+            type: 'line',
+            parts: [
+              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Lyric  ' },
+              { type: 'ChordLyricsPair', chords: 'D', lyrics: '' },
+            ],
+          },
+        ],
       },
     },
 
@@ -218,10 +259,25 @@ describe('OnSongGrammar', () => {
     },
 
     Chord: {
+      A: 'A',
+      'C/G': 'C/G',
+      'F#m': 'F#m',
+      'C♯': 'C♯',
+      Asus4: 'Asus4',
+      E7: 'E7',
+      'B♭': 'B♭',
+      'Eb/Bb': 'Eb/Bb',
+      'Abm7/Eb': 'Abm7/Eb',
+      AMaj: Error,
+      X: Error,
+    },
+
+    BracketedChord: {
       '[G]': 'G',
       '[D/F#]': 'D/F#',
       '[Bsus2]': 'Bsus2',
       '\\[notachord]': Error,
+      // '[unknown]': ExpectWarning, // FIXME
     },
 
     Tab: {
@@ -259,6 +315,7 @@ describe('OnSongGrammar', () => {
             name: null,
           },
         ],
+        warnings: [],
       },
       'Title\n\nIntro:\n': {
         type: 'chordsheet',
@@ -270,6 +327,7 @@ describe('OnSongGrammar', () => {
             items: [],
           },
         ],
+        warnings: [],
       },
       'Tempo: 73\nUnknown(s): Value:with@various:characters1-5\n\nChorus:': {
         type: 'chordsheet',
@@ -280,6 +338,7 @@ describe('OnSongGrammar', () => {
         sections: [
           { items: [], name: 'Chorus', type: 'section' },
         ],
+        warnings: [],
       },
       'Title\nFlow: V1 C v1\n\nVerse 1:\nVerse\n\nChorus:\nChorus': 'todo',
       'Title\n\nVerse:\n[G]Hello\n\n{transpose: 2}\n\nVerse': 'todo',
@@ -301,10 +360,12 @@ describe('OnSongGrammar', () => {
         } else {
           test(input, () => {
             const tracer = new Tracer(input);
+            const warnings = [];
 
             try {
-              const actual = parse(input, { startRule, tracer });
+              const actual = parse(input, { startRule, tracer, warnings });
               expect(actual).toEqual(expected);
+              expect(warnings).toEqual([]);
             } catch (e) {
               if (expected === Error) {
                 // expected, do nothing

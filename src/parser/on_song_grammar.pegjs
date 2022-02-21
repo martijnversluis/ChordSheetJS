@@ -1,7 +1,17 @@
+// This is a gramar for the OnSong format as documented here:
 // https://www.onsongapp.com/docs/features/formats/onsong/
+
+{
+  const warnings = options.warnings || []
+
+  function warn(message, location) {
+    warnings.push({message, location})
+  }
+}
+
 ChordSheet
   = metadata:Metadata sections:Section* {
-    return { type: "chordsheet", metadata, sections }
+    return { type: "chordsheet", metadata, sections, warnings }
   }
 
 // https://www.onsongapp.com/docs/features/formats/onsong/metadata/
@@ -65,28 +75,78 @@ Stanza
   }
 
 Line
-  = parts:(MusicalInstruction / ChordLyricsPair)+ EOL {
+  = parts:(@ChordsOverLyrics / @(MusicalInstruction / ChordLyricsPair)+ EOL) {
     return {type: 'line', parts }
   }
 
+// The other way to express chords in lyrics is to place the chords on a line above the lyrics and
+// use space characters to align the chords with lyrics. This is supported since most music found
+// in other formats use this technique. Here is an example of chords over lyrics:
+//
+// Verse 1:
+//         D           G        D
+// Amazing Grace, how sweet the sound,
+//                          A7
+// That saved a wretch like me.
+//   D                  G      D
+// I once was lost, but now am found,
+//                A7    D
+// Was blind, but now I see.
+ChordsOverLyrics
+  = chords:(_ @(chord:Chord { return { chord, column: location().start.column } }))+ EOL
+    lyrics:(@Lyrics EOL)? {
+      // FIXME:
+      // Is there a better way to do this in PEG?
+      // Or, is there a more idiomatic way to merge chords and lyrics into pairs?
+
+      // First chord does not start at beginning of line, add an empty chord
+      if(chords[0]?.column > 1) chords.unshift({chord: '', column: 1})
+
+      // Ensure lyrics are a string
+      if(!lyrics) lyrics = ''
+
+      const items = [];
+
+      for (let index = 0; index < chords.length; index++) {
+        const { chord, column } = chords[index];
+        const startColumn = column - 1;
+        const endColumn = chords[index + 1]?.column - 1 || lyrics.length;
+        const l = lyrics.padEnd(endColumn, ' ').slice(startColumn, endColumn)
+
+        items.push({type: 'ChordLyricsPair', chords: chord, lyrics: l})
+      }
+
+      return items;
+    }
+
 ChordLyricsPair
-  = chords:Chord lyrics:Lyrics {
+  = chords:BracketedChord lyrics:Lyrics {
       return { type: "ChordLyricsPair", chords: chords || '', lyrics }
     }
-  / chords:Chord {
+  / chords:BracketedChord {
       return { type: "ChordLyricsPair", chords, lyrics: "" }
     }
   / lyrics:Lyrics {
     return { type: "ChordLyricsPair", lyrics, chords: "" }
   }
 
-Chord "chord"
-  = !Escape "[" chords:$(ChordChar*) "]" {
-    return chords;
-  }
+BracketedChord "chord"
+  = !Escape "[" @Chord "]"
+  / !Escape "[" chord:$[^\]]+ "]" {
+      warn(`Unknown chord: ${chord}`, location())
+    }
 
-ChordChar
-  = [^\]]
+
+// OnSong recognizes chords using the following set of rules:
+// https://www.onsongapp.com/docs/features/formats/onsong/chords/#chords-over-lyrics
+Chord
+  = $(ChordLetter SharpOrFlat? ChordModifier? ChordNumericPosition? ("/" ChordLetter SharpOrFlat?)?)
+
+// It must start with a capital A, B, C, D, E, F, G or H (used in some languages)
+ChordLetter = [A-H]
+SharpOrFlat = [#♯b♭]
+ChordModifier = "add" / "sus" / "m" / "min" / "man" / "aug" / "dim"
+ChordNumericPosition = $([0234579] / "11" / "13") SharpOrFlat?
 
 Lyrics "lyrics"
   = $Char+
