@@ -171,7 +171,7 @@ describe('OnSongGrammar', () => {
 
       [[
         'G      D',
-        'Lyric'
+        'Lyric',
       ].join('\n')]: {
         type: 'stanza',
         lines: [
@@ -184,6 +184,44 @@ describe('OnSongGrammar', () => {
           },
         ],
       },
+
+      'G (strum once)\nLyrics': {
+        type: 'stanza',
+        lines: [
+          {
+            type: 'line',
+            parts: [
+              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Ly' },
+              { type: 'ChordLyricsPair', chords: { type: 'instruction', content: 'strum once' }, lyrics: 'rics' },
+            ],
+          },
+        ],
+      },
+
+      // TODO: "You can also start the line with a period or a back tick character
+      //       to force the line to be detected as chords"
+      // '.I am chords\nI am lyrics': {
+      //   type: 'stanza',
+      //   lines: [
+      //     {
+      //       type: 'line',
+      //       parts: [
+      //         { type: 'ChordLyricsPair', chords: 'I am chords', lyrics: 'I am lyrics' },
+      //       ],
+      //     },
+      //   ],
+      // },
+      // '`I am chords\nI am lyrics': {
+      //   type: 'stanza',
+      //   lines: [
+      //     {
+      //       type: 'line',
+      //       parts: [
+      //         { type: 'ChordLyricsPair', chords: 'I am chords', lyrics: 'I am lyrics' },
+      //       ],
+      //     },
+      //   ],
+      // },
     },
 
     Line: {
@@ -268,6 +306,17 @@ describe('OnSongGrammar', () => {
       'B♭': 'B♭',
       'Eb/Bb': 'Eb/Bb',
       'Abm7/Eb': 'Abm7/Eb',
+      'F / A': 'F / A',
+      'Dm7(b5)': 'Dm7(b5)',
+      E7b13: 'E7b13',
+      B7b5: 'B7b5',
+      CM7: 'CM7',
+      Cmaj7: 'Cmaj7',
+      AbMaj7: 'AbMaj7',
+      'C9(11)': 'C9(11)',
+      'Dm7(9)': 'Dm7(9)',
+      D6: 'D6',
+      'B(add4)': 'B(add4)',
       AMaj: Error,
       X: Error,
     },

@@ -140,13 +140,15 @@ BracketedChord "chord"
 // OnSong recognizes chords using the following set of rules:
 // https://www.onsongapp.com/docs/features/formats/onsong/chords/#chords-over-lyrics
 Chord
-  = $(ChordLetter ChordModifier? ChordSuffix? ChordNumericPosition? ("/" ChordLetter ChordModifier?)?)
+  = $(ChordLetter (ChordModifier / ChordSuffix / ChordNumericPosition)* (Space? "/" Space? ChordLetter ChordModifier?)?)
 
 // It must start with a capital A, B, C, D, E, F, G or H (used in some languages)
 ChordLetter = [A-H]
 ChordModifier = [#♯b♭]
-ChordSuffix = "add" / "sus" / "m" / "min" / "man" / "aug" / "dim"
-ChordNumericPosition = $([0234579] / "11" / "13") ChordModifier?
+ChordSuffix = "sus" / "maj"i / "min" / "man" / "m"i / "aug" / "dim"
+ChordNumericPosition
+  = (ChordModifier / "add")? ([02345679] / "11" / "13")
+  / "(" ChordNumericPosition ")"
 
 Lyrics "lyrics"
   = $Char+
