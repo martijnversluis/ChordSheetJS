@@ -8,12 +8,12 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'i',
             modifier: 'b',
-            suffix: 'sus4',
+            suffix: 'sus',
             bassBase: 'III',
             bassModifier: '#',
           });
 
-          expect(chord.toNumeralString()).toEqual('bisus4/#III');
+          expect(chord.toNumeralString()).toEqual('bisus/#III');
         });
 
         describe('without bass modifier', () => {
@@ -21,11 +21,11 @@ describe('Chord', () => {
             const chord = new Chord({
               base: 'I',
               modifier: 'b',
-              suffix: 'sus4',
+              suffix: 'sus',
               bassBase: 'iii',
             });
 
-            expect(chord.toNumeralString()).toEqual('bIsus4/iii');
+            expect(chord.toNumeralString()).toEqual('bIsus/iii');
           });
         });
       });
@@ -35,10 +35,10 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'I',
             modifier: 'b',
-            suffix: 'sus4',
+            suffix: 'sus',
           });
 
-          expect(chord.toNumeralString()).toEqual('bIsus4');
+          expect(chord.toNumeralString()).toEqual('bIsus');
         });
       });
 
@@ -46,10 +46,10 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'I',
-            suffix: 'sus4',
+            suffix: 'sus',
           });
 
-          expect(chord.toNumeralString()).toEqual('Isus4');
+          expect(chord.toNumeralString()).toEqual('Isus');
         });
       });
 

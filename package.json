@@ -1,9 +1,10 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "5.3.0",
+  "version": "6.0.2",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/index.js",
+  "license": "GPL-2.0-only",
   "repository": {
     "type": "git",
     "url": "https://github.com/martijnversluis/ChordSheetJS.git"
@@ -23,25 +24,32 @@
     "eslint": "^8.3.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.21.2",
+    "husky": "^7.0.0",
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
     "peggy": "^1.2.0",
     "pegjs-backtrace": "^0.2.1",
+    "pinst": "^2.1.6",
     "print": "^1.2.0"
   },
   "scripts": {
-    "jest": "jest",
-    "test": "yarn lint && yarn jest",
-    "lint": "yarn build:templates && yarn build:pegjs && node_modules/.bin/eslint --ext .js .",
-    "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.handlebars\" -f \"src/formatter/templates/$TEMPLATE.js\" --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses --commonjs handlebars",
     "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
-    "build:sources": "rm -rf lib && babel src --out-dir lib",
+    "build:suffix-normalize": "rm -rf src/normalize_mappings/suffix-normalize-mapping.js && node src/normalize_mappings/generate-suffix-normalize-mapping.js",
     "build:pegjs": "peggy -o src/parser/chord_pro_peg_parser.js src/parser/chord_pro_grammar.pegjs && peggy src/parser/on_song_grammar.pegjs",
-    "build": "yarn build:templates && yarn build:pegjs && yarn build:sources",
+    "build:code-generate": "yarn build:suffix-normalize && yarn build:templates && yarn build:pegjs",
+    "build:sources": "rm -rf lib && babel src --out-dir lib",
+    "build": "yarn build:code-generate && yarn build:sources",
+    "jest": "jest",
+    "test": "yarn lint && yarn jest",
+    "lint": "yarn build:code-generate && node_modules/.bin/eslint --ext .js .",
+    "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "readme": "jsdoc2md -f src/**/*.js -f src/*.js --template doc/README.hbs > README.md",
-    "prepublishOnly": "yarn install && yarn test && yarn build",
-    "pretest": "yarn build:templates && yarn build:pegjs"
+    "prepublishOnly": "pinst --disable && yarn install && yarn test && yarn build",
+    "postpublish": "pinst --enable",
+    "pretest": "yarn build:code-generate",
+    "prepare": "husky install",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "handlebars": "^4.7.6"
