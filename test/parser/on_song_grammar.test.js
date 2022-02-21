@@ -91,9 +91,28 @@ describe('OnSongGrammar', () => {
 
       'Intro:\n| [B] / / / | / / [C#m7] / | [E] / / / | / / [F#sus] / / |': 'todo',
       'Intro:\n[| [D] /// | //// | [F#m] /// | [E] //// |]¬': 'todo',
-      '{start_of_verse}\nLyrics\n{end_of_verse}': 'todo',
-      '{start_of_verse: Verse 1}\nLyrics\n{end_of_verse}': 'todo',
-      '{start_of_chorus}\nLyrics\n{end_of_chorus}': 'todo',
+      '{start_of_verse}\nLyrics\n{end_of_verse}': {
+        type: 'section',
+        name: 'verse',
+        items: [
+          {
+            type: 'stanza',
+            lines: [{ type: 'line', parts: [{type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics'}]}]
+          },
+        ],
+      },
+      '{start_of_verse: Verse 1}\n{end_of_verse}': { type: 'section', name: 'Verse 1', items: [] },
+      '{sov}\n{eov}': { type: 'section', name: 'verse', items: [] },
+      '{start_of_chorus}\nLyrics\n{end_of_chorus}': {
+        type: 'section',
+        name: 'chorus',
+        items: [
+          {
+            type: 'stanza',
+            lines: [{ type: 'line', parts: [{type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics'}]}]
+          },
+        ],
+      },
       '{start_of_verse}\nLyrics\n{start_of_chorus}': 'todo',
       'Chord and lyrics': {
         type: 'section',
@@ -106,6 +125,23 @@ describe('OnSongGrammar', () => {
             ],
           },
         ],
+      },
+      'Verse 1:\n        D           G        D\nAmazing Grace, how sweet the sound': {
+        // type: 'section',
+        // name: 'Verse 1',
+        // items: [
+        //   {
+        //     type: 'stanza',
+        //     lines: [
+        //       { type: 'line', parts: [
+        //         { type: 'ChordLyricsPair', chords: '', lyrics: 'Amazing ' },
+        //         { type: 'ChordLyricsPair', chords: 'D', lyrics: 'Grace, how s' },
+        //         { type: 'ChordLyricsPair', chords: 'G', lyrics: 'weet the ' },
+        //         { type: 'ChordLyricsPair', chords: 'D', lyrics: 'sound' },
+        //       ]}
+        //     ]
+        //   }
+        // ]
       },
     },
 
@@ -148,6 +184,29 @@ describe('OnSongGrammar', () => {
           { type: 'instruction', content: '2x' },
         ],
       },
+
+      // {define: ...} is used to define custom chord diagrams. See Defining Chords for more information.
+      // {comment: ...} or {c: ...} Defines a comment and appears as a musical instruction.
+      // {comment_bold: ...} or {cb: ...} Defines text to appear in bold.
+      // {comment_italic: ...} or {ci: ...} Defines text to appear as italic.
+      // {guitar_comment: ...} or {gc: ...} Defines a comment that appears as a musical instruction.
+      // {new_page} or {np} This is used to declare a new page.
+      // {new_physical_page} or {npp} This is used to declare a new page.
+
+      // Formatting Tags
+      // {textsize: ...} Defines the size of the lyrics as a numeric value in points.
+      // {textfont: ...} Defines the name of the font to use for lyrics. Must be supported on the platform.
+      // {chordsize: ...} Defines the size of the chords as a numeric value in points.
+      // {chordfont: ...} Defines the name of the font to use for chords. Must be supported on the platform.
+
+      // *This line will be bold
+      // /This line will be italicized
+      // !This line will be bold and italicized
+      // _This line will eventually be underlined
+      // &red:This text will be red
+      // &#123456:This text will be a custom color using HTML color codes
+      // >yellow:This line will be highlighted in yellow
+
       // Poor formatting found in the wild. These should produce warnings but not raise errors
       'Rogue [C#m]#pound sign': 'todo',
       'Rogue C] square bracket': {

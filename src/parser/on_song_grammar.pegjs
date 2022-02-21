@@ -30,10 +30,26 @@ MetaValue
 
 // https://www.onsongapp.com/docs/features/formats/onsong/section/
 Section
+    // {start_of_*}
+  = DirectiveSection
     // Section with explcit name and maybe a body
-  = name:SectionName __ items:SectionBody* { return { type: 'section', name, items } }
+  / name:SectionName __ items:SectionBody* { return { type: 'section', name, items } }
     // Section without explicit name
   / items:SectionBody+ { return { type: 'section', name: null, items } }
+
+DirectiveSection
+  = "{" _ ("start_of_" / "so") type:DirectiveSectionTypes _ name:(":" _ @MetaValue)? "}" EOL
+    items:SectionBody*
+    "{" _ ("end_of_" / "eo") DirectiveSectionTypes _ "}" EOL // FIXME: must match start tag
+    {
+      return { type: 'section', name: name || type, items }
+    }
+
+DirectiveSectionTypes
+  = "b" "ridge"? { return "bridge" }
+  / "c" "horus"? { return "chorus" }
+  / "p" "art"?   { return "part" }
+  / "v" "erse"?  { return "verse" }
 
 SectionName
   = name:MetaName _ ":" EOL {
@@ -41,7 +57,7 @@ SectionName
   }
 
 SectionBody
-  = @(Tab / Stanza) __
+  = !SectionName @(Tab / Stanza) __
 
 Stanza
   = lines:Line+ {
@@ -76,18 +92,14 @@ Lyrics "lyrics"
   = $Char+
 
 Tab
-  = SotDirective NewLine content:$(!EotDirective TabLine __)+ EotDirective {
+  = "{" _ "sot" _ "}" NewLine content:$(TabLine __)+ "{" _ "eot" _ "}" {
       return { type: 'tab', content }
     }
-  / StartOfTabDirective NewLine content:$(!EndOfTabDirective TabLine __)+ EndOfTabDirective {
+  / "{start_of_tab}" NewLine content:$(TabLine __)+ "{end_of_tab}" {
       return { type: 'tab', content }
     }
 
-SotDirective = "{sot}"
-StartOfTabDirective = "{start_of_tab}"
-EotDirective = "{eot}"
-EndOfTabDirective = "{end_of_tab}"
-TabLine = [^\r\n]+ NewLine
+TabLine = [^\r\n{]+ NewLine
 
 MusicalInstruction // e.g. (Repeat 8x)
   = "(" content:$[^)]+ ")" {
@@ -95,7 +107,7 @@ MusicalInstruction // e.g. (Repeat 8x)
     }
 
 Char
-  = [^\|\[\\#\(\r\n]
+  = [^\|\[\\{#\(\r\n]
 
 Escape
   = "\\"
