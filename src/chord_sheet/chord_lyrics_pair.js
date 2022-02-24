@@ -42,6 +42,13 @@ class ChordLyricsPair {
   toString() {
     return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
   }
+
+  set(properties) {
+    return new this.constructor(
+      properties.chords || this.chords,
+      properties.lyrics || this.lyrics,
+    );
+  }
 }
 
 export default ChordLyricsPair;

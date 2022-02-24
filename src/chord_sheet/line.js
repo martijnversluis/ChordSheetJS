@@ -63,8 +63,19 @@ class Line {
    * @returns {Line}
    */
   clone() {
+    return this.mapItems(null);
+  }
+
+  mapItems(func) {
     const clonedLine = new Line();
-    clonedLine.items = this.items.map((item) => item.clone());
+
+    clonedLine.items = this.items
+      .map((item) => {
+        const clonedItem = item.clone();
+        return func ? func(clonedItem) : clonedItem;
+      })
+      .filter((item) => item);
+
     clonedLine.type = this.type;
     return clonedLine;
   }
@@ -131,6 +142,16 @@ class Line {
     const comment = (content instanceof Comment) ? content : new Comment(content);
     this.items.push(comment);
     return comment;
+  }
+
+  set(properties) {
+    return new this.constructor(
+      {
+        type: this.type,
+        items: this.items,
+        ...properties,
+      },
+    );
   }
 }
 
