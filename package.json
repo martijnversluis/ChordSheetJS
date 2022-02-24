@@ -23,9 +23,11 @@
     "eslint": "^8.3.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.21.2",
+    "husky": "^7.0.0",
     "jest": "^27.0.1",
     "jsdoc-to-markdown": "^7.1.0",
     "pegjs": "^0.10.0",
+    "pinst": "^3.0.0",
     "print": "^1.2.0"
   },
   "scripts": {
@@ -41,8 +43,11 @@
     "lint": "yarn build:code-generate && node_modules/.bin/eslint --ext .js .",
     "lint:fix": "node_modules/.bin/eslint --fix --ext .js .",
     "readme": "jsdoc2md -f src/**/*.js -f src/*.js --template doc/README.hbs > README.md",
-    "prepublishOnly": "yarn install && yarn test && yarn build",
-    "pretest": "yarn build:code-generate"
+    "prepublishOnly": "pinst --disable && yarn install && yarn test && yarn build",
+    "postpublish": "pinst --enable",
+    "pretest": "yarn build:code-generate",
+    "prepare": "husky install",
+    "postinstall": "husky install"
   },
   "dependencies": {
     "handlebars": "^4.7.6"

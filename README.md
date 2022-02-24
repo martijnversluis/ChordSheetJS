@@ -466,6 +466,9 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 <dt><a href="#TITLE">TITLE</a> : <code>string</code></dt>
 <dd><p>Title meta directive. See <a href="https://www.chordpro.org/chordpro/directives-title/">https://www.chordpro.org/chordpro/directives-title/</a></p>
 </dd>
+<dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
+<dd><p>Transpose meta directive. See: <a href="https://www.chordpro.org/chordpro/directives-transpose/">https://www.chordpro.org/chordpro/directives-transpose/</a></p>
+</dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
 </dd>
@@ -1176,8 +1179,11 @@ Represents a Chord, consisting of a root, suffix (quality) and bass
         * [.toChordSymbolString(key)](#Chord+toChordSymbolString) ⇒ <code>string</code>
         * [.isChordSymbol()](#Chord+isChordSymbol) ⇒ <code>boolean</code>
         * [.toNumeric(key)](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
+        * [.toNumeral(key)](#Chord+toNumeral) ⇒ [<code>Chord</code>](#Chord)
+        * [.toNumeralString(key)](#Chord+toNumeralString) ⇒ <code>string</code>
         * [.isNumeric()](#Chord+isNumeric) ⇒ <code>boolean</code>
         * [.toNumericString(key)](#Chord+toNumericString) ⇒ <code>string</code>
+        * [.isNumeral()](#Chord+isNumeral) ⇒ <code>boolean</code>
         * [.toString()](#Chord+toString) ⇒ <code>string</code>
         * [.normalize()](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
         * [.useModifier(newModifier)](#Chord+useModifier) ⇒ [<code>Chord</code>](#Chord)
@@ -1231,11 +1237,38 @@ Determines whether the chord is a chord symbol
 <a name="Chord+toNumeric"></a>
 
 ### chord.toNumeric(key) ⇒ [<code>Chord</code>](#Chord)
-Converts the chord to a numeric chord, using the supplied kye as a reference.
+Converts the chord to a numeric chord, using the supplied key as a reference.
 For example, a chord symbol A# with reference key E will return the numeric chord #4.
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - the numeric chord  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | the reference key |
+
+<a name="Chord+toNumeral"></a>
+
+### chord.toNumeral(key) ⇒ [<code>Chord</code>](#Chord)
+Converts the chord to a numeral chord, using the supplied key as a reference.
+For example, a chord symbol A# with reference key E will return the numeral chord #IV.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - the numeral chord  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> \| <code>null</code> | <code></code> | the reference key. The key is required when converting a chord symbol |
+
+<a name="Chord+toNumeralString"></a>
+
+### chord.toNumeralString(key) ⇒ <code>string</code>
+Converts the chord to a numeral chord string, using the supplied kye as a reference.
+For example, a chord symbol A# with reference key E will return the numeral chord #4.
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - the numeral chord string  
+**See**: {toNumeral}  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1261,6 +1294,12 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 | --- | --- | --- |
 | key | <code>Key</code> \| <code>string</code> | the reference key |
 
+<a name="Chord+isNumeral"></a>
+
+### chord.isNumeral() ⇒ <code>boolean</code>
+Determines whether the chord is a numeral
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toString"></a>
 
 ### chord.toString() ⇒ <code>string</code>
@@ -1271,7 +1310,7 @@ Converts the chord to a string, eg `Esus4/G#` or `1sus4/#3`
 <a name="Chord+normalize"></a>
 
 ### chord.normalize() ⇒ [<code>Chord</code>](#Chord)
-Normalizes the chord:
+Normalizes the chord root and bass notes:
 - Fb becomes E
 - Cb becomes B
 - B# becomes C
@@ -1281,7 +1320,8 @@ Normalizes the chord:
 - 7# becomes 1
 - 3# becomes 4
 
-If the chord is already normalized, this will return a copy.
+Besides that it normalizes the suffix. For example, `sus2` becomes `2`, `sus4` becomes `sus`.
+All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - the normalized chord  
@@ -1483,6 +1523,12 @@ Time meta directive. See https://www.chordpro.org/chordpro/directives-time/
 
 ## TITLE : <code>string</code>
 Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
+
+**Kind**: global constant  
+<a name="TRANSPOSE"></a>
+
+## TRANSPOSE : <code>string</code>
+Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
 
 **Kind**: global constant  
 <a name="YEAR"></a>
