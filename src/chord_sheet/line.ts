@@ -165,7 +165,7 @@ class Line {
   }
 
   set(properties) {
-    return new Line(
+    return new this.constructor(
       {
         type: this.type,
         items: this.items,
