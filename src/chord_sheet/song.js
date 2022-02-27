@@ -1,5 +1,8 @@
 import Line from './line';
 import Paragraph from './paragraph';
+import Key from '../key';
+import Chord from '../chord';
+import ChordLyricsPair from './chord_lyrics_pair';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
@@ -9,7 +12,16 @@ import {
 } from '../constants';
 
 import Tag, {
-  END_OF_CHORUS, END_OF_TAB, END_OF_VERSE, META_TAGS, START_OF_CHORUS, START_OF_TAB, START_OF_VERSE, TRANSPOSE, NEW_KEY,
+  END_OF_CHORUS,
+  END_OF_TAB,
+  END_OF_VERSE,
+  META_TAGS,
+  START_OF_CHORUS,
+  START_OF_TAB,
+  START_OF_VERSE,
+  TRANSPOSE,
+  NEW_KEY,
+  CAPO, KEY,
 } from './tag';
 
 /**
@@ -23,15 +35,13 @@ class Song {
   constructor(metadata = {}) {
     /**
      * The {@link Line} items of which the song consists
-     * @member
-     * @type {Array<Line>}
+     * @member {Array<Line>}
      */
     this.lines = [];
 
     /**
      * The {@link Paragraph} items of which the song consists
-     * @member
-     * @type {Paragraph[]}
+     * @member {Paragraph[]}
      */
     this.paragraphs = [];
 
@@ -107,7 +117,7 @@ class Song {
     this.currentLine = pushNew(this.lines, Line);
     this.setCurrentLineType(this.sectionType);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
-    this.currentLine.key = this.currentKey;
+    this.currentLine.key = this.currentKey || this.key;
     return this.currentLine;
   }
 
@@ -242,10 +252,7 @@ class Song {
    * @returns {Song} The cloned song
    */
   clone() {
-    const clonedSong = new Song();
-    clonedSong.lines = this.lines.map((line) => line.clone());
-    clonedSong.metadata = this.metadata.clone();
-    return clonedSong;
+    return this.#mapItems(null);
   }
 
   setMetaData(name, value) {
@@ -264,6 +271,134 @@ class Song {
 
   getMetaData(name) {
     return this.metadata[name] || null;
+  }
+
+  /**
+   * Returns a copy of the song with the capo value set to the specified capo. It changes:
+   * - the value for `capo` in the `metadata` set
+   * - any existing `capo` directive)
+   * @param {number|null} capo the capo. Passing `null` will:
+   * - remove the current key from `metadata`
+   * - remove any `capo` directive
+   * @returns {Song} The changed song
+   */
+  setCapo(capo) {
+    let updatedSong;
+
+    if (capo === null) {
+      updatedSong = this.#removeItem((item) => item instanceof Tag && item.name === CAPO);
+    } else {
+      updatedSong = this.#updateItem(
+        (item) => item instanceof Tag && item.name === CAPO,
+        (item) => item.set({ value: capo }),
+        (song) => song.#insertDirective(CAPO, capo),
+      );
+    }
+
+    updatedSong.metadata.set('capo', capo);
+    return updatedSong;
+  }
+
+  /**
+   * Returns a copy of the song with the key set to the specified key. It changes:
+   * - the value for `key` in the `metadata` set
+   * - any existing `key` directive
+   * - all chords, those are transposed according to the distance between the current and the new key
+   * @param {string} key The new key.
+   * @returns {Song} The changed song
+   */
+  setKey(key) {
+    const transpose = Key.distance(this.key, key);
+
+    const updatedSong = this.#mapItems((item) => {
+      if (item instanceof Tag && item.name === KEY) {
+        return item.set({ value: key });
+      }
+
+      if (item instanceof ChordLyricsPair) {
+        const chordObj = Chord.parse(item.chords);
+
+        if (chordObj) {
+          return item.set({ chords: chordObj.transpose(transpose).normalize(key) });
+        }
+      }
+
+      return item;
+    });
+
+    updatedSong.metadata.set('key', key);
+    return updatedSong;
+  }
+
+  #insertDirective(name, value, { after = null } = {}) {
+    const insertIndex = this.lines.findIndex((line) => (
+      line.items.some((item) => (
+        !(item instanceof Tag) || (after && item instanceof Tag && item.name === after)
+      ))
+    ));
+
+    const newLine = new Line();
+    newLine.addTag(name, value);
+
+    const clonedSong = this.clone();
+    const { lines } = clonedSong;
+    clonedSong.lines = [...lines.slice(0, insertIndex), newLine, ...lines.slice(insertIndex)];
+
+    return clonedSong;
+  }
+
+  #mapItems(func) {
+    const clonedSong = new Song();
+    clonedSong.lines = this.lines.map((line) => line.mapItems(func));
+    clonedSong.metadata = this.metadata.clone();
+    return clonedSong;
+  }
+
+  #mapLines(func) {
+    const clonedSong = new Song();
+    clonedSong.lines = this.lines
+      .map((line) => func(line.clone()))
+      .filter((line) => line);
+    clonedSong.metadata = this.metadata.clone();
+    return clonedSong;
+  }
+
+  #updateItem(findCallback, updateCallback, notFoundCallback) {
+    let found = false;
+
+    const updatedSong = this.#mapItems((item) => {
+      if (findCallback(item)) {
+        found = true;
+        return updateCallback(item);
+      }
+
+      return item;
+    });
+
+    if (!found) {
+      return notFoundCallback(updatedSong);
+    }
+
+    return updatedSong;
+  }
+
+  #removeItem(callback) {
+    return this.#mapLines((line) => {
+      const { items } = line;
+      const index = items.findIndex(callback);
+
+      if (index === -1) {
+        return line;
+      }
+
+      if (items.length === 1) {
+        return null;
+      }
+
+      return line.set({
+        items: [...items.slice(0, index), ...items.slice(index + 1)],
+      });
+    });
   }
 }
 

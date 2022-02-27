@@ -213,7 +213,7 @@ This part is [G]key
     const song = parser.parse(chordSheetWithTranspose);
     const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
 
-    expect(keys[0]).toBe(null);
+    expect(keys[0]).toBe('A');
     expect(keys[1]).toEqual('D');
     expect(keys[2]).toEqual('G');
   });
@@ -238,7 +238,7 @@ This part is [G]key
     const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
     const transposeKeys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].transposeKey);
 
-    expect(keys[0]).toBe(null);
+    expect(keys[0]).toBe('A');
     expect(transposeKeys[1]).toEqual('4');
     expect(keys[1]).toEqual('D');
     expect(transposeKeys[2]).toEqual('D');

@@ -261,7 +261,7 @@ class Tag {
    */
   get value() {
     if (this._value) {
-      return this._value.trim();
+      return `${this._value}`.trim();
     }
 
     return this._value || null;
@@ -296,11 +296,15 @@ class Tag {
    * @returns {Tag} The cloned tag
    */
   clone() {
-    return new Tag(this.name, this.value);
+    return new Tag(this._originalName, this.value);
   }
 
   toString() {
     return `Tag(name=${this.name}, value=${this.name})`;
+  }
+
+  set({ value }) {
+    return new Tag(this._originalName, value);
   }
 }
 
