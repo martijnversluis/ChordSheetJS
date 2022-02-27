@@ -123,6 +123,11 @@ export const TITLE = 'title';
  * @type {string}
  */
 export const TRANSPOSE = 'transpose';
+/**
+ * New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53
+ * @type {string}
+ */
+export const NEW_KEY = 'new_key';
 
 /**
  * Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
@@ -137,6 +142,7 @@ const START_OF_CHORUS_SHORT = 'soc';
 const END_OF_CHORUS_SHORT = 'eoc';
 const START_OF_TAB_SHORT = 'sot';
 const END_OF_TAB_SHORT = 'eot';
+const NEW_KEY_SHORT = 'nk';
 
 const RENDERABLE_TAGS = [COMMENT];
 
@@ -166,6 +172,7 @@ const ALIASES = {
   [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
   [START_OF_TAB_SHORT]: START_OF_TAB,
   [END_OF_TAB_SHORT]: END_OF_TAB,
+  [NEW_KEY_SHORT]: NEW_KEY,
 };
 
 const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;
@@ -254,7 +261,7 @@ class Tag {
    */
   get value() {
     if (this._value) {
-      return this._value.trim();
+      return `${this._value}`.trim();
     }
 
     return this._value || null;
@@ -289,11 +296,15 @@ class Tag {
    * @returns {Tag} The cloned tag
    */
   clone() {
-    return new Tag(this.name, this.value);
+    return new Tag(this._originalName, this.value);
   }
 
   toString() {
     return `Tag(name=${this.name}, value=${this.name})`;
+  }
+
+  set({ value }) {
+    return new Tag(this._originalName, value);
   }
 }
 

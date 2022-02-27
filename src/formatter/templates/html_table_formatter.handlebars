@@ -18,7 +18,7 @@
                   <tr>
                     {{~#each items as |item|~}}
                       {{~#if (isChordLyricsPair item)~}}
-                        <td class="chord">{{renderChord chords line.key @root.song.key}}</td>
+                        <td class="chord">{{renderChord chords line.key line.transposeKey @root.song}}</td>
                       {{~/if~}}
                     {{~/each~}}
                   </tr>
