@@ -469,6 +469,9 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 <dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
 <dd><p>Transpose meta directive. See: <a href="https://www.chordpro.org/chordpro/directives-transpose/">https://www.chordpro.org/chordpro/directives-transpose/</a></p>
 </dd>
+<dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
+<dd><p>New Key meta directive. See: <a href="https://github.com/PraiseCharts/ChordChartJS/issues/53">https://github.com/PraiseCharts/ChordChartJS/issues/53</a></p>
+</dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
 </dd>
@@ -1560,6 +1563,12 @@ Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
 
 ## TRANSPOSE : <code>string</code>
 Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
+
+**Kind**: global constant  
+<a name="NEW_KEY"></a>
+
+## NEW\_KEY : <code>string</code>
+New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53
 
 **Kind**: global constant  
 <a name="YEAR"></a>
