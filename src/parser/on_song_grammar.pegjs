@@ -75,7 +75,7 @@ Stanza
   }
 
 Line
-  = parts:(@ChordsOverLyrics / @(MusicalInstruction / ChordLyricsPair)+ EOL) {
+  = parts:(@ChordsOverLyrics / @InlineAnnotation+ EOL) {
     return {type: 'line', parts }
   }
 
@@ -93,42 +93,42 @@ Line
 //                A7    D
 // Was blind, but now I see.
 ChordsOverLyrics
-  = chords:(_ @(chord:Chord { return { chord, column: location().start.column } }))+ EOL
+  = annotations:(_ @(annotation:(Chord / MusicalInstruction) { return { annotation, column: location().start.column } }))+ EOL
     lyrics:(@Lyrics EOL)? {
       // FIXME:
       // Is there a better way to do this in PEG?
       // Or, is there a more idiomatic way to merge chords and lyrics into pairs?
 
-      // First chord does not start at beginning of line, add an empty chord
-      if(chords[0]?.column > 1) chords.unshift({chord: '', column: 1})
+      // First annotation does not start at beginning of line, add an empty one
+      if(annotations[0]?.column > 1) annotations.unshift({annotation: null, column: 1})
 
       // Ensure lyrics are a string
       if(!lyrics) lyrics = ''
 
       const items = [];
 
-      for (let index = 0; index < chords.length; index++) {
-        const { chord, column } = chords[index];
+      for (let index = 0; index < annotations.length; index++) {
+        const { annotation, column } = annotations[index];
         const startColumn = column - 1;
-        const endColumn = chords[index + 1]?.column - 1 || lyrics.length;
+        const endColumn = annotations[index + 1]?.column - 1 || lyrics.length;
         const l = lyrics.padEnd(endColumn, ' ').slice(startColumn, endColumn)
 
-        items.push({type: 'ChordLyricsPair', chords: chord, lyrics: l})
+        items.push({type: 'annotation', annotation, lyrics: l})
       }
 
       return items;
     }
 
-ChordLyricsPair
-  = chords:BracketedChord lyrics:Lyrics {
-      return { type: "ChordLyricsPair", chords: chords || '', lyrics }
+InlineAnnotation
+  = annotation:(BracketedChord / MusicalInstruction) lyrics:Lyrics {
+      return { type: 'annotation', annotation, lyrics }
     }
-  / chords:BracketedChord {
-      return { type: "ChordLyricsPair", chords, lyrics: "" }
+  / annotation:(BracketedChord / MusicalInstruction) {
+      return { type: 'annotation', annotation, lyrics: null }
     }
   / lyrics:Lyrics {
-    return { type: "ChordLyricsPair", lyrics, chords: "" }
-  }
+      return { type: 'annotation', lyrics, annotation: null }
+    }
 
 BracketedChord "chord"
   = !Escape "[" @Chord "]"
@@ -136,11 +136,12 @@ BracketedChord "chord"
       warn(`Unknown chord: ${chord}`, location())
     }
 
-
 // OnSong recognizes chords using the following set of rules:
 // https://www.onsongapp.com/docs/features/formats/onsong/chords/#chords-over-lyrics
 Chord
-  = $(ChordLetter (ChordModifier / ChordSuffix / ChordNumericPosition)* (Space? "/" Space? ChordLetter ChordModifier?)?)
+  = value:$(ChordLetter (ChordModifier / ChordSuffix / ChordNumericPosition)* (Space? "/" Space? ChordLetter ChordModifier?)?) {
+    return { type: 'chord', value }
+  }
 
 // It must start with a capital A, B, C, D, E, F, G or H (used in some languages)
 ChordLetter = [A-H]

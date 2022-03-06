@@ -52,13 +52,13 @@ describe('OnSongGrammar', () => {
           {
             type: 'stanza',
             lines: [
-              { type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'This is a stanza' }] },
+              { type: 'line', parts: [{ type: 'annotation', annotation: null, lyrics: 'This is a stanza' }] },
             ],
           },
           {
             type: 'stanza',
             lines: [
-              { type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'This is another stanza' }] },
+              { type: 'line', parts: [{ type: 'annotation', annotation: null, lyrics: 'This is another stanza' }] },
             ],
           },
         ],
@@ -76,7 +76,14 @@ describe('OnSongGrammar', () => {
         items: [
           {
             type: 'stanza',
-            lines: [{ type: 'line', parts: [{ type: 'ChordLyricsPair', chords: 'G', lyrics: '' }] }],
+            lines: [
+              {
+                type: 'line',
+                parts: [
+                  { type: 'annotation', annotation: { type: 'chord', value: 'G' } },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -97,7 +104,7 @@ describe('OnSongGrammar', () => {
         items: [
           {
             type: 'stanza',
-            lines: [{ type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics' }] }],
+            lines: [{ type: 'line', parts: [{ type: 'annotation', annotation: null, lyrics: 'Lyrics' }] }],
           },
         ],
       },
@@ -109,7 +116,7 @@ describe('OnSongGrammar', () => {
         items: [
           {
             type: 'stanza',
-            lines: [{ type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'Lyrics' }] }],
+            lines: [{ type: 'line', parts: [{ type: 'annotation', annotation: null, lyrics: 'Lyrics' }] }],
           },
         ],
       },
@@ -121,7 +128,7 @@ describe('OnSongGrammar', () => {
           {
             type: 'stanza',
             lines: [
-              { type: 'line', parts: [{ type: 'ChordLyricsPair', chords: '', lyrics: 'Chord and lyrics' }] },
+              { type: 'line', parts: [{ type: 'annotation', annotation: null, lyrics: 'Chord and lyrics' }] },
             ],
           },
         ],
@@ -140,17 +147,17 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'ChordLyricsPair', chords: '', lyrics: 'Amazing ' },
-              { type: 'ChordLyricsPair', chords: 'D', lyrics: 'Grace, how s' },
-              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'weet the ' },
-              { type: 'ChordLyricsPair', chords: 'D', lyrics: 'sound' },
+              { type: 'annotation', annotation: null, lyrics: 'Amazing ' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: 'Grace, how s' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'weet the ' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: 'sound' },
             ],
           },
           {
             type: 'line',
             parts: [
-              { type: 'ChordLyricsPair', chords: '', lyrics: 'That saved a wretch like ' },
-              { type: 'ChordLyricsPair', chords: 'A7', lyrics: 'me.' },
+              { type: 'annotation', annotation: null, lyrics: 'That saved a wretch like ' },
+              { type: 'annotation', annotation: {type: 'chord', value: 'A7'}, lyrics: 'me.' },
             ],
           },
         ],
@@ -162,8 +169,8 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'ChordLyricsPair', chords: 'Am', lyrics: '      ' },
-              { type: 'ChordLyricsPair', chords: 'F', lyrics: '' },
+              { type: 'annotation', annotation: {type: 'chord', value: 'Am'}, lyrics: '      ' },
+              { type: 'annotation', annotation: {type: 'chord', value: 'F'}, lyrics: '' },
             ],
           },
         ],
@@ -178,8 +185,8 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Lyric  ' },
-              { type: 'ChordLyricsPair', chords: 'D', lyrics: '' },
+              { type: 'annotation', annotation: {type: 'chord', value: 'G'}, lyrics: 'Lyric  ' },
+              { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: '' },
             ],
           },
         ],
@@ -191,8 +198,21 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Ly' },
-              { type: 'ChordLyricsPair', chords: { type: 'instruction', content: 'strum once' }, lyrics: 'rics' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'Ly' },
+              { type: 'annotation', annotation: { type: 'instruction', content: 'strum once' }, lyrics: 'rics' },
+            ],
+          },
+        ],
+      },
+
+      '[G] (strum once) Lyrics': {
+        type: 'stanza',
+        lines: [
+          {
+            type: 'line',
+            parts: [
+              { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: ' ' },
+              { type: 'annotation', annotation: { type: 'instruction', content: 'strum once' }, lyrics: ' Lyrics' },
             ],
           },
         ],
@@ -206,7 +226,7 @@ describe('OnSongGrammar', () => {
       //     {
       //       type: 'line',
       //       parts: [
-      //         { type: 'ChordLyricsPair', chords: 'I am chords', lyrics: 'I am lyrics' },
+      //         { type: 'annotation', chords: 'I am chords', lyrics: 'I am lyrics' },
       //       ],
       //     },
       //   ],
@@ -217,7 +237,7 @@ describe('OnSongGrammar', () => {
       //     {
       //       type: 'line',
       //       parts: [
-      //         { type: 'ChordLyricsPair', chords: 'I am chords', lyrics: 'I am lyrics' },
+      //         { type: 'annotation', chords: 'I am chords', lyrics: 'I am lyrics' },
       //       ],
       //     },
       //   ],
@@ -228,39 +248,39 @@ describe('OnSongGrammar', () => {
       'This [D]is a s[G]ong,': {
         type: 'line',
         parts: [
-          { type: 'ChordLyricsPair', chords: '', lyrics: 'This ' },
-          { type: 'ChordLyricsPair', chords: 'D', lyrics: 'is a s' },
-          { type: 'ChordLyricsPair', chords: 'G', lyrics: 'ong,' },
+          { type: 'annotation', annotation: null, lyrics: 'This ' },
+          { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: 'is a s' },
+          { type: 'annotation', annotation: {type: 'chord', value: 'G'}, lyrics: 'ong,' },
         ],
       },
       'Ends with a chord [D]': {
         type: 'line',
         parts: [
-          { type: 'ChordLyricsPair', chords: '', lyrics: 'Ends with a chord ' },
-          { type: 'ChordLyricsPair', chords: 'D', lyrics: '' },
+          { type: 'annotation', annotation: null, lyrics: 'Ends with a chord ' },
+          { type: 'annotation', annotation: {type: 'chord', value: 'D'} },
         ],
       },
       '[D]Starts with a chord': {
         type: 'line',
         parts: [
-          { type: 'ChordLyricsPair', chords: 'D', lyrics: 'Starts with a chord' },
+          { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: 'Starts with a chord' },
         ],
       },
       'Just lyrics': {
         type: 'line',
         parts: [
-          { type: 'ChordLyricsPair', chords: '', lyrics: 'Just lyrics' },
+          { type: 'annotation', annotation: null, lyrics: 'Just lyrics' },
         ],
       },
       '[G]': {
         type: 'line',
-        parts: [{ type: 'ChordLyricsPair', chords: 'G', lyrics: '' }],
+        parts: [{ type: 'annotation', annotation: { type: 'chord', value: 'G' } }],
       },
       '[G]Line (2x)': {
         type: 'line',
         parts: [
-          { type: 'ChordLyricsPair', chords: 'G', lyrics: 'Line ' },
-          { type: 'instruction', content: '2x' },
+          { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'Line ' },
+          { type: 'annotation', annotation: { type: 'instruction', content: '2x' } },
         ],
       },
 
@@ -290,41 +310,41 @@ describe('OnSongGrammar', () => {
       'Rogue [C#m]#pound sign': 'todo',
       'Rogue C] square bracket': {
         type: 'line',
-        parts: [{ chords: '', lyrics: 'Rogue C] square bracket', type: 'ChordLyricsPair' }],
+        parts: [{ annotation: null, lyrics: 'Rogue C] square bracket', type: 'annotation' }],
       },
       'Empty []chord': 'todo',
       'F#m Whoops forgot the brackets': 'todo',
     },
 
     Chord: {
-      A: 'A',
-      'C/G': 'C/G',
-      'F#m': 'F#m',
-      'C♯': 'C♯',
-      Asus4: 'Asus4',
-      E7: 'E7',
-      'B♭': 'B♭',
-      'Eb/Bb': 'Eb/Bb',
-      'Abm7/Eb': 'Abm7/Eb',
-      'F / A': 'F / A',
-      'Dm7(b5)': 'Dm7(b5)',
-      E7b13: 'E7b13',
-      B7b5: 'B7b5',
-      CM7: 'CM7',
-      Cmaj7: 'Cmaj7',
-      AbMaj7: 'AbMaj7',
-      'C9(11)': 'C9(11)',
-      'Dm7(9)': 'Dm7(9)',
-      D6: 'D6',
-      'B(add4)': 'B(add4)',
+      A: { type: 'chord', value: 'A' },
+      'C/G': { type: 'chord', value: 'C/G' },
+      'F#m': { type: 'chord', value: 'F#m' },
+      'C♯': { type: 'chord', value: 'C♯' },
+      Asus4: { type: 'chord', value: 'Asus4' },
+      E7: { type: 'chord', value: 'E7' },
+      'B♭': { type: 'chord', value: 'B♭' },
+      'Eb/Bb': { type: 'chord', value: 'Eb/Bb' },
+      'Abm7/Eb': { type: 'chord', value: 'Abm7/Eb' },
+      'F / A': { type: 'chord', value: 'F / A' },
+      'Dm7(b5)': { type: 'chord', value: 'Dm7(b5)' },
+      E7b13: { type: 'chord', value: 'E7b13' },
+      B7b5: { type: 'chord', value: 'B7b5' },
+      CM7: { type: 'chord', value: 'CM7' },
+      Cmaj7: { type: 'chord', value: 'Cmaj7' },
+      AbMaj7: { type: 'chord', value: 'AbMaj7' },
+      'C9(11)': { type: 'chord', value: 'C9(11)' },
+      'Dm7(9)': { type: 'chord', value: 'Dm7(9)' },
+      D6: { type: 'chord', value: 'D6' },
+      'B(add4)': { type: 'chord', value: 'B(add4)' },
       AMaj: Error,
       X: Error,
     },
 
     BracketedChord: {
-      '[G]': 'G',
-      '[D/F#]': 'D/F#',
-      '[Bsus2]': 'Bsus2',
+      '[G]': { type: 'chord', value: 'G' },
+      '[D/F#]': { type: 'chord', value: 'D/F#' },
+      '[Bsus2]': { type: 'chord', value: 'Bsus2' },
       '\\[notachord]': Error,
       // '[unknown]': ExpectWarning, // FIXME
     },
@@ -356,7 +376,7 @@ describe('OnSongGrammar', () => {
             items: [
               {
                 lines: [
-                  { parts: [{ chords: '', lyrics: 'Chord and lyrics', type: 'ChordLyricsPair' }], type: 'line' },
+                  { parts: [{ annotation: null, lyrics: 'Chord and lyrics', type: 'annotation' }], type: 'line' },
                 ],
                 type: 'stanza',
               },
