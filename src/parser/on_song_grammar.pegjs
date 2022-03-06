@@ -124,7 +124,7 @@ InlineAnnotation
       return { type: 'annotation', annotation, lyrics }
     }
   / annotation:(BracketedChord / MusicalInstruction) {
-      return { type: 'annotation', annotation, lyrics: null }
+      return { type: 'annotation', annotation, lyrics: '' }
     }
   / lyrics:Lyrics {
       return { type: 'annotation', lyrics, annotation: null }

@@ -80,7 +80,7 @@ describe('OnSongGrammar', () => {
               {
                 type: 'line',
                 parts: [
-                  { type: 'annotation', annotation: { type: 'chord', value: 'G' } },
+                  { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: '' },
                 ],
               },
             ],
@@ -157,7 +157,7 @@ describe('OnSongGrammar', () => {
             type: 'line',
             parts: [
               { type: 'annotation', annotation: null, lyrics: 'That saved a wretch like ' },
-              { type: 'annotation', annotation: {type: 'chord', value: 'A7'}, lyrics: 'me.' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'A7' }, lyrics: 'me.' },
             ],
           },
         ],
@@ -169,8 +169,8 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'annotation', annotation: {type: 'chord', value: 'Am'}, lyrics: '      ' },
-              { type: 'annotation', annotation: {type: 'chord', value: 'F'}, lyrics: '' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'Am' }, lyrics: '      ' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'F' }, lyrics: '' },
             ],
           },
         ],
@@ -185,8 +185,8 @@ describe('OnSongGrammar', () => {
           {
             type: 'line',
             parts: [
-              { type: 'annotation', annotation: {type: 'chord', value: 'G'}, lyrics: 'Lyric  ' },
-              { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: '' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'Lyric  ' },
+              { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: '' },
             ],
           },
         ],
@@ -226,7 +226,7 @@ describe('OnSongGrammar', () => {
       //     {
       //       type: 'line',
       //       parts: [
-      //         { type: 'annotation', chords: 'I am chords', lyrics: 'I am lyrics' },
+      //         { type: 'annotation', annotation: { type: 'text', value: 'I am chords' }, lyrics: 'I am lyrics' },
       //       ],
       //     },
       //   ],
@@ -249,21 +249,21 @@ describe('OnSongGrammar', () => {
         type: 'line',
         parts: [
           { type: 'annotation', annotation: null, lyrics: 'This ' },
-          { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: 'is a s' },
-          { type: 'annotation', annotation: {type: 'chord', value: 'G'}, lyrics: 'ong,' },
+          { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: 'is a s' },
+          { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'ong,' },
         ],
       },
       'Ends with a chord [D]': {
         type: 'line',
         parts: [
           { type: 'annotation', annotation: null, lyrics: 'Ends with a chord ' },
-          { type: 'annotation', annotation: {type: 'chord', value: 'D'} },
+          { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: '' },
         ],
       },
       '[D]Starts with a chord': {
         type: 'line',
         parts: [
-          { type: 'annotation', annotation: {type: 'chord', value: 'D'}, lyrics: 'Starts with a chord' },
+          { type: 'annotation', annotation: { type: 'chord', value: 'D' }, lyrics: 'Starts with a chord' },
         ],
       },
       'Just lyrics': {
@@ -274,13 +274,13 @@ describe('OnSongGrammar', () => {
       },
       '[G]': {
         type: 'line',
-        parts: [{ type: 'annotation', annotation: { type: 'chord', value: 'G' } }],
+        parts: [{ type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: '' }],
       },
       '[G]Line (2x)': {
         type: 'line',
         parts: [
           { type: 'annotation', annotation: { type: 'chord', value: 'G' }, lyrics: 'Line ' },
-          { type: 'annotation', annotation: { type: 'instruction', content: '2x' } },
+          { type: 'annotation', annotation: { type: 'instruction', content: '2x' }, lyrics: '' },
         ],
       },
 
