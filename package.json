@@ -1,7 +1,7 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "6.0.2",
+  "version": "6.1.0",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "main": "lib/index.js",
   "license": "GPL-2.0-only",
@@ -29,7 +29,7 @@
     "jsdoc-to-markdown": "^7.1.0",
     "peggy": "^1.2.0",
     "pegjs-backtrace": "^0.2.1",
-    "pinst": "^2.1.6",
+    "pinst": "^3.0.0",
     "print": "^1.2.0"
   },
   "scripts": {

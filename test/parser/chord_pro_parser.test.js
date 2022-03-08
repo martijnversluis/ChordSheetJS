@@ -174,7 +174,7 @@ Let it [F]be [C]
     expect(parser.warnings).toHaveLength(0);
   });
 
-  it('adds the key to lines', () => {
+  it('adds the transposeKey to lines', () => {
     const chordSheetWithTranspose = `
 {key: A}
 
@@ -189,11 +189,60 @@ This part is [D]key
 
     const parser = new ChordProParser();
     const song = parser.parse(chordSheetWithTranspose);
-    const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
+    const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].transposeKey);
 
     expect(keys[0]).toBe(null);
     expect(keys[1]).toEqual('4');
     expect(keys[2]).toEqual('D');
+  });
+
+  it('adds the key to lines', () => {
+    const chordSheetWithTranspose = `
+{key: A}
+
+This part is [A]key
+
+{new_key: D}
+This part is [D]key
+
+{nk: G}
+This part is [G]key
+`.trim();
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheetWithTranspose);
+    const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
+
+    expect(keys[0]).toBe('A');
+    expect(keys[1]).toEqual('D');
+    expect(keys[2]).toEqual('G');
+  });
+
+  it('adds the key & transposeKey to the same to lines', () => {
+    const chordSheetWithTranspose = `
+{key: A}
+
+This part is [A]key
+
+{transpose: 4}
+{new_key: D}
+This part is [D]key
+
+{transpose: D}
+{nk: G}
+This part is [G]key
+`.trim();
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheetWithTranspose);
+    const keys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].key);
+    const transposeKeys = song.bodyParagraphs.map((paragraph) => paragraph.lines[0].transposeKey);
+
+    expect(keys[0]).toBe('A');
+    expect(transposeKeys[1]).toEqual('4');
+    expect(keys[1]).toEqual('D');
+    expect(transposeKeys[2]).toEqual('D');
+    expect(keys[2]).toEqual('G');
   });
 
   it('allows escaped special characters in tags', () => {

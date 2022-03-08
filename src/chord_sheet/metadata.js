@@ -37,6 +37,10 @@ class Metadata {
       });
   }
 
+  contains(key) {
+    return key in this;
+  }
+
   add(key, value) {
     if (isReadonlyTag(key)) {
       return;
@@ -59,6 +63,14 @@ class Metadata {
     }
 
     this[key] = [currentValue, value];
+  }
+
+  set(key, value) {
+    if (value) {
+      this[key] = value;
+    } else {
+      delete this[key];
+    }
   }
 
   /**

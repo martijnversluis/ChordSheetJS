@@ -1,4 +1,4 @@
-# ChordSheetJS [![Build Status](https://travis-ci.org/martijnversluis/ChordSheetJS.svg?branch=master)](https://travis-ci.org/martijnversluis/ChordSheetJS) [![npm version](https://badge.fury.io/js/chordsheetjs.svg)](https://badge.fury.io/js/chordsheetjs) [![Code Climate](https://codeclimate.com/github/martijnversluis/ChordSheetJS/badges/gpa.svg)](https://codeclimate.com/github/martijnversluis/ChordSheetJS)
+# ChordChartJS [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
@@ -469,6 +469,9 @@ Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
 <dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
 <dd><p>Transpose meta directive. See: <a href="https://www.chordpro.org/chordpro/directives-transpose/">https://www.chordpro.org/chordpro/directives-transpose/</a></p>
 </dd>
+<dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
+<dd><p>New Key meta directive. See: <a href="https://github.com/PraiseCharts/ChordChartJS/issues/53">https://github.com/PraiseCharts/ChordChartJS/issues/53</a></p>
+</dd>
 <dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
 </dd>
@@ -756,6 +759,8 @@ Represents a song in a chord sheet. Currently a chord sheet can only have one so
     * [.bodyParagraphs](#Song+bodyParagraphs) ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
+    * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
+    * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_Song_new"></a>
 
@@ -818,6 +823,35 @@ Returns a deep clone of the song
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - The cloned song  
+<a name="Song+setCapo"></a>
+
+### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
+Returns a copy of the song with the capo value set to the specified capo. It changes:
+- the value for `capo` in the `metadata` set
+- any existing `capo` directive)
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - The changed song  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| capo | <code>number</code> \| <code>null</code> | the capo. Passing `null` will: - remove the current key from `metadata` - remove any `capo` directive |
+
+<a name="Song+setKey"></a>
+
+### song.setKey(key) ⇒ [<code>Song</code>](#Song)
+Returns a copy of the song with the key set to the specified key. It changes:
+- the value for `key` in the `metadata` set
+- any existing `key` directive
+- all chords, those are transposed according to the distance between the current and the new key
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - The changed song  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | The new key. |
+
 <a name="Tag"></a>
 
 ## Tag
@@ -1529,6 +1563,12 @@ Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
 
 ## TRANSPOSE : <code>string</code>
 Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
+
+**Kind**: global constant  
+<a name="NEW_KEY"></a>
+
+## NEW\_KEY : <code>string</code>
+New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53
 
 **Kind**: global constant  
 <a name="YEAR"></a>

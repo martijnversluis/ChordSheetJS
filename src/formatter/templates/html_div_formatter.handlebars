@@ -15,7 +15,7 @@
             <div class="{{lineClasses line}}">
               {{~#each items as |item|~}}
                 {{~#if (isChordLyricsPair item)~}}
-                  <div class="column"><div class="chord">{{renderChord chords line.key @root.song.key}}</div><div class="lyrics">{{lyrics}}</div></div>
+                  <div class="column"><div class="chord">{{renderChord chords line.key line.transposeKey @root.song}}</div><div class="lyrics">{{lyrics}}</div></div>
                 {{~/if~}}
 
                 {{~#if (isTag item)~}}
