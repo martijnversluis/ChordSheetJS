@@ -37,7 +37,7 @@ describe('OnSongGrammar', () => {
 
     // Inline Tags - https://www.onsongapp.com/docs/features/formats/onsong/metadata/?#inline-tags
 
-    SectionName: {
+    SectionHeader: {
       'Chorus:': 'Chorus',
       'Verse 1:\n': 'Verse 1',
       'Intro :': 'Intro',
@@ -409,7 +409,145 @@ describe('OnSongGrammar', () => {
         ],
         warnings: [],
       },
-      'Title\nFlow: V1 C v1\n\nVerse 1:\nVerse\n\nChorus:\nChorus': 'todo',
+      'Title\nFlow: V1 C v1\n\nVerse 1:\nVerse\n\nChorus:\nChorus': {
+        metadata: [
+          { name: 'title', type: 'metatag', value: 'Title' },
+          { name: 'flow', type: 'metatag', value: ['V1', 'C', 'V1'] },
+        ],
+        sections: [
+          {
+            type: 'section',
+            name: 'Verse 1',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Verse', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'section',
+            name: 'Chorus',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Chorus', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'section',
+            name: 'Verse 1',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Verse', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        type: 'chordsheet',
+        warnings: [],
+      },
+      'Title\nFlow: Verse 1, Chorus, Verse 1\n\nVerse 1:\nVerse\n\nChorus:\nChorus': {
+        metadata: [
+          { name: 'title', type: 'metatag', value: 'Title' },
+          { name: 'flow', type: 'metatag', value: ['Verse 1', 'Chorus', 'Verse 1'] },
+        ],
+        sections: [
+          {
+            type: 'section',
+            name: 'Verse 1',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Verse', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'section',
+            name: 'Chorus',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Chorus', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'section',
+            name: 'Verse 1',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Verse', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        type: 'chordsheet',
+        warnings: [],
+      },
+      'Title\nFlow: Chorus, (Repeat 2x)\n\nChorus:\nLyrics': {
+        metadata: [
+          { name: 'title', type: 'metatag', value: 'Title' },
+          { name: 'flow', type: 'metatag', value: ['Chorus', { type: 'instruction', content: 'Repeat 2x' }] },
+        ],
+        sections: [
+          {
+            type: 'section',
+            name: 'Chorus',
+            items: [
+              {
+                type: 'stanza',
+                lines: [
+                  {
+                    type: 'line',
+                    parts: [{ annotation: null, lyrics: 'Lyrics', type: 'annotation' }],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'instruction',
+            content: 'Repeat 2x',
+          },
+        ],
+        type: 'chordsheet',
+        warnings: [],
+      },
       'Title\n\nVerse:\n[G]Hello\n\n{transpose: 2}\n\nVerse': 'todo',
     },
   };

@@ -1,4 +1,4 @@
-// This is a gramar for the OnSong format as documented here:
+// This is a grammar for the OnSong format as documented here:
 // https://www.onsongapp.com/docs/features/formats/onsong/
 
 {
@@ -7,11 +7,35 @@
   function warn(message, location) {
     warnings.push({message, location})
   }
+
+  // Use the first character of each word in the section name, e.g. "Verse 3" => "V3"
+  function sectionAbbr(name) {
+    return name?.match(/\b(\w)/g)?.join('').toUpperCase();
+  }
+
+  // Rearrange sections according to the `Flow` metatag
+  function reflow(metadata, sections) {
+    const flow = metadata.find(m => m.name === 'flow')?.value;
+
+    if(flow) {
+      return flow.map(name => {
+        if(typeof name === 'string') {
+          return sections.find(section => {
+            return section.name === name || sectionAbbr(section.name) === name
+          })
+        } else {
+          return name;
+        }
+      });
+    } else {
+      return sections;
+    }
+  }
 }
 
 ChordSheet
   = metadata:Metadata sections:Section* {
-    return { type: "chordsheet", metadata, sections, warnings }
+    return { type: "chordsheet", metadata, sections: reflow(metadata, sections), warnings }
   }
 
 // https://www.onsongapp.com/docs/features/formats/onsong/metadata/
@@ -20,12 +44,15 @@ Metadata
 
 Metatag "metatag"
   = "{" _ @Metatag _ "}"
-  / name:((@MetaName _ ":") / ImplicitMetaName) _ value:MetaValue {
+  / _ "flow"i _ ":" _ value:Flow {
+      return { type: "metatag", name: 'flow', value }
+    }
+  / _ name:((@MetaName _ ":") / ImplicitMetaName) _ value:MetaValue {
       return { type: "metatag", name: name.toLowerCase().trim(), value }
     }
 
 MetaName
-  = $[^\r\n:{]+
+  = $[^\r\n:{,]+
 
 ImplicitMetaName
   = & { return location().start.line <= 2 } {
@@ -38,12 +65,22 @@ ImplicitMetaName
 MetaValue
   = $[^\r\n}]+
 
+Flow
+  = head:FlowKeyword tail:(_ "," _ @FlowKeyword)+ { return [head, ...tail] }
+  / (@FlowAbbr _)+
+
+FlowKeyword
+  = MusicalInstruction / SectionName
+
+FlowAbbr
+  = abbr:$([A-Z]i / [0-9])+ { return abbr.toUpperCase() }
+
 // https://www.onsongapp.com/docs/features/formats/onsong/section/
 Section
     // {start_of_*}
   = DirectiveSection
     // Section with explcit name and maybe a body
-  / name:SectionName __ items:SectionBody* { return { type: 'section', name, items } }
+  / name:SectionHeader __ items:SectionBody* { return { type: 'section', name, items } }
     // Section without explicit name
   / items:SectionBody+ { return { type: 'section', name: null, items } }
 
@@ -62,12 +99,15 @@ DirectiveSectionTypes
   / "v" "erse"?  { return "verse" }
 
 SectionName
-  = name:MetaName _ ":" EOL {
+  = MetaName
+
+SectionHeader
+  = name:SectionName _ ":" EOL {
     return name.trim()
   }
 
 SectionBody
-  = !SectionName @(Tab / Stanza) __
+  = !SectionHeader @(Tab / Stanza) __
 
 Stanza
   = lines:Line+ {
@@ -86,17 +126,10 @@ Line
 // Verse 1:
 //         D           G        D
 // Amazing Grace, how sweet the sound,
-//                          A7
-// That saved a wretch like me.
-//   D                  G      D
-// I once was lost, but now am found,
-//                A7    D
-// Was blind, but now I see.
 ChordsOverLyrics
   = annotations:(_ @(annotation:(Chord / MusicalInstruction) { return { annotation, column: location().start.column } }))+ EOL
     lyrics:(@Lyrics EOL)? {
-      // FIXME:
-      // Is there a better way to do this in PEG?
+      // FIXME: Is there a better way to do this in PEG?
       // Or, is there a more idiomatic way to merge chords and lyrics into pairs?
 
       // First annotation does not start at beginning of line, add an empty one
