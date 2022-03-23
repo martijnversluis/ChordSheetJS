@@ -45,6 +45,10 @@ class Key {
     return this.parse(keyStringOrObject);
   }
 
+  static toString(keyStringOrObject) {
+    return `${Key.wrap(keyStringOrObject)}`;
+  }
+
   static distance(oneKey, otherKey) {
     return this.wrap(oneKey).distanceTo(otherKey);
   }
@@ -69,7 +73,7 @@ class Key {
   }
 
   isMinor() {
-    return this.note.isMinor();
+    return this.minor || this.note.isMinor();
   }
 
   clone() {

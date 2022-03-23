@@ -505,6 +505,12 @@ For a CSS string see <a href="#scopedCss">scopedCss</a></p>
 <dt><del><a href="#parseChord">parseChord(chordString)</a> ⇒ <code>null</code> | <code><a href="#Chord">Chord</a></code></del></dt>
 <dd><p>Tries to parse a chord string into a chord</p>
 </dd>
+<dt><a href="#getCapos">getCapos(key)</a> ⇒ <code>Object.&lt;string, string&gt;</code></dt>
+<dd><p>Returns applicable capos for the provided key</p>
+</dd>
+<dt><a href="#getKeys">getKeys(key)</a> ⇒ <code>Array.&lt;string&gt;</code></dt>
+<dd><p>Returns applicable keys to transpose to from the provided key</p>
+</dd>
 </dl>
 
 <a name="ChordLyricsPair"></a>
@@ -1638,4 +1644,29 @@ Tries to parse a chord string into a chord
 | Param | Description |
 | --- | --- |
 | chordString | the chord string, eg Esus4/G# or 1sus4/#3 |
+
+<a name="getCapos"></a>
+
+## getCapos(key) ⇒ <code>Object.&lt;string, string&gt;</code>
+Returns applicable capos for the provided key
+
+**Kind**: global function  
+**Returns**: <code>Object.&lt;string, string&gt;</code> - The available capos, where the keys are capo numbers and the
+values are the effective key for that capo.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | The key to get capos for |
+
+<a name="getKeys"></a>
+
+## getKeys(key) ⇒ <code>Array.&lt;string&gt;</code>
+Returns applicable keys to transpose to from the provided key
+
+**Kind**: global function  
+**Returns**: <code>Array.&lt;string&gt;</code> - The available keys  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>Key</code> \| <code>string</code> | The key to get keys for |
 
