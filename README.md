@@ -343,174 +343,128 @@ subject to breaking changes between major versions.
 
 <dl>
 <dt><a href="#ChordLyricsPair">ChordLyricsPair</a></dt>
-<dd><p>Represents a chord with the corresponding (partial) lyrics</p>
-</dd>
+<dd><p>Represents a chord with the corresponding (partial) lyrics</p></dd>
 <dt><a href="#Comment">Comment</a></dt>
-<dd><p>Represents a comment. See <a href="https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview">https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</a></p>
-</dd>
-<dt><a href="#Line">Line</a></dt>
-<dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
-</dd>
+<dd><p>Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</p></dd>
 <dt><a href="#Metadata">Metadata</a></dt>
 <dd><p>Stores song metadata. Properties can be accessed using the get() method:</p>
-<p>const metadata = new Metadata({ author: &#39;John&#39; });
-metadata.get(&#39;author&#39;)   // =&gt; &#39;John&#39;</p>
-<p>See <a href="#Metadata+get">get</a></p>
-</dd>
+<p>const metadata = new Metadata({ author: 'John' });
+metadata.get('author')   // =&gt; 'John'</p>
+<p>See [get](#Metadata+get)</p></dd>
 <dt><a href="#Paragraph">Paragraph</a></dt>
-<dd><p>Represents a paragraph of lines in a chord sheet</p>
-</dd>
+<dd><p>Represents a paragraph of lines in a chord sheet</p></dd>
 <dt><a href="#Song">Song</a></dt>
-<dd><p>Represents a song in a chord sheet. Currently a chord sheet can only have one song.</p>
-</dd>
+<dd><p>Represents a song in a chord sheet. Currently a chord sheet can only have one song.</p></dd>
 <dt><a href="#Tag">Tag</a></dt>
-<dd><p>Represents a tag/directive. See <a href="https://www.chordpro.org/chordpro/chordpro-directives/">https://www.chordpro.org/chordpro/chordpro-directives/</a></p>
-</dd>
+<dd><p>Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/</p></dd>
 <dt><a href="#ChordProFormatter">ChordProFormatter</a></dt>
-<dd><p>Formats a song into a ChordPro chord sheet</p>
-</dd>
+<dd><p>Formats a song into a ChordPro chord sheet</p></dd>
+<dt><a href="#Formatter">Formatter</a></dt>
+<dd><p>Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object</p></dd>
 <dt><a href="#HtmlDivFormatter">HtmlDivFormatter</a></dt>
-<dd><p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p>
-</dd>
+<dd><p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p></dd>
 <dt><a href="#HtmlFormatter">HtmlFormatter</a></dt>
-<dd><p>Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.</p>
-</dd>
+<dd><p>Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.</p></dd>
 <dt><a href="#HtmlTableFormatter">HtmlTableFormatter</a></dt>
 <dd><p>Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
-PDF conversion.</p>
-</dd>
+PDF conversion.</p></dd>
 <dt><a href="#TextFormatter">TextFormatter</a></dt>
-<dd><p>Formats a song into a plain text chord sheet</p>
-</dd>
+<dd><p>Formats a song into a plain text chord sheet</p></dd>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
-<dd><p>Parses a ChordPro chord sheet</p>
-</dd>
+<dd><p>Parses a ChordPro chord sheet</p></dd>
 <dt><a href="#ChordSheetParser">ChordSheetParser</a></dt>
-<dd><p>Parses a normal chord sheet</p>
-</dd>
+<dd><p>Parses a normal chord sheet</p></dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
-<dd><p>Represents a parser warning, currently only used by ChordProParser.</p>
-</dd>
+<dd><p>Represents a parser warning, currently only used by ChordProParser.</p></dd>
 <dt><a href="#UltimateGuitarParser">UltimateGuitarParser</a></dt>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
-Inherits from <a href="#ChordSheetParser">ChordSheetParser</a></p>
-</dd>
+Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dt><a href="#Chord">Chord</a></dt>
-<dd><p>Represents a Chord, consisting of a root, suffix (quality) and bass</p>
-</dd>
+<dd><p>Represents a Chord, consisting of a root, suffix (quality) and bass</p></dd>
 <dt><a href="#ChordSheetSerializer">ChordSheetSerializer</a></dt>
-<dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a <a href="#Song">Song</a></p>
-</dd>
+<dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p></dd>
+</dl>
+
+## Members
+
+<dl>
+<dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
+<dd><p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p></dd>
+<dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
+<dd><p>Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/</p></dd>
+<dt><a href="#CAPO">CAPO</a> : <code>string</code></dt>
+<dd><p>Comment directive. See https://www.chordpro.org/chordpro/directives-comment/</p></dd>
+<dt><a href="#COMMENT">COMMENT</a> : <code>string</code></dt>
+<dd><p>Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/</p></dd>
+<dt><a href="#COMPOSER">COMPOSER</a> : <code>string</code></dt>
+<dd><p>Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/</p></dd>
+<dt><a href="#COPYRIGHT">COPYRIGHT</a> : <code>string</code></dt>
+<dd><p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p></dd>
+<dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
+<dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
+<dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
+<dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
+<dd><p>End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p></dd>
+<dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
+<dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
+<dt><a href="#KEY">KEY</a> : <code>string</code></dt>
+<dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
+<dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
+<dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
+<dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
+<dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
+<dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
+<dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
+<dd><p>Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p></dd>
+<dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
+<dd><p>Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/</p></dd>
+<dt><a href="#SUBTITLE">SUBTITLE</a> : <code>string</code></dt>
+<dd><p>Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/</p></dd>
+<dt><a href="#TEMPO">TEMPO</a> : <code>string</code></dt>
+<dd><p>Time meta directive. See https://www.chordpro.org/chordpro/directives-time/</p></dd>
+<dt><a href="#TIME">TIME</a> : <code>string</code></dt>
+<dd><p>Title meta directive. See https://www.chordpro.org/chordpro/directives-title/</p></dd>
+<dt><a href="#TITLE">TITLE</a> : <code>string</code></dt>
+<dd><p>Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/</p></dd>
+<dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
+<dd><p>New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53</p></dd>
+<dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
+<dd><p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p></dd>
+<dt><a href="#defaultCss">defaultCss</a> ⇒ <code>string</code></dt>
+<dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p></dd>
 </dl>
 
 ## Constants
 
 <dl>
-<dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
-<dd><p>Album meta directive. See <a href="https://www.chordpro.org/chordpro/directives-album/">https://www.chordpro.org/chordpro/directives-album/</a></p>
-</dd>
-<dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
-<dd><p>Artist meta directive. See <a href="https://www.chordpro.org/chordpro/directives-artist/">https://www.chordpro.org/chordpro/directives-artist/</a></p>
-</dd>
-<dt><a href="#CAPO">CAPO</a> : <code>string</code></dt>
-<dd><p>Capo meta directive. See <a href="https://www.chordpro.org/chordpro/directives-capo/">https://www.chordpro.org/chordpro/directives-capo/</a></p>
-</dd>
-<dt><a href="#COMMENT">COMMENT</a> : <code>string</code></dt>
-<dd><p>Comment directive. See <a href="https://www.chordpro.org/chordpro/directives-comment/">https://www.chordpro.org/chordpro/directives-comment/</a></p>
-</dd>
-<dt><a href="#COMPOSER">COMPOSER</a> : <code>string</code></dt>
-<dd><p>Composer meta directive. See <a href="https://www.chordpro.org/chordpro/directives-composer/">https://www.chordpro.org/chordpro/directives-composer/</a></p>
-</dd>
-<dt><a href="#COPYRIGHT">COPYRIGHT</a> : <code>string</code></dt>
-<dd><p>Copyright meta directive. See <a href="https://www.chordpro.org/chordpro/directives-copyright/">https://www.chordpro.org/chordpro/directives-copyright/</a></p>
-</dd>
-<dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
-<dd><p>Duration meta directive. See <a href="https://www.chordpro.org/chordpro/directives-duration/">https://www.chordpro.org/chordpro/directives-duration/</a></p>
-</dd>
-<dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
-<dd><p>End of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
-</dd>
-<dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
-<dd><p>End of tab directive. See <a href="https://www.chordpro.org/chordpro/directives-env_tab/">https://www.chordpro.org/chordpro/directives-env_tab/</a></p>
-</dd>
-<dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
-<dd><p>End of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
-</dd>
-<dt><a href="#KEY">KEY</a> : <code>string</code></dt>
-<dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/directives-key/">https://www.chordpro.org/chordpro/directives-key/</a></p>
-</dd>
-<dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
-<dd><p>Key meta directive. See <a href="https://www.chordpro.org/chordpro/directives-key/">https://www.chordpro.org/chordpro/directives-key/</a></p>
-</dd>
-<dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
-<dd><p>Lyricist meta directive. See <a href="https://www.chordpro.org/chordpro/directives-lyricist/">https://www.chordpro.org/chordpro/directives-lyricist/</a></p>
-</dd>
-<dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
-<dd><p>Start of chorus directive. See <a href="https://www.chordpro.org/chordpro/directives-env_chorus/">https://www.chordpro.org/chordpro/directives-env_chorus/</a></p>
-</dd>
-<dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
-<dd><p>Start of tab directive. See <a href="https://www.chordpro.org/chordpro/directives-env_tab/">https://www.chordpro.org/chordpro/directives-env_tab/</a></p>
-</dd>
-<dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
-<dd><p>Start of verse directive. See <a href="https://www.chordpro.org/chordpro/directives-env_verse/">https://www.chordpro.org/chordpro/directives-env_verse/</a></p>
-</dd>
-<dt><a href="#SUBTITLE">SUBTITLE</a> : <code>string</code></dt>
-<dd><p>Subtitle meta directive. See <a href="https://www.chordpro.org/chordpro/directives-subtitle/">https://www.chordpro.org/chordpro/directives-subtitle/</a></p>
-</dd>
-<dt><a href="#TEMPO">TEMPO</a> : <code>string</code></dt>
-<dd><p>Tempo meta directive. See <a href="https://www.chordpro.org/chordpro/directives-tempo/">https://www.chordpro.org/chordpro/directives-tempo/</a></p>
-</dd>
-<dt><a href="#TIME">TIME</a> : <code>string</code></dt>
-<dd><p>Time meta directive. See <a href="https://www.chordpro.org/chordpro/directives-time/">https://www.chordpro.org/chordpro/directives-time/</a></p>
-</dd>
-<dt><a href="#TITLE">TITLE</a> : <code>string</code></dt>
-<dd><p>Title meta directive. See <a href="https://www.chordpro.org/chordpro/directives-title/">https://www.chordpro.org/chordpro/directives-title/</a></p>
-</dd>
-<dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
-<dd><p>Transpose meta directive. See: <a href="https://www.chordpro.org/chordpro/directives-transpose/">https://www.chordpro.org/chordpro/directives-transpose/</a></p>
-</dd>
-<dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
-<dd><p>New Key meta directive. See: <a href="https://github.com/PraiseCharts/ChordChartJS/issues/53">https://github.com/PraiseCharts/ChordChartJS/issues/53</a></p>
-</dd>
-<dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
-<dd><p>Year meta directive. See <a href="https://www.chordpro.org/chordpro/directives-year/">https://www.chordpro.org/chordpro/directives-year/</a></p>
-</dd>
 <dt><a href="#defaultCss">defaultCss</a> : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code></dt>
 <dd><p>Basic CSS, in object style à la useStyles, to use with output generated by {@link }HtmlTableFormatter}
-For a CSS string see <a href="#scopedCss">scopedCss</a></p>
-</dd>
+For a CSS string see [scopedCss](scopedCss)</p></dd>
 <dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as verse</p>
-</dd>
+<dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as chorus</p></dd>
 <dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as chorus</p>
-</dd>
+<dd><p>Used to mark a paragraph as not containing a line marked with a type</p></dd>
 <dt><a href="#NONE">NONE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as not containing a line marked with a type</p>
-</dd>
+<dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p></dd>
 <dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
-</dd>
-<dt><a href="#TAB">TAB</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as tab</p>
-</dd>
+<dd><p>Used to mark a paragraph as tab</p></dd>
 </dl>
 
 ## Functions
 
 <dl>
-<dt><a href="#scopedCss">scopedCss(scope)</a> ⇒ <code>string</code></dt>
-<dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by <a href="#HtmlTableFormatter">HtmlTableFormatter</a></p>
-</dd>
 <dt><del><a href="#parseChord">parseChord(chordString)</a> ⇒ <code>null</code> | <code><a href="#Chord">Chord</a></code></del></dt>
-<dd><p>Tries to parse a chord string into a chord</p>
-</dd>
+<dd><p>Tries to parse a chord string into a chord</p></dd>
 </dl>
 
 <a name="ChordLyricsPair"></a>
 
 ## ChordLyricsPair
-Represents a chord with the corresponding (partial) lyrics
+<p>Represents a chord with the corresponding (partial) lyrics</p>
 
 **Kind**: global class  
 
@@ -524,42 +478,42 @@ Represents a chord with the corresponding (partial) lyrics
 <a name="new_ChordLyricsPair_new"></a>
 
 ### new ChordLyricsPair(chords, lyrics)
-Initialises a ChordLyricsPair
+<p>Initialises a ChordLyricsPair</p>
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| chords | <code>string</code> | The chords |
-| lyrics | <code>string</code> | The lyrics |
+| chords | <code>string</code> | <p>The chords</p> |
+| lyrics | <code>string</code> | <p>The lyrics</p> |
 
 <a name="ChordLyricsPair+chords"></a>
 
 ### chordLyricsPair.chords : <code>string</code>
-The chords
+<p>The chords</p>
 
 **Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="ChordLyricsPair+lyrics"></a>
 
 ### chordLyricsPair.lyrics : <code>string</code>
-The lyrics
+<p>The lyrics</p>
 
 **Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="ChordLyricsPair+isRenderable"></a>
 
 ### chordLyricsPair.isRenderable() ⇒ <code>boolean</code>
-Indicates whether a ChordLyricsPair should be visible in a formatted chord sheet (except for ChordPro sheets)
+<p>Indicates whether a ChordLyricsPair should be visible in a formatted chord sheet (except for ChordPro sheets)</p>
 
 **Kind**: instance method of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="ChordLyricsPair+clone"></a>
 
 ### chordLyricsPair.clone() ⇒ [<code>ChordLyricsPair</code>](#ChordLyricsPair)
-Returns a deep copy of the ChordLyricsPair, useful when programmatically transforming a song
+<p>Returns a deep copy of the ChordLyricsPair, useful when programmatically transforming a song</p>
 
 **Kind**: instance method of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="Comment"></a>
 
 ## Comment
-Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview
+<p>Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</p>
 
 **Kind**: global class  
 
@@ -570,104 +524,22 @@ Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format
 <a name="Comment+isRenderable"></a>
 
 ### comment.isRenderable() ⇒ <code>boolean</code>
-Indicates whether a Comment should be visible in a formatted chord sheet (except for ChordPro sheets)
+<p>Indicates whether a Comment should be visible in a formatted chord sheet (except for ChordPro sheets)</p>
 
 **Kind**: instance method of [<code>Comment</code>](#Comment)  
 <a name="Comment+clone"></a>
 
 ### comment.clone() ⇒ [<code>Comment</code>](#Comment)
-Returns a deep copy of the Comment, useful when programmatically transforming a song
+<p>Returns a deep copy of the Comment, useful when programmatically transforming a song</p>
 
 **Kind**: instance method of [<code>Comment</code>](#Comment)  
-<a name="Line"></a>
-
-## Line
-Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
-
-**Kind**: global class  
-
-* [Line](#Line)
-    * [.items](#Line+items) : <code>Array.&lt;(ChordLyricsPair\|Tag\|Comment)&gt;</code>
-    * [.type](#Line+type) : <code>string</code>
-    * [.isEmpty()](#Line+isEmpty) ⇒ <code>boolean</code>
-    * [.addItem(item)](#Line+addItem)
-    * [.hasRenderableItems()](#Line+hasRenderableItems) ⇒ <code>boolean</code>
-    * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
-    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
-    * [.isChorus()](#Line+isChorus) ⇒ <code>boolean</code>
-    * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
-
-<a name="Line+items"></a>
-
-### line.items : <code>Array.&lt;(ChordLyricsPair\|Tag\|Comment)&gt;</code>
-The items ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag) or [Comment](#Comment)) of which the line consists
-
-**Kind**: instance property of [<code>Line</code>](#Line)  
-<a name="Line+type"></a>
-
-### line.type : <code>string</code>
-The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
-Values can be [VERSE](#VERSE), [CHORUS](#CHORUS) or [NONE](#NONE)
-
-**Kind**: instance property of [<code>Line</code>](#Line)  
-<a name="Line+isEmpty"></a>
-
-### line.isEmpty() ⇒ <code>boolean</code>
-Indicates whether the line contains any items
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+addItem"></a>
-
-### line.addItem(item)
-Adds an item ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag)) to the line
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| item | [<code>ChordLyricsPair</code>](#ChordLyricsPair) \| [<code>Tag</code>](#Tag) | The item to be added |
-
-<a name="Line+hasRenderableItems"></a>
-
-### line.hasRenderableItems() ⇒ <code>boolean</code>
-Indicates whether the line contains items that are renderable
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+clone"></a>
-
-### line.clone() ⇒ [<code>Line</code>](#Line)
-Returns a deep copy of the line and all of its items
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+isVerse"></a>
-
-### line.isVerse() ⇒ <code>boolean</code>
-Indicates whether the line type is [VERSE](#VERSE)
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+isChorus"></a>
-
-### line.isChorus() ⇒ <code>boolean</code>
-Indicates whether the line type is [CHORUS](#CHORUS)
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+hasContent"></a>
-
-### ~~line.hasContent() ⇒ <code>boolean</code>~~
-***Deprecated***
-
-Indicates whether the line contains items that are renderable. Please use [hasRenderableItems](hasRenderableItems)
-
-**Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Metadata"></a>
 
 ## Metadata
-Stores song metadata. Properties can be accessed using the get() method:
-
-const metadata = new Metadata({ author: 'John' });
-metadata.get('author')   // => 'John'
-
-See [get](#Metadata+get)
+<p>Stores song metadata. Properties can be accessed using the get() method:</p>
+<p>const metadata = new Metadata({ author: 'John' });
+metadata.get('author')   // =&gt; 'John'</p>
+<p>See [get](#Metadata+get)</p>
 
 **Kind**: global class  
 
@@ -678,84 +550,69 @@ See [get](#Metadata+get)
 <a name="Metadata+get"></a>
 
 ### metadata.get(prop) ⇒ <code>Array.&lt;String&gt;</code> \| <code>String</code>
-Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.
-
-This method deprecates direct property access, eg: metadata['author']
-
-Examples:
-
-const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
-metadata.get('lyricist') // => 'Pete'
-metadata.get('author')   // => ['John', 'Mary']
-metadata.get('author.1') // => 'John'
-metadata.get('author.2') // => 'Mary'
-
-Using a negative index will start counting at the end of the list:
-
-const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
-metadata.get('author.-1') // => 'Mary'
-metadata.get('author.-2') // => 'John'
+<p>Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.</p>
+<p>This method deprecates direct property access, eg: metadata['author']</p>
+<p>Examples:</p>
+<p>const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
+metadata.get('lyricist') // =&gt; 'Pete'
+metadata.get('author')   // =&gt; ['John', 'Mary']
+metadata.get('author.1') // =&gt; 'John'
+metadata.get('author.2') // =&gt; 'Mary'</p>
+<p>Using a negative index will start counting at the end of the list:</p>
+<p>const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
+metadata.get('author.-1') // =&gt; 'Mary'
+metadata.get('author.-2') // =&gt; 'John'</p>
 
 **Kind**: instance method of [<code>Metadata</code>](#Metadata)  
-**Returns**: <code>Array.&lt;String&gt;</code> \| <code>String</code> - the metadata value(s). If there is only one value, it will return a String,
-else it returns an array of strings.  
+**Returns**: <code>Array.&lt;String&gt;</code> \| <code>String</code> - <p>the metadata value(s). If there is only one value, it will return a String,
+else it returns an array of strings.</p>  
 
 | Param | Description |
 | --- | --- |
-| prop | the property name |
+| prop | <p>the property name</p> |
 
 <a name="Metadata+clone"></a>
 
 ### metadata.clone() ⇒ [<code>Metadata</code>](#Metadata)
-Returns a deep clone of this Metadata object
+<p>Returns a deep clone of this Metadata object</p>
 
 **Kind**: instance method of [<code>Metadata</code>](#Metadata)  
-**Returns**: [<code>Metadata</code>](#Metadata) - the cloned Metadata object  
+**Returns**: [<code>Metadata</code>](#Metadata) - <p>the cloned Metadata object</p>  
 <a name="Paragraph"></a>
 
 ## Paragraph
-Represents a paragraph of lines in a chord sheet
+<p>Represents a paragraph of lines in a chord sheet</p>
 
 **Kind**: global class  
 
 * [Paragraph](#Paragraph)
-    * [.lines](#Paragraph+lines) : [<code>Array.&lt;Line&gt;</code>](#Line)
     * [.type](#Paragraph+type) ⇒ <code>string</code>
     * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
-<a name="Paragraph+lines"></a>
-
-### paragraph.lines : [<code>Array.&lt;Line&gt;</code>](#Line)
-The [Line](#Line) items of which the paragraph consists
-
-**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+type"></a>
 
 ### paragraph.type ⇒ <code>string</code>
-Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
-If not, it returns [INDETERMINATE](#INDETERMINATE)
+<p>Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
+If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+hasRenderableItems"></a>
 
 ### paragraph.hasRenderableItems() ⇒ <code>boolean</code>
-Indicates whether the paragraph contains lines with renderable items.
+<p>Indicates whether the paragraph contains lines with renderable items.</p>
 
 **Kind**: instance method of [<code>Paragraph</code>](#Paragraph)  
 **See**: [Line.hasRenderableItems](Line.hasRenderableItems)  
 <a name="Song"></a>
 
 ## Song
-Represents a song in a chord sheet. Currently a chord sheet can only have one song.
+<p>Represents a song in a chord sheet. Currently a chord sheet can only have one song.</p>
 
 **Kind**: global class  
 
 * [Song](#Song)
     * [new Song(metadata)](#new_Song_new)
-    * [.lines](#Song+lines) : [<code>Array.&lt;Line&gt;</code>](#Line)
-    * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
-    * [.metadata](#Song+metadata) : [<code>Metadata</code>](#Metadata)
-    * [.bodyLines](#Song+bodyLines) ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
+    * [.bodyLines](#Song+bodyLines) ⇒ <code>Array.&lt;Line&gt;</code>
     * [.bodyParagraphs](#Song+bodyParagraphs) ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
@@ -765,45 +622,26 @@ Represents a song in a chord sheet. Currently a chord sheet can only have one so
 <a name="new_Song_new"></a>
 
 ### new Song(metadata)
-Creates a new {Song} instance
+<p>Creates a new {Song} instance</p>
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| metadata | <code>Object</code> \| [<code>Metadata</code>](#Metadata) | predefined metadata |
+| metadata | <code>Object</code> \| [<code>Metadata</code>](#Metadata) | <p>predefined metadata</p> |
 
-<a name="Song+lines"></a>
-
-### song.lines : [<code>Array.&lt;Line&gt;</code>](#Line)
-The [Line](#Line) items of which the song consists
-
-**Kind**: instance property of [<code>Song</code>](#Song)  
-<a name="Song+paragraphs"></a>
-
-### song.paragraphs : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
-The [Paragraph](#Paragraph) items of which the song consists
-
-**Kind**: instance property of [<code>Song</code>](#Song)  
-<a name="Song+metadata"></a>
-
-### song.metadata : [<code>Metadata</code>](#Metadata)
-The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
-an array containing all unique values for the entry.
-
-**Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+bodyLines"></a>
 
-### song.bodyLines ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
-Returns the song lines, skipping the leading empty lines (empty as in not rendering any content). This is useful
-if you want to skip the "header lines": the lines that only contain meta data.
+### song.bodyLines ⇒ <code>Array.&lt;Line&gt;</code>
+<p>Returns the song lines, skipping the leading empty lines (empty as in not rendering any content). This is useful
+if you want to skip the &quot;header lines&quot;: the lines that only contain meta data.</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
-**Returns**: [<code>Array.&lt;Line&gt;</code>](#Line) - The song body lines  
+**Returns**: <code>Array.&lt;Line&gt;</code> - <p>The song body lines</p>  
 <a name="Song+bodyParagraphs"></a>
 
 ### song.bodyParagraphs ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
-Returns the song paragraphs, skipping the paragraphs that only contain empty lines
-(empty as in not rendering any content)
+<p>Returns the song paragraphs, skipping the paragraphs that only contain empty lines
+(empty as in not rendering any content)</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
 **See**: [bodyLines](bodyLines)  
@@ -812,50 +650,54 @@ Returns the song paragraphs, skipping the paragraphs that only contain empty lin
 ### ~~song.metaData ⇒~~
 ***Deprecated***
 
-The song's metadata. Please use [metadata](metadata) instead.
+<p>The song's metadata. Please use [metadata](metadata) instead.</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
-**Returns**: [Metadata](#Metadata) The metadata  
+**Returns**: <p>[Metadata](#Metadata) The metadata</p>  
 <a name="Song+clone"></a>
 
 ### song.clone() ⇒ [<code>Song</code>](#Song)
-Returns a deep clone of the song
+<p>Returns a deep clone of the song</p>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
-**Returns**: [<code>Song</code>](#Song) - The cloned song  
+**Returns**: [<code>Song</code>](#Song) - <p>The cloned song</p>  
 <a name="Song+setCapo"></a>
 
 ### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
-Returns a copy of the song with the capo value set to the specified capo. It changes:
-- the value for `capo` in the `metadata` set
-- any existing `capo` directive)
+<p>Returns a copy of the song with the capo value set to the specified capo. It changes:</p>
+<ul>
+<li>the value for <code>capo</code> in the <code>metadata</code> set</li>
+<li>any existing <code>capo</code> directive)</li>
+</ul>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
-**Returns**: [<code>Song</code>](#Song) - The changed song  
+**Returns**: [<code>Song</code>](#Song) - <p>The changed song</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| capo | <code>number</code> \| <code>null</code> | the capo. Passing `null` will: - remove the current key from `metadata` - remove any `capo` directive |
+| capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>capo</code> directive</li> </ul> |
 
 <a name="Song+setKey"></a>
 
 ### song.setKey(key) ⇒ [<code>Song</code>](#Song)
-Returns a copy of the song with the key set to the specified key. It changes:
-- the value for `key` in the `metadata` set
-- any existing `key` directive
-- all chords, those are transposed according to the distance between the current and the new key
+<p>Returns a copy of the song with the key set to the specified key. It changes:</p>
+<ul>
+<li>the value for <code>key</code> in the <code>metadata</code> set</li>
+<li>any existing <code>key</code> directive</li>
+<li>all chords, those are transposed according to the distance between the current and the new key</li>
+</ul>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
-**Returns**: [<code>Song</code>](#Song) - The changed song  
+**Returns**: [<code>Song</code>](#Song) - <p>The changed song</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | The new key. |
+| key | <code>string</code> | <p>The new key.</p> |
 
 <a name="Tag"></a>
 
 ## Tag
-Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
+<p>Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/</p>
 
 **Kind**: global class  
 
@@ -871,84 +713,87 @@ Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-direc
 <a name="Tag+name"></a>
 
 ### tag.name : <code>string</code>
-The tag full name. When the original tag used the short name, `name` will return the full name.
+<p>The tag full name. When the original tag used the short name, <code>name</code> will return the full name.</p>
 
 **Kind**: instance property of [<code>Tag</code>](#Tag)  
 <a name="Tag+originalName"></a>
 
 ### tag.originalName : <code>string</code>
-The original tag name that was used to construct the tag.
+<p>The original tag name that was used to construct the tag.</p>
 
 **Kind**: instance property of [<code>Tag</code>](#Tag)  
 <a name="Tag+value"></a>
 
 ### tag.value : <code>string</code> \| <code>null</code>
-The tag value
+<p>The tag value</p>
 
 **Kind**: instance property of [<code>Tag</code>](#Tag)  
 <a name="Tag+hasValue"></a>
 
 ### tag.hasValue() ⇒ <code>boolean</code>
-Checks whether the tag value is a non-empty string.
+<p>Checks whether the tag value is a non-empty string.</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 <a name="Tag+isRenderable"></a>
 
 ### tag.isRenderable() ⇒ <code>boolean</code>
-Checks whether the tag is usually rendered inline. It currently only applies to comment tags.
+<p>Checks whether the tag is usually rendered inline. It currently only applies to comment tags.</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 <a name="Tag+isMetaTag"></a>
 
 ### tag.isMetaTag() ⇒ <code>boolean</code>
-Checks whether the tag is either a standard meta tag or a custom meta directive (`{x_some_name}`)
+<p>Checks whether the tag is either a standard meta tag or a custom meta directive (<code>{x_some_name}</code>)</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 <a name="Tag+clone"></a>
 
 ### tag.clone() ⇒ [<code>Tag</code>](#Tag)
-Returns a clone of the tag.
+<p>Returns a clone of the tag.</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
-**Returns**: [<code>Tag</code>](#Tag) - The cloned tag  
+**Returns**: [<code>Tag</code>](#Tag) - <p>The cloned tag</p>  
 <a name="ChordProFormatter"></a>
 
 ## ChordProFormatter
-Formats a song into a ChordPro chord sheet
+<p>Formats a song into a ChordPro chord sheet</p>
 
 **Kind**: global class  
-
-* [ChordProFormatter](#ChordProFormatter)
-    * [new ChordProFormatter(options)](#new_ChordProFormatter_new)
-    * [.format(song)](#ChordProFormatter+format) ⇒ <code>string</code>
-
-<a name="new_ChordProFormatter_new"></a>
-
-### new ChordProFormatter(options)
-Instantiate
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>Object</code> | options |
-| options.evaluate | <code>boolean</code> | Whether or not to evaluate meta expressions. For more info about meta expression, see: https://bit.ly/2SC9c2u |
-
 <a name="ChordProFormatter+format"></a>
 
 ### chordProFormatter.format(song) ⇒ <code>string</code>
-Formats a song into a ChordPro chord sheet.
+<p>Formats a song into a ChordPro chord sheet.</p>
 
 **Kind**: instance method of [<code>ChordProFormatter</code>](#ChordProFormatter)  
-**Returns**: <code>string</code> - The ChordPro string  
+**Returns**: <code>string</code> - <p>The ChordPro string</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| song | [<code>Song</code>](#Song) | The song to be formatted |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+
+<a name="Formatter"></a>
+
+## Formatter
+<p>Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object</p>
+
+**Kind**: global class  
+<a name="new_Formatter_new"></a>
+
+### new Formatter([configuration])
+<p>Instantiate</p>
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [configuration] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [configuration.evaluate] | <code>boolean</code> | <code>false</code> | <p>Whether or not to evaluate meta expressions. For more info about meta expressions, see: https://bit.ly/2SC9c2u</p> |
+| [configuration.metadata] | <code>object</code> | <code>{}</code> |  |
+| [configuration.metadata.separator] | <code>string</code> | <code>&quot;\&quot;, \&quot;&quot;</code> | <p>The separator to be used when rendering a metadata value that has multiple values. See: https://bit.ly/2SC9c2u</p> |
 
 <a name="HtmlDivFormatter"></a>
 
 ## HtmlDivFormatter
-Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.
+<p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p>
 
 **Kind**: global class  
 
@@ -962,60 +807,57 @@ Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes 
 <a name="HtmlDivFormatter+format"></a>
 
 ### htmlDivFormatter.format(song) ⇒ <code>string</code>
-Formats a song into HTML.
+<p>Formats a song into HTML.</p>
 
 **Kind**: instance method of [<code>HtmlDivFormatter</code>](#HtmlDivFormatter)  
-**Returns**: <code>string</code> - The HTML string  
+**Returns**: <code>string</code> - <p>The HTML string</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| song | [<code>Song</code>](#Song) | The song to be formatted |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
 
 <a name="HtmlDivFormatter.cssString"></a>
 
 ### HtmlDivFormatter.cssString(scope) ⇒ <code>string</code>
-Generates basic CSS, optionally scoped within the provided selector, to use with output generated by
-[HtmlDivFormatter](#HtmlDivFormatter)
-
-For example, execute cssString('.chordSheetViewer') will result in CSS like:
-
-    .chordSheetViewer .paragraph {
-      margin-bottom: 1em;
-    }
+<p>Generates basic CSS, optionally scoped within the provided selector, to use with output generated by
+[HtmlDivFormatter](#HtmlDivFormatter)</p>
+<p>For example, execute cssString('.chordSheetViewer') will result in CSS like:</p>
+<pre><code>.chordSheetViewer .paragraph {
+  margin-bottom: 1em;
+}
+</code></pre>
 
 **Kind**: static method of [<code>HtmlDivFormatter</code>](#HtmlDivFormatter)  
-**Returns**: <code>string</code> - the CSS string  
+**Returns**: <code>string</code> - <p>the CSS string</p>  
 
 | Param | Description |
 | --- | --- |
-| scope | the CSS scope to use, for example `.chordSheetViewer` |
+| scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
 
 <a name="HtmlDivFormatter.cssObject"></a>
 
 ### HtmlDivFormatter.cssObject() ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
-Basic CSS, in object style à la useStyles, to use with output generated by [HtmlDivFormatter](#HtmlDivFormatter)
-
-Example:
-
-    '.paragraph': {
-      marginBottom: '1em'
-    }
-
-For a CSS string see [cssString](cssString)
+<p>Basic CSS, in object style à la useStyles, to use with output generated by [HtmlDivFormatter](#HtmlDivFormatter)</p>
+<p>Example:</p>
+<pre><code>'.paragraph': {
+  marginBottom: '1em'
+}
+</code></pre>
+<p>For a CSS string see [cssString](cssString)</p>
 
 **Kind**: static method of [<code>HtmlDivFormatter</code>](#HtmlDivFormatter)  
-**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - the CSS object  
+**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - <p>the CSS object</p>  
 <a name="HtmlFormatter"></a>
 
 ## HtmlFormatter
-Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.
+<p>Acts as a base class for HTML formatters, taking care of whitelisting prototype property access.</p>
 
 **Kind**: global class  
 <a name="HtmlTableFormatter"></a>
 
 ## HtmlTableFormatter
-Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
-PDF conversion.
+<p>Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
+PDF conversion.</p>
 
 **Kind**: global class  
 
@@ -1029,70 +871,68 @@ PDF conversion.
 <a name="HtmlTableFormatter+format"></a>
 
 ### htmlTableFormatter.format(song) ⇒ <code>string</code>
-Formats a song into HTML.
+<p>Formats a song into HTML.</p>
 
 **Kind**: instance method of [<code>HtmlTableFormatter</code>](#HtmlTableFormatter)  
-**Returns**: <code>string</code> - The HTML string  
+**Returns**: <code>string</code> - <p>The HTML string</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| song | [<code>Song</code>](#Song) | The song to be formatted |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
 
 <a name="HtmlTableFormatter.cssString"></a>
 
 ### HtmlTableFormatter.cssString(scope) ⇒ <code>string</code>
-Generates basic CSS, optionally scoped within the provided selector, to use with output generated by
-[HtmlTableFormatter](#HtmlTableFormatter)
-
-For example, execute cssString('.chordSheetViewer') will result in CSS like:
-
-    .chordSheetViewer .paragraph {
-      margin-bottom: 1em;
-    }
+<p>Generates basic CSS, optionally scoped within the provided selector, to use with output generated by
+[HtmlTableFormatter](#HtmlTableFormatter)</p>
+<p>For example, execute cssString('.chordSheetViewer') will result in CSS like:</p>
+<pre><code>.chordSheetViewer .paragraph {
+  margin-bottom: 1em;
+}
+</code></pre>
 
 **Kind**: static method of [<code>HtmlTableFormatter</code>](#HtmlTableFormatter)  
-**Returns**: <code>string</code> - the CSS string  
+**Returns**: <code>string</code> - <p>the CSS string</p>  
 
 | Param | Description |
 | --- | --- |
-| scope | the CSS scope to use, for example `.chordSheetViewer` |
+| scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
 
 <a name="HtmlTableFormatter.cssObject"></a>
 
 ### HtmlTableFormatter.cssObject() ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
-Basic CSS, in object style à la useStyles, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)
-For a CSS string see [cssString](cssString)
-
-Example:
-
-    '.paragraph': {
-      marginBottom: '1em'
-    }
+<p>Basic CSS, in object style à la useStyles, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)
+For a CSS string see [cssString](cssString)</p>
+<p>Example:</p>
+<pre><code>'.paragraph': {
+  marginBottom: '1em'
+}
+</code></pre>
 
 **Kind**: static method of [<code>HtmlTableFormatter</code>](#HtmlTableFormatter)  
-**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - the CSS object  
+**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - <p>the CSS object</p>  
 <a name="TextFormatter"></a>
 
 ## TextFormatter
-Formats a song into a plain text chord sheet
+<p>Formats a song into a plain text chord sheet</p>
 
 **Kind**: global class  
 <a name="TextFormatter+format"></a>
 
 ### textFormatter.format(song) ⇒ <code>string</code>
-Formats a song into a plain text chord sheet
+<p>Formats a song into a plain text chord sheet</p>
 
 **Kind**: instance method of [<code>TextFormatter</code>](#TextFormatter)  
-**Returns**: <code>string</code> - the chord sheet  
+**Returns**: <code>string</code> - <p>the chord sheet</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| song | [<code>Song</code>](#Song) | The song to be formatted |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
 
 <a name="ChordProParser"></a>
 
 ## ChordProParser
-Parses a ChordPro chord sheet
+<p>Parses a ChordPro chord sheet</p>
 
 **Kind**: global class  
 
@@ -1103,120 +943,95 @@ Parses a ChordPro chord sheet
 <a name="ChordProParser+warnings"></a>
 
 ### chordProParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-All warnings raised during parsing the ChordPro chord sheet
+<p>All warnings raised during parsing the ChordPro chord sheet</p>
 
 **Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
 <a name="ChordProParser+parse"></a>
 
 ### chordProParser.parse(chordProChordSheet) ⇒ [<code>Song</code>](#Song)
-Parses a ChordPro chord sheet into a song
+<p>Parses a ChordPro chord sheet into a song</p>
 
 **Kind**: instance method of [<code>ChordProParser</code>](#ChordProParser)  
-**Returns**: [<code>Song</code>](#Song) - The parsed song  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| chordProChordSheet | <code>string</code> | the ChordPro chord sheet |
+| chordProChordSheet | <code>string</code> | <p>the ChordPro chord sheet</p> |
 
 <a name="ChordSheetParser"></a>
 
 ## ChordSheetParser
-Parses a normal chord sheet
+<p>Parses a normal chord sheet</p>
 
 **Kind**: global class  
 
 * [ChordSheetParser](#ChordSheetParser)
-    * [new ChordSheetParser(options)](#new_ChordSheetParser_new)
-    * [.parse(chordSheet, options)](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
+    * [new ChordSheetParser([options])](#new_ChordSheetParser_new)
+    * [.parse(chordSheet, [options])](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_ChordSheetParser_new"></a>
 
-### new ChordSheetParser(options)
-Instantiate a chord sheet parser
+### new ChordSheetParser([options])
+<p>Instantiate a chord sheet parser</p>
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| options | <code>Object</code> | options |
-| options.preserveWhitespace | <code>boolean</code> | whether to preserve trailing whitespace for chords |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.preserveWhitespace] | <code>boolean</code> | <code>true</code> | <p>whether to preserve trailing whitespace for chords</p> |
 
 <a name="ChordSheetParser+parse"></a>
 
-### chordSheetParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
-Parses a chord sheet into a song
+### chordSheetParser.parse(chordSheet, [options]) ⇒ [<code>Song</code>](#Song)
+<p>Parses a chord sheet into a song</p>
 
 **Kind**: instance method of [<code>ChordSheetParser</code>](#ChordSheetParser)  
-**Returns**: [<code>Song</code>](#Song) - The parsed song  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| chordSheet | <code>string</code> | The ChordPro chord sheet |
-| options | <code>Object</code> | Optional parser options |
-| options.song | [<code>Song</code>](#Song) | The [Song](#Song) to store the song data in |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>The ChordPro chord sheet</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>Optional parser options</p> |
+| [options.song] | [<code>Song</code>](#Song) | <code></code> | <p>The [Song](#Song) to store the song data in</p> |
 
 <a name="ParserWarning"></a>
 
 ## ParserWarning
-Represents a parser warning, currently only used by ChordProParser.
+<p>Represents a parser warning, currently only used by ChordProParser.</p>
 
 **Kind**: global class  
-
-* [ParserWarning](#ParserWarning)
-    * [.message](#ParserWarning+message) : <code>string</code>
-    * [.lineNumber](#ParserWarning+lineNumber) : <code>number</code>
-    * [.column](#ParserWarning+column) : <code>number</code>
-    * [.toString()](#ParserWarning+toString) ⇒ <code>string</code>
-
-<a name="ParserWarning+message"></a>
-
-### parserWarning.message : <code>string</code>
-The warning message
-
-**Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
-<a name="ParserWarning+lineNumber"></a>
-
-### parserWarning.lineNumber : <code>number</code>
-The chord sheet line number on which the warning occurred
-
-**Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
-<a name="ParserWarning+column"></a>
-
-### parserWarning.column : <code>number</code>
-The chord sheet column on which the warning occurred
-
-**Kind**: instance property of [<code>ParserWarning</code>](#ParserWarning)  
 <a name="ParserWarning+toString"></a>
 
 ### parserWarning.toString() ⇒ <code>string</code>
-Returns a stringified version of the warning
+<p>Returns a stringified version of the warning</p>
 
 **Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
-**Returns**: <code>string</code> - The string warning  
+**Returns**: <code>string</code> - <p>The string warning</p>  
 <a name="UltimateGuitarParser"></a>
 
 ## UltimateGuitarParser
-Parses an Ultimate Guitar chord sheet with metadata
-Inherits from [ChordSheetParser](#ChordSheetParser)
+<p>Parses an Ultimate Guitar chord sheet with metadata
+Inherits from [ChordSheetParser](#ChordSheetParser)</p>
 
 **Kind**: global class  
 <a name="Chord"></a>
 
 ## Chord
-Represents a Chord, consisting of a root, suffix (quality) and bass
+<p>Represents a Chord, consisting of a root, suffix (quality) and bass</p>
 
 **Kind**: global class  
 
 * [Chord](#Chord)
     * _instance_
         * [.clone()](#Chord+clone) ⇒ [<code>Chord</code>](#Chord)
-        * [.toChordSymbol(key)](#Chord+toChordSymbol) ⇒ [<code>Chord</code>](#Chord)
-        * [.toChordSymbolString(key)](#Chord+toChordSymbolString) ⇒ <code>string</code>
+        * [.toChordSymbol([key])](#Chord+toChordSymbol) ⇒ [<code>Chord</code>](#Chord)
+        * [.toChordSymbolString([key])](#Chord+toChordSymbolString) ⇒ <code>string</code>
         * [.isChordSymbol()](#Chord+isChordSymbol) ⇒ <code>boolean</code>
-        * [.toNumeric(key)](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
+        * [.toNumeric([key])](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
         * [.toNumeral(key)](#Chord+toNumeral) ⇒ [<code>Chord</code>](#Chord)
-        * [.toNumeralString(key)](#Chord+toNumeralString) ⇒ <code>string</code>
+        * [.toNumeralString([key])](#Chord+toNumeralString) ⇒ <code>string</code>
         * [.isNumeric()](#Chord+isNumeric) ⇒ <code>boolean</code>
-        * [.toNumericString(key)](#Chord+toNumericString) ⇒ <code>string</code>
+        * [.toNumericString([key])](#Chord+toNumericString) ⇒ <code>string</code>
         * [.isNumeral()](#Chord+isNumeral) ⇒ <code>boolean</code>
         * [.toString()](#Chord+toString) ⇒ <code>string</code>
         * [.normalize()](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
@@ -1230,188 +1045,189 @@ Represents a Chord, consisting of a root, suffix (quality) and bass
 <a name="Chord+clone"></a>
 
 ### chord.clone() ⇒ [<code>Chord</code>](#Chord)
-Returns a deep copy of the chord
+<p>Returns a deep copy of the chord</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toChordSymbol"></a>
 
-### chord.toChordSymbol(key) ⇒ [<code>Chord</code>](#Chord)
-Converts the chord to a chord symbol, using the supplied key as a reference.
-For example, a numeric chord `#4` with reference key `E` will return the chord symbol `A#`.
-When the chord is already a chord symbol, it will return a clone of the object.
+### chord.toChordSymbol([key]) ⇒ [<code>Chord</code>](#Chord)
+<p>Converts the chord to a chord symbol, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>E</code> will return the chord symbol <code>A#</code>.
+When the chord is already a chord symbol, it will return a clone of the object.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the chord symbol  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the chord symbol</p>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> | the reference key |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the reference key</p> |
 
 <a name="Chord+toChordSymbolString"></a>
 
-### chord.toChordSymbolString(key) ⇒ <code>string</code>
-Converts the chord to a chord symbol string, using the supplied key as a reference.
-For example, a numeric chord `#4` with reference key `E` will return the chord symbol `A#`.
-When the chord is already a chord symbol, it will return a string version of the chord.
+### chord.toChordSymbolString([key]) ⇒ <code>string</code>
+<p>Converts the chord to a chord symbol string, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>E</code> will return the chord symbol <code>A#</code>.
+When the chord is already a chord symbol, it will return a string version of the chord.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: <code>string</code> - the chord symbol string  
+**Returns**: <code>string</code> - <p>the chord symbol string</p>  
 **See**: {toChordSymbol}  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> | the reference key |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the reference key</p> |
 
 <a name="Chord+isChordSymbol"></a>
 
 ### chord.isChordSymbol() ⇒ <code>boolean</code>
-Determines whether the chord is a chord symbol
+<p>Determines whether the chord is a chord symbol</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toNumeric"></a>
 
-### chord.toNumeric(key) ⇒ [<code>Chord</code>](#Chord)
-Converts the chord to a numeric chord, using the supplied key as a reference.
-For example, a chord symbol A# with reference key E will return the numeric chord #4.
+### chord.toNumeric([key]) ⇒ [<code>Chord</code>](#Chord)
+<p>Converts the chord to a numeric chord, using the supplied key as a reference.
+For example, a chord symbol A# with reference key E will return the numeric chord #4.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the numeric chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the numeric chord</p>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> | the reference key |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the reference key</p> |
 
 <a name="Chord+toNumeral"></a>
 
 ### chord.toNumeral(key) ⇒ [<code>Chord</code>](#Chord)
-Converts the chord to a numeral chord, using the supplied key as a reference.
-For example, a chord symbol A# with reference key E will return the numeral chord #IV.
+<p>Converts the chord to a numeral chord, using the supplied key as a reference.
+For example, a chord symbol A# with reference key E will return the numeral chord #IV.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the numeral chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the numeral chord</p>  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> \| <code>null</code> | <code></code> | the reference key. The key is required when converting a chord symbol |
+| key | <code>Key</code> \| <code>string</code> \| <code>null</code> | <code></code> | <p>the reference key. The key is required when converting a chord symbol</p> |
 
 <a name="Chord+toNumeralString"></a>
 
-### chord.toNumeralString(key) ⇒ <code>string</code>
-Converts the chord to a numeral chord string, using the supplied kye as a reference.
-For example, a chord symbol A# with reference key E will return the numeral chord #4.
+### chord.toNumeralString([key]) ⇒ <code>string</code>
+<p>Converts the chord to a numeral chord string, using the supplied kye as a reference.
+For example, a chord symbol A# with reference key E will return the numeral chord #4.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: <code>string</code> - the numeral chord string  
+**Returns**: <code>string</code> - <p>the numeral chord string</p>  
 **See**: {toNumeral}  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> | the reference key |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the reference key</p> |
 
 <a name="Chord+isNumeric"></a>
 
 ### chord.isNumeric() ⇒ <code>boolean</code>
-Determines whether the chord is numeric
+<p>Determines whether the chord is numeric</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toNumericString"></a>
 
-### chord.toNumericString(key) ⇒ <code>string</code>
-Converts the chord to a numeric chord string, using the supplied kye as a reference.
-For example, a chord symbol A# with reference key E will return the numeric chord #4.
+### chord.toNumericString([key]) ⇒ <code>string</code>
+<p>Converts the chord to a numeric chord string, using the supplied kye as a reference.
+For example, a chord symbol A# with reference key E will return the numeric chord #4.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: <code>string</code> - the numeric chord string  
+**Returns**: <code>string</code> - <p>the numeric chord string</p>  
 **See**: {toNumeric}  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| key | <code>Key</code> \| <code>string</code> | the reference key |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the reference key</p> |
 
 <a name="Chord+isNumeral"></a>
 
 ### chord.isNumeral() ⇒ <code>boolean</code>
-Determines whether the chord is a numeral
+<p>Determines whether the chord is a numeral</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toString"></a>
 
 ### chord.toString() ⇒ <code>string</code>
-Converts the chord to a string, eg `Esus4/G#` or `1sus4/#3`
+<p>Converts the chord to a string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code></p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: <code>string</code> - the chord string  
+**Returns**: <code>string</code> - <p>the chord string</p>  
 <a name="Chord+normalize"></a>
 
 ### chord.normalize() ⇒ [<code>Chord</code>](#Chord)
-Normalizes the chord root and bass notes:
-- Fb becomes E
-- Cb becomes B
-- B# becomes C
-- E# becomes F
-- 4b becomes 3
-- 1b becomes 7
-- 7# becomes 1
-- 3# becomes 4
-
-Besides that it normalizes the suffix. For example, `sus2` becomes `2`, `sus4` becomes `sus`.
-All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
+<p>Normalizes the chord root and bass notes:</p>
+<ul>
+<li>Fb becomes E</li>
+<li>Cb becomes B</li>
+<li>B# becomes C</li>
+<li>E# becomes F</li>
+<li>4b becomes 3</li>
+<li>1b becomes 7</li>
+<li>7# becomes 1</li>
+<li>3# becomes 4</li>
+</ul>
+<p>Besides that it normalizes the suffix. For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
+All suffix normalizations can be found in <code>src/normalize_mappings/suffix-mapping.txt</code>.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the normalized chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the normalized chord</p>  
 <a name="Chord+useModifier"></a>
 
 ### chord.useModifier(newModifier) ⇒ [<code>Chord</code>](#Chord)
-Switches to the specified modifier
+<p>Switches to the specified modifier</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the new, changed chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the new, changed chord</p>  
 
 | Param | Description |
 | --- | --- |
-| newModifier | the modifier to use: `'#'` or `'b'` |
+| newModifier | <p>the modifier to use: <code>'#'</code> or <code>'b'</code></p> |
 
 <a name="Chord+transposeUp"></a>
 
 ### chord.transposeUp() ⇒ [<code>Chord</code>](#Chord)
-Transposes the chord up by 1 semitone. Eg. A becomes A#, Eb becomes E
+<p>Transposes the chord up by 1 semitone. Eg. A becomes A#, Eb becomes E</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the new, transposed chord</p>  
 <a name="Chord+transposeDown"></a>
 
 ### chord.transposeDown() ⇒ [<code>Chord</code>](#Chord)
-Transposes the chord down by 1 semitone. Eg. A# becomes A, E becomes Eb
+<p>Transposes the chord down by 1 semitone. Eg. A# becomes A, E becomes Eb</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the new, transposed chord</p>  
 <a name="Chord+transpose"></a>
 
 ### chord.transpose(delta) ⇒ [<code>Chord</code>](#Chord)
-Transposes the chord by the specified number of semitones
+<p>Transposes the chord by the specified number of semitones</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
-**Returns**: [<code>Chord</code>](#Chord) - the new, transposed chord  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the new, transposed chord</p>  
 
 | Param | Description |
 | --- | --- |
-| delta | de number of semitones |
+| delta | <p>de number of semitones</p> |
 
 <a name="Chord.parse"></a>
 
 ### Chord.parse(chordString) ⇒ <code>null</code> \| [<code>Chord</code>](#Chord)
-Tries to parse a chord string into a chord
+<p>Tries to parse a chord string into a chord</p>
 
 **Kind**: static method of [<code>Chord</code>](#Chord)  
 
 | Param | Description |
 | --- | --- |
-| chordString | the chord string, eg `Esus4/G#` or `1sus4/#3` |
+| chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code></p> |
 
 <a name="ChordSheetSerializer"></a>
 
 ## ChordSheetSerializer
-Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)
+<p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p>
 
 **Kind**: global class  
 
@@ -1422,220 +1238,214 @@ Serializes a song into een plain object, and deserializes the serialized object 
 <a name="ChordSheetSerializer+serialize"></a>
 
 ### chordSheetSerializer.serialize() ⇒
-Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
-Can be deserialized using [deserialize](deserialize)
+<p>Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
+Can be deserialized using [deserialize](deserialize)</p>
 
 **Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
-**Returns**: object A plain JS object containing all chord sheet data  
+**Returns**: <p>object A plain JS object containing all chord sheet data</p>  
 <a name="ChordSheetSerializer+deserialize"></a>
 
 ### chordSheetSerializer.deserialize(serializedSong) ⇒ [<code>Song</code>](#Song)
-Deserializes a song that has been serialized using [serialize](serialize)
+<p>Deserializes a song that has been serialized using [serialize](serialize)</p>
 
 **Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
-**Returns**: [<code>Song</code>](#Song) - The deserialized song  
+**Returns**: [<code>Song</code>](#Song) - <p>The deserialized song</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| serializedSong | <code>object</code> | The serialized song |
+| serializedSong | <code>object</code> | <p>The serialized song</p> |
 
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
-Album meta directive. See https://www.chordpro.org/chordpro/directives-album/
+<p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="ARTIST"></a>
 
 ## ARTIST : <code>string</code>
-Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
+<p>Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="CAPO"></a>
 
 ## CAPO : <code>string</code>
-Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/
+<p>Comment directive. See https://www.chordpro.org/chordpro/directives-comment/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="COMMENT"></a>
 
 ## COMMENT : <code>string</code>
-Comment directive. See https://www.chordpro.org/chordpro/directives-comment/
+<p>Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="COMPOSER"></a>
 
 ## COMPOSER : <code>string</code>
-Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/
+<p>Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="COPYRIGHT"></a>
 
 ## COPYRIGHT : <code>string</code>
-Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/
+<p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="DURATION"></a>
 
 ## DURATION : <code>string</code>
-Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/
+<p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="END_OF_CHORUS"></a>
 
 ## END\_OF\_CHORUS : <code>string</code>
-End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
+<p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="END_OF_TAB"></a>
 
 ## END\_OF\_TAB : <code>string</code>
-End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
+<p>End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="END_OF_VERSE"></a>
 
 ## END\_OF\_VERSE : <code>string</code>
-End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
+<p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
-Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
+<p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="_KEY"></a>
 
 ## \_KEY : <code>string</code>
-Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
+<p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="LYRICIST"></a>
 
 ## LYRICIST : <code>string</code>
-Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/
+<p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="START_OF_CHORUS"></a>
 
 ## START\_OF\_CHORUS : <code>string</code>
-Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
+<p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="START_OF_TAB"></a>
 
 ## START\_OF\_TAB : <code>string</code>
-Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
+<p>Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="START_OF_VERSE"></a>
 
 ## START\_OF\_VERSE : <code>string</code>
-Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
+<p>Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="SUBTITLE"></a>
 
 ## SUBTITLE : <code>string</code>
-Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
+<p>Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="TEMPO"></a>
 
 ## TEMPO : <code>string</code>
-Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/
+<p>Time meta directive. See https://www.chordpro.org/chordpro/directives-time/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="TIME"></a>
 
 ## TIME : <code>string</code>
-Time meta directive. See https://www.chordpro.org/chordpro/directives-time/
+<p>Title meta directive. See https://www.chordpro.org/chordpro/directives-title/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="TITLE"></a>
 
 ## TITLE : <code>string</code>
-Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
+<p>Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="TRANSPOSE"></a>
 
 ## TRANSPOSE : <code>string</code>
-Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
+<p>New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
 <a name="NEW_KEY"></a>
 
 ## NEW\_KEY : <code>string</code>
-New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53
+<p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p>
 
-**Kind**: global constant  
-<a name="YEAR"></a>
+**Kind**: global variable  
+<a name="defaultCss"></a>
 
-## YEAR : <code>string</code>
-Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
+## defaultCss ⇒ <code>string</code>
+<p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p>
 
-**Kind**: global constant  
+**Kind**: global variable  
+**Returns**: <code>string</code> - <p>the CSS string</p>  
+
+| Param | Description |
+| --- | --- |
+| scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
+
 <a name="defaultCss"></a>
 
 ## defaultCss : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
-Basic CSS, in object style à la useStyles, to use with output generated by {@link }HtmlTableFormatter}
-For a CSS string see [scopedCss](#scopedCss)
+<p>Basic CSS, in object style à la useStyles, to use with output generated by {@link }HtmlTableFormatter}
+For a CSS string see [scopedCss](scopedCss)</p>
 
 **Kind**: global constant  
 <a name="VERSE"></a>
 
 ## VERSE : <code>string</code>
-Used to mark a paragraph as verse
+<p>Used to mark a paragraph as verse</p>
+
+**Kind**: global constant  
+<a name="VERSE"></a>
+
+## VERSE : <code>string</code>
+<p>Used to mark a paragraph as chorus</p>
 
 **Kind**: global constant  
 <a name="CHORUS"></a>
 
 ## CHORUS : <code>string</code>
-Used to mark a paragraph as chorus
+<p>Used to mark a paragraph as not containing a line marked with a type</p>
 
 **Kind**: global constant  
 <a name="NONE"></a>
 
 ## NONE : <code>string</code>
-Used to mark a paragraph as not containing a line marked with a type
+<p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
 
 **Kind**: global constant  
 <a name="INDETERMINATE"></a>
 
 ## INDETERMINATE : <code>string</code>
-Used to mark a paragraph as containing lines with both verse and chorus type
+<p>Used to mark a paragraph as tab</p>
 
 **Kind**: global constant  
-<a name="TAB"></a>
-
-## TAB : <code>string</code>
-Used to mark a paragraph as tab
-
-**Kind**: global constant  
-<a name="scopedCss"></a>
-
-## scopedCss(scope) ⇒ <code>string</code>
-Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)
-
-**Kind**: global function  
-**Returns**: <code>string</code> - the CSS string  
-
-| Param | Description |
-| --- | --- |
-| scope | the CSS scope to use, for example `.chordSheetViewer` |
-
 <a name="parseChord"></a>
 
 ## ~~parseChord(chordString) ⇒ <code>null</code> \| [<code>Chord</code>](#Chord)~~
 ***Deprecated***
 
-Tries to parse a chord string into a chord
+<p>Tries to parse a chord string into a chord</p>
 
 **Kind**: global function  
 
 | Param | Description |
 | --- | --- |
-| chordString | the chord string, eg Esus4/G# or 1sus4/#3 |
+| chordString | <p>the chord string, eg Esus4/G# or 1sus4/#3</p> |
 
