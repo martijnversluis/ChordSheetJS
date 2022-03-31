@@ -1,7 +1,9 @@
+import Formatter from './formatter';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
 import { renderChord } from '../helpers';
 import { hasTextContents } from '../template_helpers';
+import Song from '../chord_sheet/song';
 
 import {
   hasChordContents,
@@ -11,7 +13,7 @@ import {
 /**
  * Formats a song into a plain text chord sheet
  */
-class TextFormatter {
+class TextFormatter extends Formatter {
   /**
    * Formats a song into a plain text chord sheet
    * @param {Song} song The song to be formatted
@@ -139,7 +141,7 @@ class TextFormatter {
     }
 
     if (typeof item.evaluate === 'function') {
-      return item.evaluate(metadata);
+      return item.evaluate(metadata, this.configuration.get('metadata.separator'));
     }
 
     return '';

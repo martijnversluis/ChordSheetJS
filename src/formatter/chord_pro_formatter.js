@@ -1,24 +1,16 @@
+import Formatter from './formatter';
 import Tag from '../chord_sheet/tag';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 import Literal from '../chord_sheet/chord_pro/literal';
+import Song from '../chord_sheet/song';
 
 const NEW_LINE = '\n';
 
 /**
  * Formats a song into a ChordPro chord sheet
  */
-class ChordProFormatter {
-  /**
-   * Instantiate
-   * @param {Object} options options
-   * @param {boolean} options.evaluate Whether or not to evaluate meta expressions. For more info about meta
-   * expression, see: https://bit.ly/2SC9c2u
-   */
-  constructor({ evaluate = false } = {}) {
-    this.evaluate = (evaluate === true);
-  }
-
+class ChordProFormatter extends Formatter {
   /**
    * Formats a song into a ChordPro chord sheet.
    * @param {Song} song The song to be formatted
@@ -55,8 +47,8 @@ class ChordProFormatter {
   }
 
   formatOrEvaluateItem(item, metadata) {
-    if (this.evaluate) {
-      return item.evaluate(metadata);
+    if (this.configuration.evaluate) {
+      return item.evaluate(metadata, this.configuration.get('metadata.separator'));
     }
 
     if (item instanceof Ternary) {

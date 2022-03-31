@@ -41,6 +41,10 @@ function numberToNumeral(number) {
 }
 
 class Note {
+  _note: string;
+  type: string;
+  minor: boolean;
+
   constructor({ note, type, minor = false }) {
     this._note = note;
     this.type = type;
@@ -75,7 +79,7 @@ class Note {
     }
 
     if (this.isNumeric()) {
-      return this.#set({ type: NUMERAL });
+      return this.set({ type: NUMERAL });
     }
 
     throw new Error(`Converting a ${this.type} note to numeral is not supported`);
@@ -87,7 +91,7 @@ class Note {
     }
 
     if (this.isNumeral()) {
-      return this.#set({ type: NUMERIC });
+      return this.set({ type: NUMERIC });
     }
 
     throw new Error(`Converting a ${this.type} note to numeric is not supported`);
@@ -102,7 +106,7 @@ class Note {
   }
 
   clone() {
-    return this.#set({});
+    return this.set({});
   }
 
   up() {
@@ -148,7 +152,7 @@ class Note {
       charCode += delta;
       charCode = clamp(charCode, A, G);
 
-      return this.#set({ note: String.fromCharCode(charCode) });
+      return this.set({ note: String.fromCharCode(charCode) });
     }
 
     let newNote = clamp(this._note + delta, 1, 7);
@@ -159,7 +163,7 @@ class Note {
       newNote -= 7;
     }
 
-    return this.#set({ note: newNote });
+    return this.set({ note: newNote });
   }
 
   get note() {
@@ -180,8 +184,8 @@ class Note {
     return `${this.note}`;
   }
 
-  #set(attributes) {
-    return new this.constructor({
+  private set(attributes) {
+    return new Note({
       note: this._note,
       type: this.type,
       minor: this.minor,

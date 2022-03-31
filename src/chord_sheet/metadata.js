@@ -108,6 +108,23 @@ class Metadata {
     return this.getArrayItem(prop);
   }
 
+  /**
+   * Returns a single metadata value. If the actual value is an array, it returns the first value. Else, it returns
+   * the value.
+   * @ignore
+   * @param {string} prop the property name
+   * @returns {String} The metadata value
+   */
+  getSingle(prop) {
+    const value = this.get(prop);
+
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+
+    return value;
+  }
+
   parseArrayKey(prop) {
     const match = prop.match(/(.+)\.(-?\d+)$/);
 
@@ -148,8 +165,8 @@ class Metadata {
   }
 
   calculateKeyFromCapo() {
-    const capo = this.get(CAPO);
-    const key = this.get(KEY);
+    const capo = this.getSingle(CAPO);
+    const key = this.getSingle(KEY);
 
     if (capo && key) {
       return Chord.parse(key).transpose(parseInt(capo, 10)).toString();

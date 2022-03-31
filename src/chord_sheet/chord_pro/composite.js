@@ -4,9 +4,9 @@ class Composite {
     this.variable = variable;
   }
 
-  evaluate(metadata) {
+  evaluate(metadata, metadataSeparator) {
     return this.expressions.map((expression) => (
-      expression.evaluate(metadata, this.variable)
+      expression.evaluate(metadata, metadataSeparator, this.variable)
     )).join('');
   }
 

@@ -133,7 +133,7 @@ class ChordSheetSerializer {
   parseChordSheet(astComponent) {
     const { lines } = astComponent;
     this.song = new Song();
-    lines.forEach((line, index) => this.parseLine(line, index));
+    lines.forEach((line) => this.parseLine(line));
   }
 
   parseLine(astComponent) {
@@ -155,7 +155,7 @@ class ChordSheetSerializer {
     const {
       name,
       value,
-      location: { offset, line, column } = {},
+      location: { offset = null, line = null, column = null } = {},
     } = astComponent;
     return new Tag(name, value, { line, column, offset });
   }
@@ -171,7 +171,7 @@ class ChordSheetSerializer {
       valueTest,
       trueExpression,
       falseExpression,
-      location: { offset, line, column } = {},
+      location: { offset = null, line = null, column = null } = {},
     } = astComponent;
 
     return new Ternary({

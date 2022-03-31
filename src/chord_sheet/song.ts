@@ -21,7 +21,7 @@ import Tag, {
   START_OF_VERSE,
   TRANSPOSE,
   NEW_KEY,
-  CAPO, KEY,
+  CAPO, KEY, TITLE, SUBTITLE,
 } from './tag';
 
 /**
@@ -29,35 +29,49 @@ import Tag, {
  */
 class Song {
   /**
+   * The {@link Line} items of which the song consists
+   * @member {Line[]}
+   */
+  lines: Line[] = [];
+
+  /**
+   * The {@link Paragraph} items of which the song consists
+   * @member {Paragraph[]}
+   */
+  paragraphs: Paragraph[] = [];
+
+  /**
+   * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
+   * an array containing all unique values for the entry.
+   * @type {Metadata}
+   */
+  metadata: Metadata;
+
+  currentLine?: Line = null;
+  currentParagraph?: Paragraph = null;
+  warnings: ParserWarning[] = [];
+  sectionType: string = NONE;
+  currentKey?: string = null;
+  transposeKey?: string = null;
+
+  /**
    * Creates a new {Song} instance
    * @param metadata {Object|Metadata} predefined metadata
    */
   constructor(metadata = {}) {
-    /**
-     * The {@link Line} items of which the song consists
-     * @member {Array<Line>}
-     */
-    this.lines = [];
-
-    /**
-     * The {@link Paragraph} items of which the song consists
-     * @member {Paragraph[]}
-     */
-    this.paragraphs = [];
-
-    /**
-     * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
-     * an array containing all unique values for the entry.
-     * @type {Metadata}
-     */
     this.metadata = new Metadata(metadata);
+  }
 
-    this.currentLine = null;
-    this.currentParagraph = null;
-    this.warnings = [];
-    this.sectionType = NONE;
-    this.currentKey = null;
-    this.transposeKey = null;
+  get key() {
+    return this.getMetaData(KEY);
+  }
+
+  get title() {
+    return this.getMetaData(TITLE);
+  }
+
+  get subtitle() {
+    return this.getMetaData(SUBTITLE);
   }
 
   get previousLine() {
@@ -252,7 +266,7 @@ class Song {
    * @returns {Song} The cloned song
    */
   clone() {
-    return this.#mapItems(null);
+    return this.mapItems(null);
   }
 
   setMetaData(name, value) {
@@ -286,12 +300,12 @@ class Song {
     let updatedSong;
 
     if (capo === null) {
-      updatedSong = this.#removeItem((item) => item instanceof Tag && item.name === CAPO);
+      updatedSong = this.removeItem((item) => item instanceof Tag && item.name === CAPO);
     } else {
-      updatedSong = this.#updateItem(
+      updatedSong = this.updateItem(
         (item) => item instanceof Tag && item.name === CAPO,
         (item) => item.set({ value: capo }),
-        (song) => song.#insertDirective(CAPO, capo),
+        (song) => song.insertDirective(CAPO, capo),
       );
     }
 
@@ -310,7 +324,7 @@ class Song {
   setKey(key) {
     const transpose = Key.distance(this.key, key);
 
-    const updatedSong = this.#mapItems((item) => {
+    const updatedSong = this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         return item.set({ value: key });
       }
@@ -330,7 +344,7 @@ class Song {
     return updatedSong;
   }
 
-  #insertDirective(name, value, { after = null } = {}) {
+  private insertDirective(name, value, { after = null } = {}) {
     const insertIndex = this.lines.findIndex((line) => (
       line.items.some((item) => (
         !(item instanceof Tag) || (after && item instanceof Tag && item.name === after)
@@ -347,14 +361,14 @@ class Song {
     return clonedSong;
   }
 
-  #mapItems(func) {
+  private mapItems(func) {
     const clonedSong = new Song();
     clonedSong.lines = this.lines.map((line) => line.mapItems(func));
     clonedSong.metadata = this.metadata.clone();
     return clonedSong;
   }
 
-  #mapLines(func) {
+  private mapLines(func) {
     const clonedSong = new Song();
     clonedSong.lines = this.lines
       .map((line) => func(line.clone()))
@@ -363,10 +377,10 @@ class Song {
     return clonedSong;
   }
 
-  #updateItem(findCallback, updateCallback, notFoundCallback) {
+  private updateItem(findCallback, updateCallback, notFoundCallback) {
     let found = false;
 
-    const updatedSong = this.#mapItems((item) => {
+    const updatedSong = this.mapItems((item) => {
       if (findCallback(item)) {
         found = true;
         return updateCallback(item);
@@ -382,8 +396,8 @@ class Song {
     return updatedSong;
   }
 
-  #removeItem(callback) {
-    return this.#mapLines((line) => {
+  private removeItem(callback) {
+    return this.mapLines((line) => {
       const { items } = line;
       const index = items.findIndex(callback);
 

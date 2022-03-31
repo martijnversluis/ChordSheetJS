@@ -1,29 +1,51 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import Comment from './comment';
-import { CHORUS, NONE, VERSE } from '../constants';
+import {CHORUS, NONE, VERSE} from '../constants';
+
+type Item = ChordLyricsPair | Comment | Tag;
+type LineType = 'verse' | 'chorus' | 'none';
 
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
  */
 class Line {
-  constructor() {
-    /**
-     * The items ({@link ChordLyricsPair} or {@link Tag} or {@link Comment}) of which the line consists
-     * @member
-     * @type {Array.<(ChordLyricsPair|Tag|Comment)>}
-     */
-    this.items = [];
+  /**
+   * The items ({@link ChordLyricsPair} or {@link Tag} or {@link Comment}) of which the line consists
+   * @member
+   * @type {Array.<(ChordLyricsPair|Tag|Comment)>}
+   */
+  items: Item[] = [];
 
-    /**
-     * The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
-     * Values can be {@link VERSE}, {@link CHORUS} or {@link NONE}
-     * @member
-     * @type {string}
-     */
-    this.type = NONE;
+  /**
+   * The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
+   * Values can be {@link VERSE}, {@link CHORUS} or {@link NONE}
+   * @member
+   * @type {string}
+   */
+  type: LineType = NONE;
 
-    this.currentChordLyricsPair = null;
+  /**
+   * @ignore
+   * @type {ChordLyricsPair}
+   */
+  currentChordLyricsPair: ChordLyricsPair = null;
+
+  /**
+   * @ignore
+   * @type {string|null}
+   */
+  key?: string = null;
+
+  /**
+   * @ignore
+   * @type {string|null}
+   */
+  transposeKey?: string = null;
+
+  constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
+    this.type = type;
+    this.items = items;
   }
 
   /**
@@ -38,7 +60,7 @@ class Line {
    * Adds an item ({@link ChordLyricsPair} or {@link Tag}) to the line
    * @param {ChordLyricsPair|Tag} item The item to be added
    */
-  addItem(item) {
+  addItem(item: Item) {
     if (item instanceof Tag) {
       this.addTag(item);
     } else if (item instanceof ChordLyricsPair) {
@@ -105,7 +127,7 @@ class Line {
     return this.hasRenderableItems();
   }
 
-  addChordLyricsPair(chords, lyrics) {
+  addChordLyricsPair(chords = null, lyrics = null) {
     if (chords instanceof ChordLyricsPair) {
       this.currentChordLyricsPair = chords;
     } else {
@@ -132,7 +154,7 @@ class Line {
     this.currentChordLyricsPair.lyrics += chr;
   }
 
-  addTag(name, value) {
+  addTag(name, value = null) {
     const tag = (name instanceof Tag) ? name : new Tag(name, value);
     this.items.push(tag);
     return tag;
@@ -145,7 +167,7 @@ class Line {
   }
 
   set(properties) {
-    return new this.constructor(
+    return new Line(
       {
         type: this.type,
         items: this.items,

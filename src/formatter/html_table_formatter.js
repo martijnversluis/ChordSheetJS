@@ -4,6 +4,7 @@ import '../template_helpers';
 import HtmlFormatter from './html_formatter';
 import './templates/html_table_formatter';
 import { scopeCss } from '../utilities';
+import Song from '../chord_sheet/song';
 
 const { html_table_formatter: template } = Handlebars.templates;
 

@@ -1,4 +1,5 @@
 import { INDETERMINATE } from '../constants';
+import Line from './line';
 
 /**
  * Represents a paragraph of lines in a chord sheet
@@ -8,7 +9,7 @@ class Paragraph {
     /**
      * The {@link Line} items of which the paragraph consists
      * @member
-     * @type {Array<Line>}
+     * @type {Line[]}
      */
     this.lines = [];
   }

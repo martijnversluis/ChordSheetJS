@@ -25,6 +25,10 @@ const numeralKeyRegex = (
 const regexes = [symbolKeyRegex, numericKeyRegex, numeralKeyRegex];
 
 class Key {
+  note: Note;
+  modifier?: string = null;
+  minor: boolean = false;
+
   static parse(keyString) {
     for (let i = 0, count = regexes.length; i < count; i += 1) {
       const match = keyString.match(regexes[i]);
@@ -77,7 +81,7 @@ class Key {
   }
 
   clone() {
-    return this.#set({});
+    return this.set({});
   }
 
   toChordSymbol(key) {
@@ -110,17 +114,17 @@ class Key {
     return this.is(NUMERAL);
   }
 
-  equals({ note, modifier }) {
+  equals({ note, modifier = null }) {
     return this.note.equals(note) && this.modifier === modifier;
   }
 
-  toNumeric(key) {
+  toNumeric(key: Key = null) {
     if (this.isNumeric()) {
       return this.clone();
     }
 
     if (this.isNumeral()) {
-      return this.#set({
+      return this.set({
         note: this.note.toNumeric(),
       });
     }
@@ -141,13 +145,13 @@ class Key {
     return this.toNumeric(key).toString();
   }
 
-  toNumeral(key) {
+  toNumeral(key = null) {
     if (this.isNumeral()) {
       return this.clone();
     }
 
     if (this.isNumeric()) {
-      return this.#set({
+      return this.set({
         note: this.note.toNumeral(),
       });
     }
@@ -194,56 +198,56 @@ class Key {
 
   transposeUp() {
     if (this.modifier === FLAT) {
-      return this.#set({ modifier: null });
+      return this.set({ modifier: null });
     }
 
     if (this.note.isOneOf(3, 7, 'E', 'B')) {
-      return this.#set({
+      return this.set({
         note: this.note.up(),
       });
     }
 
     if (this.modifier === SHARP) {
-      return this.#set({
+      return this.set({
         note: this.note.up(),
         modifier: null,
       });
     }
 
-    return this.#set({ modifier: SHARP });
+    return this.set({ modifier: SHARP });
   }
 
   transposeDown() {
     if (this.modifier === SHARP) {
-      return this.#set({ modifier: null });
+      return this.set({ modifier: null });
     }
 
     if (this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.#set({
+      return this.set({
         note: this.note.down(),
       });
     }
 
     if (this.modifier === FLAT) {
-      return this.#set({
+      return this.set({
         note: this.note.down(),
         modifier: null,
       });
     }
 
-    return this.#set({ modifier: FLAT });
+    return this.set({ modifier: FLAT });
   }
 
   useModifier(newModifier) {
     if (this.modifier === FLAT && newModifier === SHARP) {
-      return this.#set({
+      return this.set({
         note: this.note.down(),
         modifier: SHARP,
       });
     }
 
     if (this.modifier === SHARP && newModifier === FLAT) {
-      return this.#set({
+      return this.set({
         note: this.note.up(),
         modifier: FLAT,
       });
@@ -254,14 +258,14 @@ class Key {
 
   normalize() {
     if (this.modifier === SHARP && this.note.isOneOf(3, 7, 'E', 'B')) {
-      return this.#set({
+      return this.set({
         note: this.note.up(),
         modifier: null,
       });
     }
 
     if (this.modifier === FLAT && this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.#set({
+      return this.set({
         note: this.note.down(),
         modifier: null,
       });
@@ -283,8 +287,8 @@ class Key {
     return this.clone();
   }
 
-  #set(attributes) {
-    return new this.constructor({
+  private set(attributes) {
+    return new Key({
       note: this.note.clone(),
       modifier: this.modifier,
       minor: !!this.minor,

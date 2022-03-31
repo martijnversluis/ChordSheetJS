@@ -44,7 +44,7 @@ class ChordLyricsPair {
   }
 
   set(properties) {
-    return new this.constructor(
+    return new ChordLyricsPair(
       properties.chords || this.chords,
       properties.lyrics || this.lyrics,
     );

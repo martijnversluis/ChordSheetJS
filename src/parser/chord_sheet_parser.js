@@ -9,8 +9,8 @@ const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+
 class ChordSheetParser {
   /**
    * Instantiate a chord sheet parser
-   * @param {Object} options options
-   * @param {boolean} options.preserveWhitespace whether to preserve trailing whitespace for chords
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.preserveWhitespace=true] whether to preserve trailing whitespace for chords
    */
   constructor({ preserveWhitespace = true } = {}) {
     this.preserveWhitespace = (preserveWhitespace === true);
@@ -19,8 +19,8 @@ class ChordSheetParser {
   /**
    * Parses a chord sheet into a song
    * @param {string} chordSheet The ChordPro chord sheet
-   * @param {Object} options Optional parser options
-   * @param {Song} options.song The {@link Song} to store the song data in
+   * @param {Object} [options={}] Optional parser options
+   * @param {Song} [options.song=null] The {@link Song} to store the song data in
    * @returns {Song} The parsed song
    */
   parse(chordSheet, { song = null } = {}) {

@@ -65,12 +65,12 @@ HandleBars.registerHelper('paragraphClasses', (paragraph) => {
 
 HandleBars.registerHelper('isEvaluatable', isEvaluatable);
 
-HandleBars.registerHelper('evaluate', (item, metadata) => {
+HandleBars.registerHelper('evaluate', (item, metadata, configuration) => {
   if (!metadata) {
     throw new Error('cannot evaluate, metadata is null');
   }
 
-  return item.evaluate(metadata);
+  return item.evaluate(metadata, configuration.get('metadata.separator'));
 });
 
 HandleBars.registerHelper('renderChord', renderChord);

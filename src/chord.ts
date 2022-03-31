@@ -43,6 +43,10 @@ const regexes = [numericChordRegex, numeralChordRegex, chordRegex];
  * Represents a Chord, consisting of a root, suffix (quality) and bass
  */
 class Chord {
+  root: Key;
+  suffix?: string;
+  bass?: Key;
+
   /**
    * Tries to parse a chord string into a chord
    * @param chordString the chord string, eg `Esus4/G#` or `1sus4/#3`
@@ -113,7 +117,7 @@ class Chord {
    * @returns {boolean}
    */
   isChordSymbol() {
-    return this.#is(SYMBOL);
+    return this.is(SYMBOL);
   }
 
   /**
@@ -186,7 +190,7 @@ class Chord {
    * @returns {boolean}
    */
   isNumeric() {
-    return this.#is(NUMERIC);
+    return this.is(NUMERIC);
   }
 
   /**
@@ -205,7 +209,7 @@ class Chord {
    * @returns {boolean}
    */
   isNumeral() {
-    return this.#is(NUMERAL);
+    return this.is(NUMERAL);
   }
 
   /**
@@ -240,7 +244,7 @@ class Chord {
    */
   normalize(key) {
     if (!presence(key)) {
-      return this.#process('normalize').set({ suffix: presence(normalizeSuffix(this.suffix)) });
+      return this.process('normalize').set({ suffix: presence(normalizeSuffix(this.suffix)) });
     }
 
     return this.set({
@@ -256,7 +260,7 @@ class Chord {
    * @returns {Chord} the new, changed chord
    */
   useModifier(newModifier) {
-    return this.#process('useModifier', newModifier);
+    return this.process('useModifier', newModifier);
   }
 
   /**
@@ -264,7 +268,7 @@ class Chord {
    * @returns {Chord} the new, transposed chord
    */
   transposeUp() {
-    return this.#process('transposeUp');
+    return this.process('transposeUp');
   }
 
   /**
@@ -272,7 +276,7 @@ class Chord {
    * @returns {Chord} the new, transposed chord
    */
   transposeDown() {
-    return this.#process('transposeDown');
+    return this.process('transposeDown');
   }
 
   /**
@@ -281,7 +285,7 @@ class Chord {
    * @returns {Chord} the new, transposed chord
    */
   transpose(delta) {
-    return this.#process('transpose', delta);
+    return this.process('transpose', delta);
   }
 
   constructor(
@@ -318,7 +322,7 @@ class Chord {
   }
 
   set(properties) {
-    return new this.constructor(
+    return new Chord(
       {
         root: this.root.clone(),
         suffix: this.suffix,
@@ -328,18 +332,18 @@ class Chord {
     );
   }
 
-  get #rootNote() {
+  private get rootNote() {
     return this.root.note.note;
   }
 
-  #process(func, arg = null) {
+  private process(func, arg = null) {
     return this.set({
       root: this.root[func](arg),
       bass: this.bass ? this.bass[func](arg) : null,
     });
   }
 
-  #is(type) {
+  private is(type) {
     return this.root.is(type) && (!this.bass || this.bass.is(type));
   }
 }
