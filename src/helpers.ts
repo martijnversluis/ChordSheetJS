@@ -1,6 +1,7 @@
 import Chord from './chord';
 import { isPresent } from './utilities';
 import Key from './key';
+import { capos, majorKeys, minorKeys } from './key_config.json';
 
 export function transposeDistance(transposeKey, songKey) {
   if (/^\d+$/.test(transposeKey)) {
@@ -38,4 +39,24 @@ export function renderChord(chord, lineKey, transposeKey, song) {
   }
 
   return chordObj.toString();
+}
+
+/**
+ * Returns applicable capos for the provided key
+ * @param {Key|string} key The key to get capos for
+ * @returns {Object.<string, string>} The available capos, where the keys are capo numbers and the
+ * values are the effective key for that capo.
+ */
+export function getCapos(key) {
+  return capos[Key.toString(key)];
+}
+
+/**
+ * Returns applicable keys to transpose to from the provided key
+ * @param {Key|string} key The key to get keys for
+ * @returns {Array<string>} The available keys
+ */
+export function getKeys(key) {
+  const keyObj = Key.wrap(key);
+  return keyObj.isMinor() ? minorKeys : majorKeys;
 }
