@@ -6,6 +6,7 @@
   "source": "src/index.ts",
   "main": "lib/index.js",
   "types": "./lib/main.d.ts",
+  "files": ["/lib"],
   "license": "GPL-2.0-only",
   "repository": {
     "type": "git",
