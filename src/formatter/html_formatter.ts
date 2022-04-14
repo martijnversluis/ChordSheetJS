@@ -10,6 +10,16 @@ class HtmlFormatter extends Formatter {
         song,
         configuration: this.configuration,
       },
+      {
+        allowedProtoProperties: {
+          bodyLines: true,
+          bodyParagraphs: true,
+          subtitle: true,
+          title: true,
+          value: true,
+          key: true,
+        },
+      },
     );
   }
 }
