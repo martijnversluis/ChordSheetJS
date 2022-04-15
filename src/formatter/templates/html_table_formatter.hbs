@@ -1,0 +1,53 @@
+{{~#with song~}}
+  {{~#if title~}}
+    <h1>{{~title~}}</h1>
+  {{~/if~}}
+
+  {{~#if subtitle~}}
+    <h2>{{~subtitle~}}</h2>
+  {{~/if~}}
+
+  {{~#if bodyLines~}}
+    <div class="chord-sheet">
+      {{~#each bodyParagraphs as |paragraph|~}}
+        <div class="{{paragraphClasses paragraph}}">
+          {{~#each lines as |line|~}}
+            {{~#if (shouldRenderLine line)~}}
+              <table class="{{lineClasses line}}">
+                {{~#if (hasChordContents line)~}}
+                  <tr>
+                    {{~#each items as |item|~}}
+                      {{~#if (isChordLyricsPair item)~}}
+                        <td class="chord">{{renderChord chords line.key line.transposeKey @root.song}}</td>
+                      {{~/if~}}
+                    {{~/each~}}
+                  </tr>
+                {{~/if~}}
+
+                {{~#if (hasTextContents line)~}}
+                  <tr>
+                    {{~#each items as |item|~}}
+                      {{~#if (isChordLyricsPair item)~}}
+                        <td class="lyrics">{{lyrics}}</td>
+                      {{~/if~}}
+
+                      {{~#if (isTag item)~}}
+                        {{~#if (isComment item)~}}
+                          <td class="comment">{{value}}</td>
+                        {{~/if~}}
+                      {{~/if~}}
+
+                      {{~#if (isEvaluatable item)~}}
+                        <td class="lyrics">{{evaluate item @root.song/metadata @root.configuration}}</td>
+                      {{~/if~}}
+                    {{~/each~}}
+                  </tr>
+                {{~/if~}}
+              </table>
+            {{~/if~}}
+          {{~/each~}}
+        </div>
+      {{~/each~}}
+    </div>
+  {{~/if~}}
+{{~/with~}}
