@@ -1,7 +1,6 @@
 import Line from './line';
 import Paragraph from './paragraph';
 import Key from '../key';
-import Chord from '../chord';
 import ChordLyricsPair from './chord_lyrics_pair';
 import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
@@ -315,11 +314,7 @@ class Song extends MetadataAccessors {
       }
 
       if (item instanceof ChordLyricsPair) {
-        const chordObj = Chord.parse(item.chords);
-
-        if (chordObj) {
-          return item.set({ chords: chordObj.transpose(transpose).normalize(key) });
-        }
+        return item.transpose(transpose, key);
       }
 
       return item;
