@@ -1,3 +1,6 @@
+import Chord from '../chord';
+import Key from '../key';
+
 /**
  * Represents a chord with the corresponding (partial) lyrics
  */
@@ -52,6 +55,18 @@ class ChordLyricsPair {
       properties.chords || this.chords,
       properties.lyrics || this.lyrics,
     );
+  }
+
+  transpose(delta: number, key: string | Key) {
+    const chordObj = Chord.parse(this.chords);
+
+    if (chordObj) {
+      return this.set({
+        chords: chordObj.transpose(delta).normalize(key).toString(),
+      });
+    }
+
+    return this.clone();
   }
 }
 

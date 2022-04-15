@@ -18,4 +18,13 @@ describe('ChordLyricsPair', () => {
       expect(chordLyricsPair.isRenderable()).toBe(true);
     });
   });
+
+  describe('#transpose', () => {
+    it('transposes and normalizes the chord', () => {
+      const chordLyricsPair = new ChordLyricsPair('F', 'Let it');
+      const transposedPair = chordLyricsPair.transpose(1, 'Db');
+
+      expect(transposedPair.chords).toEqual('Gb');
+    });
+  });
 });
