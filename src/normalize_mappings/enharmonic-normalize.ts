@@ -20,6 +20,7 @@ export default {
   },
   'Db': {
     'B': 'Cb',
+    'F#': 'Gb',
   },
   'D': {
     'D#': 'Eb',
