@@ -44,8 +44,6 @@ ${scopedSelector} {
 }
 
 export function deprecate(message) {
-  const { process } = this;
-
   try {
     throw new Error(`DEPRECATION: ${message}`);
   } catch (e) {
