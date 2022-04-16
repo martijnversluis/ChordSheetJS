@@ -29,6 +29,18 @@ or `require()`:
 var ChordSheetJS = require('chordsheetjs').default;
 ```
 
+### Standalone bundle file
+
+If you're not using a build tool, you can download and use the `bundle.js` from the
+[latest release](https://github.com/martijnversluis/ChordSheetJS/releases/latest):
+
+```html
+<script src="bundle.js"></script>
+<script>
+// ChordSheetJS is available in global namespace now
+const parser = new ChordSheetJS.ChordProParser();
+</script>
+
 ## How to ...?
 
 ### Parse chord sheet
