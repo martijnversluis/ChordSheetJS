@@ -40,6 +40,7 @@ If you're not using a build tool, you can download and use the `bundle.js` from 
 // ChordSheetJS is available in global namespace now
 const parser = new ChordSheetJS.ChordProParser();
 </script>
+```
 
 ## How to ...?
 
