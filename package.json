@@ -6,7 +6,9 @@
   "source": "src/index.ts",
   "main": "lib/index.js",
   "types": "./lib/main.d.ts",
-  "files": ["/lib"],
+  "files": [
+    "/lib"
+  ],
   "license": "GPL-2.0-only",
   "repository": {
     "type": "git",
@@ -26,8 +28,10 @@
     "@parcel/packager-ts": "2.4.1",
     "@parcel/transformer-typescript-types": "2.4.1",
     "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
+    "browserify": "^17.0.0",
     "eslint": "^8.12.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -52,7 +56,8 @@
     "build:pegjs": "peggy --plugin ./node_modules/ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
     "build:code-generate": "yarn build:suffix-normalize && yarn build:templates && yarn build:pegjs",
     "build:sources": "parcel build",
-    "build": "yarn build:code-generate && yarn build:sources",
+    "build:browserify": "browserify lib/index.js --outfile lib/bundle.js --standalone ChordSheetJS",
+    "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify",
     "jest": "jest",
     "test": "yarn lint && yarn jest",
     "eslint": "node_modules/.bin/eslint --ext .ts .",
