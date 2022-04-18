@@ -6,6 +6,7 @@ import { deprecate, pushNew } from '../utilities';
 import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
+import Item from './item';
 
 import {
   CHORUS, NONE, TAB, VERSE,
@@ -24,6 +25,14 @@ import Tag, {
   KEY,
 } from './tag';
 
+interface MapItemsCallback {
+  (_item: Item): Item | null;
+}
+
+interface MapLinesCallback {
+  (_line: Line): Line | null;
+}
+
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
  */
@@ -35,12 +44,6 @@ class Song extends MetadataAccessors {
   lines: Line[] = [];
 
   /**
-   * The {@link Paragraph} items of which the song consists
-   * @member {Paragraph[]}
-   */
-  paragraphs: Paragraph[] = [];
-
-  /**
    * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
    * an array containing all unique values for the entry.
    * @type {Metadata}
@@ -48,8 +51,6 @@ class Song extends MetadataAccessors {
   metadata: Metadata;
 
   currentLine?: Line = null;
-
-  currentParagraph?: Paragraph = null;
 
   warnings: ParserWarning[] = [];
 
@@ -119,32 +120,36 @@ class Song extends MetadataAccessors {
     this.currentLine.lyrics(chr);
   }
 
-  addLine() {
-    this.ensureParagraph();
-    this.flushLine();
-    this.currentLine = pushNew(this.lines, Line);
+  addLine(line?: Line) {
+    this.currentLine = line || pushNew(this.lines, Line);
     this.setCurrentLineType(this.sectionType);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
     return this.currentLine;
   }
 
+  /**
+   * The {@link Paragraph} items of which the song consists
+   * @member {Paragraph[]}
+   */
+  get paragraphs() {
+    let currentParagraph = new Paragraph();
+    const paragraphs = [currentParagraph];
+
+    this.lines.forEach((line) => {
+      if (line.isEmpty()) {
+        currentParagraph = new Paragraph();
+        paragraphs.push(currentParagraph);
+      } else if (line.hasRenderableItems()) {
+        currentParagraph.addLine(line);
+      }
+    });
+
+    return paragraphs;
+  }
+
   setCurrentLineType(sectionType) {
     this.currentLine.type = sectionType;
-  }
-
-  flushLine() {
-    if (this.currentLine !== null) {
-      if (this.currentLine.isEmpty()) {
-        this.addParagraph();
-      } else if (this.currentLine.hasRenderableItems()) {
-        this.currentParagraph.addLine(this.currentLine);
-      }
-    }
-  }
-
-  finish() {
-    this.flushLine();
   }
 
   ensureLine() {
@@ -153,18 +158,7 @@ class Song extends MetadataAccessors {
     }
   }
 
-  addParagraph() {
-    this.currentParagraph = pushNew(this.paragraphs, Paragraph);
-    return this.currentParagraph;
-  }
-
-  ensureParagraph() {
-    if (this.currentParagraph === null) {
-      this.addParagraph();
-    }
-  }
-
-  addTag(tagContents) {
+  addTag(tagContents: string | Tag) {
     const tag = Tag.parse(tagContents);
 
     if (tag.isMetaTag()) {
@@ -250,7 +244,7 @@ class Song extends MetadataAccessors {
    * @returns {Song} The cloned song
    */
   clone() {
-    return this.mapItems(null);
+    return this.mapItems((item) => item);
   }
 
   setMetadata(name, value) {
@@ -341,19 +335,64 @@ class Song extends MetadataAccessors {
     return clonedSong;
   }
 
-  private mapItems(func) {
+  /**
+   * Change the song contents inline. Return a new {@link Item} to replace it. Return `null` to remove it.
+   * @example
+   * // transpose all chords:
+   * song.mapItems((item) => {
+   *   if (item instanceof ChordLyricsPair) {
+   *     return item.transpose(2, 'D');
+   *   }
+   *
+   *   return item;
+   * });
+   * @param {MapItemsCallback} func the callback function
+   * @returns {Song} the changed song
+   */
+  mapItems(func: MapItemsCallback) {
     const clonedSong = new Song();
-    clonedSong.lines = this.lines.map((line) => line.mapItems(func));
-    clonedSong.metadata = this.metadata.clone();
+
+    this.lines.forEach((line) => {
+      clonedSong.addLine();
+
+      line.items.forEach((item) => {
+        const changedItem = func(item);
+
+        if (changedItem) {
+          clonedSong.addItem(changedItem);
+        }
+      });
+    });
+
     return clonedSong;
   }
 
-  private mapLines(func) {
+  /**
+   * Change the song contents inline. Return a new {@link Line} to replace it. Return `null` to remove it.
+   * @example
+   * // remove lines with only Tags:
+   * song.mapLines((line) => {
+   *   if (line.items.every(item => item instanceof Tag)) {
+   *     return null;
+   *   }
+   *
+   *   return line;
+   * });
+   * @param {MapLinesCallback} func the callback function
+   * @returns {Song} the changed song
+   */
+  mapLines(func: MapLinesCallback) {
     const clonedSong = new Song();
-    clonedSong.lines = this.lines
-      .map((line) => func(line.clone()))
-      .filter((line) => line);
-    clonedSong.metadata = this.metadata.clone();
+
+    this.lines.forEach((line) => {
+      const changedLine = func(line);
+
+      if (changedLine) {
+        clonedSong.addLine();
+        changedLine.items.forEach((item) => clonedSong.addItem(item));
+      }
+    });
+
     return clonedSong;
   }
 

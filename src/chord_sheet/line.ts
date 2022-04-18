@@ -2,9 +2,8 @@ import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
-import Ternary from './chord_pro/ternary';
+import Item from './item';
 
-type Item = ChordLyricsPair | Comment | Tag | Ternary;
 export type LineType = 'verse' | 'chorus' | 'none';
 
 /**

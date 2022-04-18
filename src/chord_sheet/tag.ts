@@ -313,6 +313,10 @@ class Tag extends AstComponent {
   set({ value }) {
     return new Tag(this._originalName, value);
   }
+
+  setValue(value: string) {
+    return this.set({ value });
+  }
 }
 
 export default Tag;
