@@ -1,4 +1,4 @@
-# ChordChartJS [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
+# ChordSheetJS [![Code Climate](https://codeclimate.com/github/martijnversluis/ChordSheetJS/badges/gpa.svg)](https://codeclimate.com/github/martijnversluis/ChordSheetJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
@@ -10,6 +10,8 @@ A JavaScript library for parsing and formatting chord sheets
 - [API docs](#api-docs)
 
 ## Installation
+
+### Package managers
 
 `ChordSheetJS` is on npm, to install run:
 
