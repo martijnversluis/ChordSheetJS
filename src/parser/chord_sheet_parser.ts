@@ -50,7 +50,6 @@ class ChordSheetParser {
     }
 
     this.endOfSong();
-    this.song.finish();
     return this.song;
   }
 

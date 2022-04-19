@@ -57,6 +57,10 @@ class ChordLyricsPair {
     );
   }
 
+  setLyrics(lyrics: string) {
+    return this.set({ lyrics });
+  }
+
   transpose(delta: number, key: string | Key) {
     const chordObj = Chord.parse(this.chords);
 

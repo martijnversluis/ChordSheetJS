@@ -24,7 +24,6 @@ export function createSong(lines, metadata = null) {
     }
   });
 
-  song.finish();
   return song;
 }
 
