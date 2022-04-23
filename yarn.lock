@@ -1910,21 +1910,21 @@
     posthtml-render "^3.0.0"
     semver "^5.7.1"
 
-"@parcel/transformer-typescript-types@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@parcel/transformer-typescript-types/-/transformer-typescript-types-2.4.1.tgz#3b921171974a1bd010540ad3baf1781f26b40366"
-  integrity sha512-SAhjHNh8hRV17zlEyU+Lg8GD+7TZL7FyqUp5EJOV6GXINV2PdN9uOdKPMMBJfgV76J6BYQszG3J6FAAMvfftOQ==
+"@parcel/transformer-typescript-types@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-typescript-types/-/transformer-typescript-types-2.5.0.tgz#5f22ed88f1d439a95abd976b9d94f67b961c4541"
+  integrity sha512-O+v+vEvgQDj5U1O8C12nYeU9kYOdYaznobWgE21WYSPEV2JD9ppaJVTDoNTI5Lx58gmjc1hndY169o6N6RaV6A==
   dependencies:
-    "@parcel/diagnostic" "2.4.1"
-    "@parcel/plugin" "2.4.1"
+    "@parcel/diagnostic" "2.5.0"
+    "@parcel/plugin" "2.5.0"
     "@parcel/source-map" "^2.0.0"
-    "@parcel/ts-utils" "2.4.1"
+    "@parcel/ts-utils" "2.5.0"
     nullthrows "^1.1.1"
 
-"@parcel/ts-utils@2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@parcel/ts-utils/-/ts-utils-2.4.1.tgz#37b321a1aec2b0450fbb9d959f5fead09647bdb7"
-  integrity sha512-qAXGkIcRkR27nFqU9tRbovDpFGsxKpUcLTsh5soVF7/yh9bHUBuactWCU+qSjY6d3YSw45J6ZSbwpsuPTN1ZzA==
+"@parcel/ts-utils@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@parcel/ts-utils/-/ts-utils-2.5.0.tgz#fc3b80c85f284f0b0889695ef59c17642cede6f2"
+  integrity sha512-YITx84Olg27PDxvJlXzzPVgqTtW3tEqQFh+wE2g7+Mwk4Q8vd/jL+mjDBF/5LEnGCk2WvjkcuBK/QOv7Y+YDsg==
   dependencies:
     nullthrows "^1.1.1"
 
