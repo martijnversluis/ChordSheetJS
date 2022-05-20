@@ -379,9 +379,9 @@
     "@babel/plugin-syntax-numeric-separator" "^7.10.4"
 
 "@babel/plugin-proposal-object-rest-spread@^7.17.12", "@babel/plugin-proposal-object-rest-spread@^7.17.3":
-  version "7.17.12"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-object-rest-spread/-/plugin-proposal-object-rest-spread-7.17.12.tgz#f94a91715a7f2f8cfb3c06af820c776440bc0148"
-  integrity sha512-6l9cO3YXXRh4yPCPRA776ZyJ3RobG4ZKJZhp7NDRbKIOeV3dBPG8FXCF7ZtiO2RTCIOkQOph1xDDcc01iWVNjQ==
+  version "7.18.0"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-object-rest-spread/-/plugin-proposal-object-rest-spread-7.18.0.tgz#79f2390c892ba2a68ec112eb0d895cfbd11155e8"
+  integrity sha512-nbTv371eTrFabDfHLElkn9oyf9VG+VKK6WMzhY2o4eHKaG19BToD9947zzGMO6I/Irstx9d8CwX6njPNIAR/yw==
   dependencies:
     "@babel/compat-data" "^7.17.10"
     "@babel/helper-compilation-targets" "^7.17.10"
