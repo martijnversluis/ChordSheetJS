@@ -99,7 +99,6 @@ class ChordSheetSerializer {
    */
   deserialize(serializedSong) {
     this.parseAstComponent(serializedSong);
-    this.song.finish();
     return this.song;
   }
 

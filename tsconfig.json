@@ -2,9 +2,9 @@
   "compilerOptions": {
     "outDir": "./lib",
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "moduleResolution": "node",
-    "lib": ["es2015", "dom"],
+    "lib": ["es2018", "dom"],
     "downlevelIteration": true,
     "esModuleInterop": true,
     "resolveJsonModule": true

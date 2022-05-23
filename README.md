@@ -11,6 +11,8 @@ A JavaScript library for parsing and formatting chord sheets
 
 ## Installation
 
+### Package managers
+
 `ChordSheetJS` is on npm, to install run:
 
 ```bash
@@ -27,6 +29,19 @@ or `require()`:
 
 ```javascript
 var ChordSheetJS = require('chordsheetjs').default;
+```
+
+### Standalone bundle file
+
+If you're not using a build tool, you can download and use the `bundle.js` from the
+[latest release](https://github.com/martijnversluis/ChordSheetJS/releases/latest):
+
+```html
+<script src="bundle.js"></script>
+<script>
+// ChordSheetJS is available in global namespace now
+const parser = new ChordSheetJS.ChordProParser();
+</script>
 ```
 
 ## How to ...?
@@ -618,10 +633,13 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
     * [new Song(metadata)](#new_Song_new)
     * [.bodyLines](#Song+bodyLines) ⇒ <code>Array.&lt;Line&gt;</code>
     * [.bodyParagraphs](#Song+bodyParagraphs) ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
+    * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
     * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
     * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
+    * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
+    * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_Song_new"></a>
 
@@ -649,6 +667,12 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
 **See**: [bodyLines](bodyLines)  
+<a name="Song+paragraphs"></a>
+
+### song.paragraphs : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
+<p>The [Paragraph](#Paragraph) items of which the song consists</p>
+
+**Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+metaData"></a>
 
 ### ~~song.metaData ⇒~~
@@ -698,6 +722,52 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 | --- | --- | --- |
 | key | <code>string</code> | <p>The new key.</p> |
 
+<a name="Song+mapItems"></a>
+
+### song.mapItems(func) ⇒ [<code>Song</code>](#Song)
+<p>Change the song contents inline. Return a new [Item](Item) to replace it. Return <code>null</code> to remove it.</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>the changed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| func | <code>MapItemsCallback</code> | <p>the callback function</p> |
+
+**Example**  
+```js
+// transpose all chords:
+song.mapItems((item) => {
+  if (item instanceof ChordLyricsPair) {
+    return item.transpose(2, 'D');
+  }
+
+  return item;
+});
+```
+<a name="Song+mapLines"></a>
+
+### song.mapLines(func) ⇒ [<code>Song</code>](#Song)
+<p>Change the song contents inline. Return a new [Line](Line) to replace it. Return <code>null</code> to remove it.</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>the changed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| func | <code>MapLinesCallback</code> | <p>the callback function</p> |
+
+**Example**  
+```js
+// remove lines with only Tags:
+song.mapLines((line) => {
+  if (line.items.every(item => item instanceof Tag)) {
+    return null;
+  }
+
+  return line;
+});
+```
 <a name="Tag"></a>
 
 ## Tag

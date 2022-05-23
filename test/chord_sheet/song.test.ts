@@ -1,11 +1,12 @@
 import {
   Song,
-  ChordSheetSerializer,
+  ChordSheetSerializer, ChordLyricsPair, Tag,
 } from '../../src';
 
 import { createSong } from '../utilities';
 import exampleSong from '../fixtures/song';
 import serializedSong from '../fixtures/serialized_song.json';
+import serializedChangedSong from '../fixtures/changed_song.json';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -120,6 +121,62 @@ describe('Song', () => {
       const song = createSong([nonRenderableLine1, nonRenderableLine2, renderableLine1, nonRenderableLine3]);
 
       expect(song.bodyLines).toEqual([renderableLine1, nonRenderableLine3]);
+    });
+  });
+
+  describe('#mapLines', () => {
+    it('changes the song', () => {
+      const song = exampleSong.clone();
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+
+      const changedSong = song.mapLines((line) => (
+        line.mapItems((item) => {
+          if (item instanceof ChordLyricsPair) {
+            return item.transpose(2, 'D').setLyrics(item.lyrics.toUpperCase());
+          }
+
+          if (item instanceof Tag) {
+            return item.setValue(`${item.value} changed`);
+          }
+
+          return item;
+        })
+      ));
+
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(serializedChangedSong);
+      expect(changedSong.title).toEqual('Let it be changed');
+      expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
+      expect(changedSong.key).toEqual('C changed');
+      expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
+      expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
+      expect(changedSong.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+    });
+  });
+
+  describe('#mapItems', () => {
+    it('changes the song', () => {
+      const song = exampleSong.clone();
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+
+      const changedSong = song.mapItems((item) => {
+        if (item instanceof ChordLyricsPair) {
+          return item.transpose(2, 'D').setLyrics(item.lyrics.toUpperCase());
+        }
+
+        if (item instanceof Tag) {
+          return item.setValue(`${item.value} changed`);
+        }
+
+        return item;
+      });
+
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(serializedChangedSong);
+      expect(changedSong.title).toEqual('Let it be changed');
+      expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
+      expect(changedSong.key).toEqual('C changed');
+      expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
+      expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
+      expect(changedSong.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
     });
   });
 
