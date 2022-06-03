@@ -68,7 +68,8 @@ export const END_OF_VERSE = 'end_of_verse';
 export const KEY = 'key';
 
 /**
- * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
+ * _Key meta directive. Reflects the key as transposed by the capo value
+ * See https://www.chordpro.org/chordpro/directives-key/
  * @type {string}
  */
 export const _KEY = '_key';

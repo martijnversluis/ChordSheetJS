@@ -424,7 +424,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#KEY">KEY</a> : <code>string</code></dt>
-<dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
+<dd><p>_Key meta directive. Reflects the key as transposed by the capo value
+See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
@@ -1427,7 +1428,8 @@ Can be deserialized using [deserialize](deserialize)</p>
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
-<p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p>
+<p>_Key meta directive. Reflects the key as transposed by the capo value
+See https://www.chordpro.org/chordpro/directives-key/</p>
 
 **Kind**: global variable  
 <a name="_KEY"></a>
