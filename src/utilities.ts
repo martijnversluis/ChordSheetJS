@@ -60,6 +60,10 @@ export function isEmptyString(string) {
 }
 
 export function parseWithRegexes(string: string, constructor, regexes) {
+  if (isEmptyString(string)) {
+    return null;
+  }
+
   for (let i = 0, count = regexes.length; i < count; i += 1) {
     const match = string.match(regexes[i]);
 

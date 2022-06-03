@@ -636,8 +636,10 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
     * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
-    * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
     * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
+    * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
+    * [.changeKey(newKey)](#Song+changeKey) ⇒ [<code>Song</code>](#Song)
+    * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
@@ -689,13 +691,29 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>The cloned song</p>  
+<a name="Song+setKey"></a>
+
+### song.setKey(key) ⇒ [<code>Song</code>](#Song)
+<p>Returns a copy of the song with the key value set to the specified key. It changes:</p>
+<ul>
+<li>the value for <code>key</code> in the <code>metadata</code> set</li>
+<li>any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The changed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>number</code> \| <code>null</code> | <p>the key. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>key</code> directive</li> </ul> |
+
 <a name="Song+setCapo"></a>
 
 ### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
-<p>Returns a copy of the song with the capo value set to the specified capo. It changes:</p>
+<p>Returns a copy of the song with the key value set to the specified capo. It changes:</p>
 <ul>
 <li>the value for <code>capo</code> in the <code>metadata</code> set</li>
-<li>any existing <code>capo</code> directive)</li>
+<li>any existing <code>capo</code> directive</li>
 </ul>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
@@ -705,9 +723,9 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 | --- | --- | --- |
 | capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>capo</code> directive</li> </ul> |
 
-<a name="Song+setKey"></a>
+<a name="Song+changeKey"></a>
 
-### song.setKey(key) ⇒ [<code>Song</code>](#Song)
+### song.changeKey(newKey) ⇒ [<code>Song</code>](#Song)
 <p>Returns a copy of the song with the key set to the specified key. It changes:</p>
 <ul>
 <li>the value for <code>key</code> in the <code>metadata</code> set</li>
@@ -720,7 +738,24 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | <p>The new key.</p> |
+| newKey | <code>string</code> | <p>The new key.</p> |
+
+<a name="Song+changeMetadata"></a>
+
+### song.changeMetadata(name, value)
+<p>Returns a copy of the song with the directive value set to the specified value.</p>
+<ul>
+<li>when there is a matching directive in the song, it will update the directive</li>
+<li>when there is no matching directive, it will be inserted
+If <code>value</code> is <code>null</code> it will act as a delete, any directive matching <code>name</code> will be removed.</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | <p>The directive name</p> |
+| value | <code>string</code> \| <code>null</code> | <p>The value to set, or <code>null</code> to remove the directive</p> |
 
 <a name="Song+mapItems"></a>
 
