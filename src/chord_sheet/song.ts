@@ -266,29 +266,41 @@ class Song extends MetadataAccessors {
   }
 
   /**
-   * Returns a copy of the song with the capo value set to the specified capo. It changes:
+   * Returns a copy of the song with the key value set to the specified key. It changes:
+   * - the value for `key` in the `metadata` set
+   * - any existing `key` directive
+   * @param {number|null} key the key. Passing `null` will:
+   * - remove the current key from `metadata`
+   * - remove any `key` directive
+   * @returns {Song} The changed song
+   */
+  setKey(key) {
+    return this.changeMetadata(KEY, key);
+  }
+
+  /**
+   * Returns a copy of the song with the key value set to the specified capo. It changes:
    * - the value for `capo` in the `metadata` set
-   * - any existing `capo` directive)
+   * - any existing `capo` directive
    * @param {number|null} capo the capo. Passing `null` will:
    * - remove the current key from `metadata`
    * - remove any `capo` directive
    * @returns {Song} The changed song
    */
   setCapo(capo) {
-    let updatedSong;
+    return this.changeMetadata(CAPO, capo);
+  }
 
-    if (capo === null) {
-      updatedSong = this.removeItem((item) => item instanceof Tag && item.name === CAPO);
-    } else {
-      updatedSong = this.updateItem(
-        (item) => item instanceof Tag && item.name === CAPO,
-        (item) => item.set({ value: capo }),
-        (song) => song.insertDirective(CAPO, capo),
-      );
+  private setDirective(name: string, value: string | null) {
+    if (value === null) {
+      return this.removeItem((item) => item instanceof Tag && item.name === name);
     }
 
-    updatedSong.metadata.set('capo', capo);
-    return updatedSong;
+    return this.updateItem(
+      (item) => item instanceof Tag && item.name === name,
+      (item) => item.set({ value }),
+      (song) => song.insertDirective(name, value),
+    );
   }
 
   /**
@@ -296,25 +308,56 @@ class Song extends MetadataAccessors {
    * - the value for `key` in the `metadata` set
    * - any existing `key` directive
    * - all chords, those are transposed according to the distance between the current and the new key
-   * @param {string} key The new key.
+   * @param {string} newKey The new key.
    * @returns {Song} The changed song
    */
-  setKey(key) {
-    const transpose = Key.distance(this.key, key);
+  changeKey(newKey: string | Key) {
+    const transpose = this.getTransposeDistance(newKey);
 
     const updatedSong = this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
-        return item.set({ value: key });
+        return item.set({ value: newKey });
       }
 
       if (item instanceof ChordLyricsPair) {
-        return item.transpose(transpose, key);
+        return item.transpose(transpose, newKey);
       }
 
       return item;
     });
 
-    updatedSong.metadata.set('key', key);
+    updatedSong.metadata.set('key', newKey);
+    return updatedSong;
+  }
+
+  getTransposeDistance(newKey: string | Key) {
+    const wrappedKey = Key.wrap(this.key);
+
+    if (!wrappedKey) {
+      throw new Error(`
+Cannot change song key, the original key is unknown.
+
+Either ensure a key directive is present in the song (when using chordpro):
+  \`{key: C}\`
+
+Or set the song key before changing key:
+  \`song.setKey('C');\``.substring(1));
+    }
+
+    return wrappedKey.distanceTo(newKey);
+  }
+
+  /**
+   * Returns a copy of the song with the directive value set to the specified value.
+   * - when there is a matching directive in the song, it will update the directive
+   * - when there is no matching directive, it will be inserted
+   * If `value` is `null` it will act as a delete, any directive matching `name` will be removed.
+   * @param {string} name The directive name
+   * @param {string | null} value The value to set, or `null` to remove the directive
+   */
+  changeMetadata(name: string, value: string | null) {
+    const updatedSong = this.setDirective(name, value);
+    updatedSong.metadata.set(name, value);
     return updatedSong;
   }
 
