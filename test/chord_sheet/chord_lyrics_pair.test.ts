@@ -26,5 +26,12 @@ describe('ChordLyricsPair', () => {
 
       expect(transposedPair.chords).toEqual('Gb');
     });
+
+    it('can transpose without key', () => {
+      const chordLyricsPair = new ChordLyricsPair('F', 'Let it');
+      const transposedPair = chordLyricsPair.transpose(1);
+
+      expect(transposedPair.chords).toEqual('F#');
+    });
   });
 });

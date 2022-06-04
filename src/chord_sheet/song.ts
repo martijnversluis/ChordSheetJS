@@ -267,23 +267,23 @@ class Song extends MetadataAccessors {
 
   /**
    * Returns a copy of the song with the key value set to the specified key. It changes:
-   * - the value for `key` in the `metadata` set
+   * - the value for `key` in the {@link metadata} set
    * - any existing `key` directive
    * @param {number|null} key the key. Passing `null` will:
-   * - remove the current key from `metadata`
+   * - remove the current key from {@link metadata}
    * - remove any `key` directive
    * @returns {Song} The changed song
    */
-  setKey(key) {
-    return this.changeMetadata(KEY, key);
+  setKey(key): Song {
+    return this.changeMetadata(KEY, key ? key.toString() : key);
   }
 
   /**
    * Returns a copy of the song with the key value set to the specified capo. It changes:
-   * - the value for `capo` in the `metadata` set
+   * - the value for `capo` in the {@link metadata} set
    * - any existing `capo` directive
    * @param {number|null} capo the capo. Passing `null` will:
-   * - remove the current key from `metadata`
+   * - remove the current key from {@link metadata}
    * - remove any `capo` directive
    * @returns {Song} The changed song
    */
@@ -304,8 +304,57 @@ class Song extends MetadataAccessors {
   }
 
   /**
+   * Transposes the song by the specified delta. It will:
+   * - transpose all chords, see: {@link Chord#transpose}
+   * - transpose the song key in {@link metadata}
+   * - update any existing `key` directive
+   * @param {number} delta The number of semitones (positive or negative) to transpose with
+   * @returns {Song} The transposed song
+   */
+  transpose(delta: number): Song {
+    const wrappedKey = Key.wrap(this.key);
+    let transposedKey = null;
+    let song = (this as Song);
+
+    if (wrappedKey) {
+      transposedKey = wrappedKey.transpose(delta);
+      song = song.setKey(transposedKey);
+    }
+
+    return song.mapItems((item) => {
+      if (item instanceof ChordLyricsPair) {
+        return (item as ChordLyricsPair).transpose(delta, transposedKey);
+      }
+
+      return item;
+    });
+  }
+
+  /**
+   * Transposes the song up by one semitone. It will:
+   * - transpose all chords, see: {@link Chord#transpose}
+   * - transpose the song key in {@link metadata}
+   * - update any existing `key` directive
+   * @returns {Song} The transposed song
+   */
+  transposeUp(): Song {
+    return this.transpose(1);
+  }
+
+  /**
+   * Transposes the song down by one semitone. It will:
+   * - transpose all chords, see: {@link Chord#transpose}
+   * - transpose the song key in {@link metadata}
+   * - update any existing `key` directive
+   * @returns {Song} The transposed song
+   */
+  transposeDown(): Song {
+    return this.transpose(-1);
+  }
+
+  /**
    * Returns a copy of the song with the key set to the specified key. It changes:
-   * - the value for `key` in the `metadata` set
+   * - the value for `key` in the {@link metadata} set
    * - any existing `key` directive
    * - all chords, those are transposed according to the distance between the current and the new key
    * @param {string} newKey The new key.
@@ -326,7 +375,7 @@ class Song extends MetadataAccessors {
       return item;
     });
 
-    updatedSong.metadata.set('key', newKey);
+    this.setKey(newKey);
     return updatedSong;
   }
 
