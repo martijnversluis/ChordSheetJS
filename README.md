@@ -639,6 +639,9 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
     * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
     * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
+    * [.transpose(delta)](#Song+transpose) ⇒ [<code>Song</code>](#Song)
+    * [.transposeUp()](#Song+transposeUp) ⇒ [<code>Song</code>](#Song)
+    * [.transposeDown()](#Song+transposeDown) ⇒ [<code>Song</code>](#Song)
     * [.changeKey(newKey)](#Song+changeKey) ⇒ [<code>Song</code>](#Song)
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
@@ -697,7 +700,7 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 ### song.setKey(key) ⇒ [<code>Song</code>](#Song)
 <p>Returns a copy of the song with the key value set to the specified key. It changes:</p>
 <ul>
-<li>the value for <code>key</code> in the <code>metadata</code> set</li>
+<li>the value for <code>key</code> in the [metadata](metadata) set</li>
 <li>any existing <code>key</code> directive</li>
 </ul>
 
@@ -706,14 +709,14 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>number</code> \| <code>null</code> | <p>the key. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>key</code> directive</li> </ul> |
+| key | <code>number</code> \| <code>null</code> | <p>the key. Passing <code>null</code> will:</p> <ul> <li>remove the current key from [metadata](metadata)</li> <li>remove any <code>key</code> directive</li> </ul> |
 
 <a name="Song+setCapo"></a>
 
 ### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
 <p>Returns a copy of the song with the key value set to the specified capo. It changes:</p>
 <ul>
-<li>the value for <code>capo</code> in the <code>metadata</code> set</li>
+<li>the value for <code>capo</code> in the [metadata](metadata) set</li>
 <li>any existing <code>capo</code> directive</li>
 </ul>
 
@@ -722,14 +725,55 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 | Param | Type | Description |
 | --- | --- | --- |
-| capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>capo</code> directive</li> </ul> |
+| capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from [metadata](metadata)</li> <li>remove any <code>capo</code> directive</li> </ul> |
 
+<a name="Song+transpose"></a>
+
+### song.transpose(delta) ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song by the specified delta. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delta | <code>number</code> | <p>The number of semitones (positive or negative) to transpose with</p> |
+
+<a name="Song+transposeUp"></a>
+
+### song.transposeUp() ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song up by one semitone. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+<a name="Song+transposeDown"></a>
+
+### song.transposeDown() ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song down by one semitone. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
 <a name="Song+changeKey"></a>
 
 ### song.changeKey(newKey) ⇒ [<code>Song</code>](#Song)
 <p>Returns a copy of the song with the key set to the specified key. It changes:</p>
 <ul>
-<li>the value for <code>key</code> in the <code>metadata</code> set</li>
+<li>the value for <code>key</code> in the [metadata](metadata) set</li>
 <li>any existing <code>key</code> directive</li>
 <li>all chords, those are transposed according to the distance between the current and the new key</li>
 </ul>
