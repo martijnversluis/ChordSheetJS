@@ -50,11 +50,9 @@
     "typescript": "^4.6.3"
   },
   "scripts": {
-    "build:template": "handlebars \"src/formatter/templates/$TEMPLATE.hbs\" -f \"src/formatter/templates/$TEMPLATE.js\" --extension hbs --commonjs handlebars --known each --known if --known with --known paragraphClasses --known isChordLyricsPair --known isTag --known isComment --known shouldRenderLine --known hasChordContents --known lineHasContents --known lineClasses --known toUpperCase --known paragraphClasses",
-    "build:templates": "TEMPLATE=html_div_formatter yarn build:template && TEMPLATE=html_table_formatter yarn build:template",
     "build:suffix-normalize": "rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && ts-node src/normalize_mappings/generate-suffix-normalize-mapping.ts",
     "build:pegjs": "peggy --plugin ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
-    "build:code-generate": "yarn build:suffix-normalize && yarn build:templates && yarn build:pegjs",
+    "build:code-generate": "yarn build:suffix-normalize && yarn build:pegjs",
     "build:sources": "parcel build",
     "build:browserify": "browserify lib/index.js --outfile lib/bundle.js --standalone ChordSheetJS",
     "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify",
@@ -71,7 +69,6 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "handlebars": "^4.7.6",
     "lodash.get": "^4.4.2"
   }
 }

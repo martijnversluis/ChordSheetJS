@@ -1,10 +1,6 @@
-import Handlebars from 'handlebars';
-import './templates/html_div_formatter';
-import '../template_helpers';
 import HtmlFormatter from './html_formatter';
+import template from './templates/html_div_formatter';
 import { scopeCss } from '../utilities';
-
-const { html_div_formatter: template } = Handlebars.templates;
 
 const defaultCss = {
   '.chord:not(:last-child)': {
