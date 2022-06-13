@@ -309,9 +309,11 @@ class Song extends MetadataAccessors {
    * - transpose the song key in {@link metadata}
    * - update any existing `key` directive
    * @param {number} delta The number of semitones (positive or negative) to transpose with
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transpose(delta: number): Song {
+  transpose(delta: number, { normalizeChordSuffix = false } = {}): Song {
     const wrappedKey = Key.wrap(this.key);
     let transposedKey = null;
     let song = (this as Song);
@@ -323,7 +325,7 @@ class Song extends MetadataAccessors {
 
     return song.mapItems((item) => {
       if (item instanceof ChordLyricsPair) {
-        return (item as ChordLyricsPair).transpose(delta, transposedKey);
+        return (item as ChordLyricsPair).transpose(delta, transposedKey, { normalizeChordSuffix });
       }
 
       return item;
@@ -335,10 +337,12 @@ class Song extends MetadataAccessors {
    * - transpose all chords, see: {@link Chord#transpose}
    * - transpose the song key in {@link metadata}
    * - update any existing `key` directive
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeUp(): Song {
-    return this.transpose(1);
+  transposeUp({ normalizeChordSuffix = false } = {}): Song {
+    return this.transpose(1, { normalizeChordSuffix });
   }
 
   /**
@@ -346,10 +350,12 @@ class Song extends MetadataAccessors {
    * - transpose all chords, see: {@link Chord#transpose}
    * - transpose the song key in {@link metadata}
    * - update any existing `key` directive
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeDown(): Song {
-    return this.transpose(-1);
+  transposeDown({ normalizeChordSuffix = false } = {}): Song {
+    return this.transpose(-1, { normalizeChordSuffix });
   }
 
   /**

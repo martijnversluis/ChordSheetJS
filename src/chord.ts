@@ -15,7 +15,7 @@ import {
   presence,
 } from './utilities';
 
-function normalizeSuffix(suffix) {
+function normalizeChordSuffix(suffix) {
   if (SUFFIX_MAPPING[suffix] === '[blank]') {
     return null;
   }
@@ -88,7 +88,7 @@ class Chord {
     const rootKey = this.root.toChordSymbol(keyObj).normalizeEnharmonics(keyObj);
 
     let chordSymbolChord = new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: rootKey,
       bass: this.bass?.toChordSymbol(keyObj).normalizeEnharmonics(rootKey),
     });
@@ -141,7 +141,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: this.root.toNumeric(keyObj),
       bass: this.bass?.toNumeric(keyObj),
     });
@@ -168,7 +168,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: this.root.toNumeral(keyObj),
       bass: this.bass?.toNumeral(keyObj),
     });
@@ -237,19 +237,24 @@ class Chord {
    * - 7# becomes 1
    * - 3# becomes 4
    *
-   * Besides that it normalizes the suffix. For example, `sus2` becomes `2`, `sus4` becomes `sus`.
+   * Besides that it normalizes the suffix if `normalizeSuffix` is `true`.
+   * For example, `sus2` becomes `2`, `sus4` becomes `sus`.
    * All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
-   *
+   * @param {Key|string} [key=null] the key to normalize to
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.normalizeSuffix=true] whether to normalize the chord suffix after transposing
    * @returns {Chord} the normalized chord
    */
-  normalize(key = null) {
+  normalize(key = null, { normalizeSuffix = true } = {}) {
+    const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
+
     if (isBlank(key)) {
-      return this.process('normalize').set({ suffix: presence(normalizeSuffix(this.suffix)) });
+      return this.process('normalize').set({ suffix });
     }
 
     return this.set({
+      suffix,
       root: this.root.normalizeEnharmonics(key),
-      suffix: presence(normalizeSuffix(this.suffix)),
       bass: this.bass ? this.bass.normalizeEnharmonics(this.root.toString()) : null,
     });
   }
