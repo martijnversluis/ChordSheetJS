@@ -1,5 +1,5 @@
 import Key from './key';
-import SUFFIX_MAPPPING from './normalize_mappings/suffix-normalize-mapping';
+import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
 import {
   NUMERAL,
@@ -16,11 +16,11 @@ import {
 } from './utilities';
 
 function normalizeSuffix(suffix) {
-  if (SUFFIX_MAPPPING[suffix] === '[blank]') {
+  if (SUFFIX_MAPPING[suffix] === '[blank]') {
     return null;
   }
 
-  return SUFFIX_MAPPPING[suffix] || suffix;
+  return SUFFIX_MAPPING[suffix] || suffix;
 }
 
 const chordRegex = (
