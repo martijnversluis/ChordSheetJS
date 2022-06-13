@@ -639,9 +639,9 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
     * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
     * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
-    * [.transpose(delta)](#Song+transpose) ⇒ [<code>Song</code>](#Song)
-    * [.transposeUp()](#Song+transposeUp) ⇒ [<code>Song</code>](#Song)
-    * [.transposeDown()](#Song+transposeDown) ⇒ [<code>Song</code>](#Song)
+    * [.transpose(delta, [options])](#Song+transpose) ⇒ [<code>Song</code>](#Song)
+    * [.transposeUp([options])](#Song+transposeUp) ⇒ [<code>Song</code>](#Song)
+    * [.transposeDown([options])](#Song+transposeDown) ⇒ [<code>Song</code>](#Song)
     * [.changeKey(newKey)](#Song+changeKey) ⇒ [<code>Song</code>](#Song)
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
@@ -729,7 +729,7 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 <a name="Song+transpose"></a>
 
-### song.transpose(delta) ⇒ [<code>Song</code>](#Song)
+### song.transpose(delta, [options]) ⇒ [<code>Song</code>](#Song)
 <p>Transposes the song by the specified delta. It will:</p>
 <ul>
 <li>transpose all chords, see: [transpose](#Chord+transpose)</li>
@@ -740,13 +740,15 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| delta | <code>number</code> | <p>The number of semitones (positive or negative) to transpose with</p> |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| delta | <code>number</code> |  | <p>The number of semitones (positive or negative) to transpose with</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
 
 <a name="Song+transposeUp"></a>
 
-### song.transposeUp() ⇒ [<code>Song</code>](#Song)
+### song.transposeUp([options]) ⇒ [<code>Song</code>](#Song)
 <p>Transposes the song up by one semitone. It will:</p>
 <ul>
 <li>transpose all chords, see: [transpose](#Chord+transpose)</li>
@@ -756,9 +758,15 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
+
 <a name="Song+transposeDown"></a>
 
-### song.transposeDown() ⇒ [<code>Song</code>](#Song)
+### song.transposeDown([options]) ⇒ [<code>Song</code>](#Song)
 <p>Transposes the song down by one semitone. It will:</p>
 <ul>
 <li>transpose all chords, see: [transpose](#Chord+transpose)</li>
@@ -768,6 +776,12 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
+
 <a name="Song+changeKey"></a>
 
 ### song.changeKey(newKey) ⇒ [<code>Song</code>](#Song)
@@ -1188,7 +1202,7 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p>
         * [.toNumericString([key])](#Chord+toNumericString) ⇒ <code>string</code>
         * [.isNumeral()](#Chord+isNumeral) ⇒ <code>boolean</code>
         * [.toString()](#Chord+toString) ⇒ <code>string</code>
-        * [.normalize()](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
+        * [.normalize([key], [options])](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
         * [.useModifier(newModifier)](#Chord+useModifier) ⇒ [<code>Chord</code>](#Chord)
         * [.transposeUp()](#Chord+transposeUp) ⇒ [<code>Chord</code>](#Chord)
         * [.transposeDown()](#Chord+transposeDown) ⇒ [<code>Chord</code>](#Chord)
@@ -1312,7 +1326,7 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 **Returns**: <code>string</code> - <p>the chord string</p>  
 <a name="Chord+normalize"></a>
 
-### chord.normalize() ⇒ [<code>Chord</code>](#Chord)
+### chord.normalize([key], [options]) ⇒ [<code>Chord</code>](#Chord)
 <p>Normalizes the chord root and bass notes:</p>
 <ul>
 <li>Fb becomes E</li>
@@ -1324,11 +1338,19 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 <li>7# becomes 1</li>
 <li>3# becomes 4</li>
 </ul>
-<p>Besides that it normalizes the suffix. For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
+<p>Besides that it normalizes the suffix if <code>normalizeSuffix</code> is <code>true</code>.
+For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
 All suffix normalizations can be found in <code>src/normalize_mappings/suffix-mapping.txt</code>.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - <p>the normalized chord</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the key to normalize to</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeSuffix] | <code>boolean</code> | <code>true</code> | <p>whether to normalize the chord suffix after transposing</p> |
+
 <a name="Chord+useModifier"></a>
 
 ### chord.useModifier(newModifier) ⇒ [<code>Chord</code>](#Chord)

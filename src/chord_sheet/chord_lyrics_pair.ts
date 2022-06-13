@@ -61,14 +61,14 @@ class ChordLyricsPair {
     return this.set({ lyrics });
   }
 
-  transpose(delta: number, key: string | Key | null = null): ChordLyricsPair {
+  transpose(delta: number, key: string | Key | null = null, { normalizeChordSuffix = false } = {}): ChordLyricsPair {
     const chordObj = Chord.parse(this.chords);
 
     if (chordObj) {
       let transposedChord = chordObj.transpose(delta);
 
       if (key) {
-        transposedChord = transposedChord.normalize(key);
+        transposedChord = transposedChord.normalize(key, { normalizeSuffix: normalizeChordSuffix });
       }
 
       return this.set({ chords: transposedChord.toString() });
