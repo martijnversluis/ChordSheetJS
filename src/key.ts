@@ -69,6 +69,10 @@ class Key {
     this.note = (note instanceof Note) ? note : Note.parse(note);
     this.modifier = modifier || null;
     this.minor = !!minor || false;
+
+    if (this.minor) {
+      this.note.minor = true;
+    }
   }
 
   isMinor() {
@@ -149,11 +153,28 @@ class Key {
     return this.toNumeral(key).toString();
   }
 
-  toString() {
-    if (this.isChordSymbol()) {
-      return `${this.note}${this.modifier || ''}`;
+  toString({ showMinor = true } = {}) {
+    switch (this.note.type) {
+      case SYMBOL:
+        return this.formatChordSymbolString(showMinor);
+      case NUMERIC:
+        return this.formatNumericString(showMinor);
+      case NUMERAL:
+        return this.formatNumeralString();
+      default:
+        throw new Error(`Unexpected note type ${this.note.type}`);
     }
+  }
 
+  private formatChordSymbolString(showMinor: boolean) {
+    return `${this.note}${this.modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
+  }
+
+  private formatNumericString(showMinor: boolean) {
+    return `${this.modifier || ''}${this.note}${this.minor && showMinor ? 'm' : ''}`;
+  }
+
+  private formatNumeralString() {
     return `${this.modifier || ''}${this.note}`;
   }
 
@@ -251,11 +272,11 @@ class Key {
     return this.clone();
   }
 
-  normalizeEnharmonics(key) {
+  normalizeEnharmonics(key: Key | string) {
     if (key) {
-      const rootKeyString = key.minor ? `${key}m` : key.toString();
+      const rootKeyString = Key.wrap(key).toString({ showMinor: true });
       const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
-      const thisKeyString = this.toString();
+      const thisKeyString = this.toString({ showMinor: false });
 
       if (enharmonics && enharmonics[thisKeyString]) {
         return Key.parse(enharmonics[thisKeyString]);

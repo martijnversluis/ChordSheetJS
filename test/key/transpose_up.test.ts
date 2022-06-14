@@ -155,5 +155,12 @@ describe('Key', () => {
         expect(transposedKey).toBeKey({ note: 'F', modifier: '#' });
       });
     });
+
+    it('correctly handles minor keys', () => {
+      const key = new Key({ note: 'E', modifier: '#', minor: true });
+
+      const transposedKey = key.transposeUp();
+      expect(transposedKey).toBeKey({ note: 'F', modifier: '#', minor: true });
+    });
   });
 });
