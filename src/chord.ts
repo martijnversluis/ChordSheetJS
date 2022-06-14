@@ -217,7 +217,7 @@ class Chord {
    * @returns {string} the chord string
    */
   toString() {
-    const chordString = this.root.toString() + (this.suffix || '');
+    const chordString = this.root.toString({ showMinor: false }) + (this.suffix || '');
 
     if (this.bass) {
       return `${chordString}/${this.bass.toString()}`;
@@ -305,12 +305,13 @@ class Chord {
     },
   ) {
     this.suffix = presence(suffix);
-    this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
+    const isMinor = suffix && suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
+    this.root = root || new Key({ note: base, modifier, minor: isMinor });
 
     if (bass) {
       this.bass = bass;
     } else if (bassBase) {
-      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' });
+      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: isMinor });
     } else {
       this.bass = null;
     }

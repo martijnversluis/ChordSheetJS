@@ -14,7 +14,7 @@ declare global {
 
       toBeNote({ note, type, minor }): CustomMatcherResult;
 
-      toBeKey({ note, modifier }): CustomMatcherResult;
+      toBeKey({ note, modifier, minor = false }): CustomMatcherResult;
 
       toBeChordLyricsPair(chords: string, lyrics: string): CustomMatcherResult;
 
