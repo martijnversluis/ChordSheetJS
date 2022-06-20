@@ -28,7 +28,7 @@
     "@parcel/packager-ts": "2.5.0",
     "@parcel/transformer-typescript-types": "2.5.0",
     "@types/jest": "^27.4.1",
-    "@types/node": "^17.0.35",
+    "@types/node": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "browserify": "^17.0.0",
