@@ -5,6 +5,7 @@
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "source": "src/index.ts",
   "main": "lib/index.js",
+  "module": "lib/module.js",
   "types": "./lib/main.d.ts",
   "files": [
     "/lib"
