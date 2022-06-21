@@ -1778,12 +1778,12 @@
     "@parcel/utils" "2.6.1"
     posthtml "^0.16.4"
 
-"@parcel/packager-ts@2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.6.0.tgz#7e4a19e880f5e097906812f49bf62fa40e356df8"
-  integrity sha512-JDKmXHUEGsMy6plDigPKkNhXWPm/6KIvXpg7/WMswzO23adtgWr2x9yz1Filt4JO0lxnDrdRJedUJxTwaDSYiA==
+"@parcel/packager-ts@2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.6.1.tgz#cc1d40fb6e337a24ab1a5cefb5e5f76de378b807"
+  integrity sha512-DkSuS7hSOsfxO77H3RsWDAoxLz5vEorQOQ4ufdKTwybPtAZc9T/B50pGHSk6Dj/jDIqqNqh1X2aDVDmJJUZK4Q==
   dependencies:
-    "@parcel/plugin" "2.6.0"
+    "@parcel/plugin" "2.6.1"
 
 "@parcel/plugin@2.6.0":
   version "2.6.0"
