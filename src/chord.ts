@@ -1,5 +1,5 @@
 import Key from './key';
-import SUFFIX_MAPPPING from './normalize_mappings/suffix-normalize-mapping';
+import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
 import {
   NUMERAL,
@@ -15,12 +15,12 @@ import {
   presence,
 } from './utilities';
 
-function normalizeSuffix(suffix) {
-  if (SUFFIX_MAPPPING[suffix] === '[blank]') {
+function normalizeChordSuffix(suffix) {
+  if (SUFFIX_MAPPING[suffix] === '[blank]') {
     return null;
   }
 
-  return SUFFIX_MAPPPING[suffix] || suffix;
+  return SUFFIX_MAPPING[suffix] || suffix;
 }
 
 const chordRegex = (
@@ -88,7 +88,7 @@ class Chord {
     const rootKey = this.root.toChordSymbol(keyObj).normalizeEnharmonics(keyObj);
 
     let chordSymbolChord = new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: rootKey,
       bass: this.bass?.toChordSymbol(keyObj).normalizeEnharmonics(rootKey),
     });
@@ -141,7 +141,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: this.root.toNumeric(keyObj),
       bass: this.bass?.toNumeric(keyObj),
     });
@@ -168,7 +168,7 @@ class Chord {
     const keyObj = Key.wrap(key);
 
     return new Chord({
-      suffix: normalizeSuffix(this.suffix),
+      suffix: normalizeChordSuffix(this.suffix),
       root: this.root.toNumeral(keyObj),
       bass: this.bass?.toNumeral(keyObj),
     });
@@ -217,7 +217,7 @@ class Chord {
    * @returns {string} the chord string
    */
   toString() {
-    const chordString = this.root.toString() + (this.suffix || '');
+    const chordString = this.root.toString({ showMinor: false }) + (this.suffix || '');
 
     if (this.bass) {
       return `${chordString}/${this.bass.toString()}`;
@@ -237,19 +237,24 @@ class Chord {
    * - 7# becomes 1
    * - 3# becomes 4
    *
-   * Besides that it normalizes the suffix. For example, `sus2` becomes `2`, `sus4` becomes `sus`.
+   * Besides that it normalizes the suffix if `normalizeSuffix` is `true`.
+   * For example, `sus2` becomes `2`, `sus4` becomes `sus`.
    * All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
-   *
+   * @param {Key|string} [key=null] the key to normalize to
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.normalizeSuffix=true] whether to normalize the chord suffix after transposing
    * @returns {Chord} the normalized chord
    */
-  normalize(key = null) {
+  normalize(key = null, { normalizeSuffix = true } = {}) {
+    const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
+
     if (isBlank(key)) {
-      return this.process('normalize').set({ suffix: presence(normalizeSuffix(this.suffix)) });
+      return this.process('normalize').set({ suffix });
     }
 
     return this.set({
+      suffix,
       root: this.root.normalizeEnharmonics(key),
-      suffix: presence(normalizeSuffix(this.suffix)),
       bass: this.bass ? this.bass.normalizeEnharmonics(this.root.toString()) : null,
     });
   }
@@ -300,12 +305,13 @@ class Chord {
     },
   ) {
     this.suffix = presence(suffix);
-    this.root = root || new Key({ note: base, modifier, minor: suffix === 'm' });
+    const isMinor = suffix && suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
+    this.root = root || new Key({ note: base, modifier, minor: isMinor });
 
     if (bass) {
       this.bass = bass;
     } else if (bassBase) {
-      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' });
+      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: isMinor });
     } else {
       this.bass = null;
     }

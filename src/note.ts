@@ -183,7 +183,12 @@ class Note {
   }
 
   toString() {
-    return `${this.note}`;
+    switch (this.type) {
+      case NUMERAL:
+        return `${this.minor ? this.note.toLowerCase() : this.note.toUpperCase()}`;
+      default:
+        return `${this.note}`;
+    }
   }
 
   private set(attributes) {

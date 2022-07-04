@@ -4,8 +4,6 @@ import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
 
-export type LineType = 'verse' | 'chorus' | 'none';
-
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
  */
@@ -23,7 +21,7 @@ class Line {
    * @member
    * @type {string}
    */
-  type: LineType = NONE;
+  type: 'verse' | 'chorus' | 'none' = NONE;
 
   /**
    * @ignore
@@ -43,7 +41,7 @@ class Line {
    */
   transposeKey?: string = null;
 
-  constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
+  constructor({ type, items }: { type: 'verse' | 'chorus' | 'none', items: Item[]} = { type: NONE, items: [] }) {
     this.type = type;
     this.items = items;
   }
