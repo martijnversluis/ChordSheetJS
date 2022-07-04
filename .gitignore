@@ -6,3 +6,4 @@ src/parser/chord_pro_peg_parser.ts
 .tool-versions
 src/normalize_mappings/suffix-normalize-mapping.ts
 .parcel-cache
+.turbo
