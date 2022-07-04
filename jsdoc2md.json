@@ -5,7 +5,7 @@
   },
   "plugins": [
     "plugins/markdown",
-    "node_modules/jsdoc-babel"
+    "../../node_modules/jsdoc-babel"
   ],
   "babel": {
     "extensions": ["ts", "tsx"],
