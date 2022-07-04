@@ -179,7 +179,6 @@ const ALIASES = {
   [NEW_KEY_SHORT]: NEW_KEY,
 };
 
-const META_TAG_REGEX = /^meta:\s*([^:\s]+)(\s*(.+))?$/;
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
@@ -211,21 +210,34 @@ class Tag extends AstComponent {
 
   _value?: string;
 
+  _isMetaTag: boolean = false;
+
   constructor(name, value = '', traceInfo: TraceInfo = null) {
     super(traceInfo);
-    this.name = name;
-    this.value = value || '';
+    this.parseNameValue(name, value);
   }
 
-  static parse(tag) {
+  private parseNameValue(name: string, value: string | null): void {
+    if (name === 'meta') {
+      const [metaName, metaValue] = value.split(/\s(.+)/);
+      this.name = metaName;
+      this.value = metaValue || '';
+      this._isMetaTag = true;
+    } else {
+      this.name = name;
+      this.value = value || '';
+    }
+  }
+
+  static parse(tag: string | Tag): Tag {
     if (tag instanceof Tag) {
       return tag;
     }
 
-    return this.parseWithRegex(tag, META_TAG_REGEX) || this.parseWithRegex(tag, TAG_REGEX);
+    return this.parseWithRegex(tag, TAG_REGEX);
   }
 
-  static parseWithRegex(tag, regex) {
+  static parseWithRegex(tag: string, regex: RegExp): Tag | null {
     const matches = tag.match(regex);
 
     if (matches !== null) {
@@ -295,8 +307,8 @@ class Tag extends AstComponent {
    * Checks whether the tag is either a standard meta tag or a custom meta directive (`{x_some_name}`)
    * @returns {boolean}
    */
-  isMetaTag() {
-    return CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
+  isMetaTag(): boolean {
+    return this._isMetaTag || CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
   }
 
   /**
