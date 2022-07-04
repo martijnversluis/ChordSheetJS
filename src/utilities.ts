@@ -47,8 +47,10 @@ export function deprecate(message) {
   try {
     throw new Error(`DEPRECATION: ${message}`);
   } catch (e) {
-    if (typeof process === 'object' && typeof process.emitWarning === 'function') {
-      process.emitWarning(`${message}\n${e.stack}`);
+    const proc = globalThis.process;
+
+    if (typeof proc === 'object' && typeof proc.emitWarning === 'function') {
+      proc.emitWarning(`${message}\n${e.stack}`);
     } else {
       console.warn(`${message}\n${e.stack}`);
     }
@@ -60,6 +62,10 @@ export function isEmptyString(string) {
 }
 
 export function parseWithRegexes(string: string, constructor, regexes) {
+  if (isEmptyString(string)) {
+    return null;
+  }
+
   for (let i = 0, count = regexes.length; i < count; i += 1) {
     const match = string.match(regexes[i]);
 

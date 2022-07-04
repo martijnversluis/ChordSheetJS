@@ -21,7 +21,7 @@ class Paragraph {
    * If not, it returns {@link INDETERMINATE}
    * @returns {string}
    */
-  get type() {
+  get type(): 'verse' | 'chorus' | 'none' | 'indeterminate' {
     const types = this.lines.map((line) => line.type);
     const uniqueTypes = [...new Set(types)];
 

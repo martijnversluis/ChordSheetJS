@@ -424,7 +424,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#KEY">KEY</a> : <code>string</code></dt>
-<dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
+<dd><p>_Key meta directive. Reflects the key as transposed by the capo value
+See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
@@ -636,8 +637,13 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
     * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
     * [.clone()](#Song+clone) ⇒ [<code>Song</code>](#Song)
-    * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
     * [.setKey(key)](#Song+setKey) ⇒ [<code>Song</code>](#Song)
+    * [.setCapo(capo)](#Song+setCapo) ⇒ [<code>Song</code>](#Song)
+    * [.transpose(delta, [options])](#Song+transpose) ⇒ [<code>Song</code>](#Song)
+    * [.transposeUp([options])](#Song+transposeUp) ⇒ [<code>Song</code>](#Song)
+    * [.transposeDown([options])](#Song+transposeDown) ⇒ [<code>Song</code>](#Song)
+    * [.changeKey(newKey)](#Song+changeKey) ⇒ [<code>Song</code>](#Song)
+    * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
@@ -689,13 +695,13 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>The cloned song</p>  
-<a name="Song+setCapo"></a>
+<a name="Song+setKey"></a>
 
-### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
-<p>Returns a copy of the song with the capo value set to the specified capo. It changes:</p>
+### song.setKey(key) ⇒ [<code>Song</code>](#Song)
+<p>Returns a copy of the song with the key value set to the specified key. It changes:</p>
 <ul>
-<li>the value for <code>capo</code> in the <code>metadata</code> set</li>
-<li>any existing <code>capo</code> directive)</li>
+<li>the value for <code>key</code> in the [metadata](metadata) set</li>
+<li>any existing <code>key</code> directive</li>
 </ul>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
@@ -703,14 +709,85 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 | Param | Type | Description |
 | --- | --- | --- |
-| capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from <code>metadata</code></li> <li>remove any <code>capo</code> directive</li> </ul> |
+| key | <code>number</code> \| <code>null</code> | <p>the key. Passing <code>null</code> will:</p> <ul> <li>remove the current key from [metadata](metadata)</li> <li>remove any <code>key</code> directive</li> </ul> |
 
-<a name="Song+setKey"></a>
+<a name="Song+setCapo"></a>
 
-### song.setKey(key) ⇒ [<code>Song</code>](#Song)
+### song.setCapo(capo) ⇒ [<code>Song</code>](#Song)
+<p>Returns a copy of the song with the key value set to the specified capo. It changes:</p>
+<ul>
+<li>the value for <code>capo</code> in the [metadata](metadata) set</li>
+<li>any existing <code>capo</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The changed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| capo | <code>number</code> \| <code>null</code> | <p>the capo. Passing <code>null</code> will:</p> <ul> <li>remove the current key from [metadata](metadata)</li> <li>remove any <code>capo</code> directive</li> </ul> |
+
+<a name="Song+transpose"></a>
+
+### song.transpose(delta, [options]) ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song by the specified delta. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| delta | <code>number</code> |  | <p>The number of semitones (positive or negative) to transpose with</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
+
+<a name="Song+transposeUp"></a>
+
+### song.transposeUp([options]) ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song up by one semitone. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
+
+<a name="Song+transposeDown"></a>
+
+### song.transposeDown([options]) ⇒ [<code>Song</code>](#Song)
+<p>Transposes the song down by one semitone. It will:</p>
+<ul>
+<li>transpose all chords, see: [transpose](#Chord+transpose)</li>
+<li>transpose the song key in [metadata](metadata)</li>
+<li>update any existing <code>key</code> directive</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>The transposed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeChordSuffix] | <code>boolean</code> | <code>false</code> | <p>whether to normalize the chord suffixes after transposing</p> |
+
+<a name="Song+changeKey"></a>
+
+### song.changeKey(newKey) ⇒ [<code>Song</code>](#Song)
 <p>Returns a copy of the song with the key set to the specified key. It changes:</p>
 <ul>
-<li>the value for <code>key</code> in the <code>metadata</code> set</li>
+<li>the value for <code>key</code> in the [metadata](metadata) set</li>
 <li>any existing <code>key</code> directive</li>
 <li>all chords, those are transposed according to the distance between the current and the new key</li>
 </ul>
@@ -720,7 +797,24 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>string</code> | <p>The new key.</p> |
+| newKey | <code>string</code> | <p>The new key.</p> |
+
+<a name="Song+changeMetadata"></a>
+
+### song.changeMetadata(name, value)
+<p>Returns a copy of the song with the directive value set to the specified value.</p>
+<ul>
+<li>when there is a matching directive in the song, it will update the directive</li>
+<li>when there is no matching directive, it will be inserted
+If <code>value</code> is <code>null</code> it will act as a delete, any directive matching <code>name</code> will be removed.</li>
+</ul>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | <p>The directive name</p> |
+| value | <code>string</code> \| <code>null</code> | <p>The value to set, or <code>null</code> to remove the directive</p> |
 
 <a name="Song+mapItems"></a>
 
@@ -1108,7 +1202,7 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p>
         * [.toNumericString([key])](#Chord+toNumericString) ⇒ <code>string</code>
         * [.isNumeral()](#Chord+isNumeral) ⇒ <code>boolean</code>
         * [.toString()](#Chord+toString) ⇒ <code>string</code>
-        * [.normalize()](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
+        * [.normalize([key], [options])](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
         * [.useModifier(newModifier)](#Chord+useModifier) ⇒ [<code>Chord</code>](#Chord)
         * [.transposeUp()](#Chord+transposeUp) ⇒ [<code>Chord</code>](#Chord)
         * [.transposeDown()](#Chord+transposeDown) ⇒ [<code>Chord</code>](#Chord)
@@ -1232,7 +1326,7 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 **Returns**: <code>string</code> - <p>the chord string</p>  
 <a name="Chord+normalize"></a>
 
-### chord.normalize() ⇒ [<code>Chord</code>](#Chord)
+### chord.normalize([key], [options]) ⇒ [<code>Chord</code>](#Chord)
 <p>Normalizes the chord root and bass notes:</p>
 <ul>
 <li>Fb becomes E</li>
@@ -1244,11 +1338,19 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 <li>7# becomes 1</li>
 <li>3# becomes 4</li>
 </ul>
-<p>Besides that it normalizes the suffix. For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
+<p>Besides that it normalizes the suffix if <code>normalizeSuffix</code> is <code>true</code>.
+For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
 All suffix normalizations can be found in <code>src/normalize_mappings/suffix-mapping.txt</code>.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - <p>the normalized chord</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [key] | <code>Key</code> \| <code>string</code> | <code></code> | <p>the key to normalize to</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.normalizeSuffix] | <code>boolean</code> | <code>true</code> | <p>whether to normalize the chord suffix after transposing</p> |
+
 <a name="Chord+useModifier"></a>
 
 ### chord.useModifier(newModifier) ⇒ [<code>Chord</code>](#Chord)
@@ -1392,7 +1494,8 @@ Can be deserialized using [deserialize](deserialize)</p>
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
-<p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p>
+<p>_Key meta directive. Reflects the key as transposed by the capo value
+See https://www.chordpro.org/chordpro/directives-key/</p>
 
 **Kind**: global variable  
 <a name="_KEY"></a>

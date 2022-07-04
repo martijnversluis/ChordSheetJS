@@ -1,5 +1,3 @@
-import { LineType } from '../src/chord_sheet/line';
-
 import {
   ChordLyricsPair,
   Line,
@@ -27,7 +25,7 @@ export function createSong(lines, metadata = null) {
   return song;
 }
 
-export function createLine(items, type: LineType = NONE) {
+export function createLine(items, type: 'verse' | 'chorus' | 'none' = NONE) {
   const line = new Line();
   items.forEach((item) => line.addItem(item));
   line.type = type;

@@ -50,7 +50,7 @@ class ChordLyricsPair {
     return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
   }
 
-  set(properties) {
+  set(properties): ChordLyricsPair {
     return new ChordLyricsPair(
       properties.chords || this.chords,
       properties.lyrics || this.lyrics,
@@ -61,13 +61,17 @@ class ChordLyricsPair {
     return this.set({ lyrics });
   }
 
-  transpose(delta: number, key: string | Key) {
+  transpose(delta: number, key: string | Key | null = null, { normalizeChordSuffix = false } = {}): ChordLyricsPair {
     const chordObj = Chord.parse(this.chords);
 
     if (chordObj) {
-      return this.set({
-        chords: chordObj.transpose(delta).normalize(key).toString(),
-      });
+      let transposedChord = chordObj.transpose(delta);
+
+      if (key) {
+        transposedChord = transposedChord.normalize(key, { normalizeSuffix: normalizeChordSuffix });
+      }
+
+      return this.set({ chords: transposedChord.toString() });
     }
 
     return this.clone();
