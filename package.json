@@ -62,6 +62,7 @@
     "eslint": "node_modules/.bin/eslint -c .eslintrc.js --ext .ts .",
     "lint": "yarn build:code-generate && yarn eslint",
     "lint:fix": "node_modules/.bin/eslint -c .eslintrc.js --fix --ext .ts .",
+    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf lib",
     "readme": "jsdoc2md -f src/**/*.ts -f src/*.ts --configure ./jsdoc2md.json --template doc/README.hbs > README.md",
     "prepublishOnly": "pinst --disable && yarn install && yarn test && yarn build",
     "postpublish": "pinst --enable",

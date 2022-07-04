@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
@@ -25,6 +26,7 @@ import {
   TAB,
 } from './constants';
 
+// eslint-disable-next-line import/no-cycle
 export { default as ChordProParser } from './parser/chord_pro_parser';
 export { default as ChordSheetParser } from './parser/chord_sheet_parser';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';

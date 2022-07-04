@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { Song } from '../index';
 import { parse } from './chord_pro_peg_parser';
 import ChordSheetSerializer from '../chord_sheet_serializer';
