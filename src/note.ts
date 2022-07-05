@@ -41,7 +41,7 @@ function numberToNumeral(number) {
 }
 
 class Note {
-  _note: string;
+  _note: any;
 
   type: string;
 
