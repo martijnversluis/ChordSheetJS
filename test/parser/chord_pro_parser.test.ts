@@ -99,6 +99,18 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
     expect(song.metadata.get('x_other_directive')).toEqual('Bar');
   });
 
+  it('parses meta directives', () => {
+    const chordSheetWithCustomMetaData = `
+      {meta: one_directive Foo}
+      {meta: other_directive Bar}
+    `;
+
+    const song = new ChordProParser().parse(chordSheetWithCustomMetaData);
+
+    expect(song.metadata.get('one_directive')).toEqual('Foo');
+    expect(song.metadata.get('other_directive')).toEqual('Bar');
+  });
+
   it('can have multiple values for a meta directive', () => {
     const chordSheetWithMultipleComposers = `
       {composer: John}
