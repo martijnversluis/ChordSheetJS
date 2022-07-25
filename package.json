@@ -1,7 +1,7 @@
 {
   "name": "@praisecharts/chordsheetjs",
   "author": "PraiseCharts",
-  "version": "7.6.0",
+  "version": "0.0.1",
   "description": "A JavaScript library for parsing and formatting chord charts",
   "source": "src/index.ts",
   "main": "lib/index.js",
@@ -69,7 +69,7 @@
     "postpublish": "pinst --enable",
     "pretest": "yarn build:code-generate",
     "prepare": "husky install",
-    "postinstall": "husky install"
+    "_postinstall": "husky install"
   },
   "dependencies": {
     "lodash.get": "^4.4.2"
