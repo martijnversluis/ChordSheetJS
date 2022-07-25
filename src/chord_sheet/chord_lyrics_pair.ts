@@ -62,7 +62,7 @@ class ChordLyricsPair {
   }
 
   transpose(delta: number, key: string | Key | null = null, { normalizeChordSuffix = false } = {}): ChordLyricsPair {
-    const chordObj = Chord.parse(this.chords);
+    const chordObj = Chord.parse(this.chords.trim());
 
     if (chordObj) {
       let transposedChord = chordObj.transpose(delta);
