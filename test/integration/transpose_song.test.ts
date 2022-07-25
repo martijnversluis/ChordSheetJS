@@ -81,7 +81,7 @@ Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`.substring(1)
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 
-  it('normalizes on transpose up when enabled', () => {
+  it('normalizes on transpose down when enabled', () => {
     const chordpro = `
 {key: D}
 Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
