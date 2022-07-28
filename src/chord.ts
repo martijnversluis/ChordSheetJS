@@ -10,7 +10,6 @@ import {
 
 import {
   deprecate,
-  isBlank,
   parseWithRegexes,
   presence,
 } from './utilities';
@@ -85,17 +84,18 @@ class Chord {
     }
 
     const keyObj = Key.wrap(key);
-    const rootKey = this.root.toChordSymbol(keyObj).normalizeEnharmonics(keyObj);
 
     let chordSymbolChord = new Chord({
       suffix: normalizeChordSuffix(this.suffix),
-      root: rootKey,
-      bass: this.bass?.toChordSymbol(keyObj).normalizeEnharmonics(rootKey),
+      root: this.root.toChordSymbol(keyObj),
+      bass: this.bass?.toChordSymbol(keyObj),
     });
 
     if (this.root.isMinor()) {
       chordSymbolChord = chordSymbolChord.makeMinor();
     }
+
+    chordSymbolChord = chordSymbolChord.normalize(key);
 
     return chordSymbolChord;
   }
@@ -240,6 +240,9 @@ class Chord {
    * Besides that it normalizes the suffix if `normalizeSuffix` is `true`.
    * For example, `sus2` becomes `2`, `sus4` becomes `sus`.
    * All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
+   *
+   * When the chord is minor, bass notes are normalized off of the relative major
+   * of the root note. For example, `Em/A#` becomes `Em/Bb`.
    * @param {Key|string} [key=null] the key to normalize to
    * @param {Object} [options={}] options
    * @param {boolean} [options.normalizeSuffix=true] whether to normalize the chord suffix after transposing
@@ -248,14 +251,15 @@ class Chord {
   normalize(key = null, { normalizeSuffix = true } = {}) {
     const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
 
-    if (isBlank(key)) {
-      return this.process('normalize').set({ suffix });
+    let bassRootKey = this.root.normalize();
+    if (this.root.isMinor() && this.bass) {
+      bassRootKey = this.root.transpose(3).removeMinor().normalize();
     }
 
     return this.set({
       suffix,
-      root: this.root.normalizeEnharmonics(key),
-      bass: this.bass ? this.bass.normalizeEnharmonics(this.root.toString()) : null,
+      root: this.root.normalize().normalizeEnharmonics(key),
+      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(bassRootKey) : null,
     });
   }
 

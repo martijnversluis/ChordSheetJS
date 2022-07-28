@@ -63,6 +63,36 @@ describe('Chord', () => {
           base: 'E', modifier: null, suffix: null, bassBase: 'E', bassModifier: null,
         });
       });
+
+      it('normalizes Em/A#', () => {
+        const chord = new Chord({
+          base: 'E',
+          modifier: '',
+          suffix: 'm',
+          bassBase: 'A',
+          bassModifier: '#',
+        });
+
+        const normalizedChord = chord.normalize();
+        expect(normalizedChord).toBeChord({
+          base: 'E', modifier: null, suffix: 'm', bassBase: 'B', bassModifier: 'b',
+        });
+      });
+
+      it('normalizes D/F#', () => {
+        const chord = new Chord({
+          base: 'D',
+          modifier: null,
+          suffix: null,
+          bassBase: 'F',
+          bassModifier: '#',
+        });
+
+        const normalizedChord = chord.normalize();
+        expect(normalizedChord).toBeChord({
+          base: 'D', modifier: null, suffix: null, bassBase: 'F', bassModifier: '#',
+        });
+      });
     });
   });
 });
