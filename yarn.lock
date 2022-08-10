@@ -6758,9 +6758,9 @@ ts-node@^10.7.0:
     yn "3.1.1"
 
 ts-pegjs@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-2.0.2.tgz#ba9917bb0561acd9dd30ecdc57e862561f33dbc2"
-  integrity sha512-eDwsKJd3HzUSSUcC+4Jciaf/g4UHOebI/v/Uu3RxDR68MO/Oac8qcho0/FFTCacG8fYENvrCOE3diOleDEyRmw==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-2.1.0.tgz#8de40541b4a637bb219206d7e3ca27271a9acdfb"
+  integrity sha512-ryGmGq98goGofe8OE+UpZR09tloPmzs7ILMkNyDKOv5ReT578pcFfc26sO834BFDNC0xgimREKOhk2xsRcQOZA==
 
 tsconfig-paths@^3.14.1:
   version "3.14.1"
