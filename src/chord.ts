@@ -310,7 +310,7 @@ class Chord {
     if (bass) {
       this.bass = bass;
     } else if (bassBase) {
-      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: suffix === 'm' });
+      this.bass = new Key({ note: bassBase, modifier: bassModifier, minor: false });
     } else {
       this.bass = null;
     }
