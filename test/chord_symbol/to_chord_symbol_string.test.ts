@@ -15,6 +15,18 @@ describe('Chord', () => {
 
           expect(chord.toChordSymbolString()).toEqual('Ebsus/G#');
         });
+
+        it('converts correctly minor chord to a string', () => {
+          const chord = new Chord({
+            base: 'G',
+            modifier: '',
+            suffix: 'm7',
+            bassBase: 'C',
+            bassModifier: '',
+          });
+
+          expect(chord.toChordSymbolString()).toEqual('Gm7/C');
+        });
       });
     });
   });
