@@ -1344,6 +1344,8 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 <p>Besides that it normalizes the suffix if <code>normalizeSuffix</code> is <code>true</code>.
 For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
 All suffix normalizations can be found in <code>src/normalize_mappings/suffix-mapping.txt</code>.</p>
+<p>When the chord is minor, bass notes are normalized off of the relative major
+of the root note. For example, <code>Em/A#</code> becomes <code>Em/Bb</code>.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - <p>the normalized chord</p>  

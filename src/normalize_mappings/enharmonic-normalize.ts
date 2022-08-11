@@ -25,6 +25,7 @@ export default {
   'D': {
     'D#': 'Eb',
     'A#': 'Bb',
+    'Gb': 'F#',
   },
   'E': {
     'Ab': 'G#',
