@@ -272,6 +272,12 @@ class Key {
     return this.clone();
   }
 
+  removeMinor() {
+    return this.set({
+      minor: false,
+    });
+  }
+
   normalizeEnharmonics(key: Key | string) {
     if (key) {
       const rootKeyString = Key.wrap(key).toString({ showMinor: true });
