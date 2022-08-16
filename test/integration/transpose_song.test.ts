@@ -2,7 +2,7 @@ import {
   ChordProFormatter,
   ChordProParser,
   ChordSheetParser,
-  TextFormatter
+  TextFormatter,
 } from '../../src';
 
 describe('transposing a song', () => {
