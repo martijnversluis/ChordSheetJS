@@ -12,7 +12,7 @@ LineWithNewline
 }
 
 Line
-  = lyrics:Lyrics? tokens:Token* chords:Chord? comment:Comment? Space* {
+  = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
   return {
     type: "line",
     items: [
@@ -25,7 +25,12 @@ Line
 }
 
 Token
-  = (Tag / ChordLyricsPair / MetaTernary)
+  = Tag
+  / ChordLyricsPair
+  / MetaTernary
+  / lyrics:Lyrics {
+    return { type: "chordLyricsPair", chords: "", lyrics };
+  }
 
 Comment
   = Space? "#" comment:$([^\r\n]*) {
@@ -33,14 +38,21 @@ Comment
 }
 
 ChordLyricsPair
-  = chords: Chord lyrics:$(Lyrics*) {
-  return { type: "chordLyricsPair", chords: chords || '', lyrics }
+  = chords: Chord lyrics:$(LyricsChar*) space:$(Space*) {
+  return {
+    type: "chordLyricsPair",
+    chords: chords || '',
+    lyrics: lyrics + (space || '')
+  };
 }
 
 Lyrics
-  = lyrics: LyricsChar+ {
+  = lyrics: LyricsCharOrSpace+ {
   return lyrics.map(c => c.char || c).join("");
 }
+
+LyricsCharOrSpace
+  = (LyricsChar / Space)
 
 Chord
   = !Escape "[" chords:ChordChar* "]" {
@@ -97,13 +109,17 @@ MetaExpression
   = ($(Char+) / MetaTernary)+
 
 LyricsChar
-  = Char
+  = WordChar
   / "]" { return {type: "char", char: "]"}; }
   / "|" { return {type: "char", char: "|"}; }
   / "}" { return {type: "char", char: "\x7d"}; }
 
 Char
-  = [^\|\[\]\\\{\}%#\r\n]
+  = WordChar
+  / Space
+
+WordChar
+  = [^\|\[\]\\\{\}%#\r\n\t ]
   / Escape
     sequence:(
         "\\" { return {type: "char", char: "\\"}; }
