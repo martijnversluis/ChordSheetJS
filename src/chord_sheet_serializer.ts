@@ -5,6 +5,7 @@ import Tag from './chord_sheet/tag';
 import Comment from './chord_sheet/comment';
 import Ternary from './chord_sheet/chord_pro/ternary';
 import { presence } from './utilities';
+import Chord from './chord';
 
 const CHORD_SHEET = 'chordSheet';
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
@@ -148,8 +149,12 @@ class ChordSheetSerializer {
   }
 
   parseChordLyricsPair(astComponent) {
-    const { chords, lyrics } = astComponent;
-    return new ChordLyricsPair(chords, lyrics);
+    const { chord, chords, lyrics } = astComponent;
+
+    return new ChordLyricsPair(
+      chord ? new Chord(chord).toString() : chords,
+      lyrics,
+    );
   }
 
   parseTag(astComponent) {

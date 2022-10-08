@@ -53,7 +53,9 @@
   },
   "scripts": {
     "build:suffix-normalize": "rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && ts-node src/normalize_mappings/generate-suffix-normalize-mapping.ts",
-    "build:pegjs": "peggy --plugin ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
+    "build:pegjs:chordpro": "peggy --plugin ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
+    "build:pegjs:chords-over-words": "bin/generate_parser chords_over_words",
+    "build:pegjs": "yarn build:pegjs:chordpro && yarn build:pegjs:chords-over-words",
     "build:code-generate": "yarn build:suffix-normalize && yarn build:pegjs",
     "build:sources": "parcel build",
     "build:browserify": "browserify lib/index.js --outfile lib/bundle.js --standalone ChordSheetJS",
