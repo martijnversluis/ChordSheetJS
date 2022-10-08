@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+const peggy = require('peggy');
+const tspegjs = require('ts-pegjs');
+const fs = require('fs');
+
+const parserName = process.argv[2];
+const grammarFile = `./src/parser/${parserName}_grammar.pegjs`;
+const outputFile = `./src/parser/${parserName}_peg_parser.ts`;
+const parserGrammar = fs.readFileSync(grammarFile, 'utf8');
+const chordGrammar = fs.readFileSync('./src/parser/chord_grammar.pegjs');
+const input = [parserGrammar, chordGrammar].join("\n\n");
+
+const source = peggy.generate(input, {
+  plugins: [tspegjs],
+  grammarSource: `src/parser/${parserName}_grammar.pegjs`,
+  output: 'source',
+  format: 'commonjs',
+});
+
+fs.writeFileSync(outputFile, source);

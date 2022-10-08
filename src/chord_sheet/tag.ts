@@ -320,7 +320,7 @@ class Tag extends AstComponent {
   }
 
   toString() {
-    return `Tag(name=${this.name}, value=${this.name})`;
+    return `Tag(name=${this.name}, value=${this.value})`;
   }
 
   set({ value }) {

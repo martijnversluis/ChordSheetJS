@@ -1,5 +1,6 @@
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
+import ChordsOverWordsParser from './parser/chords_over_words_parser';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 import TextFormatter from './formatter/text_formatter';
 import HtmlTableFormatter from './formatter/html_table_formatter';
@@ -27,6 +28,7 @@ import {
 
 export { default as ChordProParser } from './parser/chord_pro_parser';
 export { default as ChordSheetParser } from './parser/chord_sheet_parser';
+export { default as ChordsOverWordsParser } from './parser/chords_over_words_parser';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
 export { default as TextFormatter } from './formatter/text_formatter';
 export { default as HtmlTableFormatter } from './formatter/html_table_formatter';
@@ -59,6 +61,7 @@ export {
 export default {
   ChordProParser,
   ChordSheetParser,
+  ChordsOverWordsParser,
   UltimateGuitarParser,
   TextFormatter,
   HtmlTableFormatter,
