@@ -402,7 +402,7 @@ Let it   be, let it be
 
       const line1Pairs = lines[1].items;
       expect(line1Pairs[0]).toBeChordLyricsPair('', 'Let it');
-      expect(line1Pairs[1]).toBeChordLyricsPair('Am', '   ');
+      expect(line1Pairs[1]).toBeChordLyricsPair('Am', ' ');
       expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });

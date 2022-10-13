@@ -65,7 +65,7 @@ ChordLyricsLines
 
         if (secondWordPosition && secondWordPosition < end) {
           return [
-            { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition) },
+            { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition).trim() + " " },
             { type: "chordLyricsPair", chords: "", lyrics: pairLyrics.substring(secondWordPosition) },
           ];
         }

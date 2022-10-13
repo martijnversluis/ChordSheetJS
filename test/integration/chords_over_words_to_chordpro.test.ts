@@ -32,4 +32,44 @@ Let it [Bbm7]be, let it [DbM7/Ab]be, let it [Gbsus2]be, let it [Db]be
 
     expect(actualChordPro).toEqual(expectedChordPro);
   });
+
+  it('correctly formats chords over words with trailing chords', () => {
+    const chordOverWords = `
+title: Honey In The Rock
+
+Verse 1
+D        Dsus               D        Dsus 
+  Praying     for a miracle,  thirsty`.substring(1);
+
+    const expectedChordPro = `
+{title: Honey In The Rock}
+
+{comment: Verse 1}
+[D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`.substring(1);
+
+    const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('allows for a variance in space between trailing chord and next lyric', () => {
+    const chordOverWords = `
+title: Honey In The Rock
+
+Verse 1
+D       Dsus           D       Dsus 
+ Praying for a miracle, thirsty`.substring(1);
+
+    const expectedChordPro = `
+{title: Honey In The Rock}
+
+{comment: Verse 1}
+[D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`.substring(1);
+
+    const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
 });
