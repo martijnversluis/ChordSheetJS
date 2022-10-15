@@ -28,18 +28,15 @@ class Metadata extends MetadataAccessors {
   constructor(metadata = null) {
     super();
 
-    Object
-      .keys(metadata || {})
-      .filter((key) => !isReadonlyTag(key))
-      .forEach((key) => {
-        const value = metadata[key];
+    if (metadata) {
+      this.assign(metadata);
+    }
+  }
 
-        if (value instanceof Array) {
-          this.metadata[key] = [...value];
-        } else {
-          this.metadata[key] = value;
-        }
-      });
+  merge(metadata: Record<string, string | string[]>): Metadata {
+    const clone = this.clone();
+    clone.assign(metadata);
+    return clone;
   }
 
   contains(key): boolean {
@@ -83,7 +80,7 @@ class Metadata extends MetadataAccessors {
   }
 
   /**
-   * Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.
+   * Reads a metadata value by key. This method supports simple value lookup, as well as fetching single array values.
    *
    * This method deprecates direct property access, eg: metadata['author']
    *
@@ -183,6 +180,21 @@ class Metadata extends MetadataAccessors {
     }
 
     return undefined;
+  }
+
+  private assign(metadata: Record<string, string | string[]>) {
+    Object
+      .keys(metadata)
+      .filter((key) => !isReadonlyTag(key))
+      .forEach((key) => {
+        const value = metadata[key];
+
+        if (value instanceof Array) {
+          this.metadata[key] = [...value];
+        } else {
+          this.metadata[key] = value;
+        }
+      });
   }
 }
 
