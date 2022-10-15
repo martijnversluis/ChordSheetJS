@@ -574,7 +574,7 @@ metadata.get('author')   // =&gt; 'John'</p>
 <a name="Metadata+get"></a>
 
 ### metadata.get(prop) ⇒ <code>Array.&lt;String&gt;</code> \| <code>String</code>
-<p>Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.</p>
+<p>Reads a metadata value by key. This method supports simple value lookup, as well as fetching single array values.</p>
 <p>This method deprecates direct property access, eg: metadata['author']</p>
 <p>Examples:</p>
 <p>const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
