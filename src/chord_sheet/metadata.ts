@@ -42,11 +42,11 @@ class Metadata extends MetadataAccessors {
       });
   }
 
-  contains(key) {
+  contains(key): boolean {
     return key in this.metadata;
   }
 
-  add(key, value) {
+  add(key, value): void {
     if (isReadonlyTag(key)) {
       return;
     }
@@ -70,7 +70,7 @@ class Metadata extends MetadataAccessors {
     this.metadata[key] = [currentValue, value];
   }
 
-  set(key, value) {
+  set(key, value): void {
     if (value) {
       this.metadata[key] = value;
     } else {
@@ -105,7 +105,7 @@ class Metadata extends MetadataAccessors {
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
    * else it returns an array of strings.
    */
-  get(prop) {
+  get(prop): string | string[] | undefined {
     if (prop === _KEY) {
       return this.calculateKeyFromCapo();
     }
@@ -124,7 +124,7 @@ class Metadata extends MetadataAccessors {
    * @param {string} prop the property name
    * @returns {String} The metadata value
    */
-  getSingle(prop) {
+  getSingle(prop): string {
     const value = this.get(prop);
 
     if (Array.isArray(value)) {
@@ -134,11 +134,11 @@ class Metadata extends MetadataAccessors {
     return value;
   }
 
-  parseArrayKey(prop) {
+  parseArrayKey(prop): [string, number] | null {
     const match = prop.match(/(.+)\.(-?\d+)$/);
 
     if (!match) {
-      return [];
+      return null;
     }
 
     const key = match[1];
@@ -146,13 +146,14 @@ class Metadata extends MetadataAccessors {
     return [key, index];
   }
 
-  getArrayItem(prop) {
-    const [key, index] = this.parseArrayKey(prop);
+  getArrayItem(prop): string | undefined {
+    const parsedKey = this.parseArrayKey(prop);
 
-    if (!(key && index)) {
+    if (parsedKey === null) {
       return undefined;
     }
 
+    const [key, index] = parsedKey;
     const arrayValue = (this.metadata[key] || []);
     let itemIndex = index;
 
@@ -169,11 +170,11 @@ class Metadata extends MetadataAccessors {
    * Returns a deep clone of this Metadata object
    * @returns {Metadata} the cloned Metadata object
    */
-  clone() {
+  clone(): Metadata {
     return new Metadata(this.metadata);
   }
 
-  calculateKeyFromCapo() {
+  calculateKeyFromCapo(): string | undefined {
     const capo = this.getSingle(CAPO);
     const key = this.getSingle(KEY);
 
