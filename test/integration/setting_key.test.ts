@@ -43,7 +43,7 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey(null);
 
-    expect(updatedSong.key).toEqual(null);
+    expect(updatedSong.key).toEqual(undefined);
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 });

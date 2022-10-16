@@ -25,6 +25,11 @@ const numeralKeyRegex = (
 
 const regexes = [symbolKeyRegex, numericKeyRegex, numeralKeyRegex];
 
+/**
+ * Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).
+ *
+ * The only function considered public API is `Key.distance`
+ */
 class Key {
   note: Note;
 
@@ -36,7 +41,7 @@ class Key {
     return parseWithRegexes(keyString, Key, regexes);
   }
 
-  static wrap(keyStringOrObject) {
+  static wrap(keyStringOrObject: Key | string): Key {
     if (keyStringOrObject instanceof Key) {
       return keyStringOrObject;
     }
@@ -48,11 +53,17 @@ class Key {
     return `${Key.wrap(keyStringOrObject)}`;
   }
 
-  static distance(oneKey, otherKey) {
+  /**
+   * Calculates the distance in semitones between one key and another.
+   * @param {Key | string} oneKey the key
+   * @param {Key | string} otherKey the other key
+   * @return {number} the distance in semitones
+   */
+  static distance(oneKey: Key | string, otherKey: Key | string): number {
     return this.wrap(oneKey).distanceTo(otherKey);
   }
 
-  distanceTo(otherKey) {
+  distanceTo(otherKey: Key | string): number {
     const otherKeyObj = Key.wrap(otherKey);
     let key = this.useModifier(otherKeyObj.modifier);
     let delta = 0;

@@ -82,6 +82,10 @@ class Metadata extends MetadataAccessors {
     return this.get(name);
   }
 
+  getSingleMetadata(name: string): string {
+    return this.getSingle(name);
+  }
+
   /**
    * Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.
    *
