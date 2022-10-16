@@ -17,31 +17,33 @@ import {
 abstract class MetadataAccessors {
   abstract getMetadata(_name: string): string | string[];
 
-  get key() { return this.getMetadata(KEY); }
+  abstract getSingleMetadata(_name: string): string;
 
-  get title() { return this.getMetadata(TITLE); }
+  get key(): string { return this.getSingleMetadata(KEY); }
 
-  get subtitle() { return this.getMetadata(SUBTITLE); }
+  get title(): string { return this.getSingleMetadata(TITLE); }
 
-  get capo() { return this.getMetadata(CAPO); }
+  get subtitle(): string { return this.getSingleMetadata(SUBTITLE); }
 
-  get duration() { return this.getMetadata(DURATION); }
+  get capo(): string | string[] { return this.getMetadata(CAPO); }
 
-  get tempo() { return this.getMetadata(TEMPO); }
+  get duration(): string { return this.getSingleMetadata(DURATION); }
 
-  get time() { return this.getMetadata(TIME); }
+  get tempo(): string { return this.getSingleMetadata(TEMPO); }
 
-  get year() { return this.getMetadata(YEAR); }
+  get time(): string | string[] { return this.getMetadata(TIME); }
 
-  get album() { return this.getMetadata(ALBUM); }
+  get year(): string { return this.getSingleMetadata(YEAR); }
 
-  get copyright() { return this.getMetadata(COPYRIGHT); }
+  get album(): string | string[] { return this.getMetadata(ALBUM); }
 
-  get lyricist() { return this.getMetadata(LYRICIST); }
+  get copyright(): string { return this.getSingleMetadata(COPYRIGHT); }
 
-  get artist() { return this.getMetadata(ARTIST); }
+  get lyricist(): string | string[] { return this.getMetadata(LYRICIST); }
 
-  get composer() { return this.getMetadata(COMPOSER); }
+  get artist(): string | string[] { return this.getMetadata(ARTIST); }
+
+  get composer(): string | string[] { return this.getMetadata(COMPOSER); }
 }
 
 export default MetadataAccessors;
