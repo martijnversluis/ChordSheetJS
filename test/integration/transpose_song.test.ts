@@ -1,4 +1,9 @@
-import { ChordProFormatter, ChordProParser } from '../../src';
+import {
+  ChordProFormatter,
+  ChordProParser,
+  ChordSheetParser,
+  TextFormatter,
+} from '../../src';
 
 describe('transposing a song', () => {
   it('transposes with a delta', () => {
@@ -81,7 +86,7 @@ Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`.substring(1)
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 
-  it('normalizes on transpose up when enabled', () => {
+  it('normalizes on transpose down when enabled', () => {
     const chordpro = `
 {key: D}
 Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
@@ -95,5 +100,20 @@ Let it [Bbm]be, let it [Db/Ab]be, let it [Gb2]be, let it [Db]be`.substring(1);
 
     expect(updatedSong.key).toEqual('Db');
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+  });
+
+  it('may be transposed without a key', () => {
+    const chordpro = `
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be`.substring(1);
+
+    const changedSheet = `
+       Bm         D/A        G          D
+Let it be, let it be, let it be, let it be`.substring(1);
+
+    const song = new ChordSheetParser().parse(chordpro);
+    const updatedSong = song.transpose(2);
+
+    expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 });

@@ -261,8 +261,12 @@ class Song extends MetadataAccessors {
     return this.metadata;
   }
 
-  getMetadata(name) {
-    return this.metadata[name] || null;
+  getMetadata(name): string | string[] {
+    return this.metadata.getMetadata(name);
+  }
+
+  getSingleMetadata(name: string): string {
+    return this.metadata.getSingleMetadata(name);
   }
 
   /**
