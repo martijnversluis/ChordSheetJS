@@ -31,14 +31,11 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatHeader() {
-    const { title, subtitle } = this.song;
-    const separator = (title || subtitle) ? '\n' : '';
+    const metadata = Object.keys(this.song.metadata.metadata)
+      .map((key) => `${key}: ${this.song.metadata[key]}`)
+      .join('\n');
 
-    return [
-      this.formatTitle(title),
-      this.formatSubTitle(subtitle),
-      separator,
-    ].join('');
+    return metadata ? `${metadata}\n\n` : '';
   }
 
   formatParagraphs() {
