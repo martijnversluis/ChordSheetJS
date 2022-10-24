@@ -186,7 +186,7 @@ Eb(no3) / / / | / / / / |
     expect(line2Pairs[9]).toBeChordLyricsPair('|', '');
   });
 
-  it('supports two chords only section with rhythm symbols and chords above eachother', () => {
+  it('supports two chords only sections with rhythm symbols and chords above eachother', () => {
     const chordOverWords = `
 Interlude 4 *18
 Dm9 / C/E / | F9/A Bbma9 / A7(#9#5) |
