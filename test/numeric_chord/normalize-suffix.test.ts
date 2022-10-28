@@ -36,8 +36,8 @@ describe('Chord', () => {
       });
 
       it('returns the suffix when it\'s not in the config', () => {
-        const chord = Chord.parse('1not-a-real-suffix/3').normalize().toString();
-        expect(chord).toBe('1not-a-real-suffix/3');
+        const chord = Chord.parse('113(add2)').normalize().toString();
+        expect(chord).toBe('113(add2)');
       });
     });
   });

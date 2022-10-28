@@ -5,12 +5,7 @@ import Formatter from './formatter';
  */
 class HtmlFormatter extends Formatter {
   formatWithTemplate(song, template) {
-    return template(
-      {
-        song,
-        configuration: this.configuration,
-      },
-    );
+    return template({ song, configuration: this.configuration });
   }
 }
 

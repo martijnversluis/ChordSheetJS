@@ -1,19 +1,8 @@
+import { parse } from './parser/chord_peg_parser';
 import Key from './key';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
-
-import {
-  NUMERAL,
-  NUMERIC,
-  ROMAN_NUMERALS,
-  SYMBOL,
-} from './constants';
-
-import {
-  deprecate,
-  isBlank,
-  parseWithRegexes,
-  presence,
-} from './utilities';
+import { deprecate, presence } from './utilities';
+import { NUMERAL, NUMERIC, SYMBOL } from './constants';
 
 function normalizeChordSuffix(suffix) {
   if (SUFFIX_MAPPING[suffix] === '[blank]') {
@@ -22,28 +11,6 @@ function normalizeChordSuffix(suffix) {
 
   return SUFFIX_MAPPING[suffix] || suffix;
 }
-
-const chordRegex = (
-  /^(?<base>[A-G])(?<modifier>#|b)?(?<suffix>[^/\s]*)(\/(?<bassBase>[A-G])(?<bassModifier>#|b)?)?$/i
-);
-
-const numericChordRegex = (
-  /^(?<modifier>#|b)?(?<base>[1-7])(?<suffix>[^/\s]*)(\/(?<bassModifier>#|b)?(?<bassBase>[0-7]))?$/
-);
-
-const sortedNumerals = [...ROMAN_NUMERALS].sort((numeralA, numeralB) => numeralB.length - numeralA.length);
-
-const numerals = [
-  ...sortedNumerals,
-  ...sortedNumerals.map((numeral) => numeral.toLowerCase()),
-].join('|');
-
-const numeralChordRegex = (
-  // eslint-disable-next-line max-len
-  new RegExp(`^(?<modifier>#|b)?(?<base>${numerals})(?<suffix>[^/\\s]*)(\\/(?<bassModifier>#|b)?(?<bassBase>${numerals}))?$`)
-);
-
-const regexes = [numericChordRegex, numeralChordRegex, chordRegex];
 
 /**
  * Represents a Chord, consisting of a root, suffix (quality) and bass
@@ -61,7 +28,12 @@ class Chord {
    * @returns {null|Chord}
    */
   static parse(chordString) {
-    return parseWithRegexes(chordString, Chord, regexes);
+    try {
+      const ast = parse(chordString);
+      return new Chord(ast);
+    } catch (_error) {
+      return null;
+    }
   }
 
   /**
@@ -85,17 +57,18 @@ class Chord {
     }
 
     const keyObj = Key.wrap(key);
-    const rootKey = this.root.toChordSymbol(keyObj).normalizeEnharmonics(keyObj);
 
     let chordSymbolChord = new Chord({
       suffix: normalizeChordSuffix(this.suffix),
-      root: rootKey,
-      bass: this.bass?.toChordSymbol(keyObj).normalizeEnharmonics(rootKey),
+      root: this.root.toChordSymbol(keyObj),
+      bass: this.bass?.toChordSymbol(keyObj),
     });
 
     if (this.root.isMinor()) {
       chordSymbolChord = chordSymbolChord.makeMinor();
     }
+
+    chordSymbolChord = chordSymbolChord.normalize(key);
 
     return chordSymbolChord;
   }
@@ -240,6 +213,9 @@ class Chord {
    * Besides that it normalizes the suffix if `normalizeSuffix` is `true`.
    * For example, `sus2` becomes `2`, `sus4` becomes `sus`.
    * All suffix normalizations can be found in `src/normalize_mappings/suffix-mapping.txt`.
+   *
+   * When the chord is minor, bass notes are normalized off of the relative major
+   * of the root note. For example, `Em/A#` becomes `Em/Bb`.
    * @param {Key|string} [key=null] the key to normalize to
    * @param {Object} [options={}] options
    * @param {boolean} [options.normalizeSuffix=true] whether to normalize the chord suffix after transposing
@@ -248,14 +224,15 @@ class Chord {
   normalize(key = null, { normalizeSuffix = true } = {}) {
     const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
 
-    if (isBlank(key)) {
-      return this.process('normalize').set({ suffix });
+    let bassRootKey = this.root.normalize();
+    if (this.root.isMinor() && this.bass) {
+      bassRootKey = this.root.transpose(3).removeMinor().normalize();
     }
 
     return this.set({
       suffix,
-      root: this.root.normalizeEnharmonics(key),
-      bass: this.bass ? this.bass.normalizeEnharmonics(this.root.toString()) : null,
+      root: this.root.normalize().normalizeEnharmonics(key),
+      bass: this.bass ? this.bass.normalize().normalizeEnharmonics(bassRootKey) : null,
     });
   }
 

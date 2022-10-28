@@ -15,8 +15,8 @@ export default {
     'A#': 'Bb',
   },
   'C#': {
-    'D#': 'Eb',
-    'A#': 'Bb',
+    'Eb': 'D#',
+    'Bb': 'A#',
   },
   'Db': {
     'B': 'Cb',
@@ -25,6 +25,7 @@ export default {
   'D': {
     'D#': 'Eb',
     'A#': 'Bb',
+    'Gb': 'F#',
   },
   'E': {
     'Ab': 'G#',
@@ -39,8 +40,8 @@ export default {
     'G#': 'Ab',
   },
   'F#': {
-    'A#': 'Bb',
-    'D#': 'Eb',
+    'Bb': 'A#',
+    'Eb': 'D#',
   },
   'Gb': {
     'A#': 'Bb',
@@ -53,10 +54,12 @@ export default {
     'A#': 'Bb',
     'D#': 'Eb',
     'G#': 'Ab',
+    'C#': 'Db',
   },
   'G#': {
     'A#': 'Bb',
     'D#': 'Eb',
+    'Cb': 'B#',
   },
   'Am': {
     'Gb': 'G',
@@ -68,6 +71,7 @@ export default {
   },
   'Bbm': {
     'Cb': 'B',
+    'Gb': 'F#',
   },
   'Bm': {
     'A#': 'Bb',
@@ -76,6 +80,7 @@ export default {
   'C#m': {
     'A#': 'Bb',
     'D#': 'Eb',
+    'Gb': 'F#',
   },
   'Cm': {
     'G#': 'Ab',
@@ -87,10 +92,14 @@ export default {
   'Dm': {
     'A#': 'Bb',
     'D#': 'Eb',
+    'F#': 'Gb',
+    'G#': 'Ab',
+    'C#': 'Db',
   },
   'Em': {
     'A#': 'Bb',
     'D#': 'Eb',
+    'C#': 'Db',
   },
   'F#m': {
     'A#': 'Bb',
@@ -110,6 +119,8 @@ export default {
     'G#': 'Ab',
     'A#': 'Bb',
     'D#': 'Eb',
+    'C#': 'Db',
+    'F#': 'Gb',
   },
   'G#m': {
     'A#': 'Bb',

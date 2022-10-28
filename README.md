@@ -389,8 +389,12 @@ PDF conversion.</p></dd>
 <dd><p>Parses a ChordPro chord sheet</p></dd>
 <dt><a href="#ChordSheetParser">ChordSheetParser</a></dt>
 <dd><p>Parses a normal chord sheet</p></dd>
+<dt><a href="#ChordsOverWordsParser">ChordsOverWordsParser</a></dt>
+<dd><p>Parses a chords over words sheet</p></dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
 <dd><p>Represents a parser warning, currently only used by ChordProParser.</p></dd>
+<dt><a href="#PegBasedParser">PegBasedParser</a></dt>
+<dd><p>Parses a chords over words sheet</p></dd>
 <dt><a href="#UltimateGuitarParser">UltimateGuitarParser</a></dt>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
 Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
@@ -573,7 +577,7 @@ metadata.get('author')   // =&gt; 'John'</p>
 <a name="Metadata+get"></a>
 
 ### metadata.get(prop) ⇒ <code>Array.&lt;String&gt;</code> \| <code>String</code>
-<p>Reads a metadata value by key. This method supports simple value lookup, as fetching single array values.</p>
+<p>Reads a metadata value by key. This method supports simple value lookup, as well as fetching single array values.</p>
 <p>This method deprecates direct property access, eg: metadata['author']</p>
 <p>Examples:</p>
 <p>const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
@@ -1106,17 +1110,6 @@ For a CSS string see [cssString](cssString)</p>
 <p>Parses a ChordPro chord sheet</p>
 
 **Kind**: global class  
-
-* [ChordProParser](#ChordProParser)
-    * [.warnings](#ChordProParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-    * [.parse(chordProChordSheet)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
-
-<a name="ChordProParser+warnings"></a>
-
-### chordProParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-<p>All warnings raised during parsing the ChordPro chord sheet</p>
-
-**Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
 <a name="ChordProParser+parse"></a>
 
 ### chordProParser.parse(chordProChordSheet) ⇒ [<code>Song</code>](#Song)
@@ -1165,6 +1158,24 @@ For a CSS string see [cssString](cssString)</p>
 | [options] | <code>Object</code> | <code>{}</code> | <p>Optional parser options</p> |
 | [options.song] | [<code>Song</code>](#Song) | <code></code> | <p>The [Song](#Song) to store the song data in</p> |
 
+<a name="ChordsOverWordsParser"></a>
+
+## ChordsOverWordsParser
+<p>Parses a chords over words sheet</p>
+
+**Kind**: global class  
+<a name="ChordsOverWordsParser+parse"></a>
+
+### chordsOverWordsParser.parse(chordsOverWordsSheet) ⇒ [<code>Song</code>](#Song)
+<p>Parses a chords over words sheet into a song</p>
+
+**Kind**: instance method of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| chordsOverWordsSheet | <code>string</code> | <p>the chords over words sheet</p> |
+
 <a name="ParserWarning"></a>
 
 ## ParserWarning
@@ -1178,6 +1189,18 @@ For a CSS string see [cssString](cssString)</p>
 
 **Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
 **Returns**: <code>string</code> - <p>The string warning</p>  
+<a name="PegBasedParser"></a>
+
+## PegBasedParser
+<p>Parses a chords over words sheet</p>
+
+**Kind**: global class  
+<a name="PegBasedParser+warnings"></a>
+
+### pegBasedParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+<p>All warnings raised during parsing the chord sheet</p>
+
+**Kind**: instance property of [<code>PegBasedParser</code>](#PegBasedParser)  
 <a name="UltimateGuitarParser"></a>
 
 ## UltimateGuitarParser
@@ -1344,6 +1367,8 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 <p>Besides that it normalizes the suffix if <code>normalizeSuffix</code> is <code>true</code>.
 For example, <code>sus2</code> becomes <code>2</code>, <code>sus4</code> becomes <code>sus</code>.
 All suffix normalizations can be found in <code>src/normalize_mappings/suffix-mapping.txt</code>.</p>
+<p>When the chord is minor, bass notes are normalized off of the relative major
+of the root note. For example, <code>Em/A#</code> becomes <code>Em/Bb</code>.</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: [<code>Chord</code>](#Chord) - <p>the normalized chord</p>  

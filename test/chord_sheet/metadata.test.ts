@@ -99,4 +99,31 @@ describe('Metadata', () => {
       });
     });
   });
+
+  describe('merge', () => {
+    it('returns a new Metadata object where metadata is merged with the supplied metadata', () => {
+      const original = new Metadata({ artist: 'Bill', composer: 'John' });
+      const merged = original.merge({ artist: 'Mary' });
+
+      expect(merged.artist).toEqual('Mary');
+      expect(merged.composer).toEqual('John');
+    });
+
+    it('does not deep-merge array values', () => {
+      const original = new Metadata({ artist: ['Bill'], composer: 'John' });
+      const merged = original.merge({ artist: ['Mary'] });
+
+      expect(merged.artist).toEqual(['Mary']);
+      expect(merged.composer).toEqual('John');
+    });
+
+    it('does not override read-only keys', () => {
+      const original = new Metadata({ key: 'Ab', capo: 3 });
+      const merged = original.merge({ _key: 'G#' });
+
+      expect(merged.key).toEqual('Ab');
+      expect(merged.capo).toEqual(3);
+      expect(merged.get('_key')).toEqual('B');
+    });
+  });
 });

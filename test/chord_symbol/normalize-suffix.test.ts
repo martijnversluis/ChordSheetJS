@@ -30,8 +30,8 @@ describe('Chord', () => {
       });
 
       it('returns the suffix when it\'s not in the config', () => {
-        const chord = Chord.parse('Enot-a-real-suffix/B#').normalize().toString();
-        expect(chord).toBe('Enot-a-real-suffix/C');
+        const chord = Chord.parse('E13(add2)').normalize().toString();
+        expect(chord).toBe('E13(add2)');
       });
     });
   });
