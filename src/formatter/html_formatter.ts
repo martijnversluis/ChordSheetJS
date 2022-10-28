@@ -5,22 +5,7 @@ import Formatter from './formatter';
  */
 class HtmlFormatter extends Formatter {
   formatWithTemplate(song, template) {
-    return template(
-      {
-        song,
-        configuration: this.configuration,
-      },
-      {
-        allowedProtoProperties: {
-          bodyLines: true,
-          bodyParagraphs: true,
-          subtitle: true,
-          title: true,
-          value: true,
-          key: true,
-        },
-      },
-    );
+    return template({ song, configuration: this.configuration });
   }
 }
 
