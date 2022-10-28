@@ -324,7 +324,7 @@ class Tag extends AstComponent {
   }
 
   set({ value }) {
-    return new this.constructor(this._originalName, value);
+    return new Tag(this._originalName, value);
   }
 
   setValue(value: string) {
