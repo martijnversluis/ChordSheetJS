@@ -8,7 +8,7 @@ import {
   isReadonlyTag,
 } from './tag';
 
-function appendValue(array, key, value) {
+function appendValue(array: string[], value: string): void {
   if (!array.includes(value)) {
     array.push(value);
   }
@@ -25,7 +25,7 @@ function appendValue(array, key, value) {
 class Metadata extends MetadataAccessors {
   metadata: Record<string, string | string[]> = {};
 
-  constructor(metadata = null) {
+  constructor(metadata: Record<string, string | string[]> = {}) {
     super();
 
     if (metadata) {
@@ -39,11 +39,11 @@ class Metadata extends MetadataAccessors {
     return clone;
   }
 
-  contains(key): boolean {
+  contains(key: string): boolean {
     return key in this.metadata;
   }
 
-  add(key, value): void {
+  add(key: string, value: string): void {
     if (isReadonlyTag(key)) {
       return;
     }
@@ -60,14 +60,14 @@ class Metadata extends MetadataAccessors {
     }
 
     if (currentValue instanceof Array) {
-      appendValue(currentValue, key, value);
+      appendValue(currentValue, value);
       return;
     }
 
     this.metadata[key] = [currentValue, value];
   }
 
-  set(key, value): void {
+  set(key: string, value: string | null): void {
     if (value) {
       this.metadata[key] = value;
     } else {
@@ -75,7 +75,7 @@ class Metadata extends MetadataAccessors {
     }
   }
 
-  getMetadata(name: string): string | string[] {
+  getMetadata(name: string): string | string[] | undefined {
     return this.get(name);
   }
 
@@ -106,7 +106,7 @@ class Metadata extends MetadataAccessors {
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
    * else it returns an array of strings.
    */
-  get(prop): string | string[] | undefined {
+  get(prop: string): string | string[] | undefined {
     if (prop === _KEY) {
       return this.calculateKeyFromCapo();
     }
@@ -125,17 +125,17 @@ class Metadata extends MetadataAccessors {
    * @param {string} prop the property name
    * @returns {String} The metadata value
    */
-  getSingle(prop): string {
+  getSingle(prop: string): string {
     const value = this.get(prop);
 
     if (Array.isArray(value)) {
       return value[0];
     }
 
-    return value;
+    return value as string;
   }
 
-  parseArrayKey(prop): [string, number] | null {
+  parseArrayKey(prop: string): [string, number] | null {
     const match = prop.match(/(.+)\.(-?\d+)$/);
 
     if (!match) {
@@ -147,7 +147,7 @@ class Metadata extends MetadataAccessors {
     return [key, index];
   }
 
-  getArrayItem(prop): string | undefined {
+  getArrayItem(prop: string): string | undefined {
     const parsedKey = this.parseArrayKey(prop);
 
     if (parsedKey === null) {
@@ -180,13 +180,19 @@ class Metadata extends MetadataAccessors {
     const key = this.getSingle(KEY);
 
     if (capo && key) {
-      return Chord.parse(key).transpose(parseInt(capo, 10)).toString();
+      const chord = Chord.parse(key);
+
+      if (!chord) {
+        throw new Error(`Could not parse ${key}`);
+      }
+
+      return chord.transpose(parseInt(capo, 10)).toString();
     }
 
     return undefined;
   }
 
-  private assign(metadata: Record<string, string | string[]>) {
+  private assign(metadata: Record<string, string | string[]>): void {
     Object
       .keys(metadata)
       .filter((key) => !isReadonlyTag(key))

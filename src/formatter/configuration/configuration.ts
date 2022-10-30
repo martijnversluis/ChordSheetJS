@@ -1,19 +1,36 @@
-import lowdashGet from 'lodash.get';
+import lodashGet from 'lodash.get';
 
 import MetadataConfiguration from './metadata_configuration';
 
+export type ConfigurationProperties = Record<string, any> & {
+  evaluate?: boolean,
+  metadata?: {
+    separator: string,
+  },
+}
+
+export const defaultConfiguration: ConfigurationProperties = { evaluate: false, metadata: { separator: ',' } };
+
 class Configuration {
-  metadata?: MetadataConfiguration;
+  metadata: MetadataConfiguration;
 
   evaluate: boolean;
 
-  constructor({ evaluate = false, metadata = { separator: ',' } }) {
-    this.evaluate = evaluate;
-    this.metadata = new MetadataConfiguration(metadata);
+  configuration: Record<string, any>;
+
+  constructor(configuration: ConfigurationProperties = defaultConfiguration) {
+    if ('evaluate' in configuration) {
+      this.evaluate = !!configuration.evaluate;
+    } else {
+      this.evaluate = !!defaultConfiguration.evaluate;
+    }
+
+    this.metadata = new MetadataConfiguration(configuration.metadata);
+    this.configuration = configuration;
   }
 
-  get(key: string) {
-    return lowdashGet(this, key);
+  get(key: string): string {
+    return lodashGet(this, key);
   }
 }
 

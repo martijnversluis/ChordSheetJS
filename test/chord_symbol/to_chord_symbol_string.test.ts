@@ -19,10 +19,10 @@ describe('Chord', () => {
         it('converts correctly minor chord to a string', () => {
           const chord = new Chord({
             base: 'G',
-            modifier: '',
+            modifier: null,
             suffix: 'm7',
             bassBase: 'C',
-            bassModifier: '',
+            bassModifier: null,
           });
 
           expect(chord.toChordSymbolString()).toEqual('Gm7/C');

@@ -2173,6 +2173,18 @@
   resolved "https://registry.yarnpkg.com/@types/linkify-it/-/linkify-it-3.0.2.tgz#fd2cd2edbaa7eaac7e7f3c1748b52a19143846c9"
   integrity sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==
 
+"@types/lodash.get@^4.4.7":
+  version "4.4.7"
+  resolved "https://registry.yarnpkg.com/@types/lodash.get/-/lodash.get-4.4.7.tgz#1ea63d8b94709f6bc9e231f252b31440abe312cf"
+  integrity sha512-af34Mj+KdDeuzsJBxc/XeTtOx0SZHZNLd+hdrn+PcKGQs0EG2TJTzQAOTCZTgDJCArahlCzLWSy8c2w59JRz7Q==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.186"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.186.tgz#862e5514dd7bd66ada6c70ee5fce844b06c8ee97"
+  integrity sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==
+
 "@types/markdown-it@^12.2.3":
   version "12.2.3"
   resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-12.2.3.tgz#0d6f6e5e413f8daaa26522904597be3d6cd93b51"

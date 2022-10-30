@@ -118,11 +118,11 @@ describe('Metadata', () => {
     });
 
     it('does not override read-only keys', () => {
-      const original = new Metadata({ key: 'Ab', capo: 3 });
+      const original = new Metadata({ key: 'Ab', capo: '3' });
       const merged = original.merge({ _key: 'G#' });
 
       expect(merged.key).toEqual('Ab');
-      expect(merged.capo).toEqual(3);
+      expect(merged.capo).toEqual('3');
       expect(merged.get('_key')).toEqual('B');
     });
   });

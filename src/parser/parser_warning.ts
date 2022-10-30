@@ -14,19 +14,19 @@ class ParserWarning {
    * @member
    * @type {number}
    */
-  lineNumber: number;
+  lineNumber: number | null = null;
 
   /**
    * The chord sheet column on which the warning occurred
    * @member
    * @type {number}
    */
-  column: number;
+  column: number | null = null;
 
   /**
    * @hideconstructor
    */
-  constructor(message: string, lineNumber: number, column: number) {
+  constructor(message: string, lineNumber: number | null, column: number | null) {
     this.message = message;
     this.lineNumber = lineNumber;
     this.column = column;
@@ -36,8 +36,8 @@ class ParserWarning {
    * Returns a stringified version of the warning
    * @returns {string} The string warning
    */
-  toString() {
-    return `Warning: ${this.message} on line ${this.lineNumber} column ${this.column}`;
+  toString(): string {
+    return `Warning: ${this.message} on line ${this.lineNumber || '?'} column ${this.column || '?'}`;
   }
 }
 

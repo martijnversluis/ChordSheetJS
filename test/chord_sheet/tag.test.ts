@@ -51,42 +51,42 @@ describe('Tag', () => {
 
   describe('::parse', () => {
     it('can parse {name}', () => {
-      const tag = Tag.parse('foo');
+      const tag = Tag.parseOrFail('foo');
 
       expect(tag.name).toEqual('foo');
-      expect(tag.value).toBe(null);
+      expect(tag.value).toEqual('');
     });
 
     it('can parse {name:value}', () => {
-      const tag = Tag.parse('foo:bar ber');
+      const tag = Tag.parseOrFail('foo:bar ber');
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {name value}', () => {
-      const tag = Tag.parse('foo bar ber');
+      const tag = Tag.parseOrFail('foo bar ber');
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {name: value}', () => {
-      const tag = Tag.parse('foo: bar ber');
+      const tag = Tag.parseOrFail('foo: bar ber');
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {meta:name value}', () => {
-      const tag = Tag.parse('meta:foo bar ber');
+      const tag = Tag.parseOrFail('meta:foo bar ber');
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');
     });
 
     it('can parse {meta: name value}', () => {
-      const tag = Tag.parse('meta: foo bar ber');
+      const tag = Tag.parseOrFail('meta: foo bar ber');
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');

@@ -1,7 +1,7 @@
 interface TraceInfo {
-  line?: number;
-  column?: number;
-  offset?: number;
+  line?: number | null;
+  column?: number | null;
+  offset?: number | null;
 }
 
 export default TraceInfo;

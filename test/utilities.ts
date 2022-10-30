@@ -1,4 +1,6 @@
 import { LineType } from '../src/chord_sheet/line';
+import Metadata from '../src/chord_sheet/metadata';
+import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 
 import {
   ChordLyricsPair,
@@ -12,8 +14,8 @@ import {
   Song,
 } from '../src';
 
-export function createSong(lines, metadata = null) {
-  const song = new Song(metadata);
+export function createSong(lines, metadata: Record<string, string> = {}) {
+  const song = new Song(metadata || new Metadata());
 
   lines.forEach((line) => {
     if (Array.isArray(line)) {
@@ -44,7 +46,7 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name, value = null) {
+export function createTag(name: string, value = '') {
   return new Tag(name, value);
 }
 
@@ -56,24 +58,6 @@ export function createLiteral(expression) {
   return new Literal(expression);
 }
 
-export function createTernary(
-  {
-    variable = '',
-    valueTest = null,
-    trueExpression = null,
-    falseExpression = null,
-    line = null,
-    column = null,
-    offset = null,
-  },
-) {
-  return new Ternary({
-    variable,
-    valueTest,
-    trueExpression,
-    falseExpression,
-    line,
-    column,
-    offset,
-  });
+export function createTernary(properties: TernaryProperties) {
+  return new Ternary(properties);
 }

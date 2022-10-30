@@ -28,9 +28,9 @@ const endSectionTags = {
  * Inherits from {@link ChordSheetParser}
  */
 class UltimateGuitarParser extends ChordSheetParser {
-  currentSectionType?: string;
+  currentSectionType: string | null = null;
 
-  parseLine(line) {
+  parseLine(line): void {
     if (this.isSectionEnd()) {
       this.endSection();
     }
@@ -42,22 +42,32 @@ class UltimateGuitarParser extends ChordSheetParser {
       this.startNewLine();
       this.startSection(CHORUS);
     } else if (OTHER_METADATA_LINE_REGEX.test(line)) {
-      this.startNewLine();
-      this.endSection();
-      const comment = line.match(OTHER_METADATA_LINE_REGEX)[1];
-      this.songLine.addTag(new Tag(COMMENT, comment));
+      this.parseMetadataLine(line);
     } else {
       super.parseLine(line);
     }
   }
 
-  isSectionEnd() {
-    return this.songLine && this.songLine.isEmpty() && this.song.previousLine && !this.song.previousLine.isEmpty();
+  private parseMetadataLine(line) {
+    this.startNewLine();
+    this.endSection();
+    const comment = line.match(OTHER_METADATA_LINE_REGEX)[1];
+
+    if (!this.songLine) throw new Error('Expected this.songLine to be present');
+
+    this.songLine.addTag(new Tag(COMMENT, comment));
+  }
+
+  isSectionEnd(): boolean {
+    return this.songLine !== null
+      && this.songLine.isEmpty()
+      && this.song.previousLine !== null
+      && !this.song.previousLine.isEmpty();
   }
 
   endOfSong() {
     super.endOfSong();
-    if (this.currentSectionType in endSectionTags) {
+    if (this.currentSectionType !== null && this.currentSectionType in endSectionTags) {
       this.startNewLine();
     }
     this.endSection({ addNewLine: false });
@@ -77,7 +87,7 @@ class UltimateGuitarParser extends ChordSheetParser {
   }
 
   endSection({ addNewLine = true } = {}) {
-    if (this.currentSectionType in endSectionTags) {
+    if (this.currentSectionType !== null && this.currentSectionType in endSectionTags) {
       this.song.addTag(new Tag(endSectionTags[this.currentSectionType]));
 
       if (addNewLine) {

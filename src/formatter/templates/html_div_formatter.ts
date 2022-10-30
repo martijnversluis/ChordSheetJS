@@ -1,3 +1,4 @@
+import { HtmlTemplateArgs } from "../html_formatter";
 import { renderChord } from '../../helpers';
 
 import {
@@ -23,7 +24,7 @@ export default (
       bodyParagraphs,
       metadata,
     },
-  },
+  }: HtmlTemplateArgs,
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title }</h1>`) }
   ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }

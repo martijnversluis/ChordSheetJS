@@ -7,6 +7,12 @@
     "lib": ["es2018", "dom"],
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noEmitOnError":  true,
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch":  true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "strict": true
   }
 }

@@ -15,7 +15,7 @@ import {
 } from './tag';
 
 abstract class MetadataAccessors {
-  abstract getMetadata(_name: string): string | string[];
+  abstract getMetadata(_name: string): string | string[] | undefined;
 
   abstract getSingleMetadata(_name: string): string;
 
@@ -25,25 +25,25 @@ abstract class MetadataAccessors {
 
   get subtitle(): string { return this.getSingleMetadata(SUBTITLE); }
 
-  get capo(): string | string[] { return this.getMetadata(CAPO); }
+  get capo(): string | string[] | undefined { return this.getMetadata(CAPO); }
 
   get duration(): string { return this.getSingleMetadata(DURATION); }
 
   get tempo(): string { return this.getSingleMetadata(TEMPO); }
 
-  get time(): string | string[] { return this.getMetadata(TIME); }
+  get time(): string | string[] | undefined { return this.getMetadata(TIME); }
 
   get year(): string { return this.getSingleMetadata(YEAR); }
 
-  get album(): string | string[] { return this.getMetadata(ALBUM); }
+  get album(): string | string[] | undefined { return this.getMetadata(ALBUM); }
 
   get copyright(): string { return this.getSingleMetadata(COPYRIGHT); }
 
-  get lyricist(): string | string[] { return this.getMetadata(LYRICIST); }
+  get lyricist(): string | string[] | undefined { return this.getMetadata(LYRICIST); }
 
-  get artist(): string | string[] { return this.getMetadata(ARTIST); }
+  get artist(): string | string[] | undefined { return this.getMetadata(ARTIST); }
 
-  get composer(): string | string[] { return this.getMetadata(COMPOSER); }
+  get composer(): string | string[] | undefined { return this.getMetadata(COMPOSER); }
 }
 
 export default MetadataAccessors;

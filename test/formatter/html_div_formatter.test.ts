@@ -2,6 +2,7 @@ import { HtmlDivFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
+import { defaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
 
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -165,10 +166,11 @@ describe('HtmlDivFormatter', () => {
   content: '\\200b';
 }`.substring(1);
 
-    expect(HtmlDivFormatter.cssString()).toEqual(expectedCss);
+    const actualCss = new HtmlDivFormatter().cssString();
+    expect(actualCss).toEqual(expectedCss);
   });
 
-  it('generates a scoped CSS string', () => {
+  it('generates a scoped CSS string with the instance method', () => {
     const expectedCss = `
 .someScope .chord:not(:last-child) {
   padding-right: 10px;
@@ -190,10 +192,42 @@ describe('HtmlDivFormatter', () => {
   content: '\\200b';
 }`.substring(1);
 
-    expect(HtmlDivFormatter.cssString('.someScope')).toEqual(expectedCss);
+    const actualCss = new HtmlDivFormatter().cssString('.someScope');
+    expect(actualCss).toEqual(expectedCss);
+  });
+
+  it('generates a scoped CSS string with the exposed function', () => {
+    const expectedCss = `
+.someScope .chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.someScope .paragraph {
+  margin-bottom: 1em;
+}
+
+.someScope .row {
+  display: flex;
+}
+
+.someScope .chord:after {
+  content: '\\200b';
+}
+
+.someScope .lyrics:after {
+  content: '\\200b';
+}`.substring(1);
+
+    const actualCss = scopedCss('.someScope');
+    expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a CSS object', () => {
-    expect(typeof HtmlDivFormatter.cssObject()).toEqual('object');
+    const { cssObject } = new HtmlDivFormatter();
+    expect(typeof cssObject).toEqual('object');
+  });
+
+  it('exposes the CSS object', () => {
+    expect(typeof defaultCss).toEqual('object');
   });
 });

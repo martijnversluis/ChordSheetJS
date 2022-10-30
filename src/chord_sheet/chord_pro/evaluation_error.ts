@@ -1,11 +1,11 @@
 class EvaluationError extends Error {
-  line: number;
+  line: number | null = null;
 
-  column: number;
+  column: number | null = null;
 
-  offset: number;
+  offset: number | null = null;
 
-  constructor(message, line, column, offset) {
+  constructor(message: string, line: number | null = null, column: number | null = null, offset: number | null = null) {
     super(`${message} on line ${line} column ${column}`);
     this.name = 'ExpressionError';
     this.line = line;
