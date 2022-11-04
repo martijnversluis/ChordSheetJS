@@ -1,12 +1,10 @@
 import {
-  Song,
-  ChordSheetSerializer, ChordLyricsPair, Tag,
+  Song, ChordSheetSerializer, ChordLyricsPair, Tag,
 } from '../../src';
-
 import { createSong } from '../utilities';
 import exampleSong from '../fixtures/song';
-import serializedSong from '../fixtures/serialized_song.json';
-import serializedChangedSong from '../fixtures/changed_song.json';
+import serializedSong from '../fixtures/serialized_song';
+import serializedChangedSong from '../fixtures/changed_song';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -132,7 +130,7 @@ describe('Song', () => {
       const changedSong = song.mapLines((line) => (
         line.mapItems((item) => {
           if (item instanceof ChordLyricsPair) {
-            return item.transpose(2, 'D').setLyrics(item.lyrics.toUpperCase());
+            return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
           }
 
           if (item instanceof Tag) {
@@ -160,7 +158,7 @@ describe('Song', () => {
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
-          return item.transpose(2, 'D').setLyrics(item.lyrics.toUpperCase());
+          return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
         }
 
         if (item instanceof Tag) {

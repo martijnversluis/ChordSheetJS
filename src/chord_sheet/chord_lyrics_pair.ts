@@ -7,14 +7,14 @@ import Key from '../key';
 class ChordLyricsPair {
   chords: string;
 
-  lyrics: string;
+  lyrics: string | null;
 
   /**
    * Initialises a ChordLyricsPair
    * @param {string} chords The chords
    * @param {string} lyrics The lyrics
    */
-  constructor(chords = '', lyrics = '') {
+  constructor(chords = '', lyrics: string | null = null) {
     /**
      * The chords
      * @member
@@ -34,7 +34,7 @@ class ChordLyricsPair {
    * Indicates whether a ChordLyricsPair should be visible in a formatted chord sheet (except for ChordPro sheets)
    * @returns {boolean}
    */
-  isRenderable() {
+  isRenderable(): boolean {
     return true;
   }
 
@@ -42,26 +42,30 @@ class ChordLyricsPair {
    * Returns a deep copy of the ChordLyricsPair, useful when programmatically transforming a song
    * @returns {ChordLyricsPair}
    */
-  clone() {
+  clone(): ChordLyricsPair {
     return new ChordLyricsPair(this.chords, this.lyrics);
   }
 
-  toString() {
+  toString(): string {
     return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
   }
 
-  set(properties): ChordLyricsPair {
+  set({ chords, lyrics }: { chords?: string, lyrics?: string }): ChordLyricsPair {
     return new ChordLyricsPair(
-      properties.chords || this.chords,
-      properties.lyrics || this.lyrics,
+      chords || this.chords,
+      lyrics || this.lyrics,
     );
   }
 
-  setLyrics(lyrics: string) {
+  setLyrics(lyrics: string): ChordLyricsPair {
     return this.set({ lyrics });
   }
 
-  transpose(delta: number, key: string | Key | null = null, { normalizeChordSuffix = false } = {}): ChordLyricsPair {
+  transpose(
+    delta: number,
+    key: string | Key | null = null,
+    { normalizeChordSuffix }: { normalizeChordSuffix: boolean } = { normalizeChordSuffix: false },
+  ): ChordLyricsPair {
     const chordObj = Chord.parse(this.chords.trim());
 
     if (chordObj) {

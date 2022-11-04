@@ -4,7 +4,7 @@
 class Comment {
   content: string;
 
-  constructor(content) {
+  constructor(content: string) {
     this.content = content;
   }
 
@@ -12,7 +12,7 @@ class Comment {
    * Indicates whether a Comment should be visible in a formatted chord sheet (except for ChordPro sheets)
    * @returns {boolean}
    */
-  isRenderable() {
+  isRenderable(): boolean {
     return false;
   }
 
@@ -20,11 +20,11 @@ class Comment {
    * Returns a deep copy of the Comment, useful when programmatically transforming a song
    * @returns {Comment}
    */
-  clone() {
+  clone(): Comment {
     return new Comment(this.content);
   }
 
-  toString() {
+  toString(): string {
     return `Comment(content=${this.content})`;
   }
 }

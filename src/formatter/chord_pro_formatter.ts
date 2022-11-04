@@ -3,6 +3,11 @@ import Tag from '../chord_sheet/tag';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 import Literal from '../chord_sheet/chord_pro/literal';
+import Song from '../chord_sheet/song';
+import Line from '../chord_sheet/line';
+import Metadata from '../chord_sheet/metadata';
+import Item from '../chord_sheet/item';
+import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
 
 const NEW_LINE = '\n';
 
@@ -15,7 +20,7 @@ class ChordProFormatter extends Formatter {
    * @param {Song} song The song to be formatted
    * @returns {string} The ChordPro string
    */
-  format(song) {
+  format(song: Song): string {
     const { lines, metadata } = song;
 
     return lines
@@ -23,13 +28,13 @@ class ChordProFormatter extends Formatter {
       .join(NEW_LINE);
   }
 
-  formatLine(line, metadata) {
+  formatLine(line: Line, metadata: Metadata): string {
     return line.items
       .map((item) => this.formatItem(item, metadata))
       .join('');
   }
 
-  formatItem(item, metadata) {
+  formatItem(item: Item, metadata: Metadata): string {
     if (item instanceof Tag) {
       return this.formatTag(item);
     }
@@ -38,14 +43,14 @@ class ChordProFormatter extends Formatter {
       return this.formatChordLyricsPair(item);
     }
 
-    if (typeof item.evaluate === 'function') {
+    if ('evaluate' in item) {
       return this.formatOrEvaluateItem(item, metadata);
     }
 
     throw new Error(`Don't know how to format a ${item.constructor.name}`);
   }
 
-  formatOrEvaluateItem(item, metadata) {
+  formatOrEvaluateItem(item: Evaluatable, metadata: Metadata): string {
     if (this.configuration.evaluate) {
       return item.evaluate(metadata, this.configuration.get('metadata.separator'));
     }
@@ -61,7 +66,7 @@ class ChordProFormatter extends Formatter {
     throw new Error(`Don't know how to format a ${item.constructor.name}`);
   }
 
-  formatTernary(ternary) {
+  formatTernary(ternary: Ternary): string {
     const {
       variable,
       valueTest,
@@ -79,7 +84,7 @@ class ChordProFormatter extends Formatter {
     ].join('');
   }
 
-  formatValueTest(valueTest) {
+  formatValueTest(valueTest: string | null): string {
     if (!valueTest) {
       return '';
     }
@@ -87,15 +92,15 @@ class ChordProFormatter extends Formatter {
     return `=${valueTest}`;
   }
 
-  formatExpressionRange(expressionRange) {
-    if (!expressionRange) {
+  formatExpressionRange(expressionRange: Evaluatable[]): string {
+    if (!expressionRange.length) {
       return '';
     }
 
     return `|${expressionRange.map((expression) => this.formatExpression(expression)).join('')}`;
   }
 
-  formatExpression(expression) {
+  formatExpression(expression: Evaluatable): string {
     if (expression instanceof Ternary) {
       return this.formatTernary(expression);
     }
@@ -107,7 +112,7 @@ class ChordProFormatter extends Formatter {
     return '';
   }
 
-  formatTag(tag) {
+  formatTag(tag): string {
     if (tag.hasValue()) {
       return `{${tag.originalName}: ${tag.value}}`;
     }
@@ -115,14 +120,14 @@ class ChordProFormatter extends Formatter {
     return `{${tag.originalName}}`;
   }
 
-  formatChordLyricsPair(chordLyricsPair) {
+  formatChordLyricsPair(chordLyricsPair): string {
     return [
       this.formatChordLyricsPairChords(chordLyricsPair),
       this.formatChordLyricsPairLyrics(chordLyricsPair),
     ].join('');
   }
 
-  formatChordLyricsPairChords(chordLyricsPair) {
+  formatChordLyricsPairChords(chordLyricsPair): string {
     if (chordLyricsPair.chords) {
       return `[${chordLyricsPair.chords}]`;
     }
@@ -130,7 +135,7 @@ class ChordProFormatter extends Formatter {
     return '';
   }
 
-  formatChordLyricsPairLyrics(chordLyricsPair) {
+  formatChordLyricsPairLyrics(chordLyricsPair): string {
     return chordLyricsPair.lyrics || '';
   }
 }

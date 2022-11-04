@@ -1,9 +1,10 @@
 import Chord from './chord';
 import { isPresent } from './utilities';
 import Key from './key';
-import { capos, majorKeys, minorKeys } from './key_config.json';
+import { capos, majorKeys, minorKeys } from './key_config';
+import Song from './chord_sheet/song';
 
-export function transposeDistance(transposeKey, songKey) {
+export function transposeDistance(transposeKey: string, songKey: string): number {
   if (/^\d+$/.test(transposeKey)) {
     return parseInt(transposeKey, 10);
   }
@@ -11,18 +12,19 @@ export function transposeDistance(transposeKey, songKey) {
   return Key.distance(songKey, transposeKey);
 }
 
-function chordTransposeDistance(capo, transposeKey, songKey) {
+function chordTransposeDistance(capo: number, transposeKey: string | null, songKey: string) {
   let transpose = -1 * (capo || 0);
 
-  if (isPresent(transposeKey) && isPresent(songKey)) {
+  if (transposeKey && isPresent(songKey)) {
     transpose += transposeDistance(transposeKey, songKey);
   }
   return transpose;
 }
 
-export function renderChord(chord, lineKey, transposeKey, song) {
+export function renderChord(chord: string, lineKey: string | null, transposeKey: string | null, song: Song): string {
   let chordObj = Chord.parse(chord);
-  const { capo, key: songKey } = song;
+  const songKey = song.key;
+  const capo = parseInt(song.metadata.getSingle('capo'), 10);
 
   if (!chordObj) {
     return chord;
@@ -30,11 +32,12 @@ export function renderChord(chord, lineKey, transposeKey, song) {
 
   chordObj = chordObj.transpose(chordTransposeDistance(capo, transposeKey, songKey));
 
-  if (isPresent(transposeKey)) {
-    chordObj = chordObj.useModifier(transposeKey.modifier);
-  }
+  // not gonna work, check if the tests still pass
+  // if (isPresent(transposeKey)) {
+  //   chordObj = chordObj.useModifier(transposeKey.modifier);
+  // }
 
-  if (isPresent(lineKey)) {
+  if (lineKey) {
     chordObj = chordObj.normalize(lineKey);
   }
 
@@ -47,7 +50,7 @@ export function renderChord(chord, lineKey, transposeKey, song) {
  * @returns {Object.<string, string>} The available capos, where the keys are capo numbers and the
  * values are the effective key for that capo.
  */
-export function getCapos(key) {
+export function getCapos(key: Key | string): Record<string, string> {
   return capos[Key.toString(key)];
 }
 
@@ -56,7 +59,7 @@ export function getCapos(key) {
  * @param {Key|string} key The key to get keys for
  * @returns {Array<string>} The available keys
  */
-export function getKeys(key) {
-  const keyObj = Key.wrap(key);
+export function getKeys(key: Key | string): string[] {
+  const keyObj = Key.wrapOrFail(key);
   return keyObj.isMinor() ? minorKeys : majorKeys;
 }

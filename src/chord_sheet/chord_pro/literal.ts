@@ -1,19 +1,22 @@
-class Literal {
+import Evaluatable from './evaluatable';
+
+class Literal extends Evaluatable {
   string: string;
 
-  constructor(expression) {
+  constructor(expression: string) {
+    super();
     this.string = expression;
   }
 
-  evaluate() {
+  evaluate(): string {
     return this.string;
   }
 
-  isRenderable() {
+  isRenderable(): boolean {
     return true;
   }
 
-  clone() {
+  clone(): Literal {
     return new Literal(this.string);
   }
 }

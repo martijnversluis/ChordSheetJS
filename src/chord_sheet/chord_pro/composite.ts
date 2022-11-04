@@ -1,30 +1,32 @@
 import Evaluatable from './evaluatable';
+import Metadata from '../metadata';
 
-class Composite {
+class Composite extends Evaluatable {
   expressions: Evaluatable[] = [];
 
-  variable?: string;
+  variable: string | null;
 
-  constructor(expressions, variable = null) {
+  constructor(expressions: Evaluatable[], variable: string | null = null) {
+    super();
     this.expressions = expressions;
     this.variable = variable;
   }
 
-  evaluate(metadata, metadataSeparator) {
+  evaluate(metadata: Metadata, metadataSeparator: string): string {
     return this.expressions.map((expression) => (
       expression.evaluate(metadata, metadataSeparator, this.variable)
     )).join('');
   }
 
-  isRenderable() {
+  isRenderable(): boolean {
     return true;
   }
 
-  clone() {
-    return new Composite({
-      expressions: this.expressions.map((expression) => expression.clone()),
-      variable: this.variable,
-    });
+  clone(): Composite {
+    return new Composite(
+      this.expressions.map((expression) => expression.clone()),
+      this.variable,
+    );
   }
 }
 

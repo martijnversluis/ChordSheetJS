@@ -1,4 +1,4 @@
-import Configuration from './configuration/configuration';
+import Configuration, { ConfigurationProperties } from './configuration/configuration';
 
 /**
  * Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object
@@ -15,8 +15,8 @@ class Formatter {
      * @param {string} [configuration.metadata.separator=", "] The separator to be used when rendering a metadata value
      * that has multiple values. See: https://bit.ly/2SC9c2u
      */
-  constructor(configuration = {}) {
-    this.configuration = new Configuration(configuration);
+  constructor(configuration: ConfigurationProperties | null = null) {
+    this.configuration = new Configuration(configuration || {});
   }
 }
 

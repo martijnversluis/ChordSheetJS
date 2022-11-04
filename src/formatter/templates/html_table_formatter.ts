@@ -1,5 +1,6 @@
 import { hasChordContents, isEvaluatable } from '../../utilities';
 import { renderChord } from '../../helpers';
+import { HtmlTemplateArgs } from '../html_formatter';
 
 import {
   each,
@@ -27,7 +28,7 @@ export default (
       bodyLines,
       metadata,
     },
-  },
+  }: HtmlTemplateArgs,
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title}</h1>`) }
   ${ when(subtitle, () => `<h2>${ subtitle}</h2>`) }

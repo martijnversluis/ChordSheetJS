@@ -1,8 +1,16 @@
+interface MetadataConfigurationProperties {
+  separator?: string;
+}
+
+export const defaultMetadataConfiguration: MetadataConfigurationProperties = {
+  separator: ',',
+};
+
 class MetadataConfiguration {
   separator?: string;
 
-  constructor({ separator }: { separator: string}) {
-    this.separator = separator;
+  constructor(metadataConfiguration: MetadataConfigurationProperties = defaultMetadataConfiguration) {
+    this.separator = metadataConfiguration.separator;
   }
 }
 

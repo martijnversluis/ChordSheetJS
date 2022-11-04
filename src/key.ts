@@ -1,56 +1,86 @@
 import Note from './note';
-import { NUMERAL, NUMERIC, SYMBOL } from './constants';
+import {
+  ChordType, Modifier, NUMERAL, NUMERIC, SYMBOL,
+} from './constants';
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
-import { parseWithRegexes } from './utilities';
+import { isEmptyString } from './utilities';
 
 const FLAT = 'b';
 const SHARP = '#';
 
-const MODIFIER_TRANSPOSITION = {
-  [SHARP]: 1,
-  [FLAT]: -1,
-};
-
-const symbolKeyRegex = (
-  /^(?<note>[A-G])(?<modifier>#|b)?(?<minor>m)?$/i
-);
-
-const numericKeyRegex = (
-  /^(?<modifier>#|b)?(?<note>[1-7])(?<minor>m)?$/
-);
-
-const numeralKeyRegex = (
-  /^(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2})$/
-);
+const symbolKeyRegex = /^(?<note>[A-G])(?<modifier>#|b)?(?<minor>m)?$/i;
+const numericKeyRegex = /^(?<modifier>#|b)?(?<note>[1-7])(?<minor>m)?$/;
+const numeralKeyRegex = /^(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2})$/;
 
 const regexes = [symbolKeyRegex, numericKeyRegex, numeralKeyRegex];
+
+function modifierTransposition(modifier: Modifier | null): number {
+  switch (modifier) {
+    case SHARP: return 1;
+    case FLAT: return -1;
+    default: return 0;
+  }
+}
+
+interface KeyProperties {
+  note?: Note;
+  modifier?: Modifier | null;
+  minor?: boolean;
+}
 
 /**
  * Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).
  *
  * The only function considered public API is `Key.distance`
  */
-class Key {
+class Key implements KeyProperties {
   note: Note;
 
-  modifier?: string = null;
+  modifier: Modifier | null = null;
 
-  minor: boolean = false;
+  minor = false;
 
-  static parse(keyString) {
-    return parseWithRegexes(keyString, Key, regexes);
+  static parse(keyString: string | null): null | Key {
+    if (!keyString || isEmptyString(keyString)) return null;
+
+    for (let i = 0, count = regexes.length; i < count; i += 1) {
+      const match = keyString.match(regexes[i]);
+
+      if (match) {
+        const { note, modifier, minor } = match.groups as { note: string, modifier?: Modifier, minor?: string };
+        return new Key({ note, modifier, minor: !!minor });
+      }
+    }
+
+    return null;
   }
 
-  static wrap(keyStringOrObject: Key | string): Key {
-    if (keyStringOrObject instanceof Key) {
-      return keyStringOrObject;
-    }
+  static parseOrFail(keyString: string | null): Key {
+    const parsed = this.parse(keyString);
+
+    if (!parsed) throw new Error(`Failed to parse ${keyString}`);
+
+    return parsed;
+  }
+
+  static wrap(keyStringOrObject: Key | string): Key | null {
+    if (keyStringOrObject instanceof Key) return keyStringOrObject;
 
     return this.parse(keyStringOrObject);
   }
 
-  static toString(keyStringOrObject) {
-    return `${Key.wrap(keyStringOrObject)}`;
+  static wrapOrFail(keyStringOrObject: Key | string | null = null): Key {
+    if (keyStringOrObject === null) throw new Error('Unexpected null key');
+
+    const wrapped = this.wrap(keyStringOrObject);
+
+    if (wrapped === null) throw new Error(`Failed: invalid key ${keyStringOrObject}`);
+
+    return wrapped;
+  }
+
+  static toString(keyStringOrObject: Key | string) {
+    return `${Key.wrapOrFail(keyStringOrObject)}`;
   }
 
   /**
@@ -60,11 +90,11 @@ class Key {
    * @return {number} the distance in semitones
    */
   static distance(oneKey: Key | string, otherKey: Key | string): number {
-    return this.wrap(oneKey).distanceTo(otherKey);
+    return this.wrapOrFail(oneKey).distanceTo(otherKey);
   }
 
   distanceTo(otherKey: Key | string): number {
-    const otherKeyObj = Key.wrap(otherKey);
+    const otherKeyObj = Key.wrapOrFail(otherKey);
     let key = this.useModifier(otherKeyObj.modifier);
     let delta = 0;
 
@@ -76,95 +106,86 @@ class Key {
     return delta;
   }
 
-  constructor({ note, modifier = null, minor = false }) {
+  constructor(
+    { note, modifier = null, minor = false }:
+      { note: Note | string | number, modifier?: Modifier | null, minor?: boolean },
+  ) {
     this.note = (note instanceof Note) ? note : Note.parse(note);
     this.modifier = modifier || null;
-    this.minor = !!minor || false;
+    this.minor = minor || false;
 
-    if (this.minor) {
-      this.note.minor = true;
-    }
+    if (this.minor) this.note.minor = true;
   }
 
-  isMinor() {
+  isMinor(): boolean {
     return this.minor || this.note.isMinor();
   }
 
-  clone() {
+  clone(): Key {
     return this.set({});
   }
 
-  toChordSymbol(key) {
-    if (this.is(SYMBOL)) {
-      return this.clone();
-    }
+  toChordSymbol(key: Key): Key {
+    if (this.is(SYMBOL)) return this.clone();
 
-    const transposeDistance = this.note.getTransposeDistance(key.minor) + (MODIFIER_TRANSPOSITION[this.modifier] || 0);
+    const transposeDistance = this.note.getTransposeDistance(key.minor) + modifierTransposition(this.modifier);
 
     return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
   }
 
-  toChordSymbolString(key) {
+  toChordSymbolString(key: Key): string {
     return this.toChordSymbol(key).toString();
   }
 
-  is(type) {
+  is(type: ChordType): boolean {
     return this.note.is(type);
   }
 
-  isNumeric() {
+  isNumeric(): boolean {
     return this.is(NUMERIC);
   }
 
-  isChordSymbol() {
+  isChordSymbol(): boolean {
     return this.is(SYMBOL);
   }
 
-  isNumeral() {
+  isNumeral(): boolean {
     return this.is(NUMERAL);
   }
 
-  equals({ note, modifier = null }) {
-    return this.note.equals(note) && this.modifier === modifier;
+  equals(otherKey: Key): boolean {
+    return this.note.equals(otherKey.note) && this.modifier === otherKey.modifier;
   }
 
-  toNumeric(key: Key = null) {
-    if (this.isNumeric()) {
-      return this.clone();
-    }
+  toNumeric(key: Key | null = null): Key {
+    if (this.isNumeric()) return this.clone();
 
-    if (this.isNumeral()) {
-      return this.set({
-        note: this.note.toNumeric(),
-      });
-    }
+    if (this.isNumeral()) return this.set({ note: this.note.toNumeric() });
+
+    if (!key) throw new Error('key is required');
 
     return this.transposeNoteUpToKey(1, key);
   }
 
-  toNumericString(key = null) {
+  toNumericString(key: Key | null = null): string {
     return this.toNumeric(key).toString();
   }
 
-  toNumeral(key = null) {
-    if (this.isNumeral()) {
-      return this.clone();
-    }
+  toNumeral(key: Key | null = null): Key {
+    if (this.isNumeral()) return this.clone();
 
-    if (this.isNumeric()) {
-      return this.set({
-        note: this.note.toNumeral(),
-      });
-    }
+    if (this.isNumeric()) return this.set({ note: this.note.toNumeral() });
 
-    return this.transposeNoteUpToKey('I', key);
+    if (key) return this.transposeNoteUpToKey('I', key);
+
+    return this.clone();
   }
 
-  toNumeralString(key = null) {
+  toNumeralString(key: Key | null = null): string {
     return this.toNumeral(key).toString();
   }
 
-  toString({ showMinor = true } = {}) {
+  toString({ showMinor = true } = {}): string {
     switch (this.note.type) {
       case SYMBOL:
         return this.formatChordSymbolString(showMinor);
@@ -177,22 +198,20 @@ class Key {
     }
   }
 
-  private formatChordSymbolString(showMinor: boolean) {
+  private formatChordSymbolString(showMinor: boolean): string {
     return `${this.note}${this.modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
   }
 
-  private formatNumericString(showMinor: boolean) {
+  private formatNumericString(showMinor: boolean): string {
     return `${this.modifier || ''}${this.note}${this.minor && showMinor ? 'm' : ''}`;
   }
 
-  private formatNumeralString() {
+  private formatNumeralString(): string {
     return `${this.modifier || ''}${this.note}`;
   }
 
-  transpose(delta) {
-    if (delta === 0) {
-      return this;
-    }
+  transpose(delta: number): Key {
+    if (delta === 0) return this;
 
     const originalModifier = this.modifier;
     let transposedKey = this.clone();
@@ -205,108 +224,75 @@ class Key {
     return transposedKey.useModifier(originalModifier);
   }
 
-  transposeUp() {
-    if (this.modifier === FLAT) {
-      return this.set({ modifier: null });
-    }
+  transposeUp(): Key {
+    if (this.modifier === FLAT) return this.set({ modifier: null });
 
-    if (this.note.isOneOf(3, 7, 'E', 'B')) {
-      return this.set({
-        note: this.note.up(),
-      });
-    }
+    if (this.note.isOneOf(3, 7, 'E', 'B')) return this.set({ note: this.note.up() });
 
-    if (this.modifier === SHARP) {
-      return this.set({
-        note: this.note.up(),
-        modifier: null,
-      });
-    }
+    if (this.modifier === SHARP) return this.set({ note: this.note.up(), modifier: null });
 
     return this.set({ modifier: SHARP });
   }
 
-  transposeDown() {
-    if (this.modifier === SHARP) {
-      return this.set({ modifier: null });
-    }
+  transposeDown(): Key {
+    if (this.modifier === SHARP) return this.set({ modifier: null });
 
     if (this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.set({
-        note: this.note.down(),
-      });
+      return this.set({ note: this.note.down() });
     }
 
-    if (this.modifier === FLAT) {
-      return this.set({
-        note: this.note.down(),
-        modifier: null,
-      });
-    }
+    if (this.modifier === FLAT) return this.set({ note: this.note.down(), modifier: null });
 
     return this.set({ modifier: FLAT });
   }
 
-  useModifier(newModifier) {
+  useModifier(newModifier: Modifier | null): Key {
     if (this.modifier === FLAT && newModifier === SHARP) {
-      return this.set({
-        note: this.note.down(),
-        modifier: SHARP,
-      });
+      return this.set({ note: this.note.down(), modifier: SHARP });
     }
 
     if (this.modifier === SHARP && newModifier === FLAT) {
-      return this.set({
-        note: this.note.up(),
-        modifier: FLAT,
-      });
+      return this.set({ note: this.note.up(), modifier: FLAT });
     }
 
     return this.clone();
   }
 
-  normalize() {
+  normalize(): Key {
     if (this.modifier === SHARP && this.note.isOneOf(3, 7, 'E', 'B')) {
-      return this.set({
-        note: this.note.up(),
-        modifier: null,
-      });
+      return this.set({ note: this.note.up(), modifier: null });
     }
 
     if (this.modifier === FLAT && this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.set({
-        note: this.note.down(),
-        modifier: null,
-      });
+      return this.set({ note: this.note.down(), modifier: null });
     }
 
     return this.clone();
   }
 
-  removeMinor() {
-    return this.set({
-      minor: false,
-    });
+  removeMinor(): Key {
+    return this.set({ minor: false });
   }
 
-  normalizeEnharmonics(key: Key | string) {
+  normalizeEnharmonics(key: Key | string | null): Key {
     if (key) {
-      const rootKeyString = Key.wrap(key).toString({ showMinor: true });
+      const rootKeyString = Key.wrapOrFail(key).toString({ showMinor: true });
       const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
       const thisKeyString = this.toString({ showMinor: false });
 
       if (enharmonics && enharmonics[thisKeyString]) {
-        return Key.parse(enharmonics[thisKeyString]);
+        return Key.parseOrFail(enharmonics[thisKeyString]);
       }
     }
+
     return this.clone();
   }
 
-  private set(attributes) {
+  private set(attributes: KeyProperties): Key {
     return new Key({
       note: this.note.clone(),
       modifier: this.modifier,
-      minor: !!this.minor,
+      minor: this.minor,
       ...attributes,
     });
   }

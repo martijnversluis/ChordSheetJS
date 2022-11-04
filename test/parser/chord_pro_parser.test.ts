@@ -30,7 +30,7 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
     expect(lines[1].items[0]).toBeTag('subtitle', 'ChordSheetJS example version');
 
     expect(lines[2].items.length).toEqual(1);
-    expect(lines[2].items[0]).toBeTag('Chorus', null);
+    expect(lines[2].items[0]).toBeTag('Chorus', '');
 
     expect(lines[3].items.length).toEqual(0);
 
@@ -73,7 +73,7 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
 
   it('parses directive with empty value', () => {
     const song = new ChordProParser().parse('{c: }');
-    expect(song.lines[0].items[0]).toBeTag('comment', null);
+    expect(song.lines[0].items[0]).toBeTag('comment', '');
   });
 
   it('parses directive with trailing space', () => {
@@ -283,8 +283,8 @@ This part is [G]key
     expect(expression).toBeTernary({
       variable: 'title',
       valueTest: null,
-      trueExpression: null,
-      falseExpression: null,
+      trueExpression: [],
+      falseExpression: [],
     });
   });
 
@@ -296,15 +296,15 @@ This part is [G]key
     expect(expression).toBeTernary({
       variable: 'artist',
       valueTest: null,
-      falseExpression: null,
+      falseExpression: [],
     });
 
     expect(expression.trueExpression).toHaveLength(1);
     expect(expression.trueExpression[0]).toBeTernary({
       variable: null,
       valueTest: null,
-      trueExpression: null,
-      falseExpression: null,
+      trueExpression: [],
+      falseExpression: [],
     });
   });
 

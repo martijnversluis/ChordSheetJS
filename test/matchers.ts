@@ -1,3 +1,5 @@
+import print from 'print';
+
 import {
   ChordLyricsPair,
   Tag,
@@ -20,10 +22,26 @@ function typeRepresentation(type, value) {
 
 const anything = {};
 
+function valuesEqual(expected: any, actual: any): boolean {
+  if (typeof expected === 'object') {
+    if (expected === null) {
+      return actual === null;
+    }
+
+    if (Array.isArray(expected)) {
+      return expected.every((value, index) => valuesEqual(value, actual[index]));
+    }
+
+    return Object.keys(expected).every((key) => valuesEqual(expected[key], actual[key]));
+  }
+
+  return expected === actual;
+}
+
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
   const pass = (!klass || received instanceof klass)
-    && propertyNames.every((name) => received[name] === properties[name]);
+    && propertyNames.every((name) => valuesEqual(properties[name], received[name]));
   const stringifiedProperties = propertyNames.map((name) => `${name}=${properties[name]}`);
 
   if (pass) {
@@ -36,7 +54,7 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
   return {
     message: () => {
       const errorBase = `expected ${received} to be a ${klass?.name || 'object'}(${stringifiedProperties})`;
-      const errors = [];
+      const errors: string[] = [];
       const type = typeof received;
 
       if (type !== 'object') {
@@ -54,13 +72,16 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
             return;
           }
 
+          const expectedRepr = typeRepresentation(expectedType, expectedProperty);
+          const actualRepr = typeRepresentation(actualType, actualProperty);
+
           if (actualType !== expectedType) {
             errors.push(
-              `expected ${name} to be a ${typeRepresentation(expectedType, expectedProperty)} 
-               but it was a ${typeRepresentation(actualType, actualProperty)}`,
+              `expected ${name} to be a ${expectedRepr} 
+               but it was a ${actualRepr}`,
             );
-          } else if (actualProperty !== expectedProperty) {
-            errors.push(`its ${name} value was: "${actualProperty}" vs "${expectedProperty}"`);
+          } else if (!valuesEqual(expectedProperty, actualProperty)) {
+            errors.push(`its ${name} value was: ${print(actualProperty)} vs ${print(expectedProperty)}`);
           }
         });
       }

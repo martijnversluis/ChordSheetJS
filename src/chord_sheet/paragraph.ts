@@ -12,7 +12,7 @@ class Paragraph {
    */
   lines: Line[] = [];
 
-  addLine(line) {
+  addLine(line): void {
     this.lines.push(line);
   }
 
@@ -37,7 +37,7 @@ class Paragraph {
    * @see {@link Line.hasRenderableItems}
    * @returns {boolean}
    */
-  hasRenderableItems() {
+  hasRenderableItems(): boolean {
     return this.lines.some((line) => line.hasRenderableItems());
   }
 }

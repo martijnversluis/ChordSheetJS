@@ -2,6 +2,7 @@ import { HtmlTableFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
+import { defaultCss, scopedCss } from '../../src/formatter/html_table_formatter';
 
 describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -152,10 +153,11 @@ td {
   margin-bottom: 1em;
 }`.substring(1);
 
-    expect(HtmlTableFormatter.cssString()).toEqual(expectedCss);
+    const actualCss = new HtmlTableFormatter().cssString();
+    expect(actualCss).toEqual(expectedCss);
   });
 
-  it('generates a scoped CSS string', () => {
+  it('generates a scoped CSS string from the instance method', () => {
     const expectedCss = `
 .someScope h1 {
   font-size: 1.5em;
@@ -182,10 +184,47 @@ td {
   margin-bottom: 1em;
 }`.substring(1);
 
-    expect(HtmlTableFormatter.cssString('.someScope')).toEqual(expectedCss);
+    const actualCss = new HtmlTableFormatter().cssString('.someScope');
+    expect(actualCss).toEqual(expectedCss);
+  });
+
+  it('generates a scoped CSS string from the exposed function', () => {
+    const expectedCss = `
+.someScope h1 {
+  font-size: 1.5em;
+}
+
+.someScope h2 {
+  font-size: 1.1em;
+}
+
+.someScope table {
+  border-spacing: 0;
+  color: inherit;
+}
+
+.someScope td {
+  padding: 3px 0;
+}
+
+.someScope .chord:not(:last-child) {
+  padding-right: 10px;
+}
+
+.someScope .paragraph {
+  margin-bottom: 1em;
+}`.substring(1);
+
+    const actualCss = scopedCss('.someScope');
+    expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a CSS object', () => {
-    expect(typeof HtmlTableFormatter.cssObject()).toEqual('object');
+    const { cssObject } = new HtmlTableFormatter();
+    expect(typeof cssObject).toEqual('object');
+  });
+
+  it('exposes a CSS object', () => {
+    expect(typeof defaultCss).toEqual('object');
   });
 });

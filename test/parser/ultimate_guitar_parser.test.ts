@@ -19,10 +19,10 @@ describe('UltimateGuitarParser', () => {
     expect(lines.length).toEqual(2);
 
     const line0Items = lines[0].items;
-    expect(line0Items[0]).toBeTag('start_of_verse', null);
+    expect(line0Items[0]).toBeTag('start_of_verse', '');
 
     const line1Items = lines[1].items;
-    expect(line1Items[0]).toBeTag('end_of_verse', null);
+    expect(line1Items[0]).toBeTag('end_of_verse', '');
   });
 
   it('parses a single verse correctly', () => {
@@ -40,7 +40,7 @@ consectetur adipiscing elit.`.substring(1);
     expect(lines.length).toEqual(4);
 
     const line0Items = lines[0].items;
-    expect(line0Items[0]).toBeTag('start_of_verse', null);
+    expect(line0Items[0]).toBeTag('start_of_verse', '');
 
     const line1Items = lines[1].items;
     expect(line1Items.length).toEqual(3);
@@ -49,7 +49,7 @@ consectetur adipiscing elit.`.substring(1);
     expect(line2Items.length).toEqual(3);
 
     const line3Items = lines[3].items;
-    expect(line3Items[0]).toBeTag('end_of_verse', null);
+    expect(line3Items[0]).toBeTag('end_of_verse', '');
   });
 
   it('adds unknown sections as comments', () => {

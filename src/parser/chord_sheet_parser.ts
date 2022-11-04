@@ -9,29 +9,29 @@ const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+
  * Parses a normal chord sheet
  */
 class ChordSheetParser {
-  processingText: boolean = true;
+  processingText = true;
 
-  preserveWhitespace: boolean = true;
+  preserveWhitespace = true;
 
-  song?: Song;
+  song: Song = new Song();
 
-  songLine?: Line;
+  songLine: Line | null = null;
 
-  chordLyricsPair?: ChordLyricsPair;
+  chordLyricsPair: ChordLyricsPair | null = null;
 
   lines: string[] = [];
 
-  currentLine: number = 0;
+  currentLine = 0;
 
-  lineCount: number = 0;
+  lineCount = 0;
 
   /**
    * Instantiate a chord sheet parser
    * @param {Object} [options={}] options
    * @param {boolean} [options.preserveWhitespace=true] whether to preserve trailing whitespace for chords
    */
-  constructor({ preserveWhitespace = true } = {}) {
-    this.preserveWhitespace = (preserveWhitespace === true);
+  constructor({ preserveWhitespace = true }: { preserveWhitespace?: boolean } = {}) {
+    this.preserveWhitespace = preserveWhitespace;
   }
 
   /**
@@ -41,8 +41,8 @@ class ChordSheetParser {
    * @param {Song} [options.song=null] The {@link Song} to store the song data in
    * @returns {Song} The parsed song
    */
-  parse(chordSheet, { song = null } = {}) {
-    this.initialize(chordSheet, { song });
+  parse(chordSheet: string, { song }: { song?: Song } = {}): Song {
+    this.initialize(chordSheet, song);
 
     while (this.hasNextLine()) {
       const line = this.readLine();
@@ -66,6 +66,8 @@ class ChordSheetParser {
   }
 
   parseNonEmptyLine(line) {
+    if (!this.songLine) throw new Error('Expected this.songLine to be present');
+
     this.chordLyricsPair = this.songLine.addChordLyricsPair();
 
     if (CHORD_LINE_REGEX.test(line) && this.hasNextLine()) {
@@ -76,8 +78,11 @@ class ChordSheetParser {
     }
   }
 
-  initialize(document, { song = null } = {}) {
-    this.song = (song || new Song());
+  initialize(document, song: Song | null = null) {
+    if (song) {
+      this.song = song;
+    }
+
     this.lines = document.split('\n');
     this.currentLine = 0;
     this.lineCount = this.lines.length;
@@ -97,10 +102,14 @@ class ChordSheetParser {
   parseLyricsWithChords(chordsLine, lyricsLine) {
     this.processCharacters(chordsLine, lyricsLine);
 
-    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
+    if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
+    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
     this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
-    this.chordLyricsPair.lyrics = this.chordLyricsPair.lyrics.trim();
+
+    if (this.chordLyricsPair.lyrics) {
+      this.chordLyricsPair.lyrics = this.chordLyricsPair.lyrics.trim();
+    }
 
     if (!lyricsLine.trim().length) {
       this.songLine = this.song.addLine();
@@ -113,6 +122,8 @@ class ChordSheetParser {
       const nextChar = chordsLine[c + 1];
       const isWhiteSpace = WHITE_SPACE.test(chr);
       this.addCharacter(chr, nextChar);
+
+      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
       this.chordLyricsPair.lyrics += lyricsLine[c] || '';
       this.processingText = !isWhiteSpace;
@@ -127,6 +138,7 @@ class ChordSheetParser {
     }
 
     if (!isWhiteSpace || this.shouldAddCharacterToChords(nextChar)) {
+      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
       this.chordLyricsPair.chords += chr;
     }
   }
@@ -137,6 +149,7 @@ class ChordSheetParser {
 
   ensureChordLyricsPairInitialized() {
     if (!this.processingText) {
+      if (!this.songLine) throw new Error('Expected this.songLine to be present');
       this.chordLyricsPair = this.songLine.addChordLyricsPair();
       this.processingText = true;
     }

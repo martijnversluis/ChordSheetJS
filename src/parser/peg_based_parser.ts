@@ -15,7 +15,7 @@ export type ParseFunction = (_input: string, _options?: IParseOptions) => any;
  * Parses a chords over words sheet
  */
 class PegBasedParser {
-  song?: Song;
+  song: Song = new Song();
 
   /**
    * All warnings raised during parsing the chord sheet
@@ -26,7 +26,7 @@ class PegBasedParser {
     return this.song.warnings;
   }
 
-  protected parseWithParser(chordSheet, parser: ParseFunction) {
+  protected parseWithParser(chordSheet: string, parser: ParseFunction): Song {
     const ast = parser(chordSheet);
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
