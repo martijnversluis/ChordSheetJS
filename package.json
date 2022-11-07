@@ -1,6 +1,6 @@
 {
-  "name": "@praisecharts/chordsheetjs",
-  "author": "PraiseCharts",
+  "name": "@bettermusic/chordsheetjs",
+  "author": "BetterMusic",
   "version": "0.0.1",
   "description": "A JavaScript library for parsing and formatting chord charts",
   "source": "src/index.ts",
@@ -13,12 +13,12 @@
   "license": "GPL-2.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/praisecharts/ChordChartJS.git"
+    "url": "https://github.com/bettermusic/ChordChartJS.git"
   },
   "bugs": {
-    "url": "https://github.com/praisecharts/ChordChartJS/issues"
+    "url": "https://github.com/bettermusic/ChordChartJS/issues"
   },
-  "homepage": "https://github.com/praisecharts/ChordChartJS",
+  "homepage": "https://github.com/bettermusic/ChordChartJS",
   "devDependencies": {
     "@babel/cli": "^7.18.9",
     "@babel/core": "^7.18.9",

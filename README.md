@@ -1,4 +1,4 @@
-# ChordChartJS [![Code Climate](https://codeclimate.com/github/PraiseCharts/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/PraiseCharts/ChordChartJS)
+# ChordChartJS [![Code Climate](https://codeclimate.com/github/BetterMusic/ChordChartJS/badges/gpa.svg)](https://codeclimate.com/github/BetterMusic/ChordChartJS)
 
 A JavaScript library for parsing and formatting chord sheets
 
@@ -452,7 +452,7 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#TITLE">TITLE</a> : <code>string</code></dt>
 <dd><p>Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/</p></dd>
 <dt><a href="#TRANSPOSE">TRANSPOSE</a> : <code>string</code></dt>
-<dd><p>New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53</p></dd>
+<dd><p>New Key meta directive. See: https://github.com/BetterMusic/ChordChartJS/issues/53</p></dd>
 <dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p></dd>
 <dt><a href="#defaultCss">defaultCss</a> ⇒ <code>string</code></dt>
@@ -1603,7 +1603,7 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <a name="TRANSPOSE"></a>
 
 ## TRANSPOSE : <code>string</code>
-<p>New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53</p>
+<p>New Key meta directive. See: https://github.com/BetterMusic/ChordChartJS/issues/53</p>
 
 **Kind**: global variable  
 <a name="NEW_KEY"></a>
