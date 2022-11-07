@@ -1,3 +1,4 @@
+import Song from '../chord_sheet/song';
 import PegBasedParser from './peg_based_parser';
 import { parse } from './chords_over_words_peg_parser';
 
@@ -10,7 +11,7 @@ class ChordsOverWordsParser extends PegBasedParser {
    * @param {string} chordsOverWordsSheet the chords over words sheet
    * @returns {Song} The parsed song
    */
-  parse(chordsOverWordsSheet) {
+  parse(chordsOverWordsSheet): Song {
     return this.parseWithParser(chordsOverWordsSheet, parse);
   }
 }

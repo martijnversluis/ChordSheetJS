@@ -1,3 +1,4 @@
+import Song from '../chord_sheet/song';
 import PegBasedParser from './peg_based_parser';
 import { parse } from './chord_pro_peg_parser';
 
@@ -10,7 +11,7 @@ class ChordProParser extends PegBasedParser {
    * @param {string} chordProChordSheet the ChordPro chord sheet
    * @returns {Song} The parsed song
    */
-  parse(chordProChordSheet) {
+  parse(chordProChordSheet): Song {
     return this.parseWithParser(chordProChordSheet, parse);
   }
 }

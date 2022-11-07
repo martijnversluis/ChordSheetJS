@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-cycle
-import { Song } from '../index';
+import Song from '../chord_sheet/song';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 import ParserWarning from './parser_warning';
 
