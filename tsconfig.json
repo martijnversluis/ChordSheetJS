@@ -8,9 +8,15 @@
     "lib": ["es2018", "dom"],
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noEmitOnError":  true,
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch":  true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "strict": true
   },
   "types": ["node", "jest", "@testing-library/jest-dom"],
   "include": ["./src","./test"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

@@ -56,7 +56,7 @@ describe('Key', () => {
 
       Object.entries(conversions).forEach(([symbolKey, numericKey]) => {
         it(`converts ${symbolKey} to ${numericKey} (actual key: ${songKey})`, () => {
-          const key = Key.parse(symbolKey);
+          const key = Key.parseOrFail(symbolKey);
           const numericString = key.toNumericString(songKey);
           expect(numericString).toEqual(numericKey);
         });

@@ -1,30 +1,31 @@
-export const pushNew = (collection, Klass) => {
-  const newObject = new Klass();
-  collection.push(newObject);
-  return newObject;
-};
+import Line from './chord_sheet/line';
+import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
+import Item from './chord_sheet/item';
 
-export const hasChordContents = (line) => line.items.some((item) => !!item.chords);
+export const hasChordContents = (line: Line): boolean => (
+  line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
+);
 
-export const isEvaluatable = (item) => typeof item.evaluate === 'function';
+export const isEvaluatable = (item: Item): boolean => ('evaluate' in item) && (typeof item.evaluate === 'function');
 
-export const padLeft = (str, length) => {
-  let paddedString = str;
-  for (let l = str.length; l < length; l += 1, paddedString += ' ');
+export const padLeft = (string: string, length: number): string => {
+  let paddedString = string;
+  for (let l = string.length; l < length; l += 1, paddedString += ' ');
   return paddedString;
 };
 
-export const isPresent = (object) => object && object.length > 0;
+type ObjectWithLength = any[] | string | null;
 
-export const isBlank = (object) => !isPresent(object);
+export const isPresent = (object: ObjectWithLength): boolean => !!object && object.length > 0;
+export const isString = (obj: any): boolean => (typeof obj === 'string');
 
-export const presence = (object) => (isPresent(object) ? object : null);
-
-function dasherize(string) {
+function dasherize(string: string): string {
   return string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 }
 
-export function scopeCss(css, scope) {
+type CssObject = Record<string, Record<string, string>>;
+
+export function scopeCss(css: CssObject, scope = ''): string {
   return Object
     .entries(css)
     .map(([selector, styles]) => {
@@ -43,36 +44,33 @@ ${scopedSelector} {
     .join('\n\n');
 }
 
-export function deprecate(message) {
+export function deprecate(message: string): void {
   try {
     throw new Error(`DEPRECATION: ${message}`);
   } catch (e) {
+    const error = (e as Error);
     const proc = globalThis.process;
 
     if (typeof proc === 'object' && typeof proc.emitWarning === 'function') {
-      proc.emitWarning(`${message}\n${e.stack}`);
+      proc.emitWarning(`${message}\n${error.stack}`);
     } else {
-      console.warn(`${message}\n${e.stack}`);
+      console.warn(`${message}\n${error.stack}`);
     }
   }
 }
 
-export function isEmptyString(string) {
+export function breakingChange(message: string): void {
+  throw new Error(`BREAKING CHANGE: ${message}`);
+}
+
+export function isEmptyString(string: string | null | undefined): boolean {
   return (string === null || string === undefined || string === '');
 }
 
-export function parseWithRegexes(string: string, constructor, regexes) {
-  if (isEmptyString(string)) {
-    return null;
+export function isMinor(suffix: any): boolean {
+  if (typeof suffix !== 'string') {
+    return false;
   }
 
-  for (let i = 0, count = regexes.length; i < count; i += 1) {
-    const match = string.match(regexes[i]);
-
-    if (match) {
-      return new constructor(match.groups);
-    }
-  }
-
-  return null;
+  return suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
 }

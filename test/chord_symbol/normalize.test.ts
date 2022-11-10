@@ -67,7 +67,7 @@ describe('Chord', () => {
       it('normalizes Em/A#', () => {
         const chord = new Chord({
           base: 'E',
-          modifier: '',
+          modifier: null,
           suffix: 'm',
           bassBase: 'A',
           bassModifier: '#',

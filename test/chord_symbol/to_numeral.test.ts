@@ -13,7 +13,7 @@ describe('Chord', () => {
           bassModifier: '#',
         });
 
-        const key = Key.parse('Ab');
+        const key = Key.parseOrFail('Ab');
         const numeralChord = originalChord.toNumeral(key);
 
         expect(numeralChord).toBeChord({

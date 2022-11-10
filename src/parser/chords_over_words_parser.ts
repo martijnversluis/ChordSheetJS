@@ -11,7 +11,7 @@ class ChordsOverWordsParser extends PegBasedParser {
    * @param {string} chordsOverWordsSheet the chords over words sheet
    * @returns {Song} The parsed song
    */
-  parse(chordsOverWordsSheet): Song {
+  parse(chordsOverWordsSheet: string): Song {
     return this.parseWithParser(chordsOverWordsSheet, parse);
   }
 }

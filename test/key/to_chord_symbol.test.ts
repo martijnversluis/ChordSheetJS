@@ -45,11 +45,11 @@ const examples = {
 describe('Key', () => {
   describe('#toChordSymbol', () => {
     Object.entries(examples).forEach(([songKeyString, conversions]) => {
-      const songKey = Key.parse(songKeyString);
+      const songKey = Key.parseOrFail(songKeyString);
 
       Object.entries(conversions).forEach(([numericKey, symbolKey]) => {
         it(`converts ${numericKey} to ${symbolKey} (actual key: ${songKey})`, () => {
-          const key = Key.parse(numericKey);
+          const key = Key.parseOrFail(numericKey);
           const keySymbolString = key.toChordSymbolString(songKey);
           expect(keySymbolString).toEqual(symbolKey);
         });

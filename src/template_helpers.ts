@@ -1,7 +1,13 @@
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
 import { INDETERMINATE, NONE } from './constants';
-import { isEvaluatable } from './utilities';
+import { isEmptyString, isEvaluatable } from './utilities';
+import Item from './chord_sheet/item';
+import Line from './chord_sheet/line';
+import Paragraph from './chord_sheet/paragraph';
+import Metadata from './chord_sheet/metadata';
+import Configuration from './formatter/configuration/configuration';
+import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 
 interface EachCallback {
   (_item: any): string;
@@ -13,35 +19,35 @@ interface WhenCallback {
 
 export { isEvaluatable } from './utilities';
 
-export const isChordLyricsPair = (item) => item instanceof ChordLyricsPair;
+export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordLyricsPair;
 
-export const lineHasContents = (line) => line.items.some((item) => item.isRenderable());
+export const lineHasContents = (line: Line): boolean => line.items.some((item: Item) => item.isRenderable());
 
-export const isTag = (item) => item instanceof Tag;
+export const isTag = (item: Item): boolean => item instanceof Tag;
 
-export const isComment = (item) => item.name === 'comment';
+export const isComment = (item: Tag): boolean => item.name === 'comment';
 
 export function stripHTML(string: string): string {
   return string.trim().replace(/(<\/[a-z]+>)\s+(<)/g, '$1$2').replace(/(\n)\s+/g, '');
 }
 
-export function each(collection: any[], callback: EachCallback) {
+export function each(collection: any[], callback: EachCallback): string {
   return collection.map(callback).join('');
 }
 
-export function when(condition: boolean, callback: WhenCallback) {
+export function when(condition: any, callback: WhenCallback): string {
   return condition ? callback() : '';
 }
 
-export const hasTextContents = (line) => (
+export const hasTextContents = (line: Line): boolean => (
   line.items.some((item) => (
-    (item instanceof ChordLyricsPair && item.lyrics)
+    (item instanceof ChordLyricsPair && !isEmptyString(item.lyrics))
     || (item instanceof Tag && item.isRenderable())
     || isEvaluatable(item)
   ))
 );
 
-export const lineClasses = (line) => {
+export const lineClasses = (line: Line): string => {
   const classes = ['row'];
 
   if (!lineHasContents(line)) {
@@ -51,7 +57,7 @@ export const lineClasses = (line) => {
   return classes.join(' ');
 };
 
-export const paragraphClasses = (paragraph) => {
+export const paragraphClasses = (paragraph: Paragraph): string => {
   const classes = ['paragraph'];
 
   if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
@@ -61,7 +67,7 @@ export const paragraphClasses = (paragraph) => {
   return classes.join(' ');
 };
 
-export const evaluate = (item, metadata, configuration) => {
+export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: Configuration): string => {
   if (!metadata) {
     throw new Error('cannot evaluate, metadata is null');
   }

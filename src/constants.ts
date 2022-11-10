@@ -33,8 +33,14 @@ export const INDETERMINATE = 'indeterminate';
  */
 export const TAB = 'tab';
 
+export type ParagraphType = 'verse' | 'chorus' | 'none' | 'indeterminate' | 'tab';
+
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';
 export const NUMERAL = 'numeral';
 
 export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
+
+export type Modifier = '#' | 'b';
+
+export type ChordType = 'symbol' | 'numeric' | 'numeral';

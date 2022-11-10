@@ -1,4 +1,6 @@
-/* eslint-disable no-unused-vars, no-undef */
+/* eslint-disable no-unused-vars, no-undef, @typescript-eslint/no-unused-vars */
+import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
+
 declare global {
   namespace jest {
     interface Matchers<R> {
@@ -20,14 +22,7 @@ declare global {
 
       toBeLiteral(contents: string): CustomMatcherResult;
 
-      toBeTernary(
-        {
-          variable = null,
-          valueTest = null,
-          trueExpression = null,
-          falseExpression = null,
-        }
-      ): CustomMatcherResult;
+      toBeTernary(properties: TernaryProperties): CustomMatcherResult;
 
       toBeComment(_contents: string): CustomMatcherResult;
 

@@ -433,12 +433,12 @@ describe('numeric chords', () => {
     describe('major Keys', () => {
       Object.entries(majorExamples).forEach(([key, conversions]) => {
         describe(`For key ${key}`, () => {
-          const keyChord = Chord.parse(key);
+          const keyChord = Chord.parseOrFail(key);
           const songKey = keyChord.root;
 
           Object.entries(conversions).forEach(([numericChord, chordSymbol]) => {
             it(`converts ${numericChord} to ${chordSymbol}`, () => {
-              const chord = Chord.parse(numericChord);
+              const chord = Chord.parseOrFail(numericChord);
               const chordSymbolString = chord.toChordSymbolString(songKey);
               expect(chordSymbolString).toEqual(chordSymbol);
             });
@@ -450,12 +450,12 @@ describe('numeric chords', () => {
     describe('minor Keys', () => {
       Object.entries(minorExamples).forEach(([key, conversions]) => {
         describe(`For key ${key}`, () => {
-          const keyChord = Chord.parse(key);
+          const keyChord = Chord.parseOrFail(key);
           const songKey = keyChord.root;
 
           Object.entries(conversions).forEach(([numericChord, chordSymbol]) => {
             it(`converts ${numericChord} to ${chordSymbol}`, () => {
-              const chord = Chord.parse(numericChord);
+              const chord = Chord.parseOrFail(numericChord);
               const chordSymbolString = chord.toChordSymbolString(songKey);
               expect(chordSymbolString).toEqual(chordSymbol);
             });

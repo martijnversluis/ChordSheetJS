@@ -4,6 +4,10 @@ import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
 
+type MapItemFunc = (_item: Item) => Item;
+
+export type LineType = 'verse' | 'chorus' | 'none';
+
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
  */
@@ -21,27 +25,27 @@ class Line {
    * @member
    * @type {string}
    */
-  type: 'verse' | 'chorus' | 'none' = NONE;
+  type: LineType = NONE;
 
   /**
    * @ignore
    * @type {ChordLyricsPair}
    */
-  currentChordLyricsPair: ChordLyricsPair = null;
+  currentChordLyricsPair: ChordLyricsPair = new ChordLyricsPair();
 
   /**
    * @ignore
    * @type {string|null}
    */
-  key?: string = null;
+  key: string | null = null;
 
   /**
    * @ignore
    * @type {string|null}
    */
-  transposeKey?: string = null;
+  transposeKey: string | null = null;
 
-  constructor({ type, items }: { type: 'verse' | 'chorus' | 'none', items: Item[]} = { type: NONE, items: [] }) {
+  constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
     this.type = type;
     this.items = items;
   }
@@ -50,7 +54,7 @@ class Line {
    * Indicates whether the line contains any items
    * @returns {boolean}
    */
-  isEmpty() {
+  isEmpty(): boolean {
     return this.items.length === 0;
   }
 
@@ -58,7 +62,7 @@ class Line {
    * Adds an item ({@link ChordLyricsPair} or {@link Tag}) to the line
    * @param {ChordLyricsPair|Tag} item The item to be added
    */
-  addItem(item: Item) {
+  addItem(item: Item): void {
     if (item instanceof Tag) {
       this.addTag(item);
     } else if (item instanceof ChordLyricsPair) {
@@ -74,7 +78,7 @@ class Line {
    * Indicates whether the line contains items that are renderable
    * @returns {boolean}
    */
-  hasRenderableItems() {
+  hasRenderableItems(): boolean {
     return this.items.some((item) => item.isRenderable());
   }
 
@@ -82,11 +86,11 @@ class Line {
    * Returns a deep copy of the line and all of its items
    * @returns {Line}
    */
-  clone() {
+  clone(): Line {
     return this.mapItems(null);
   }
 
-  mapItems(func) {
+  mapItems(func: MapItemFunc | null): Line {
     const clonedLine = new Line();
 
     clonedLine.items = this.items
@@ -104,7 +108,7 @@ class Line {
    * Indicates whether the line type is {@link VERSE}
    * @returns {boolean}
    */
-  isVerse() {
+  isVerse(): boolean {
     return this.type === VERSE;
   }
 
@@ -112,7 +116,7 @@ class Line {
    * Indicates whether the line type is {@link CHORUS}
    * @returns {boolean}
    */
-  isChorus() {
+  isChorus(): boolean {
     return this.type === CHORUS;
   }
 
@@ -121,50 +125,50 @@ class Line {
    * @deprecated
    * @returns {boolean}
    */
-  hasContent() {
+  hasContent(): boolean {
     return this.hasRenderableItems();
   }
 
-  addChordLyricsPair(chords = null, lyrics = null) {
+  addChordLyricsPair(chords: ChordLyricsPair | string | null = null, lyrics = null): ChordLyricsPair {
     if (chords instanceof ChordLyricsPair) {
       this.currentChordLyricsPair = chords;
     } else {
-      this.currentChordLyricsPair = new ChordLyricsPair(chords, lyrics);
+      this.currentChordLyricsPair = new ChordLyricsPair(chords || '', lyrics || '');
     }
 
     this.items.push(this.currentChordLyricsPair);
     return this.currentChordLyricsPair;
   }
 
-  ensureChordLyricsPair() {
+  ensureChordLyricsPair(): void {
     if (!this.currentChordLyricsPair) {
       this.addChordLyricsPair();
     }
   }
 
-  chords(chr) {
+  chords(chr: string): void {
     this.ensureChordLyricsPair();
     this.currentChordLyricsPair.chords += chr;
   }
 
-  lyrics(chr) {
+  lyrics(chr: string): void {
     this.ensureChordLyricsPair();
     this.currentChordLyricsPair.lyrics += chr;
   }
 
-  addTag(name, value = null) {
-    const tag = (name instanceof Tag) ? name : new Tag(name, value);
+  addTag(nameOrTag: Tag | string, value: string | null = null): Tag {
+    const tag = (nameOrTag instanceof Tag) ? nameOrTag : new Tag(nameOrTag, value);
     this.items.push(tag);
     return tag;
   }
 
-  addComment(content) {
+  addComment(content: Comment | string): Comment {
     const comment = (content instanceof Comment) ? content : new Comment(content);
     this.items.push(comment);
     return comment;
   }
 
-  set(properties) {
+  set(properties: { type?: LineType, items?: Item[] }): Line {
     return new Line(
       {
         type: this.type,

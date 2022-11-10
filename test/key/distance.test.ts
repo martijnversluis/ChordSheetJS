@@ -19,11 +19,11 @@ describe('Key', () => {
     });
 
     it('calculate the distance between a Key object and a string', () => {
-      expect(Key.distance(Key.parse('G#'), 'Eb')).toEqual(7);
+      expect(Key.distance(Key.parseOrFail('G#'), 'Eb')).toEqual(7);
     });
 
     it('calculate the distance between a string and a Key object', () => {
-      expect(Key.distance('G#', Key.parse('Eb'))).toEqual(7);
+      expect(Key.distance('G#', Key.parseOrFail('Eb'))).toEqual(7);
     });
   });
 });

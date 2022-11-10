@@ -1,15 +1,16 @@
-import Line from './line';
+import Line, { LineType } from './line';
 import Paragraph from './paragraph';
 import Key from '../key';
 import ChordLyricsPair from './chord_lyrics_pair';
-import { deprecate, pushNew } from '../utilities';
+import { deprecate } from '../utilities';
 import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
 import Item from './item';
+import TraceInfo from './trace_info';
 
 import {
-  CHORUS, NONE, TAB, VERSE,
+  CHORUS, NONE, ParagraphType, TAB, VERSE,
 } from '../constants';
 
 import Tag, {
@@ -50,15 +51,19 @@ class Song extends MetadataAccessors {
    */
   metadata: Metadata;
 
-  currentLine?: Line = null;
+  currentLine: Line | null = null;
 
   warnings: ParserWarning[] = [];
 
-  sectionType: string = NONE;
+  sectionType: ParagraphType = NONE;
 
-  currentKey?: string = null;
+  currentKey: string | null = null;
 
-  transposeKey?: string = null;
+  transposeKey: string | null = null;
+
+  _bodyParagraphs: Paragraph[] | null = null;
+
+  _bodyLines: Line[] | null = null;
 
   /**
    * Creates a new {Song} instance
@@ -69,7 +74,7 @@ class Song extends MetadataAccessors {
     this.metadata = new Metadata(metadata);
   }
 
-  get previousLine() {
+  get previousLine(): Line | null {
     const count = this.lines.length;
 
     if (count >= 2) {
@@ -84,8 +89,12 @@ class Song extends MetadataAccessors {
    * if you want to skip the "header lines": the lines that only contain meta data.
    * @returns {Line[]} The song body lines
    */
-  get bodyLines() {
-    return this.selectRenderableItems('_bodyLines', 'lines');
+  get bodyLines(): Line[] {
+    if (!this._bodyLines) {
+      this._bodyLines = this.selectRenderableItems(this.lines) as Line[];
+    }
+
+    return this._bodyLines;
   }
 
   /**
@@ -94,34 +103,43 @@ class Song extends MetadataAccessors {
    * @see {@link bodyLines}
    * @returns {Paragraph[]}
    */
-  get bodyParagraphs() {
-    return this.selectRenderableItems('_bodyParagraphs', 'paragraphs');
-  }
-
-  selectRenderableItems(targetProp, sourceProp) {
-    if (this[targetProp] === undefined) {
-      this[targetProp] = [...this[sourceProp]];
-      const collection = this[targetProp];
-
-      while (collection.length > 0 && !collection[0].hasRenderableItems()) {
-        this[targetProp].shift();
-      }
+  get bodyParagraphs(): Paragraph[] {
+    if (!this._bodyParagraphs) {
+      this._bodyParagraphs = this.selectRenderableItems(this.paragraphs) as Paragraph[];
     }
 
-    return this[targetProp];
+    return this._bodyParagraphs;
   }
 
-  chords(chr) {
+  selectRenderableItems(items: Array<Line | Paragraph>): Array<Line | Paragraph> {
+    const copy = [...items];
+
+    while (copy.length && !copy[0].hasRenderableItems()) {
+      copy.shift();
+    }
+
+    return copy;
+  }
+
+  chords(chr: string): void {
+    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
     this.currentLine.chords(chr);
   }
 
-  lyrics(chr) {
+  lyrics(chr: string): void {
     this.ensureLine();
+    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
     this.currentLine.lyrics(chr);
   }
 
-  addLine(line?: Line) {
-    this.currentLine = line || pushNew(this.lines, Line);
+  addLine(line?: Line): Line {
+    if (line) {
+      this.currentLine = line;
+    } else {
+      this.currentLine = new Line();
+      this.lines.push(this.currentLine);
+    }
+
     this.setCurrentLineType(this.sectionType);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
@@ -132,7 +150,7 @@ class Song extends MetadataAccessors {
    * The {@link Paragraph} items of which the song consists
    * @member {Paragraph[]}
    */
-  get paragraphs() {
+  get paragraphs(): Paragraph[] {
     let currentParagraph = new Paragraph();
     const paragraphs = [currentParagraph];
 
@@ -148,21 +166,22 @@ class Song extends MetadataAccessors {
     return paragraphs;
   }
 
-  setCurrentLineType(sectionType) {
-    this.currentLine.type = sectionType;
+  setCurrentLineType(sectionType: ParagraphType): void {
+    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
+    this.currentLine.type = sectionType as LineType;
   }
 
-  ensureLine() {
+  ensureLine(): void {
     if (this.currentLine === null) {
       this.addLine();
     }
   }
 
-  addTag(tagContents: string | Tag) {
-    const tag = Tag.parse(tagContents);
+  addTag(tagContents: string | Tag): Tag {
+    const tag = Tag.parseOrFail(tagContents);
 
     if (tag.isMetaTag()) {
-      this.setMetadata(tag.name, tag.value);
+      this.setMetadata(tag.name, tag.value || '');
     } else if (tag.name === TRANSPOSE) {
       this.transposeKey = tag.value;
     } else if (tag.name === NEW_KEY) {
@@ -172,12 +191,13 @@ class Song extends MetadataAccessors {
     }
 
     this.ensureLine();
+    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
     this.currentLine.addTag(tag);
 
     return tag;
   }
 
-  setSectionTypeFromTag(tag) {
+  setSectionTypeFromTag(tag: Tag): void {
     switch (tag.name) {
       case START_OF_CHORUS:
         this.startSection(CHORUS, tag);
@@ -208,33 +228,34 @@ class Song extends MetadataAccessors {
     }
   }
 
-  startSection(sectionType, tag) {
+  startSection(sectionType: ParagraphType, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
     this.sectionType = sectionType;
     this.setCurrentLineType(sectionType);
   }
 
-  endSection(sectionType, tag) {
+  endSection(sectionType: ParagraphType, tag: Tag): void {
     this.checkCurrentSectionType(sectionType, tag);
     this.sectionType = NONE;
   }
 
-  checkCurrentSectionType(sectionType, tag) {
+  checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
     if (this.sectionType !== sectionType) {
       this.addWarning(`Unexpected tag {${tag.originalName}, current section is: ${this.sectionType}`, tag);
     }
   }
 
-  addWarning(message, { line, column }) {
-    const warning = new ParserWarning(message, line, column);
+  addWarning(message: string, { line, column }: TraceInfo): void {
+    const warning = new ParserWarning(message, line || null, column || null);
     this.warnings.push(warning);
   }
 
-  addItem(item) {
+  addItem(item: Item): void {
     if (item instanceof Tag) {
       this.addTag(item);
     } else {
       this.ensureLine();
+      if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
       this.currentLine.addItem(item);
     }
   }
@@ -243,11 +264,11 @@ class Song extends MetadataAccessors {
    * Returns a deep clone of the song
    * @returns {Song} The cloned song
    */
-  clone() {
+  clone(): Song {
     return this.mapItems((item) => item);
   }
 
-  setMetadata(name, value) {
+  setMetadata(name: string, value: string): void {
     this.metadata.add(name, value);
   }
 
@@ -256,12 +277,12 @@ class Song extends MetadataAccessors {
    * @deprecated
    * @returns {@link Metadata} The metadata
    */
-  get metaData() {
+  get metaData(): Metadata {
     deprecate('metaData has been deprecated, please use metadata instead (notice the lowercase "d")');
     return this.metadata;
   }
 
-  getMetadata(name): string | string[] {
+  getMetadata(name: string): string | string[] | undefined {
     return this.metadata.getMetadata(name);
   }
 
@@ -278,8 +299,9 @@ class Song extends MetadataAccessors {
    * - remove any `key` directive
    * @returns {Song} The changed song
    */
-  setKey(key): Song {
-    return this.changeMetadata(KEY, key ? key.toString() : key);
+  setKey(key: string | number | null): Song {
+    const strKey = key ? key.toString() : null;
+    return this.changeMetadata(KEY, strKey);
   }
 
   /**
@@ -291,19 +313,20 @@ class Song extends MetadataAccessors {
    * - remove any `capo` directive
    * @returns {Song} The changed song
    */
-  setCapo(capo) {
-    return this.changeMetadata(CAPO, capo);
+  setCapo(capo: number | null): Song {
+    const strCapo = capo ? capo.toString() : null;
+    return this.changeMetadata(CAPO, strCapo);
   }
 
-  private setDirective(name: string, value: string | null) {
+  private setDirective(name: string, value: string | null): Song {
     if (value === null) {
-      return this.removeItem((item) => item instanceof Tag && item.name === name);
+      return this.removeItem((item: Item) => item instanceof Tag && item.name === name);
     }
 
     return this.updateItem(
-      (item) => item instanceof Tag && item.name === name,
-      (item) => item.set({ value }),
-      (song) => song.insertDirective(name, value),
+      (item: Item) => item instanceof Tag && item.name === name,
+      (item: Item) => (('set' in item) ? item.set({ value }) : item),
+      (song: Song) => song.insertDirective(name, value),
     );
   }
 
@@ -319,12 +342,12 @@ class Song extends MetadataAccessors {
    */
   transpose(delta: number, { normalizeChordSuffix = false } = {}): Song {
     const wrappedKey = Key.wrap(this.key);
-    let transposedKey = null;
+    let transposedKey: Key | null = null;
     let song = (this as Song);
 
     if (wrappedKey) {
       transposedKey = wrappedKey.transpose(delta);
-      song = song.setKey(transposedKey);
+      song = song.setKey(transposedKey.toString());
     }
 
     return song.mapItems((item) => {
@@ -370,12 +393,12 @@ class Song extends MetadataAccessors {
    * @param {string} newKey The new key.
    * @returns {Song} The changed song
    */
-  changeKey(newKey: string | Key) {
+  changeKey(newKey: string | Key): Song {
     const transpose = this.getTransposeDistance(newKey);
 
     const updatedSong = this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
-        return item.set({ value: newKey });
+        return item.set({ value: newKey.toString() });
       }
 
       if (item instanceof ChordLyricsPair) {
@@ -385,11 +408,11 @@ class Song extends MetadataAccessors {
       return item;
     });
 
-    this.setKey(newKey);
+    this.setKey(newKey.toString());
     return updatedSong;
   }
 
-  getTransposeDistance(newKey: string | Key) {
+  getTransposeDistance(newKey: string | Key): number {
     const wrappedKey = Key.wrap(this.key);
 
     if (!wrappedKey) {
@@ -414,13 +437,13 @@ Or set the song key before changing key:
    * @param {string} name The directive name
    * @param {string | null} value The value to set, or `null` to remove the directive
    */
-  changeMetadata(name: string, value: string | null) {
+  changeMetadata(name: string, value: string | null): Song {
     const updatedSong = this.setDirective(name, value);
     updatedSong.metadata.set(name, value);
     return updatedSong;
   }
 
-  private insertDirective(name, value, { after = null } = {}) {
+  private insertDirective(name: string, value: string, { after = null } = {}): Song {
     const insertIndex = this.lines.findIndex((line) => (
       line.items.some((item) => (
         !(item instanceof Tag) || (after && item instanceof Tag && item.name === after)
@@ -451,7 +474,7 @@ Or set the song key before changing key:
    * @param {MapItemsCallback} func the callback function
    * @returns {Song} the changed song
    */
-  mapItems(func: MapItemsCallback) {
+  mapItems(func: MapItemsCallback): Song {
     const clonedSong = new Song();
 
     this.lines.forEach((line) => {
@@ -483,7 +506,7 @@ Or set the song key before changing key:
    * @param {MapLinesCallback} func the callback function
    * @returns {Song} the changed song
    */
-  mapLines(func: MapLinesCallback) {
+  mapLines(func: MapLinesCallback): Song {
     const clonedSong = new Song();
 
     this.lines.forEach((line) => {
@@ -498,7 +521,11 @@ Or set the song key before changing key:
     return clonedSong;
   }
 
-  private updateItem(findCallback, updateCallback, notFoundCallback) {
+  private updateItem(
+    findCallback: (_item: Item) => boolean,
+    updateCallback: (_item: Item) => Item,
+    notFoundCallback: (_song: Song) => Song,
+  ): Song {
     let found = false;
 
     const updatedSong = this.mapItems((item) => {
@@ -517,7 +544,7 @@ Or set the song key before changing key:
     return updatedSong;
   }
 
-  private removeItem(callback) {
+  private removeItem(callback: (_item: Item) => boolean): Song {
     return this.mapLines((line) => {
       const { items } = line;
       const index = items.findIndex(callback);

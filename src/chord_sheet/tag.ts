@@ -168,7 +168,7 @@ export const META_TAGS = [
 
 export const READ_ONLY_TAGS = [_KEY];
 
-const ALIASES = {
+const ALIASES: Record<string, string> = {
   [TITLE_SHORT]: TITLE,
   [SUBTITLE_SHORT]: SUBTITLE,
   [COMMENT_SHORT]: COMMENT,
@@ -182,11 +182,11 @@ const ALIASES = {
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
-export function isReadonlyTag(tagName) {
+export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
 }
 
-const translateTagNameAlias = (name) => {
+const translateTagNameAlias = (name: string) => {
   if (!name) {
     return name;
   }
@@ -204,32 +204,40 @@ const translateTagNameAlias = (name) => {
  * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
  */
 class Tag extends AstComponent {
-  _originalName: string;
+  _originalName = '';
 
-  _name: string;
+  _name = '';
 
-  _value?: string;
+  _value = '';
 
-  _isMetaTag: boolean = false;
+  _isMetaTag = false;
 
-  constructor(name, value = '', traceInfo: TraceInfo = null) {
+  constructor(name: string, value: string | null = null, traceInfo: TraceInfo | null = null) {
     super(traceInfo);
     this.parseNameValue(name, value);
   }
 
   private parseNameValue(name: string, value: string | null): void {
     if (name === 'meta') {
-      const [metaName, metaValue] = value.split(/\s(.+)/);
-      this.name = metaName;
-      this.value = metaValue || '';
-      this._isMetaTag = true;
+      this.parseMetaTag(value);
     } else {
       this.name = name;
       this.value = value || '';
     }
   }
 
-  static parse(tag: string | Tag): Tag {
+  private parseMetaTag(value: string | null) {
+    if (!value) {
+      throw new Error('Expected value');
+    }
+
+    const [metaName, metaValue] = value.split(/\s(.+)/);
+    this.name = metaName;
+    this.value = metaValue || '';
+    this._isMetaTag = true;
+  }
+
+  static parse(tag: string | Tag): Tag | null {
     if (tag instanceof Tag) {
       return tag;
     }
@@ -245,6 +253,16 @@ class Tag extends AstComponent {
     }
 
     return null;
+  }
+
+  static parseOrFail(tag: string | Tag): Tag {
+    const parsed = this.parse(tag);
+
+    if (!parsed) {
+      throw new Error(`Failed to parse ${tag}`);
+    }
+
+    return parsed;
   }
 
   set name(name) {
@@ -271,35 +289,31 @@ class Tag extends AstComponent {
   }
 
   set value(value) {
-    this._value = value;
+    this._value = value || '';
   }
 
   /**
    * The tag value
    * @member
-   * @type {string|null}
+   * @type {string}
    */
-  get value() {
-    if (this._value) {
-      return `${this._value}`.trim();
-    }
-
-    return this._value || null;
+  get value(): string {
+    return `${this._value}`.trim();
   }
 
   /**
    * Checks whether the tag value is a non-empty string.
    * @returns {boolean}
    */
-  hasValue() {
-    return this.value !== null && this.value.trim().length > 0;
+  hasValue(): boolean {
+    return this.value.length > 0;
   }
 
   /**
    * Checks whether the tag is usually rendered inline. It currently only applies to comment tags.
    * @returns {boolean}
    */
-  isRenderable() {
+  isRenderable(): boolean {
     return RENDERABLE_TAGS.indexOf(this.name) !== -1;
   }
 
@@ -315,19 +329,19 @@ class Tag extends AstComponent {
    * Returns a clone of the tag.
    * @returns {Tag} The cloned tag
    */
-  clone() {
+  clone(): Tag {
     return new Tag(this._originalName, this.value);
   }
 
-  toString() {
+  toString(): string {
     return `Tag(name=${this.name}, value=${this.value})`;
   }
 
-  set({ value }) {
+  set({ value }: { value: string }): Tag {
     return new Tag(this._originalName, value);
   }
 
-  setValue(value: string) {
+  setValue(value: string): Tag {
     return this.set({ value });
   }
 }

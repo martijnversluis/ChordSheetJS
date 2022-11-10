@@ -11,7 +11,7 @@ class ChordProParser extends PegBasedParser {
    * @param {string} chordProChordSheet the ChordPro chord sheet
    * @returns {Song} The parsed song
    */
-  parse(chordProChordSheet): Song {
+  parse(chordProChordSheet: string): Song {
     return this.parseWithParser(chordProChordSheet, parse);
   }
 }
