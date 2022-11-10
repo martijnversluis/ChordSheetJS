@@ -2,7 +2,7 @@ import { HtmlTableFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
-import { defaultCss, scopedCss } from '../../src/formatter/html_table_formatter';
+import { defaultCssHtmlTable, scopedCss } from '../../src/formatter/html_table_formatter';
 
 describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -225,6 +225,6 @@ td {
   });
 
   it('exposes a CSS object', () => {
-    expect(typeof defaultCss).toEqual('object');
+    expect(typeof defaultCssHtmlTable).toEqual('object');
   });
 });
