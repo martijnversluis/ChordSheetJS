@@ -2,7 +2,7 @@ import { HtmlDivFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
-import { defaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
+import { defaultCssHtmlDiv, scopedCss } from '../../src/formatter/html_div_formatter';
 
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -228,6 +228,6 @@ describe('HtmlDivFormatter', () => {
   });
 
   it('exposes the CSS object', () => {
-    expect(typeof defaultCss).toEqual('object');
+    expect(typeof defaultCssHtmlDiv).toEqual('object');
   });
 });

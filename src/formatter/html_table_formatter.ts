@@ -7,7 +7,7 @@ import { scopeCss } from '../utilities';
  * For a CSS string see {@link scopedCss}
  * @type {Object.<string, Object.<string, string>>}
  */
-export const defaultCss: CSS = {
+export const defaultCssHtmlTable: CSS = {
   h1: {
     fontSize: '1.5em',
   },
@@ -35,7 +35,7 @@ export const defaultCss: CSS = {
  * @returns {string} the CSS string
  */
 export function scopedCss(scope: string): string {
-  return scopeCss(defaultCss, scope);
+  return scopeCss(defaultCssHtmlTable, scope);
 }
 
 /**
@@ -48,7 +48,7 @@ class HtmlTableFormatter extends HtmlFormatter {
   }
 
   get defaultCss(): CSS {
-    return defaultCss;
+    return defaultCssHtmlTable;
   }
 }
 
