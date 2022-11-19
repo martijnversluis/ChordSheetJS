@@ -447,4 +447,64 @@ E|---------------------------3----------------------------------|
     expect(paragraphTypes).toEqual([TAB, VERSE]);
     expect(parser.warnings).toHaveLength(0);
   });
+
+  it('supports CR line endings', () => {
+    const chordSheet = 'Let it [Am]be, let it [C/G]be,\rlet it [F]be, let it [C]be';
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('supports LF line endings', () => {
+    const chordSheet = 'Let it [Am]be, let it [C/G]be,\nlet it [F]be, let it [C]be';
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('supports CRLF line endings', () => {
+    const chordSheet = 'Let it [Am]be, let it [C/G]be,\r\nlet it [F]be, let it [C]be';
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
 });
