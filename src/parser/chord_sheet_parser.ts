@@ -1,6 +1,7 @@
 import Song from '../chord_sheet/song';
 import Line from '../chord_sheet/line';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
+import { normalizeLineEndings } from '../utilities';
 
 const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
@@ -83,7 +84,7 @@ class ChordSheetParser {
       this.song = song;
     }
 
-    this.lines = document.split('\n');
+    this.lines = normalizeLineEndings(document).split('\n');
     this.currentLine = 0;
     this.lineCount = this.lines.length;
     this.processingText = true;

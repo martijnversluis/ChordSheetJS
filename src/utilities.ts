@@ -74,3 +74,7 @@ export function isMinor(suffix: any): boolean {
 
   return suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
 }
+
+export function normalizeLineEndings(string: string): string {
+  return string.replace(/\r\n?/g, '\n');
+}
