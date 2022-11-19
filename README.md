@@ -1388,13 +1388,14 @@ of the root note. For example, <code>Em/A#</code> becomes <code>Em/Bb</code>.</p
 <a name="Chord.parse"></a>
 
 ### Chord.parse(chordString) ⇒ [<code>Chord</code>](#Chord) \| <code>null</code>
-<p>Tries to parse a chord string into a chord</p>
+<p>Tries to parse a chord string into a chord
+Any leading or trailing whitespace is removed first, so a chord like <code> \n  E/G# \r</code> is valid.</p>
 
 **Kind**: static method of [<code>Chord</code>](#Chord)  
 
 | Param | Description |
 | --- | --- |
-| chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code></p> |
+| chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code>.</p> |
 
 <a name="ChordSheetSerializer"></a>
 

@@ -36,7 +36,8 @@ class Chord implements ChordProperties {
 
   /**
    * Tries to parse a chord string into a chord
-   * @param chordString the chord string, eg `Esus4/G#` or `1sus4/#3`
+   * Any leading or trailing whitespace is removed first, so a chord like `  \n  E/G# \r ` is valid.
+   * @param chordString the chord string, eg `Esus4/G#` or `1sus4/#3`.
    * @returns {Chord|null}
    */
   static parse(chordString: string): Chord | null {
@@ -48,7 +49,7 @@ class Chord implements ChordProperties {
   }
 
   static parseOrFail(chordString: string): Chord {
-    const ast = parse(chordString);
+    const ast = parse(chordString.trim());
     return new Chord(ast);
   }
 
