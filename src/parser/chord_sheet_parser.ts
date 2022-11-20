@@ -1,13 +1,19 @@
 import Song from '../chord_sheet/song';
 import Line from '../chord_sheet/line';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
-import { normalizeLineEndings } from '../utilities';
+import { deprecate, normalizeLineEndings } from '../utilities';
 
 const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 /**
  * Parses a normal chord sheet
+ *
+ * ChordSheetParser is deprecated, please use ChordsOverWordsParser.
+ *
+ * ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+ * support for many variations. Besides that, some chordpro feature have been ported back
+ * to ChordsOverWordsParser, which adds some interesting functionality.
  */
 class ChordSheetParser {
   processingText = true;
@@ -28,10 +34,19 @@ class ChordSheetParser {
 
   /**
    * Instantiate a chord sheet parser
+   * ChordSheetParser is deprecated, please use ChordsOverWordsParser.
    * @param {Object} [options={}] options
    * @param {boolean} [options.preserveWhitespace=true] whether to preserve trailing whitespace for chords
+   * @deprecated
    */
   constructor({ preserveWhitespace = true }: { preserveWhitespace?: boolean } = {}) {
+    deprecate(
+      `ChordSheetParser is deprecated, please use ChordsOverWordsParser. 
+
+ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks 
+support for many variations. Besides that, some chordpro feature have been ported back 
+to ChordsOverWordsParser, which adds some interesting functionality.`,
+    );
     this.preserveWhitespace = preserveWhitespace;
   }
 

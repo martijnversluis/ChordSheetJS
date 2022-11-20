@@ -50,7 +50,7 @@ Whisper words of wisdom, let it be`.substring(1);
     expect(line4Pairs[7]).toBeChordLyricsPair('C', '');
   });
 
-  it('allows for frontmatter seperator to be optional', () => {
+  it('allows for frontmatter separator to be optional', () => {
     const chordOverWords = `
 title: Let it be
 key: C

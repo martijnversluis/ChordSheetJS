@@ -387,10 +387,44 @@ PDF conversion.</p></dd>
 <dd><p>Formats a song into a plain text chord sheet</p></dd>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
 <dd><p>Parses a ChordPro chord sheet</p></dd>
-<dt><a href="#ChordSheetParser">ChordSheetParser</a></dt>
-<dd><p>Parses a normal chord sheet</p></dd>
+<dt><del><a href="#ChordSheetParser">ChordSheetParser</a></del></dt>
+<dd><p>Parses a normal chord sheet</p>
+<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+support for many variations. Besides that, some chordpro feature have been ported back
+to ChordsOverWordsParser, which adds some interesting functionality.</p></dd>
 <dt><a href="#ChordsOverWordsParser">ChordsOverWordsParser</a></dt>
-<dd><p>Parses a chords over words sheet</p></dd>
+<dd><p>Parses a chords over words sheet into a song</p>
+<p>It support &quot;regular&quot; chord sheets:</p>
+<pre><code>       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
+<pre><code>{title: Let it be}
+{key: C}
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>For convenience, you can leave out the brackets:</p>
+<pre><code>title: Let it be
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
+<pre><code>title: Let it be
+key: C
+---
+Chorus 1:
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p></dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
 <dd><p>Represents a parser warning, currently only used by ChordProParser.</p></dd>
 <dt><a href="#PegBasedParser">PegBasedParser</a></dt>
@@ -1092,19 +1126,26 @@ PDF conversion.</p>
 
 <a name="ChordSheetParser"></a>
 
-## ChordSheetParser
+## ~~ChordSheetParser~~
+***Deprecated***
+
 <p>Parses a normal chord sheet</p>
+<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+support for many variations. Besides that, some chordpro feature have been ported back
+to ChordsOverWordsParser, which adds some interesting functionality.</p>
 
 **Kind**: global class  
 
-* [ChordSheetParser](#ChordSheetParser)
+* ~~[ChordSheetParser](#ChordSheetParser)~~
     * [new ChordSheetParser([options])](#new_ChordSheetParser_new)
     * [.parse(chordSheet, [options])](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_ChordSheetParser_new"></a>
 
 ### new ChordSheetParser([options])
-<p>Instantiate a chord sheet parser</p>
+<p>Instantiate a chord sheet parser
+ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
 
 
 | Param | Type | Default | Description |
@@ -1129,7 +1170,37 @@ PDF conversion.</p>
 <a name="ChordsOverWordsParser"></a>
 
 ## ChordsOverWordsParser
-<p>Parses a chords over words sheet</p>
+<p>Parses a chords over words sheet into a song</p>
+<p>It support &quot;regular&quot; chord sheets:</p>
+<pre><code>       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
+<pre><code>{title: Let it be}
+{key: C}
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>For convenience, you can leave out the brackets:</p>
+<pre><code>title: Let it be
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
+<pre><code>title: Let it be
+key: C
+---
+Chorus 1:
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p>
 
 **Kind**: global class  
 <a name="ChordsOverWordsParser+parse"></a>
