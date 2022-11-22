@@ -125,7 +125,10 @@ describe('Song', () => {
   describe('#mapLines', () => {
     it('changes the song', () => {
       const song = exampleSong.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+
+      [0, 1, 3, 2].forEach((expectedLineCount, index) => {
+        expect(song.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
 
       const changedSong = song.mapLines((line) => (
         line.mapItems((item) => {
@@ -147,14 +150,17 @@ describe('Song', () => {
       expect(changedSong.key).toEqual('C changed');
       expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
       expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
-      expect(changedSong.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+
+      [0, 1, 3, 3].forEach((expectedLineCount, index) => {
+        expect(changedSong.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
     });
   });
 
   describe('#mapItems', () => {
     it('changes the song', () => {
       const song = exampleSong.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
@@ -174,7 +180,10 @@ describe('Song', () => {
       expect(changedSong.key).toEqual('C changed');
       expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
       expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
-      expect(changedSong.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 2, 2]);
+
+      [0, 1, 3, 3].forEach((expectedLineCount, index) => {
+        expect(changedSong.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
     });
   });
 

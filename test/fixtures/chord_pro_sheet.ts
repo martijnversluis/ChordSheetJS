@@ -8,7 +8,7 @@ export default `
 
 Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
 
-{start_of_verse}
+{start_of_verse: Verse 1}
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 {transpose: 2}
 [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]

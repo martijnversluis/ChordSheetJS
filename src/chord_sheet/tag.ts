@@ -44,6 +44,12 @@ export const COPYRIGHT = 'copyright';
 export const DURATION = 'duration';
 
 /**
+ * End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
+ * @type {string}
+ */
+export const END_OF_BRIDGE = 'end_of_bridge';
+
+/**
  * End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
  * @type {string}
  */
@@ -79,6 +85,12 @@ export const _KEY = '_key';
  * @type {string}
  */
 export const LYRICIST = 'lyricist';
+
+/**
+ * Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
+ * @type {string}
+ */
+export const START_OF_BRIDGE = 'start_of_bridge';
 
 /**
  * Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
@@ -167,6 +179,13 @@ export const META_TAGS = [
 ];
 
 export const READ_ONLY_TAGS = [_KEY];
+
+const DIRECTIVES_WITH_RENDERABLE_LABEL = [
+  START_OF_VERSE,
+  START_OF_CHORUS,
+  START_OF_BRIDGE,
+  START_OF_TAB,
+];
 
 const ALIASES: Record<string, string> = {
   [TITLE_SHORT]: TITLE,
@@ -314,7 +333,17 @@ class Tag extends AstComponent {
    * @returns {boolean}
    */
   isRenderable(): boolean {
-    return RENDERABLE_TAGS.indexOf(this.name) !== -1;
+    return RENDERABLE_TAGS.includes(this.name) || this.hasRenderableLabel();
+  }
+
+  /**
+   * Check whether this tag's label (if any) should be rendered, as applicable to tags like
+   * `start_of_verse` and `start_of_chorus`.
+   * See https://chordpro.org/chordpro/directives-env_chorus/, https://chordpro.org/chordpro/directives-env_verse/,
+   * https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/
+   */
+  hasRenderableLabel(): boolean {
+    return DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) && this.hasValue();
   }
 
   /**
