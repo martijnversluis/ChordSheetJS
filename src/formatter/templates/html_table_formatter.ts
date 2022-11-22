@@ -59,9 +59,15 @@ export default (
                         <td class="lyrics">${ item.lyrics}</td>
                       `)}
                       
-                      ${ when(isTag(item) && isComment(item), () => `
-                        <td class="comment">${ item.value }</td>
-                      `)}
+                      ${ when(isTag(item), () => `
+                        ${ when(isComment(item), () => `
+                          <td class="comment">${ item.value }</td>
+                        `) }
+                        
+                        ${ when(item.hasRenderableLabel(), () => `
+                          <td><h3 class="label">${ item.value }</h3></td>
+                        `) }
+                      `) }
                       
                       ${ when(isEvaluatable(item), () => `
                         <td class="lyrics">${ evaluate(item, metadata, configuration) }</td>

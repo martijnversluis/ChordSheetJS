@@ -457,6 +457,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dt><a href="#COPYRIGHT">COPYRIGHT</a> : <code>string</code></dt>
 <dd><p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p></dd>
 <dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
+<dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
+<dt><a href="#END_OF_BRIDGE">END_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
@@ -470,6 +472,8 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
+<dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
+<dt><a href="#START_OF_BRIDGE">START_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
@@ -918,6 +922,7 @@ song.mapLines((line) => {
     * [.value](#Tag+value) : <code>string</code>
     * [.hasValue()](#Tag+hasValue) ⇒ <code>boolean</code>
     * [.isRenderable()](#Tag+isRenderable) ⇒ <code>boolean</code>
+    * [.hasRenderableLabel()](#Tag+hasRenderableLabel)
     * [.isMetaTag()](#Tag+isMetaTag) ⇒ <code>boolean</code>
     * [.clone()](#Tag+clone) ⇒ [<code>Tag</code>](#Tag)
 
@@ -949,6 +954,15 @@ song.mapLines((line) => {
 
 ### tag.isRenderable() ⇒ <code>boolean</code>
 <p>Checks whether the tag is usually rendered inline. It currently only applies to comment tags.</p>
+
+**Kind**: instance method of [<code>Tag</code>](#Tag)  
+<a name="Tag+hasRenderableLabel"></a>
+
+### tag.hasRenderableLabel()
+<p>Check whether this tag's label (if any) should be rendered, as applicable to tags like
+<code>start_of_verse</code> and <code>start_of_chorus</code>.
+See https://chordpro.org/chordpro/directives-env_chorus/, https://chordpro.org/chordpro/directives-env_verse/,
+https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 <a name="Tag+isMetaTag"></a>
@@ -1558,6 +1572,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <a name="DURATION"></a>
 
 ## DURATION : <code>string</code>
+<p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global variable  
+<a name="END_OF_BRIDGE"></a>
+
+## END\_OF\_BRIDGE : <code>string</code>
 <p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global variable  
@@ -1595,6 +1615,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <a name="LYRICIST"></a>
 
 ## LYRICIST : <code>string</code>
+<p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global variable  
+<a name="START_OF_BRIDGE"></a>
+
+## START\_OF\_BRIDGE : <code>string</code>
 <p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global variable  

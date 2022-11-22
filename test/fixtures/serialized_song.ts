@@ -122,7 +122,7 @@ const serializedSong: SerializedSong = {
         {
           type: 'tag',
           name: 'start_of_verse',
-          value: '',
+          value: 'Verse 1',
         },
       ],
     },

@@ -43,7 +43,15 @@ export default (
                   </div>
                 `) }
                 
-                ${ when(isTag(item) && isComment(item), () => `<div class="comment">${ item.value }</div>`) }
+                ${ when(isTag(item), () => `
+                  ${ when(isComment(item), () => `
+                    <div class="comment">${ item.value }</div>
+                  `) }
+                  
+                  ${ when(item.hasRenderableLabel(), () => `
+                    <h3 class="label">${ item.value }</h3>
+                  `) }
+                `) }
                 
                 ${ when(isEvaluatable(item), () => `
                   <div class="column">
