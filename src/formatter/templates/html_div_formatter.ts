@@ -2,15 +2,17 @@ import { HtmlTemplateArgs } from "../html_formatter";
 import { renderChord } from '../../helpers';
 
 import {
-  each, evaluate,
+  each,
+  evaluate, fontStyleTag,
   isChordLyricsPair,
   isComment,
   isEvaluatable,
-  isTag,
+  isTag, keep,
   lineClasses,
   lineHasContents,
   paragraphClasses,
-  stripHTML, when,
+  stripHTML,
+  when,
 } from '../../template_helpers';
 
 export default (
@@ -38,8 +40,10 @@ export default (
               ${ each(line.items, (item) => `
                 ${ when(isChordLyricsPair(item), () => `
                   <div class="column">
-                    <div class="chord">${ renderChord(item.chords, line.key, line.transposeKey, song) }</div>
-                    <div class="lyrics">${ item.lyrics }</div>
+                    ${ keep([renderChord(item.chords, line.key, line.transposeKey, song)], ([renderedChord]) => `
+                      <div class="chord"${ renderedChord ? fontStyleTag(line.chordFont) : '' }>${ renderedChord }</div>
+                    `) }
+                    <div class="lyrics"${ item.lyrics ? fontStyleTag(line.textFont) : '' }>${ item.lyrics }</div>
                   </div>
                 `) }
                 
@@ -56,7 +60,10 @@ export default (
                 ${ when(isEvaluatable(item), () => `
                   <div class="column">
                     <div class="chord"></div>
-                    <div class="lyrics">${ evaluate(item, metadata, configuration) }</div>
+                    
+                    ${ keep([evaluate(item, metadata, configuration)], ([evaluated]) => `
+                      <div class="lyrics"${ evaluated ? fontStyleTag(line.textFont) : '' }>${ evaluated }</div>
+                    `) }
                   </div>
                 `) }
               `) }

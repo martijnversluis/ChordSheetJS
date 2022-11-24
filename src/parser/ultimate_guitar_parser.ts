@@ -79,7 +79,7 @@ class UltimateGuitarParser extends ChordSheetParser {
     }
 
     this.currentSectionType = sectionType;
-    this.song.setCurrentLineType(sectionType);
+    this.song.setCurrentProperties(sectionType);
 
     if (sectionType in startSectionTags) {
       this.song.addTag(new Tag(startSectionTags[sectionType]));
@@ -95,7 +95,7 @@ class UltimateGuitarParser extends ChordSheetParser {
       }
     }
 
-    this.song.setCurrentLineType(NONE);
+    this.song.setCurrentProperties(NONE);
     this.currentSectionType = null;
   }
 

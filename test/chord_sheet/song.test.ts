@@ -1,5 +1,5 @@
 import {
-  Song, ChordSheetSerializer, ChordLyricsPair, Tag,
+  ChordLyricsPair, ChordSheetSerializer, Song, Tag,
 } from '../../src';
 import { createSong } from '../utilities';
 import exampleSong from '../fixtures/song';
@@ -137,7 +137,7 @@ describe('Song', () => {
           }
 
           if (item instanceof Tag) {
-            return item.setValue(`${item.value} changed`);
+            return item.set({ value: `${item.value} changed` });
           }
 
           return item;
@@ -168,7 +168,7 @@ describe('Song', () => {
         }
 
         if (item instanceof Tag) {
-          return item.setValue(`${item.value} changed`);
+          return item.set({ value: `${item.value} changed` });
         }
 
         return item;

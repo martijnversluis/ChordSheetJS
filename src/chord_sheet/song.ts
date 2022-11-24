@@ -8,6 +8,7 @@ import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
 import Item from './item';
 import TraceInfo from './trace_info';
+import FontStack from './font_stack';
 
 import {
   CHORUS, NONE, ParagraphType, TAB, VERSE,
@@ -56,6 +57,8 @@ class Song extends MetadataAccessors {
   warnings: ParserWarning[] = [];
 
   sectionType: ParagraphType = NONE;
+
+  fontStack: FontStack = new FontStack();
 
   currentKey: string | null = null;
 
@@ -140,7 +143,7 @@ class Song extends MetadataAccessors {
       this.lines.push(this.currentLine);
     }
 
-    this.setCurrentLineType(this.sectionType);
+    this.setCurrentProperties(this.sectionType);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
     return this.currentLine;
@@ -166,9 +169,12 @@ class Song extends MetadataAccessors {
     return paragraphs;
   }
 
-  setCurrentLineType(sectionType: ParagraphType): void {
+  setCurrentProperties(sectionType: ParagraphType): void {
     if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
+
     this.currentLine.type = sectionType as LineType;
+    this.currentLine.textFont = this.fontStack.textFont.clone();
+    this.currentLine.chordFont = this.fontStack.chordFont.clone();
   }
 
   ensureLine(): void {
@@ -179,22 +185,29 @@ class Song extends MetadataAccessors {
 
   addTag(tagContents: string | Tag): Tag {
     const tag = Tag.parseOrFail(tagContents);
+    this.applyTagOnSong(tag);
+    this.applyTagOnLine(tag);
+    return tag;
+  }
 
+  private applyTagOnLine(tag: Tag) {
+    this.ensureLine();
+    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
+    this.currentLine.addTag(tag);
+  }
+
+  private applyTagOnSong(tag: Tag) {
     if (tag.isMetaTag()) {
       this.setMetadata(tag.name, tag.value || '');
     } else if (tag.name === TRANSPOSE) {
       this.transposeKey = tag.value;
     } else if (tag.name === NEW_KEY) {
       this.currentKey = tag.value;
-    } else {
+    } else if (tag.isSectionDelimiter()) {
       this.setSectionTypeFromTag(tag);
+    } else if (tag.isInlineFontTag()) {
+      this.fontStack.applyTag(tag);
     }
-
-    this.ensureLine();
-    if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
-    this.currentLine.addTag(tag);
-
-    return tag;
   }
 
   setSectionTypeFromTag(tag: Tag): void {
@@ -231,7 +244,7 @@ class Song extends MetadataAccessors {
   startSection(sectionType: ParagraphType, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
     this.sectionType = sectionType;
-    this.setCurrentLineType(sectionType);
+    this.setCurrentProperties(sectionType);
   }
 
   endSection(sectionType: ParagraphType, tag: Tag): void {

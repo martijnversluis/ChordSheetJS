@@ -3,6 +3,7 @@ import Tag from './tag';
 import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
+import Font from './font';
 
 type MapItemFunc = (_item: Item) => Item;
 
@@ -27,23 +28,27 @@ class Line {
    */
   type: LineType = NONE;
 
-  /**
-   * @ignore
-   * @type {ChordLyricsPair}
-   */
   currentChordLyricsPair: ChordLyricsPair = new ChordLyricsPair();
 
-  /**
-   * @ignore
-   * @type {string|null}
-   */
   key: string | null = null;
 
-  /**
-   * @ignore
-   * @type {string|null}
-   */
   transposeKey: string | null = null;
+
+  /**
+   * The text font that applies to this line. Is derived from the directives:
+   * `textfont`, `textsize` and `textcolour`
+   * See: https://www.chordpro.org/chordpro/directives-props_text_legacy/
+   * @member {Font}
+   */
+  textFont: Font = new Font();
+
+  /**
+   * The chord font that applies to this line. Is derived from the directives:
+   * `chordfont`, `chordsize` and `chordcolour`
+   * See: https://www.chordpro.org/chordpro/directives-props_chord_legacy/
+   * @member {Font}
+   */
+  chordFont: Font = new Font();
 
   constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
     this.type = type;
