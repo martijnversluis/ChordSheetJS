@@ -15,7 +15,6 @@ export type LineType = 'verse' | 'chorus' | 'none';
 class Line {
   /**
    * The items ({@link ChordLyricsPair} or {@link Tag} or {@link Comment}) of which the line consists
-   * @member
    * @type {Array.<(ChordLyricsPair|Tag|Comment)>}
    */
   items: Item[] = [];
@@ -23,7 +22,6 @@ class Line {
   /**
    * The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
    * Values can be {@link VERSE}, {@link CHORUS} or {@link NONE}
-   * @member
    * @type {string}
    */
   type: LineType = NONE;
@@ -38,7 +36,7 @@ class Line {
    * The text font that applies to this line. Is derived from the directives:
    * `textfont`, `textsize` and `textcolour`
    * See: https://www.chordpro.org/chordpro/directives-props_text_legacy/
-   * @member {Font}
+   * @type {Font}
    */
   textFont: Font = new Font();
 
@@ -46,7 +44,7 @@ class Line {
    * The chord font that applies to this line. Is derived from the directives:
    * `chordfont`, `chordsize` and `chordcolour`
    * See: https://www.chordpro.org/chordpro/directives-props_chord_legacy/
-   * @member {Font}
+   * @type {Font}
    */
   chordFont: Font = new Font();
 
