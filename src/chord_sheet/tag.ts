@@ -44,6 +44,12 @@ export const COPYRIGHT = 'copyright';
 export const DURATION = 'duration';
 
 /**
+ * End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
+ * @type {string}
+ */
+export const END_OF_BRIDGE = 'end_of_bridge';
+
+/**
  * End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
  * @type {string}
  */
@@ -79,6 +85,12 @@ export const _KEY = '_key';
  * @type {string}
  */
 export const LYRICIST = 'lyricist';
+
+/**
+ * Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
+ * @type {string}
+ */
+export const START_OF_BRIDGE = 'start_of_bridge';
 
 /**
  * Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
@@ -139,6 +151,60 @@ export const NEW_KEY = 'new_key';
  */
 export const YEAR = 'year';
 
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
+ * @type {string}
+ */
+export const CHORDFONT = 'chordfont';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
+ * @type {string}
+ */
+export const CHORDSIZE = 'chordsize';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
+ * @type {string}
+ */
+export const CHORDCOLOUR = 'chordcolour';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
+ * @type {string}
+ */
+export const TEXTFONT = 'textfont';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
+ * @type {string}
+ */
+export const TEXTSIZE = 'textsize';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
+ * @type {string}
+ */
+export const TEXTCOLOUR = 'textcolour';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
+ * @type {string}
+ */
+export const TITLEFONT = 'titlefont';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
+ * @type {string}
+ */
+export const TITLESIZE = 'titlesize';
+
+/**
+ * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
+ * @type {string}
+ */
+export const TITLECOLOUR = 'titlecolour';
+
 const TITLE_SHORT = 't';
 const SUBTITLE_SHORT = 'st';
 const COMMENT_SHORT = 'c';
@@ -147,6 +213,10 @@ const END_OF_CHORUS_SHORT = 'eoc';
 const START_OF_TAB_SHORT = 'sot';
 const END_OF_TAB_SHORT = 'eot';
 const NEW_KEY_SHORT = 'nk';
+const CHORDFONT_SHORT = 'cf';
+const CHORDSIZE_SHORT = 'cs';
+const TEXTFONT_SHORT = 'tf';
+const TEXTSIZE_SHORT = 'ts';
 
 const RENDERABLE_TAGS = [COMMENT];
 
@@ -168,6 +238,31 @@ export const META_TAGS = [
 
 export const READ_ONLY_TAGS = [_KEY];
 
+const SECTION_DELIMITERS = [
+  START_OF_CHORUS,
+  END_OF_CHORUS,
+  START_OF_TAB,
+  END_OF_TAB,
+  START_OF_VERSE,
+  END_OF_VERSE,
+];
+
+const INLINE_FONT_TAGS = [
+  CHORDFONT,
+  CHORDSIZE,
+  CHORDCOLOUR,
+  TEXTFONT,
+  TEXTSIZE,
+  TEXTCOLOUR,
+];
+
+const DIRECTIVES_WITH_RENDERABLE_LABEL = [
+  START_OF_VERSE,
+  START_OF_CHORUS,
+  START_OF_BRIDGE,
+  START_OF_TAB,
+];
+
 const ALIASES: Record<string, string> = {
   [TITLE_SHORT]: TITLE,
   [SUBTITLE_SHORT]: SUBTITLE,
@@ -177,6 +272,10 @@ const ALIASES: Record<string, string> = {
   [START_OF_TAB_SHORT]: START_OF_TAB,
   [END_OF_TAB_SHORT]: END_OF_TAB,
   [NEW_KEY_SHORT]: NEW_KEY,
+  [CHORDFONT_SHORT]: CHORDFONT,
+  [CHORDSIZE_SHORT]: CHORDSIZE,
+  [TEXTFONT_SHORT]: TEXTFONT,
+  [TEXTSIZE_SHORT]: TEXTSIZE,
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
@@ -265,6 +364,14 @@ class Tag extends AstComponent {
     return parsed;
   }
 
+  isSectionDelimiter(): boolean {
+    return SECTION_DELIMITERS.includes(this.name);
+  }
+
+  isInlineFontTag(): boolean {
+    return INLINE_FONT_TAGS.includes(this.name);
+  }
+
   set name(name) {
     this._name = translateTagNameAlias(name);
     this._originalName = name;
@@ -314,7 +421,17 @@ class Tag extends AstComponent {
    * @returns {boolean}
    */
   isRenderable(): boolean {
-    return RENDERABLE_TAGS.indexOf(this.name) !== -1;
+    return RENDERABLE_TAGS.includes(this.name) || this.hasRenderableLabel();
+  }
+
+  /**
+   * Check whether this tag's label (if any) should be rendered, as applicable to tags like
+   * `start_of_verse` and `start_of_chorus`.
+   * See https://chordpro.org/chordpro/directives-env_chorus/, https://chordpro.org/chordpro/directives-env_verse/,
+   * https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/
+   */
+  hasRenderableLabel(): boolean {
+    return DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) && this.hasValue();
   }
 
   /**
@@ -339,10 +456,6 @@ class Tag extends AstComponent {
 
   set({ value }: { value: string }): Tag {
     return new Tag(this._originalName, value);
-  }
-
-  setValue(value: string): Tag {
-    return this.set({ value });
   }
 }
 

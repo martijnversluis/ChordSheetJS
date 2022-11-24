@@ -3,6 +3,7 @@ import Tag from './tag';
 import Comment from './comment';
 import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
+import Font from './font';
 
 type MapItemFunc = (_item: Item) => Item;
 
@@ -14,7 +15,6 @@ export type LineType = 'verse' | 'chorus' | 'none';
 class Line {
   /**
    * The items ({@link ChordLyricsPair} or {@link Tag} or {@link Comment}) of which the line consists
-   * @member
    * @type {Array.<(ChordLyricsPair|Tag|Comment)>}
    */
   items: Item[] = [];
@@ -22,28 +22,31 @@ class Line {
   /**
    * The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
    * Values can be {@link VERSE}, {@link CHORUS} or {@link NONE}
-   * @member
    * @type {string}
    */
   type: LineType = NONE;
 
-  /**
-   * @ignore
-   * @type {ChordLyricsPair}
-   */
   currentChordLyricsPair: ChordLyricsPair = new ChordLyricsPair();
 
-  /**
-   * @ignore
-   * @type {string|null}
-   */
   key: string | null = null;
 
-  /**
-   * @ignore
-   * @type {string|null}
-   */
   transposeKey: string | null = null;
+
+  /**
+   * The text font that applies to this line. Is derived from the directives:
+   * `textfont`, `textsize` and `textcolour`
+   * See: https://www.chordpro.org/chordpro/directives-props_text_legacy/
+   * @type {Font}
+   */
+  textFont: Font = new Font();
+
+  /**
+   * The chord font that applies to this line. Is derived from the directives:
+   * `chordfont`, `chordsize` and `chordcolour`
+   * See: https://www.chordpro.org/chordpro/directives-props_chord_legacy/
+   * @type {Font}
+   */
+  chordFont: Font = new Font();
 
   constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
     this.type = type;

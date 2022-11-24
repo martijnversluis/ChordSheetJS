@@ -1,7 +1,5 @@
-import {
-  ChordProParser,
-  HtmlDivFormatter,
-} from '../../src';
+import { ChordProParser, HtmlDivFormatter } from '../../src';
+import { stripHTML } from '../../src/template_helpers';
 
 describe('chordpro to HTML with DIVs', () => {
   it('correctly parses and formats meta expressions', () => {
@@ -70,5 +68,80 @@ describe('chordpro to HTML with DIVs', () => {
     const formatted = new HtmlDivFormatter().format(song);
 
     expect(formatted).toEqual('<div class="chord-sheet"></div>');
+  });
+
+  it('renders style attributes for chord font, size and color', () => {
+    const chordProSheet = `
+{chordfont: "Times New Roman"}
+{chordfont: sans-serif}
+{chordsize: 12}
+{chordsize: 200%}
+{chordsize: 125%}
+{chordcolour: red}
+{chordcolour: blue}
+{chordcolour: green}
+[Em]30px green sans-serif
+{chordcolour}
+{chordsize}
+[Am]24px blue sans-serif
+{chordsize}
+{chordcolour}
+{chordfont}
+[Dm]12px red "Times New Roman"
+{chordsize}
+{chordcolour}
+{chordfont}
+[Gm]No styles`.substring(1);
+
+    const expectedChordSheet = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord" style="color: green; font: 30px sans-serif">Em</div>
+              <div class="lyrics">30px </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">green sans-serif</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord" style="color: blue; font: 24px sans-serif">Am</div>
+              <div class="lyrics">24px </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">blue sans-serif</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord" style="color: red; font: 12px 'Times New Roman'">Dm</div>
+              <div class="lyrics">12px </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">red "Times New Roman"</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Gm</div>
+              <div class="lyrics">No </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">styles</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordProSheet);
+    const formatted = new HtmlDivFormatter().format(song);
+    expect(formatted).toEqual(expectedChordSheet);
   });
 });

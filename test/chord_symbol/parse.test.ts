@@ -91,6 +91,13 @@ describe('Chord', () => {
           });
         });
       });
+
+      it('allows whitespace', () => {
+        const chord = Chord.parse(' \n F#/C# \r ');
+        expect(chord).toBeChord({
+          base: 'F', modifier: '#', suffix: null, bassBase: 'C', bassModifier: '#',
+        });
+      });
     });
   });
 });

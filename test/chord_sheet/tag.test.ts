@@ -33,8 +33,23 @@ describe('Tag', () => {
   });
 
   describe('#isRenderable', () => {
-    it('checks whether the tag should be rendered', () => {
+    it('returns true for comments', () => {
       expect(new Tag('comment', 'foobar').isRenderable()).toBe(true);
+    });
+
+    it('returns true for environment directives with label', () => {
+      ['start_of_chorus', 'start_of_verse', 'start_of_bridge', 'start_of_tab'].forEach((tag) => {
+        expect(new Tag(tag, 'some label').isRenderable()).toBe(true);
+      });
+    });
+
+    it('returns false for environment directives without label', () => {
+      ['start_of_chorus', 'start_of_verse', 'start_of_bridge', 'start_of_tab'].forEach((tag) => {
+        expect(new Tag(tag, '').isRenderable()).toBe(false);
+      });
+    });
+
+    it('returns false for any other tag', () => {
       expect(new Tag('x_some_setting', 'foobar').isRenderable()).toBe(false);
     });
   });

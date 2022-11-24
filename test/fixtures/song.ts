@@ -55,7 +55,7 @@ export default createSong([
   [],
 
   [
-    createTag('start_of_verse'),
+    createTag('start_of_verse', 'Verse 1'),
   ],
 
   [

@@ -262,6 +262,9 @@ chordSymbol.toString(); // -> "F#m/A"
 
 ## Supported ChordPro directives
 
+All directives are parsed and are added to `Song.metadata`. The list below indicates whether formatters actually
+use those to change the generated output.
+
 :heavy_check_mark: = supported
 
 :clock2: = will be supported in a future version
@@ -305,8 +308,8 @@ chordSymbol.toString(); // -> "F#m/A"
 | end_of_chorus (short: eoc)   | :heavy_check_mark:       |
 | start_of_verse               | :heavy_check_mark:       |
 | end_of_verse                 | :heavy_check_mark:       |
-| start_of_tab (short: sot)    | :heavy_multiplication_x: |
-| end_of_tab (short: eot)      | :heavy_multiplication_x: |
+| start_of_tab (short: sot)    | :heavy_check_mark:       |
+| end_of_tab (short: eot)      | :heavy_check_mark:       |
 | start_of_grid                | :heavy_multiplication_x: |
 | end_of_grid                  | :heavy_multiplication_x: |
 
@@ -321,12 +324,12 @@ chordSymbol.toString(); // -> "F#m/A"
 
 | Directive   | Support                  |
 |:----------- |:------------------------:|
-| textfont    | :clock2:                 |
-| textsize    | :clock2:                 |
-| textcolour  | :clock2:                 |
-| chordfont   | :clock2:                 |
-| chordsize   | :clock2:                 |
-| chordcolour | :clock2:                 |
+| textfont    | :heavy_check_mark:       |
+| textsize    | :heavy_check_mark:       |
+| textcolour  | :heavy_check_mark:       |
+| chordfont   | :heavy_check_mark:       |
+| chordsize   | :heavy_check_mark:       |
+| chordcolour | :heavy_check_mark:       |
 | tabfont     | :heavy_multiplication_x: |
 | tabsize     | :heavy_multiplication_x: |
 | tabcolour   | :heavy_multiplication_x: |
@@ -361,6 +364,8 @@ subject to breaking changes between major versions.
 <dd><p>Represents a chord with the corresponding (partial) lyrics</p></dd>
 <dt><a href="#Comment">Comment</a></dt>
 <dd><p>Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</p></dd>
+<dt><a href="#Line">Line</a> : <code><a href="#Font">Font</a></code></dt>
+<dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p></dd>
 <dt><a href="#Metadata">Metadata</a></dt>
 <dd><p>Stores song metadata. Properties can be accessed using the get() method:</p>
 <p>const metadata = new Metadata({ author: 'John' });
@@ -387,10 +392,44 @@ PDF conversion.</p></dd>
 <dd><p>Formats a song into a plain text chord sheet</p></dd>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
 <dd><p>Parses a ChordPro chord sheet</p></dd>
-<dt><a href="#ChordSheetParser">ChordSheetParser</a></dt>
-<dd><p>Parses a normal chord sheet</p></dd>
+<dt><del><a href="#ChordSheetParser">ChordSheetParser</a></del></dt>
+<dd><p>Parses a normal chord sheet</p>
+<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+support for many variations. Besides that, some chordpro feature have been ported back
+to ChordsOverWordsParser, which adds some interesting functionality.</p></dd>
 <dt><a href="#ChordsOverWordsParser">ChordsOverWordsParser</a></dt>
-<dd><p>Parses a chords over words sheet</p></dd>
+<dd><p>Parses a chords over words sheet into a song</p>
+<p>It support &quot;regular&quot; chord sheets:</p>
+<pre><code>       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
+<pre><code>{title: Let it be}
+{key: C}
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>For convenience, you can leave out the brackets:</p>
+<pre><code>title: Let it be
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
+<pre><code>title: Let it be
+key: C
+---
+Chorus 1:
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p></dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
 <dd><p>Represents a parser warning, currently only used by ChordProParser.</p></dd>
 <dt><a href="#PegBasedParser">PegBasedParser</a></dt>
@@ -410,6 +449,10 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 ## Members
 
 <dl>
+<dt><a href="#Font">Font</a> : <code>string</code> | <code>null</code></dt>
+<dd><p>The font color</p></dd>
+<dt><a href="#FontSize">FontSize</a> : <code>number</code></dt>
+<dd><p>The font size</p></dd>
 <dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
 <dd><p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p></dd>
 <dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
@@ -423,6 +466,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dt><a href="#COPYRIGHT">COPYRIGHT</a> : <code>string</code></dt>
 <dd><p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p></dd>
 <dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
+<dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
+<dt><a href="#END_OF_BRIDGE">END_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
@@ -436,6 +481,8 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
+<dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
+<dt><a href="#START_OF_BRIDGE">START_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
@@ -455,16 +502,34 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dd><p>New Key meta directive. See: https://github.com/BetterMusic/ChordChartJS/issues/53</p></dd>
 <dt><a href="#NEW_KEY">NEW_KEY</a> : <code>string</code></dt>
 <dd><p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p></dd>
-<dt><a href="#defaultCssHtmlDiv">defaultCssHtmlDiv</a> ⇒ <code>string</code></dt>
+<dt><a href="#YEAR">YEAR</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p></dd>
+<dt><a href="#CHORDFONT">CHORDFONT</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p></dd>
+<dt><a href="#CHORDSIZE">CHORDSIZE</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p></dd>
+<dt><a href="#CHORDCOLOUR">CHORDCOLOUR</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p></dd>
+<dt><a href="#TEXTFONT">TEXTFONT</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p></dd>
+<dt><a href="#TEXTSIZE">TEXTSIZE</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p></dd>
+<dt><a href="#TEXTCOLOUR">TEXTCOLOUR</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p></dd>
+<dt><a href="#TITLEFONT">TITLEFONT</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p></dd>
+<dt><a href="#TITLESIZE">TITLESIZE</a> : <code>string</code></dt>
+<dd><p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p></dd>
+<dt><a href="#defaultCss">defaultCss</a> ⇒ <code>string</code></dt>
 <dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p></dd>
-<dt><a href="#defaultCssHtmlTable">defaultCssHtmlTable</a> ⇒ <code>string</code></dt>
+<dt><a href="#defaultCss">defaultCss</a> ⇒ <code>string</code></dt>
 <dd><p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p></dd>
 </dl>
 
 ## Constants
 
 <dl>
-<dt><a href="#defaultCssHtmlTable">defaultCssHtmlTable</a> : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code></dt>
+<dt><a href="#defaultCss">defaultCss</a> : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code></dt>
 <dd><p>Basic CSS, in object style à la useStyles, to use with output generated by {@link }HtmlTableFormatter}
 For a CSS string see [scopedCss](scopedCss)</p></dd>
 <dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
@@ -562,6 +627,79 @@ For a CSS string see [scopedCss](scopedCss)</p></dd>
 <p>Returns a deep copy of the Comment, useful when programmatically transforming a song</p>
 
 **Kind**: instance method of [<code>Comment</code>](#Comment)  
+<a name="Line"></a>
+
+## Line : [<code>Font</code>](#Font)
+<p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
+
+**Kind**: global class  
+
+* [Line](#Line) : [<code>Font</code>](#Font)
+    * [new Line()](#new_Line_new)
+    * [.isEmpty()](#Line+isEmpty) ⇒ <code>boolean</code>
+    * [.addItem(item)](#Line+addItem)
+    * [.hasRenderableItems()](#Line+hasRenderableItems) ⇒ <code>boolean</code>
+    * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
+    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
+    * [.isChorus()](#Line+isChorus) ⇒ <code>boolean</code>
+    * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
+
+<a name="new_Line_new"></a>
+
+### new Line()
+<p>The chord font that applies to this line. Is derived from the directives:
+<code>chordfont</code>, <code>chordsize</code> and <code>chordcolour</code>
+See: https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+<a name="Line+isEmpty"></a>
+
+### line.isEmpty() ⇒ <code>boolean</code>
+<p>Indicates whether the line contains any items</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+addItem"></a>
+
+### line.addItem(item)
+<p>Adds an item ([ChordLyricsPair](#ChordLyricsPair) or [Tag](#Tag)) to the line</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| item | [<code>ChordLyricsPair</code>](#ChordLyricsPair) \| [<code>Tag</code>](#Tag) | <p>The item to be added</p> |
+
+<a name="Line+hasRenderableItems"></a>
+
+### line.hasRenderableItems() ⇒ <code>boolean</code>
+<p>Indicates whether the line contains items that are renderable</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+clone"></a>
+
+### line.clone() ⇒ [<code>Line</code>](#Line)
+<p>Returns a deep copy of the line and all of its items</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isVerse"></a>
+
+### line.isVerse() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [VERSE](#VERSE)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isChorus"></a>
+
+### line.isChorus() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [CHORUS](#CHORUS)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+hasContent"></a>
+
+### ~~line.hasContent() ⇒ <code>boolean</code>~~
+***Deprecated***
+
+<p>Indicates whether the line contains items that are renderable. Please use [hasRenderableItems](hasRenderableItems)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Metadata"></a>
 
 ## Metadata
@@ -641,7 +779,7 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 * [Song](#Song)
     * [new Song(metadata)](#new_Song_new)
-    * [.bodyLines](#Song+bodyLines) ⇒ <code>Array.&lt;Line&gt;</code>
+    * [.bodyLines](#Song+bodyLines) ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
     * [.bodyParagraphs](#Song+bodyParagraphs) ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * [.paragraphs](#Song+paragraphs) : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
     * ~~[.metaData](#Song+metaData) ⇒~~
@@ -668,12 +806,12 @@ If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 <a name="Song+bodyLines"></a>
 
-### song.bodyLines ⇒ <code>Array.&lt;Line&gt;</code>
+### song.bodyLines ⇒ [<code>Array.&lt;Line&gt;</code>](#Line)
 <p>Returns the song lines, skipping the leading empty lines (empty as in not rendering any content). This is useful
 if you want to skip the &quot;header lines&quot;: the lines that only contain meta data.</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
-**Returns**: <code>Array.&lt;Line&gt;</code> - <p>The song body lines</p>  
+**Returns**: [<code>Array.&lt;Line&gt;</code>](#Line) - <p>The song body lines</p>  
 <a name="Song+bodyParagraphs"></a>
 
 ### song.bodyParagraphs ⇒ [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
@@ -851,7 +989,7 @@ song.mapItems((item) => {
 <a name="Song+mapLines"></a>
 
 ### song.mapLines(func) ⇒ [<code>Song</code>](#Song)
-<p>Change the song contents inline. Return a new [Line](Line) to replace it. Return <code>null</code> to remove it.</p>
+<p>Change the song contents inline. Return a new [Line](#Line) to replace it. Return <code>null</code> to remove it.</p>
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: [<code>Song</code>](#Song) - <p>the changed song</p>  
@@ -884,6 +1022,7 @@ song.mapLines((line) => {
     * [.value](#Tag+value) : <code>string</code>
     * [.hasValue()](#Tag+hasValue) ⇒ <code>boolean</code>
     * [.isRenderable()](#Tag+isRenderable) ⇒ <code>boolean</code>
+    * [.hasRenderableLabel()](#Tag+hasRenderableLabel)
     * [.isMetaTag()](#Tag+isMetaTag) ⇒ <code>boolean</code>
     * [.clone()](#Tag+clone) ⇒ [<code>Tag</code>](#Tag)
 
@@ -915,6 +1054,15 @@ song.mapLines((line) => {
 
 ### tag.isRenderable() ⇒ <code>boolean</code>
 <p>Checks whether the tag is usually rendered inline. It currently only applies to comment tags.</p>
+
+**Kind**: instance method of [<code>Tag</code>](#Tag)  
+<a name="Tag+hasRenderableLabel"></a>
+
+### tag.hasRenderableLabel()
+<p>Check whether this tag's label (if any) should be rendered, as applicable to tags like
+<code>start_of_verse</code> and <code>start_of_chorus</code>.
+See https://chordpro.org/chordpro/directives-env_chorus/, https://chordpro.org/chordpro/directives-env_verse/,
+https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/</p>
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 <a name="Tag+isMetaTag"></a>
@@ -1092,19 +1240,26 @@ PDF conversion.</p>
 
 <a name="ChordSheetParser"></a>
 
-## ChordSheetParser
+## ~~ChordSheetParser~~
+***Deprecated***
+
 <p>Parses a normal chord sheet</p>
+<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+support for many variations. Besides that, some chordpro feature have been ported back
+to ChordsOverWordsParser, which adds some interesting functionality.</p>
 
 **Kind**: global class  
 
-* [ChordSheetParser](#ChordSheetParser)
+* ~~[ChordSheetParser](#ChordSheetParser)~~
     * [new ChordSheetParser([options])](#new_ChordSheetParser_new)
     * [.parse(chordSheet, [options])](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_ChordSheetParser_new"></a>
 
 ### new ChordSheetParser([options])
-<p>Instantiate a chord sheet parser</p>
+<p>Instantiate a chord sheet parser
+ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
 
 
 | Param | Type | Default | Description |
@@ -1129,7 +1284,37 @@ PDF conversion.</p>
 <a name="ChordsOverWordsParser"></a>
 
 ## ChordsOverWordsParser
-<p>Parses a chords over words sheet</p>
+<p>Parses a chords over words sheet into a song</p>
+<p>It support &quot;regular&quot; chord sheets:</p>
+<pre><code>       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
+<pre><code>{title: Let it be}
+{key: C}
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>For convenience, you can leave out the brackets:</p>
+<pre><code>title: Let it be
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
+<pre><code>title: Let it be
+key: C
+---
+Chorus 1:
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p>
 
 **Kind**: global class  
 <a name="ChordsOverWordsParser+parse"></a>
@@ -1388,13 +1573,14 @@ of the root note. For example, <code>Em/A#</code> becomes <code>Em/Bb</code>.</p
 <a name="Chord.parse"></a>
 
 ### Chord.parse(chordString) ⇒ [<code>Chord</code>](#Chord) \| <code>null</code>
-<p>Tries to parse a chord string into a chord</p>
+<p>Tries to parse a chord string into a chord
+Any leading or trailing whitespace is removed first, so a chord like <code> \n  E/G# \r</code> is valid.</p>
 
 **Kind**: static method of [<code>Chord</code>](#Chord)  
 
 | Param | Description |
 | --- | --- |
-| chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code></p> |
+| chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code>.</p> |
 
 <a name="ChordSheetSerializer"></a>
 
@@ -1447,6 +1633,64 @@ Can be deserialized using [deserialize](deserialize)</p>
 | oneKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the key</p> |
 | otherKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the other key</p> |
 
+<a name="Font"></a>
+
+## Font : <code>string</code> \| <code>null</code>
+<p>The font color</p>
+
+**Kind**: global variable  
+<a name="Font+toCssString"></a>
+
+### font.toCssString() ⇒ <code>string</code>
+<p>Converts the font, size and color to a CSS string.
+If possible, font and size are combined to the <code>font</code> shorthand.
+If <code>font</code> contains double quotes (<code>&quot;</code>) those will be converted to single quotes (<code>'</code>).</p>
+
+**Kind**: instance method of [<code>Font</code>](#Font)  
+**Returns**: <code>string</code> - <p>The CSS string</p>  
+**Example**  
+```js
+// Returns "font-family: 'Times New Roman'"
+new Font({ font: '"Times New Roman"' }).toCssString()
+```
+**Example**  
+```js
+// Returns "color: red; font-family: Verdana"
+new Font({ font: 'Verdana', colour: 'red' }).toCssString()
+```
+**Example**  
+```js
+// Returns "font: 30px Verdana"
+new Font({ font: 'Verdana', size: '30' }).toCssString()
+```
+**Example**  
+```js
+// Returns "color: blue; font: 30% Verdana"
+new Font({ font: 'Verdana', size: '30%', colour: 'blue' }).toCssString()
+```
+<a name="FontSize"></a>
+
+## FontSize : <code>number</code>
+<p>The font size</p>
+
+**Kind**: global variable  
+<a name="FontSize+toString"></a>
+
+### fontSize.toString() ⇒ <code>string</code>
+<p>Stringifies the font size by concatenating size and unit</p>
+
+**Kind**: instance method of [<code>FontSize</code>](#FontSize)  
+**Returns**: <code>string</code> - <p>The font size</p>  
+**Example**  
+```js
+// Returns "30px"
+new FontSize(30, 'px').toString()
+```
+**Example**  
+```js
+// Returns "120%"
+new FontSize(120, '%').toString()
+```
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
@@ -1486,6 +1730,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <a name="DURATION"></a>
 
 ## DURATION : <code>string</code>
+<p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global variable  
+<a name="END_OF_BRIDGE"></a>
+
+## END\_OF\_BRIDGE : <code>string</code>
 <p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global variable  
@@ -1523,6 +1773,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <a name="LYRICIST"></a>
 
 ## LYRICIST : <code>string</code>
+<p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global variable  
+<a name="START_OF_BRIDGE"></a>
+
+## START\_OF\_BRIDGE : <code>string</code>
 <p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global variable  
@@ -1580,9 +1836,63 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p>
 
 **Kind**: global variable  
-<a name="defaultCssHtmlDiv"></a>
+<a name="YEAR"></a>
 
-## defaultCssHtmlDiv ⇒ <code>string</code>
+## YEAR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global variable  
+<a name="CHORDFONT"></a>
+
+## CHORDFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global variable  
+<a name="CHORDSIZE"></a>
+
+## CHORDSIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global variable  
+<a name="CHORDCOLOUR"></a>
+
+## CHORDCOLOUR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global variable  
+<a name="TEXTFONT"></a>
+
+## TEXTFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global variable  
+<a name="TEXTSIZE"></a>
+
+## TEXTSIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global variable  
+<a name="TEXTCOLOUR"></a>
+
+## TEXTCOLOUR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global variable  
+<a name="TITLEFONT"></a>
+
+## TITLEFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global variable  
+<a name="TITLESIZE"></a>
+
+## TITLESIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global variable  
+<a name="defaultCss"></a>
+
+## defaultCss ⇒ <code>string</code>
 <p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p>
 
 **Kind**: global variable  
@@ -1592,9 +1902,9 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 | --- | --- |
 | scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
 
-<a name="defaultCssHtmlTable"></a>
+<a name="defaultCss"></a>
 
-## defaultCssHtmlTable ⇒ <code>string</code>
+## defaultCss ⇒ <code>string</code>
 <p>Generates basic CSS, scoped within the provided selector, to use with output generated by [HtmlTableFormatter](#HtmlTableFormatter)</p>
 
 **Kind**: global variable  
@@ -1604,9 +1914,9 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 | --- | --- |
 | scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
 
-<a name="defaultCssHtmlTable"></a>
+<a name="defaultCss"></a>
 
-## defaultCssHtmlTable : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
+## defaultCss : <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
 <p>Basic CSS, in object style à la useStyles, to use with output generated by {@link }HtmlTableFormatter}
 For a CSS string see [scopedCss](scopedCss)</p>
 

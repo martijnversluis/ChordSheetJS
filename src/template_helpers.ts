@@ -8,6 +8,7 @@ import Paragraph from './chord_sheet/paragraph';
 import Metadata from './chord_sheet/metadata';
 import Configuration from './formatter/configuration/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
+import Font from './chord_sheet/font';
 
 interface EachCallback {
   (_item: any): string;
@@ -15,6 +16,10 @@ interface EachCallback {
 
 interface WhenCallback {
   (): string;
+}
+
+interface KeepCallback {
+  (_items: any[]): string;
 }
 
 export { isEvaluatable } from './utilities';
@@ -37,6 +42,10 @@ export function each(collection: any[], callback: EachCallback): string {
 
 export function when(condition: any, callback: WhenCallback): string {
   return condition ? callback() : '';
+}
+
+export function keep(variables: any[], callback: KeepCallback): string {
+  return callback.call(null, variables);
 }
 
 export const hasTextContents = (line: Line): boolean => (
@@ -74,3 +83,13 @@ export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: C
 
   return item.evaluate(metadata, configuration.get('metadata.separator'));
 };
+
+export function fontStyleTag(font: Font) {
+  const cssString = font.toCssString();
+
+  if (cssString) {
+    return ` style="${cssString}"`;
+  }
+
+  return '';
+}

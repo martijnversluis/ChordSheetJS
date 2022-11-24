@@ -1,7 +1,8 @@
 // eslint-disable-next-line import/no-cycle
-import Song from '../chord_sheet/song';
+import { Song } from '../index';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 import ParserWarning from './parser_warning';
+import { normalizeLineEndings } from '../utilities';
 
 interface IParseOptions {
   filename?: string;
@@ -27,7 +28,7 @@ class PegBasedParser {
   }
 
   protected parseWithParser(chordSheet: string, parser: ParseFunction): Song {
-    const ast = parser(chordSheet);
+    const ast = parser(normalizeLineEndings(chordSheet));
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }

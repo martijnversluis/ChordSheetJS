@@ -50,7 +50,7 @@ Whisper words of wisdom, let it be`.substring(1);
     expect(line4Pairs[7]).toBeChordLyricsPair('C', '');
   });
 
-  it('allows for frontmatter seperator to be optional', () => {
+  it('allows for frontmatter separator to be optional', () => {
     const chordOverWords = `
 title: Let it be
 key: C
@@ -406,5 +406,65 @@ Let it   be, let it be
       expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });
+  });
+
+  it('support CR line endings', () => {
+    const chordSheet = '       Am         C/G\rLet it be, let it be,\r       F          C\rlet it be, let it be';
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('support LF line endings', () => {
+    const chordSheet = '       Am         C/G\nLet it be, let it be,\n       F          C\nlet it be, let it be';
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('support CRLF line endings', () => {
+    const chordSheet = '       Am         C/G\r\nLet it be, let it be,\r\n       F          C\r\nlet it be, let it be';
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+    const [{ items: line0Items }, { items: line1Items }] = lines;
+
+    expect(lines).toHaveLength(2);
+
+    expect(line0Items[0]).toBeChordLyricsPair('', 'Let it ');
+    expect(line0Items[1]).toBeChordLyricsPair('Am', 'be, ');
+    expect(line0Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line0Items[3]).toBeChordLyricsPair('C/G', 'be,');
+    expect(line1Items[0]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
+    expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
+    expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
   });
 });

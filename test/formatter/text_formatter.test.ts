@@ -13,6 +13,7 @@ ChordSheetJS example version
 
 Written by: John Lennon,Paul McCartney
 
+Verse 1
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
 D                G  A           G  D/F# Em D

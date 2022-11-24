@@ -2,83 +2,91 @@ import { HtmlTableFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
-import { defaultCssHtmlTable, scopedCss } from '../../src/formatter/html_table_formatter';
+import { defaultCss, scopedCss } from '../../src/formatter/html_table_formatter';
+import { stripHTML } from '../../src/template_helpers';
 
 describe('HtmlTableFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
     const formatter = new HtmlTableFormatter();
 
-    const expectedChordSheet = '<h1>Let it be</h1>'
-      + '<h2>ChordSheetJS example version</h2>'
-      + '<div class="chord-sheet">'
-        + '<div class="paragraph">'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">Written by: </td>'
-              + '<td class="lyrics">John Lennon,Paul McCartney</td>'
-            + '</tr>'
-          + '</table>'
-        + '</div>'
-        + '<div class="paragraph verse">'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="chord"></td>'
-              + '<td class="chord">Am</td>'
-              + '<td class="chord">C/G</td>'
-              + '<td class="chord">F</td>'
-              + '<td class="chord">C</td>'
-            + '</tr>'
-            + '<tr>'
-              + '<td class="lyrics">Let it </td>'
-              + '<td class="lyrics">be, let it </td>'
-              + '<td class="lyrics">be, let it </td>'
-              + '<td class="lyrics">be, let it </td>'
-              + '<td class="lyrics">be</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="chord">D</td>'
-              + '<td class="chord">G</td>'
-              + '<td class="chord">A</td>'
-              + '<td class="chord">G</td>'
-              + '<td class="chord">D/F#</td>'
-              + '<td class="chord">Em</td>'
-              + '<td class="chord">D</td>'
-            + '</tr>'
-            + '<tr>'
-              + '<td class="lyrics">Whisper words of </td>'
-              + '<td class="lyrics">wis</td>'
-              + '<td class="lyrics">dom, let it </td>'
-              + '<td class="lyrics">be </td>'
-              + '<td class="lyrics"> </td>'
-              + '<td class="lyrics"> </td>'
-              + '<td class="lyrics"></td>'
-            + '</tr>'
-          + '</table>'
-        + '</div>'
-        + '<div class="paragraph chorus">'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="comment">Breakdown</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="chord">Em</td>'
-              + '<td class="chord">F</td>'
-              + '<td class="chord">C</td>'
-              + '<td class="chord">G</td>'
-            + '</tr>'
-            + '<tr>'
-              + '<td class="lyrics">Whisper words of </td>'
-              + '<td class="lyrics">wisdom, let it </td>'
-              + '<td class="lyrics">be </td>'
-              + '<td class="lyrics"></td>'
-            + '</tr>'
-          + '</table>'
-        + '</div>'
-      + '</div>';
+    const expectedChordSheet = stripHTML(`
+      <h1>Let it be</h1>
+      <h2>ChordSheetJS example version</h2>
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="lyrics">Written by: </td>
+              <td class="lyrics">John Lennon,Paul McCartney</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Verse 1</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Am</td>
+              <td class="chord">C/G</td>
+              <td class="chord">F</td>
+              <td class="chord">C</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">D</td>
+              <td class="chord">G</td>
+              <td class="chord">A</td>
+              <td class="chord">G</td>
+              <td class="chord">D/F#</td>
+              <td class="chord">Em</td>
+              <td class="chord">D</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wis</td>
+              <td class="lyrics">dom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td class="comment">Breakdown</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Em</td>
+              <td class="chord">F</td>
+              <td class="chord">C</td>
+              <td class="chord">G</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
 
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
@@ -97,28 +105,30 @@ describe('HtmlTableFormatter', () => {
         ],
       ]);
 
-      const expectedChordSheet = '<div class="chord-sheet">'
-        + '<div class="paragraph">'
-            + '<table class="row">'
-              + '<tr>'
-                + '<td class="chord">C</td>'
-              + '</tr>'
-              + '<tr>'
-                + '<td class="lyrics">Whisper words of wisdom</td>'
-              + '</tr>'
-            + '</table>'
-          + '</div>'
-        + '<div class="paragraph">'
-            + '<table class="row">'
-              + '<tr>'
-                + '<td class="chord">Am</td>'
-              + '</tr>'
-              + '<tr>'
-                + '<td class="lyrics">Whisper words of wisdom</td>'
-              + '</tr>'
-            + '</table>'
-          + '</div>'
-        + '</div>';
+      const expectedChordSheet = stripHTML(`
+        <div class="chord-sheet">
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">C</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">Am</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      `);
 
       const formatter = new HtmlTableFormatter({ renderBlankLines: false });
 
@@ -225,6 +235,6 @@ td {
   });
 
   it('exposes a CSS object', () => {
-    expect(typeof defaultCssHtmlTable).toEqual('object');
+    expect(typeof defaultCss).toEqual('object');
   });
 });

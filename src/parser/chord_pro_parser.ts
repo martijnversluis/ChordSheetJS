@@ -1,6 +1,6 @@
-import Song from '../chord_sheet/song';
 import PegBasedParser from './peg_based_parser';
 import { parse } from './chord_pro_peg_parser';
+import Song from '../chord_sheet/song';
 
 /**
  * Parses a ChordPro chord sheet
