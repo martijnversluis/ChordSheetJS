@@ -262,6 +262,9 @@ chordSymbol.toString(); // -> "F#m/A"
 
 ## Supported ChordPro directives
 
+All directives are parsed and are added to `Song.metadata`. The list below indicates whether formatters actually
+use those to change the generated output.
+
 :heavy_check_mark: = supported
 
 :clock2: = will be supported in a future version
@@ -305,8 +308,8 @@ chordSymbol.toString(); // -> "F#m/A"
 | end_of_chorus (short: eoc)   | :heavy_check_mark:       |
 | start_of_verse               | :heavy_check_mark:       |
 | end_of_verse                 | :heavy_check_mark:       |
-| start_of_tab (short: sot)    | :heavy_multiplication_x: |
-| end_of_tab (short: eot)      | :heavy_multiplication_x: |
+| start_of_tab (short: sot)    | :heavy_check_mark:       |
+| end_of_tab (short: eot)      | :heavy_check_mark:       |
 | start_of_grid                | :heavy_multiplication_x: |
 | end_of_grid                  | :heavy_multiplication_x: |
 
