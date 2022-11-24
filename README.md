@@ -1664,6 +1664,7 @@ new Font({ font: 'Verdana', colour: 'red' }).toCssString()
 new Font({ font: 'Verdana', size: '30' }).toCssString()
 ```
 **Example**  
+```js
 // Returns "color: blue; font: 30% Verdana"
 new Font({ font: 'Verdana', size: '30%', colour: 'blue' }).toCssString()
 ```

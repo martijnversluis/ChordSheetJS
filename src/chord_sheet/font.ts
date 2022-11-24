@@ -56,7 +56,6 @@ class Font {
    * @example
    * // Returns "color: blue; font: 30% Verdana"
    * new Font({ font: 'Verdana', size: '30%', colour: 'blue' }).toCssString()
-   * ```
    *
    * @return {string} The CSS string
    */
