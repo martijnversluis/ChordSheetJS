@@ -31,6 +31,8 @@ const enharmonics: Record<string, Record<string, string>> = {
     'Ab': 'G#',
     'A#': 'Bb',
     'D#': 'Eb',
+    'Db': 'C#',
+    'Eb': 'D#',
   },
   'F': {
     'A#': 'Bb',
