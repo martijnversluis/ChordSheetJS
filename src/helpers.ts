@@ -3,6 +3,7 @@ import { isPresent } from './utilities';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
+import Line from './chord_sheet/line';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -21,7 +22,7 @@ function chordTransposeDistance(capo: number, transposeKey: string | null, songK
   return transpose;
 }
 
-export function renderChord(chord: string, lineKey: string | null, transposeKey: string | null, song: Song): string {
+export function renderChord(chord: string, line: Line, song: Song): string {
   let chordObj = Chord.parse(chord);
   const songKey = song.key;
   const capo = parseInt(song.metadata.getSingle('capo'), 10);
@@ -30,15 +31,10 @@ export function renderChord(chord: string, lineKey: string | null, transposeKey:
     return chord;
   }
 
-  chordObj = chordObj.transpose(chordTransposeDistance(capo, transposeKey, songKey));
+  chordObj = chordObj.transpose(chordTransposeDistance(capo, line.transposeKey, songKey));
 
-  // not gonna work, check if the tests still pass
-  // if (isPresent(transposeKey)) {
-  //   chordObj = chordObj.useModifier(transposeKey.modifier);
-  // }
-
-  if (lineKey) {
-    chordObj = chordObj.normalize(lineKey);
+  if (line.key) {
+    chordObj = chordObj.normalize(line.key);
   }
 
   return chordObj.toString();
