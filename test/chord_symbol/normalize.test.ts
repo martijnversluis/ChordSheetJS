@@ -75,7 +75,7 @@ describe('Chord', () => {
 
         const normalizedChord = chord.normalize();
         expect(normalizedChord).toBeChord({
-          base: 'E', modifier: null, suffix: 'm', bassBase: 'A', bassModifier: '#',
+          base: 'E', modifier: null, suffix: 'm', bassBase: 'B', bassModifier: 'b',
         });
       });
 

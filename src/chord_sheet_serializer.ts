@@ -38,7 +38,7 @@ type SerializedChord = {
 
 type SerializedChordLyricsPair = {
   type: 'chordLyricsPair',
-  chord: SerializedChord | null,
+  chord?: SerializedChord | null,
   chords: string,
   lyrics: string | null,
 };

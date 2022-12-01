@@ -127,6 +127,9 @@ const enharmonics: Record<string, Record<string, string>> = {
   'G#m': {
     'A#': 'Bb',
     'D#': 'Eb',
+  },
+  'B': {
+    'Eb': 'D#',
   }
 };
 

@@ -4,6 +4,7 @@ import song from '../fixtures/song';
 import { createChordLyricsPair, createSong } from '../utilities';
 import { defaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
+import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
@@ -237,5 +238,57 @@ describe('HtmlDivFormatter', () => {
 
   it('exposes the CSS object', () => {
     expect(typeof defaultCss).toEqual('object');
+  });
+
+  it('applies the correct normalization when a capo is active', () => {
+    const songWithCapo = new ChordSheetSerializer().deserialize({
+      type: 'chordSheet',
+      lines: [
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'key', value: 'F' }],
+        },
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'capo', value: '1' }],
+        },
+        {
+          type: 'line',
+          items: [
+            { type: 'chordLyricsPair', chords: '', lyrics: 'My ' },
+            { type: 'chordLyricsPair', chords: 'Dm7', lyrics: 'heart has always ' },
+            { type: 'chordLyricsPair', chords: 'C/E', lyrics: 'longed for something ' },
+            { type: 'chordLyricsPair', chords: 'F', lyrics: 'more' },
+          ],
+        },
+      ],
+    });
+
+    const expectedChordSheet = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">My </div>
+            </div>
+            <div class="column">
+              <div class="chord">C#m7</div>
+              <div class="lyrics">heart has always </div>
+            </div>
+            <div class="column">
+              <div class="chord">B/D#</div>
+              <div class="lyrics">longed for something </div>
+            </div>
+            <div class="column">
+              <div class="chord">E</div>
+              <div class="lyrics">more</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlDivFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
   });
 });

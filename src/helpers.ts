@@ -1,8 +1,8 @@
 import Chord from './chord';
-import { isPresent } from './utilities';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
+import { CAPO } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
@@ -16,28 +16,28 @@ export function transposeDistance(transposeKey: string, songKey: string): number
 function chordTransposeDistance(capo: number, transposeKey: string | null, songKey: string) {
   let transpose = -1 * (capo || 0);
 
-  if (transposeKey && isPresent(songKey)) {
+  if (transposeKey && songKey) {
     transpose += transposeDistance(transposeKey, songKey);
   }
   return transpose;
 }
 
-export function renderChord(chord: string, line: Line, song: Song): string {
-  let chordObj = Chord.parse(chord);
+export function renderChord(chordString: string, line: Line, song: Song): string {
+  const chord = Chord.parse(chordString);
   const songKey = song.key;
-  const capo = parseInt(song.metadata.getSingle('capo'), 10);
+  const capo = parseInt(song.metadata.getSingle(CAPO), 10);
 
-  if (!chordObj) {
-    return chord;
+  if (!chord) {
+    return chordString;
   }
 
-  chordObj = chordObj.transpose(chordTransposeDistance(capo, line.transposeKey, songKey));
+  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey);
+  const effectiveKey = Key.wrap(line.key || song.key)?.transpose(effectiveTransposeDistance) || null;
 
-  if (line.key) {
-    chordObj = chordObj.normalize(line.key);
-  }
-
-  return chordObj.toString();
+  return chord
+    .transpose(effectiveTransposeDistance)
+    .normalize(effectiveKey)
+    .toString();
 }
 
 /**

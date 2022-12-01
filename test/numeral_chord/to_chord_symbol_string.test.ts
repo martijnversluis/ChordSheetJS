@@ -84,7 +84,7 @@ const majorExamples = {
     'II': 'D',
     'bIII': 'Eb',
     'III': 'E',
-    'III(VII)/#V': 'E(VII)/Ab',
+    'III(VII)/#V': 'E(VII)/G#',
     'IV': 'F',
     'bV': 'Gb',
     'V': 'G',
