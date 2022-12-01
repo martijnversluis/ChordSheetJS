@@ -1,6 +1,7 @@
 import { LineType } from '../src/chord_sheet/line';
 import Metadata from '../src/chord_sheet/metadata';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
+import Item from '../src/chord_sheet/item';
 
 import {
   ChordLyricsPair,
@@ -29,7 +30,7 @@ export function createSong(lines, metadata: Record<string, string> = {}) {
   return song;
 }
 
-export function createLine(items, type: LineType = NONE) {
+export function createLine(items: Item[] = [], type: LineType = NONE) {
   const line = new Line();
   items.forEach((item) => line.addItem(item));
   line.type = type;

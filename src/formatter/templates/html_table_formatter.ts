@@ -45,7 +45,7 @@ export default (
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
                         <td class="chord">${ 
-                          renderChord(item.chords, line.key, line.transposeKey, song)
+                          renderChord(item.chords, line, song)
                         }</td>
                       `)}
                     `)}
