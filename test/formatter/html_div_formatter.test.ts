@@ -1,15 +1,14 @@
 import { HtmlDivFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
-import { createChordLyricsPair, createSong } from '../utilities';
 import { defaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
+import { chordLyricsPair, createSongFromAst } from '../utilities';
+
 describe('HtmlDivFormatter', () => {
   it('formats a song to a html chord sheet correctly', () => {
-    const formatter = new HtmlDivFormatter();
-
     const expectedChordSheet = stripHTML(`
       <h1>Let it be</h1>
       <h2>ChordSheetJS example version</h2>
@@ -109,20 +108,20 @@ describe('HtmlDivFormatter', () => {
       </div>
     `);
 
-    expect(formatter.format(song)).toEqual(expectedChordSheet);
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedChordSheet);
   });
 
   describe('with option renderBlankLines:false', () => {
     it('does not include HTML for blank lines', () => {
-      const songWithBlankLine = createSong([
+      const songWithBlankLine = createSongFromAst([
         [
-          createChordLyricsPair('C', 'Whisper words of wisdom'),
+          chordLyricsPair('C', 'Whisper words of wisdom'),
         ],
 
         [],
 
         [
-          createChordLyricsPair('Am', 'Whisper words of wisdom'),
+          chordLyricsPair('Am', 'Whisper words of wisdom'),
         ],
       ]);
 
