@@ -93,7 +93,7 @@ class TextFormatter extends Formatter {
   }
 
   chordLyricsPairLength(chordLyricsPair: ChordLyricsPair, line: Line): number {
-    const chords = renderChord(chordLyricsPair.chords, line, this.song);
+    const chords = renderChord(chordLyricsPair.chords, line, this.song, this.configuration.key);
     const { lyrics } = chordLyricsPair;
     const chordsLength = (chords || '').length;
     const lyricsLength = (lyrics || '').length;
@@ -111,7 +111,7 @@ class TextFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      const chords = renderChord(item.chords, line, this.song);
+      const chords = renderChord(item.chords, line, this.song, this.configuration.key);
       return padLeft(chords, this.chordLyricsPairLength(item, line));
     }
 
