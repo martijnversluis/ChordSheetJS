@@ -36,14 +36,14 @@ type SerializedChord = {
   chordType: string,
 };
 
-type SerializedChordLyricsPair = {
+export type SerializedChordLyricsPair = {
   type: 'chordLyricsPair',
   chord?: SerializedChord | null,
   chords: string,
   lyrics: string | null,
 };
 
-type SerializedTag = SerializedTraceInfo & {
+export type SerializedTag = SerializedTraceInfo & {
   type: 'tag',
   name: string,
   value: string,
@@ -56,7 +56,7 @@ type SerializedComment = {
 
 type SerializedLiteral = string;
 
-interface SerializedTernary extends SerializedTraceInfo {
+export interface SerializedTernary extends SerializedTraceInfo {
   type: 'ternary',
   variable: string | null,
   valueTest: string | null,
@@ -64,7 +64,9 @@ interface SerializedTernary extends SerializedTraceInfo {
   falseExpression: Array<SerializedLiteral | SerializedTernary>,
 }
 
-type SerializedItem = SerializedChordLyricsPair | SerializedTag | SerializedComment | SerializedTernary;
+export type SerializedComposite = Array<SerializedLiteral | SerializedTernary>;
+
+export type SerializedItem = SerializedChordLyricsPair | SerializedTag | SerializedComment | SerializedTernary;
 
 type SerializedLine = {
   type: 'line',
@@ -83,7 +85,7 @@ type SerializedComponent =
   SerializedTag |
   SerializedComment |
   SerializedTernary |
-  string;
+  SerializedLiteral;
 
 /**
  * Serializes a song into een plain object, and deserializes the serialized object back into a {@link Song}

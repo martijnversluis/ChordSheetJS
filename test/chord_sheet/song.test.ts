@@ -1,10 +1,10 @@
+import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
 import {
-  ChordLyricsPair, ChordSheetSerializer, Song, Tag,
-} from '../../src';
-import { createSong } from '../utilities';
-import exampleSong from '../fixtures/song';
+  chordLyricsPair, createSong, createSongFromAst, tag, ternary,
+} from '../utilities';
 import serializedSong from '../fixtures/serialized_song';
 import serializedChangedSong from '../fixtures/changed_song';
+import Song from '../../src/chord_sheet/song';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -103,8 +103,116 @@ describe('Song', () => {
 
   describe('#clone', () => {
     it('returns a clone of the song', () => {
-      const serializedExampleSong = new ChordSheetSerializer().serialize(exampleSong);
-      const clone = exampleSong.clone();
+      const serializedExampleSong = new ChordSheetSerializer().serialize(createSongFromAst([
+        [tag('title', 'Let it be')],
+        [tag('subtitle', 'ChordSheetJS example version')],
+        [tag('key', 'C')],
+        [tag('x_some_setting', '')],
+        [tag('composer', 'John Lennon')],
+        [tag('composer', 'Paul McCartney')],
+        [],
+        [
+          chordLyricsPair('', 'Written by: '),
+          ternary({
+            variable: 'composer',
+            trueExpression: [ternary({ variable: null })],
+            falseExpression: [
+              'No composer defined for ',
+              ternary({
+                variable: 'title',
+                trueExpression: [ternary({ variable: null })],
+                falseExpression: ['Untitled song'],
+              }),
+            ],
+          }),
+        ],
+        [],
+        [tag('start_of_verse', 'Verse 1')],
+        [
+          chordLyricsPair('', 'Let it '),
+          chordLyricsPair('Am', 'be, let it '),
+          chordLyricsPair('C/G', 'be, let it '),
+          chordLyricsPair('F', 'be, let it '),
+          chordLyricsPair('C', 'be'),
+        ],
+        [tag('transpose', '2')],
+        [
+          chordLyricsPair('C', 'Whisper words of '),
+          chordLyricsPair('F', 'wis'),
+          chordLyricsPair('G', 'dom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C/E', ' '),
+          chordLyricsPair('Dm', ' '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_verse')],
+        [],
+        [tag('start_of_chorus')],
+        [tag('comment', 'Breakdown')],
+        [tag('transpose', 'G')],
+        [
+          chordLyricsPair('Am', 'Whisper words of '),
+          chordLyricsPair('Bb', 'wisdom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_chorus')],
+      ]));
+      const clone = createSongFromAst([
+        [tag('title', 'Let it be')],
+        [tag('subtitle', 'ChordSheetJS example version')],
+        [tag('key', 'C')],
+        [tag('x_some_setting', '')],
+        [tag('composer', 'John Lennon')],
+        [tag('composer', 'Paul McCartney')],
+        [],
+        [
+          chordLyricsPair('', 'Written by: '),
+          ternary({
+            variable: 'composer',
+            trueExpression: [ternary({ variable: null })],
+            falseExpression: [
+              'No composer defined for ',
+              ternary({
+                variable: 'title',
+                trueExpression: [ternary({ variable: null })],
+                falseExpression: ['Untitled song'],
+              }),
+            ],
+          }),
+        ],
+        [],
+        [tag('start_of_verse', 'Verse 1')],
+        [
+          chordLyricsPair('', 'Let it '),
+          chordLyricsPair('Am', 'be, let it '),
+          chordLyricsPair('C/G', 'be, let it '),
+          chordLyricsPair('F', 'be, let it '),
+          chordLyricsPair('C', 'be'),
+        ],
+        [tag('transpose', '2')],
+        [
+          chordLyricsPair('C', 'Whisper words of '),
+          chordLyricsPair('F', 'wis'),
+          chordLyricsPair('G', 'dom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C/E', ' '),
+          chordLyricsPair('Dm', ' '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_verse')],
+        [],
+        [tag('start_of_chorus')],
+        [tag('comment', 'Breakdown')],
+        [tag('transpose', 'G')],
+        [
+          chordLyricsPair('Am', 'Whisper words of '),
+          chordLyricsPair('Bb', 'wisdom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_chorus')],
+      ]).clone();
       const serializedClone = new ChordSheetSerializer().serialize(clone);
       expect(serializedClone).toEqual(serializedExampleSong);
     });
@@ -124,7 +232,61 @@ describe('Song', () => {
 
   describe('#mapLines', () => {
     it('changes the song', () => {
-      const song = exampleSong.clone();
+      const song = createSongFromAst([
+        [tag('title', 'Let it be')],
+        [tag('subtitle', 'ChordSheetJS example version')],
+        [tag('key', 'C')],
+        [tag('x_some_setting', '')],
+        [tag('composer', 'John Lennon')],
+        [tag('composer', 'Paul McCartney')],
+        [],
+        [
+          chordLyricsPair('', 'Written by: '),
+          ternary({
+            variable: 'composer',
+            trueExpression: [ternary({ variable: null })],
+            falseExpression: [
+              'No composer defined for ',
+              ternary({
+                variable: 'title',
+                trueExpression: [ternary({ variable: null })],
+                falseExpression: ['Untitled song'],
+              }),
+            ],
+          }),
+        ],
+        [],
+        [tag('start_of_verse', 'Verse 1')],
+        [
+          chordLyricsPair('', 'Let it '),
+          chordLyricsPair('Am', 'be, let it '),
+          chordLyricsPair('C/G', 'be, let it '),
+          chordLyricsPair('F', 'be, let it '),
+          chordLyricsPair('C', 'be'),
+        ],
+        [tag('transpose', '2')],
+        [
+          chordLyricsPair('C', 'Whisper words of '),
+          chordLyricsPair('F', 'wis'),
+          chordLyricsPair('G', 'dom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C/E', ' '),
+          chordLyricsPair('Dm', ' '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_verse')],
+        [],
+        [tag('start_of_chorus')],
+        [tag('comment', 'Breakdown')],
+        [tag('transpose', 'G')],
+        [
+          chordLyricsPair('Am', 'Whisper words of '),
+          chordLyricsPair('Bb', 'wisdom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_chorus')],
+      ]).clone();
 
       [0, 1, 3, 2].forEach((expectedLineCount, index) => {
         expect(song.paragraphs[index].lines).toHaveLength(expectedLineCount);
@@ -159,7 +321,61 @@ describe('Song', () => {
 
   describe('#mapItems', () => {
     it('changes the song', () => {
-      const song = exampleSong.clone();
+      const song = createSongFromAst([
+        [tag('title', 'Let it be')],
+        [tag('subtitle', 'ChordSheetJS example version')],
+        [tag('key', 'C')],
+        [tag('x_some_setting', '')],
+        [tag('composer', 'John Lennon')],
+        [tag('composer', 'Paul McCartney')],
+        [],
+        [
+          chordLyricsPair('', 'Written by: '),
+          ternary({
+            variable: 'composer',
+            trueExpression: [ternary({ variable: null })],
+            falseExpression: [
+              'No composer defined for ',
+              ternary({
+                variable: 'title',
+                trueExpression: [ternary({ variable: null })],
+                falseExpression: ['Untitled song'],
+              }),
+            ],
+          }),
+        ],
+        [],
+        [tag('start_of_verse', 'Verse 1')],
+        [
+          chordLyricsPair('', 'Let it '),
+          chordLyricsPair('Am', 'be, let it '),
+          chordLyricsPair('C/G', 'be, let it '),
+          chordLyricsPair('F', 'be, let it '),
+          chordLyricsPair('C', 'be'),
+        ],
+        [tag('transpose', '2')],
+        [
+          chordLyricsPair('C', 'Whisper words of '),
+          chordLyricsPair('F', 'wis'),
+          chordLyricsPair('G', 'dom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C/E', ' '),
+          chordLyricsPair('Dm', ' '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_verse')],
+        [],
+        [tag('start_of_chorus')],
+        [tag('comment', 'Breakdown')],
+        [tag('transpose', 'G')],
+        [
+          chordLyricsPair('Am', 'Whisper words of '),
+          chordLyricsPair('Bb', 'wisdom, let it '),
+          chordLyricsPair('F', 'be '),
+          chordLyricsPair('C', ''),
+        ],
+        [tag('end_of_chorus')],
+      ]).clone();
       expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2]);
 
       const changedSong = song.mapItems((item) => {
@@ -188,10 +404,118 @@ describe('Song', () => {
   });
 
   it('can be serialized', () => {
-    expect(new ChordSheetSerializer().serialize(exampleSong)).toEqual(serializedSong);
+    expect(new ChordSheetSerializer().serialize(createSongFromAst([
+      [tag('title', 'Let it be')],
+      [tag('subtitle', 'ChordSheetJS example version')],
+      [tag('key', 'C')],
+      [tag('x_some_setting', '')],
+      [tag('composer', 'John Lennon')],
+      [tag('composer', 'Paul McCartney')],
+      [],
+      [
+        chordLyricsPair('', 'Written by: '),
+        ternary({
+          variable: 'composer',
+          trueExpression: [ternary({ variable: null })],
+          falseExpression: [
+            'No composer defined for ',
+            ternary({
+              variable: 'title',
+              trueExpression: [ternary({ variable: null })],
+              falseExpression: ['Untitled song'],
+            }),
+          ],
+        }),
+      ],
+      [],
+      [tag('start_of_verse', 'Verse 1')],
+      [
+        chordLyricsPair('', 'Let it '),
+        chordLyricsPair('Am', 'be, let it '),
+        chordLyricsPair('C/G', 'be, let it '),
+        chordLyricsPair('F', 'be, let it '),
+        chordLyricsPair('C', 'be'),
+      ],
+      [tag('transpose', '2')],
+      [
+        chordLyricsPair('C', 'Whisper words of '),
+        chordLyricsPair('F', 'wis'),
+        chordLyricsPair('G', 'dom, let it '),
+        chordLyricsPair('F', 'be '),
+        chordLyricsPair('C/E', ' '),
+        chordLyricsPair('Dm', ' '),
+        chordLyricsPair('C', ''),
+      ],
+      [tag('end_of_verse')],
+      [],
+      [tag('start_of_chorus')],
+      [tag('comment', 'Breakdown')],
+      [tag('transpose', 'G')],
+      [
+        chordLyricsPair('Am', 'Whisper words of '),
+        chordLyricsPair('Bb', 'wisdom, let it '),
+        chordLyricsPair('F', 'be '),
+        chordLyricsPair('C', ''),
+      ],
+      [tag('end_of_chorus')],
+    ]))).toEqual(serializedSong);
   });
 
   it('can be deserialized', () => {
-    expect(new ChordSheetSerializer().deserialize(serializedSong)).toEqual(exampleSong);
+    expect(new ChordSheetSerializer().deserialize(serializedSong)).toEqual(createSongFromAst([
+      [tag('title', 'Let it be')],
+      [tag('subtitle', 'ChordSheetJS example version')],
+      [tag('key', 'C')],
+      [tag('x_some_setting', '')],
+      [tag('composer', 'John Lennon')],
+      [tag('composer', 'Paul McCartney')],
+      [],
+      [
+        chordLyricsPair('', 'Written by: '),
+        ternary({
+          variable: 'composer',
+          trueExpression: [ternary({ variable: null })],
+          falseExpression: [
+            'No composer defined for ',
+            ternary({
+              variable: 'title',
+              trueExpression: [ternary({ variable: null })],
+              falseExpression: ['Untitled song'],
+            }),
+          ],
+        }),
+      ],
+      [],
+      [tag('start_of_verse', 'Verse 1')],
+      [
+        chordLyricsPair('', 'Let it '),
+        chordLyricsPair('Am', 'be, let it '),
+        chordLyricsPair('C/G', 'be, let it '),
+        chordLyricsPair('F', 'be, let it '),
+        chordLyricsPair('C', 'be'),
+      ],
+      [tag('transpose', '2')],
+      [
+        chordLyricsPair('C', 'Whisper words of '),
+        chordLyricsPair('F', 'wis'),
+        chordLyricsPair('G', 'dom, let it '),
+        chordLyricsPair('F', 'be '),
+        chordLyricsPair('C/E', ' '),
+        chordLyricsPair('Dm', ' '),
+        chordLyricsPair('C', ''),
+      ],
+      [tag('end_of_verse')],
+      [],
+      [tag('start_of_chorus')],
+      [tag('comment', 'Breakdown')],
+      [tag('transpose', 'G')],
+      [
+        chordLyricsPair('Am', 'Whisper words of '),
+        chordLyricsPair('Bb', 'wisdom, let it '),
+        chordLyricsPair('F', 'be '),
+        chordLyricsPair('C', ''),
+      ],
+      [tag('end_of_chorus')],
+    ]));
   });
 });
