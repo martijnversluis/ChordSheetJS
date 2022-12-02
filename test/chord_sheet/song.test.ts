@@ -1,10 +1,10 @@
-import {
-  ChordLyricsPair, ChordSheetSerializer, Song, Tag,
-} from '../../src';
+import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
 import { createSong } from '../utilities';
+
 import exampleSong from '../fixtures/song';
 import serializedSong from '../fixtures/serialized_song';
 import serializedChangedSong from '../fixtures/changed_song';
+import Song from '../../src/chord_sheet/song';
 
 const createLineStub = ({ renderable }) => (
   {
