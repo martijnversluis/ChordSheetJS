@@ -14,6 +14,10 @@ class Formatter {
      * @param {object} [configuration.metadata={}]
      * @param {string} [configuration.metadata.separator=", "] The separator to be used when rendering a metadata value
      * that has multiple values. See: https://bit.ly/2SC9c2u
+     * @param {Key|string} [configuration.key=null] The key to use for rendering. The chord sheet will be transposed
+     * from the song's original key (as indicated by the `{key}` directive) to the specified key.
+     * Note that transposing will only work
+     * if the original song key is set.
      */
   constructor(configuration: ConfigurationProperties | null = null) {
     this.configuration = new Configuration(configuration || {});

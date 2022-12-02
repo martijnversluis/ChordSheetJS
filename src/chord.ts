@@ -237,7 +237,7 @@ class Chord implements ChordProperties {
   normalize(key: Key | string | null = null, { normalizeSuffix = true } = {}): Chord {
     const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
 
-    let bassRootKey = this.root.normalize();
+    let bassRootKey = this.root.normalize().normalizeEnharmonics(key);
     if (this.root.isMinor() && this.bass) {
       bassRootKey = this.root.transpose(3).removeMinor().normalize();
     }

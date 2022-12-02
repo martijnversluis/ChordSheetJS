@@ -13,16 +13,23 @@ export function transposeDistance(transposeKey: string, songKey: string): number
   return Key.distance(songKey, transposeKey);
 }
 
-function chordTransposeDistance(capo: number, transposeKey: string | null, songKey: string) {
+function chordTransposeDistance(capo: number, transposeKey: string | null, songKey: string, renderKey: Key | null) {
   let transpose = -1 * (capo || 0);
 
-  if (transposeKey && songKey) {
-    transpose += transposeDistance(transposeKey, songKey);
+  if (songKey) {
+    if (transposeKey) {
+      transpose += transposeDistance(transposeKey, songKey);
+    }
+
+    if (renderKey) {
+      transpose += Key.distance(songKey, renderKey);
+    }
   }
+
   return transpose;
 }
 
-export function renderChord(chordString: string, line: Line, song: Song): string {
+export function renderChord(chordString: string, line: Line, song: Song, renderKey: Key | null = null): string {
   const chord = Chord.parse(chordString);
   const songKey = song.key;
   const capo = parseInt(song.metadata.getSingle(CAPO), 10);
@@ -31,8 +38,8 @@ export function renderChord(chordString: string, line: Line, song: Song): string
     return chordString;
   }
 
-  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey);
-  const effectiveKey = Key.wrap(line.key || song.key)?.transpose(effectiveTransposeDistance) || null;
+  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey, renderKey);
+  const effectiveKey = renderKey || Key.wrap(line.key || song.key)?.transpose(effectiveTransposeDistance) || null;
 
   return chord
     .transpose(effectiveTransposeDistance)
