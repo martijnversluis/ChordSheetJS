@@ -19,6 +19,9 @@ import {
 export default (
   {
     configuration,
+    configuration: {
+      key,
+    },
     song,
     renderBlankLines = false,
     song: {
@@ -45,7 +48,7 @@ export default (
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
                         <td class="chord">${ 
-                          renderChord(item.chords, line, song)
+                          renderChord(item.chords, line, song, key)
                         }</td>
                       `)}
                     `)}

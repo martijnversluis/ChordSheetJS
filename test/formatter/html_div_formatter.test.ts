@@ -290,4 +290,107 @@ describe('HtmlDivFormatter', () => {
 
     expect(new HtmlDivFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
   });
+
+  it('can render in a different key', () => {
+    const expectedChordSheet = stripHTML(`
+      <h1>Let it be</h1>
+      <h2>ChordSheetJS example version</h2>
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Written by: </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">John Lennon,Paul McCartney</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph verse">
+          <div class="row">
+            <h3 class="label">Verse 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Cm</div>
+              <div class="lyrics">be, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Eb/Bb</div>
+              <div class="lyrics">be, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Ab</div>
+              <div class="lyrics">be, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">be</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">F</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics">wis</div>
+            </div>
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">dom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">F/A</div>
+              <div class="lyrics"> </div>
+            </div>
+            <div class="column">
+              <div class="chord">Gm</div>
+              <div class="lyrics"> </div>
+            </div>
+            <div class="column">
+              <div class="chord">F</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph chorus">
+          <div class="row">
+            <div class="comment">Breakdown</div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Gm</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Ab</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlDivFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
+  });
 });

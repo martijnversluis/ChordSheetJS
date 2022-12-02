@@ -1114,6 +1114,7 @@ https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chord
 | [configuration.evaluate] | <code>boolean</code> | <code>false</code> | <p>Whether or not to evaluate meta expressions. For more info about meta expressions, see: https://bit.ly/2SC9c2u</p> |
 | [configuration.metadata] | <code>object</code> | <code>{}</code> |  |
 | [configuration.metadata.separator] | <code>string</code> | <code>&quot;\&quot;, \&quot;&quot;</code> | <p>The separator to be used when rendering a metadata value that has multiple values. See: https://bit.ly/2SC9c2u</p> |
+| [configuration.key] | [<code>Key</code>](#Key) \| <code>string</code> | <code></code> | <p>The key to use for rendering. The chord sheet will be transposed from the song's original key (as indicated by the <code>{key}</code> directive) to the specified key. Note that transposing will only work if the original song key is set.</p> |
 
 <a name="HtmlDivFormatter"></a>
 

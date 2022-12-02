@@ -55,4 +55,24 @@ My heart has always longed for something more`.substring(1);
 
     expect(new TextFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
   });
+
+  it('can render in a different key', () => {
+    const expectedChordSheet = `
+LET IT BE
+ChordSheetJS example version
+
+Written by: John Lennon,Paul McCartney
+
+Verse 1
+       Cm         Eb/Bb      Ab         Eb
+Let it be, let it be, let it be, let it be
+F                Bb C           Bb F/A Gm F
+Whisper words of wisdom, let it be
+
+Breakdown
+Gm               Ab             Eb Bb
+Whisper words of wisdom, let it be`.substring(1);
+
+    expect(new TextFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
+  });
 });
