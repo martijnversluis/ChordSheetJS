@@ -22,7 +22,7 @@ ChordSheetItemWithNewLine
   }
 
 ChordSheetItem
-  = item:(DirectionLine / InlineMetadata / ChordLyricsLines / ChordsLine / LyricsLine) {
+  = item:(DirectionLine / InlineMetadata / SingleChordsLine / ChordLyricsLines / LyricsLine) {
     if (item.type === "chordsLine") {
       return {
         type: "line",
@@ -90,8 +90,13 @@ ChordLyricsLines
       return { type: "line", items: chordLyricsPairs };
     }
 
+SingleChordsLine
+  = chordsLine:ChordsLine & (NewLine ChordsLine) {
+      return chordsLine;
+    }
+
 ChordsLine
-  = items:(RhythmSymbolWithSpacing / ChordWithSpacing)+ {
+  = items:(ChordWithSpacing / RhythmSymbolWithSpacing)+ {
       return {
         type: "chordsLine",
         items

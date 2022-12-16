@@ -189,8 +189,8 @@ Eb(no3) / / / | / / / / |
   it('supports two chords only sections with rhythm symbols and chords above eachother', () => {
     const chordOverWords = `
 Interlude 4 *18
-Dm9 / C/E / | F9/A Bbma9 / A7(#9#5) |
-Dm9 / C/E /D - /Db - /C | F13 Bbma9 / A7(#9#5) |
+Dm9 / C/E / | F9/A Bbmaj9 / A7(#9#5) |
+Dm9 / C/E /D - /Db - /C | F13 Bbmaj9 / A7(#9#5) |
 `.substring(1);
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -206,7 +206,7 @@ Dm9 / C/E /D - /Db - /C | F13 Bbma9 / A7(#9#5) |
     expect(line1Pairs[3]).toBeChordLyricsPair('/', '');
     expect(line1Pairs[4]).toBeChordLyricsPair('|', '');
     expect(line1Pairs[5]).toBeChordLyricsPair('F9/A', '');
-    expect(line1Pairs[6]).toBeChordLyricsPair('Bbmag9', '');
+    expect(line1Pairs[6]).toBeChordLyricsPair('Bbmaj9', '');
     expect(line1Pairs[7]).toBeChordLyricsPair('/', '');
     expect(line1Pairs[8]).toBeChordLyricsPair('A7(#9#5)', '');
     expect(line1Pairs[9]).toBeChordLyricsPair('|', '');
@@ -222,7 +222,7 @@ Dm9 / C/E /D - /Db - /C | F13 Bbma9 / A7(#9#5) |
     expect(line2Pairs[7]).toBeChordLyricsPair('/C', '');
     expect(line2Pairs[8]).toBeChordLyricsPair('|', '');
     expect(line2Pairs[9]).toBeChordLyricsPair('F13', '');
-    expect(line2Pairs[10]).toBeChordLyricsPair('Bbma9', '');
+    expect(line2Pairs[10]).toBeChordLyricsPair('Bbmaj9', '');
     expect(line2Pairs[11]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[12]).toBeChordLyricsPair('A7(#9#5)', '');
     expect(line2Pairs[13]).toBeChordLyricsPair('|', '');
@@ -464,7 +464,7 @@ We’ll be singing for - ever and ever,         a - men
       expect(linePairs[2]).toBeChordLyricsPair('', 'for - ');
       expect(linePairs[3]).toBeChordLyricsPair('G13', 'ever ');
       expect(linePairs[4]).toBeChordLyricsPair('', 'and ');
-      expect(linePairs[5]).toBeChordLyricsPair('G13(#5)', 'ever,');
+      expect(linePairs[5]).toBeChordLyricsPair('G13(#5)', 'ever, ');
       expect(linePairs[6]).toBeChordLyricsPair('Gm7/C', ' ');
       expect(linePairs[7]).toBeChordLyricsPair('', 'a - ');
       expect(linePairs[8]).toBeChordLyricsPair('F', 'men');

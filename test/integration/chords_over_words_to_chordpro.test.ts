@@ -87,7 +87,7 @@ We’ll be singing for - ever and ever,         a - men`.substring(1);
 
     const expectedChordPro = `
 We’ll be [Dm7/A]singing for - [G13]ev [G13(#5)]- [Gm7/C]er, a - [F]men[A7(#9)/E][Dm11]
-We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever,[Gm7/C] a - [F]men`.substring(1);
+We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever, [Gm7/C] a - [F]men`.substring(1);
 
     const song = new ChordsOverWordsParser().parse(chordOverWords);
     const actualChordPro = new ChordProFormatter().format(song);

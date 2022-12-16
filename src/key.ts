@@ -300,6 +300,14 @@ class Key implements KeyProperties {
     return this.changeGrade(-3).set({ minor: true });
   }
 
+  toMajor(): Key {
+    if (this.isMinor()) {
+      return this.transpose(3).set({ minor: false });
+    }
+
+    return this.clone();
+  }
+
   clone(): Key {
     return this.set({});
   }
@@ -332,7 +340,7 @@ class Key implements KeyProperties {
 
     this.ensureGrade();
 
-    const keyObj = Key.wrapOrFail(key);
+    const keyObj = Key.wrapOrFail(this.modifier || key);
     const chordSymbol = this.set({
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
@@ -595,10 +603,6 @@ class Key implements KeyProperties {
     }
 
     return this.clone();
-  }
-
-  removeMinor(): Key {
-    return this.set({ minor: false });
   }
 
   normalizeEnharmonics(key: Key | string | null): Key {

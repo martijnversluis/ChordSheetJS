@@ -1,4 +1,5 @@
 {key: F}
+
 {comment: Intro (2x)}
 [Gm][F][/][/][|][C#dim7][Dm][/][/][|]
 
@@ -14,7 +15,7 @@ Thine is the [Gm]King - [F]dom, the power, the [C#dim7]glo - [Dm]ry
 Forever and [Gm]e - [F]ver, He finished my [C#dim7]sto - [Dm]ry
 We’re singing [Gm]free - [F/A]dom, our testi - [C#dim7]mo - [Dm]ny
 We’ll be singing for - [G13]ev - [Gm7/C]er, a - [F]men[A7(#9)/E][Dm11]
-We’ll be [Dm/C]singing for - [G13]ever and [G13(#5)]ever,[Gm7/C] a - [F]men
+We’ll be [Dm/C]singing for - [G13]ever and [G13(#5)]ever, [Gm7/C] a - [F]men
 
 {comment: Verse 2 *3}
 [Dm7]Beautiful each [C/E]color that He [F]made
@@ -34,21 +35,21 @@ Thine is the [Gm]King - [F]dom, the power the [C#dim7]glo - [Dm]ry
 Forever and [Gm]e - [F]ver, He finished my [C#dim7]sto - [Dm]ry
 We’re singing [Gm]free - [F/A]dom, our testi - [C#dim7]mo - [Dm]ny
 We’ll be singing for - [G13]ev - [Gm7/C]er, a - [F]men[A7(#9)][Dm11]
-We’ll be [Dm7/C]singing for - [G13/B]ever and [G7(#5)]ever,[Gm7/C] a - [F]men[A7(#9)][Dm11]
+We’ll be [Dm7/C]singing for - [G13/B]ever and [G7(#5)]ever, [Gm7/C] a - [F]men[A7(#9)][Dm11]
 We’ll be [Dm7/A]singing for - [G13]ev [G13(#5)]- [Gm7/C]er, a - [F]men[A7(#9)/E][Dm11]
-We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever,[Gm7/C] a - [F]men
+We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever, [Gm7/C] a - [F]men
 
 {comment: Interlude 1 (4x) *5}
 [Dm7][/][C/E][/][|][F][/][Bb2][/][|]
 
 {comment: Bridge (3x) *6-7}
 [Dm7] If you've [C/E]ever wondered[F] What [Bb2]Heaven looks like
-[Dm7][C/E] It’s looking like me [F]and you[Bb2]
+[Dm7] [C/E] It’s looking like me [F]and you[Bb2]
 [Dm7] If you've [C/E]ever questioned[F] What [Bb2]Heaven sounds like
-[Dm7][C2/E] Just let it fill [F]the room[Bb2]
+[Dm7] [C2/E] Just let it fill [F]the room[Bb2]
 
 {comment: Tag 1 (8x) *8}
-[Dm7][C/E] Just let it fill [F]the room[Bb2]
+[Dm7] [C/E] Just let it fill [F]the room[Bb2]
 
 {comment: Tag 2 (4x) *9}
 He's coming, He's [x]coming[x][x][x][|][x][x][x]
