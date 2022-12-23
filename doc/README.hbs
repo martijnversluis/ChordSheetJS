@@ -81,10 +81,11 @@ const song = parser.parse(chordSheet);
 const chordSheet = `
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
-{Chorus}
 
+{start_of_chorus: Chorus}
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
-[C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]`.substring(1);
+[C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]
+{end_of_chorus}`.substring(1);
 
 const parser = new ChordSheetJS.ChordProParser();
 const song = parser.parse(chordSheet);
