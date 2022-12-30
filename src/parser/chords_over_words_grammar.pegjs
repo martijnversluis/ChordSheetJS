@@ -58,11 +58,12 @@ ChordLyricsLines
         const start = chord.column - 1;
         const end = nextChord ? nextChord.column - 1 : lyrics.length;
         const pairLyrics = lyrics.substring(start, end);
-        const secondWordPosition = pairLyrics.search(/(?<=\s+)\S/);
+        const result = /(\s+)(\S+)/.exec(pairLyrics);
+        const secondWordPosition = result ? (result.index + result[1].length) : null;
 
         const chordData = (chord.type === "chord") ? { chord } : { chords: chord.value };
 
-        if (secondWordPosition !== -1 && secondWordPosition < end) {
+        if (secondWordPosition && secondWordPosition < end) {
           return [
             { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition) },
             { type: "chordLyricsPair", chords: "", lyrics: pairLyrics.substring(secondWordPosition) },
