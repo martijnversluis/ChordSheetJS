@@ -13,41 +13,42 @@ describe('chordpro to HTML with TABLEs', () => {
 %{artist|artist is %{}|artist is unset}
 %{title|title is set and c is %{c|set|unset}|title is unset}`.substring(1);
 
-    const expectedChordSheet = '<h1>A</h1>'
-      + '<div class="chord-sheet">'
-        + '<div class="paragraph">'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">A</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">B</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">artist is not X</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">c is unset</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">artist is B</td>'
-            + '</tr>'
-          + '</table>'
-          + '<table class="row">'
-            + '<tr>'
-              + '<td class="lyrics">title is set and c is unset</td>'
-            + '</tr>'
-          + '</table>'
-        + '</div>'
-      + '</div>';
+    const expectedChordSheet = stripHTML(`
+      <h1>A</h1>
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="lyrics">A</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">B</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">artist is not X</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">c is unset</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">artist is B</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">title is set and c is unset</td>
+            </tr>
+          </table>
+        </div>
+      </div>`);
 
     const song = new ChordProParser().parse(chordSheet);
     const formatted = new HtmlTableFormatter().format(song);
@@ -139,5 +140,87 @@ describe('chordpro to HTML with TABLEs', () => {
     const song = new ChordProParser().parse(chordProSheet);
     const formatted = new HtmlTableFormatter().format(song);
     expect(formatted).toEqual(expectedChordSheet);
+  });
+
+  it('correctly renders section directives', () => {
+    const chordSheet = `
+{start_of_verse: Verse 1}
+Let it [Am]Be
+{end_of_verse}
+
+{start_of_chorus: Chorus 2}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_bridge: Bridge 3}
+[G]wisdom, let it 
+{end_of_bridge}`.substring(1);
+
+    const expectedHTML = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Verse 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Am</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">Be</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Chorus 2</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">C</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper </td
+              ><td class="lyrics">words of </td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Bridge 3</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">wisdom, </td>
+              <td class="lyrics">let it </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlTableFormatter().format(song);
+
+    expect(formatted).toEqual(expectedHTML);
   });
 });
