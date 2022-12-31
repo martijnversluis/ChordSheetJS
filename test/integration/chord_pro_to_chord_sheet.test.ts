@@ -1,7 +1,4 @@
-import {
-  ChordProParser,
-  TextFormatter,
-} from '../../src';
+import { ChordProParser, TextFormatter } from '../../src';
 
 describe('chordpro to chord sheet', () => {
   it('correctly parses and formats meta expressions', () => {
@@ -60,5 +57,40 @@ Whisper words of wisdom, let it be`.substring(1);
     const formatted = new TextFormatter().format(song);
 
     expect(formatted).toEqual('');
+  });
+
+  it('correctly renders section directives', () => {
+    const chordSheet = `
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{start_of_chorus: Chorus 2:}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_bridge: Bridge 3:}
+[G]wisdom, let it 
+{end_of_bridge}`.substring(1);
+
+    const expectedHTML = `
+Verse 1:
+       Am
+Let it be
+
+Chorus 2:
+C
+Whisper words of
+
+Bridge 3:
+G
+wisdom, let it`.substring(1);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new TextFormatter().format(song);
+
+    console.warn(formatted);
+
+    expect(formatted).toEqual(expectedHTML);
   });
 });
