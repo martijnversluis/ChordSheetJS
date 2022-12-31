@@ -5,6 +5,7 @@ import { HtmlTemplateArgs } from '../html_formatter';
 import {
   each,
   evaluate,
+  fontStyleTag,
   hasTextContents,
   isChordLyricsPair,
   isComment,
@@ -47,9 +48,7 @@ export default (
                   <tr>
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
-                        <td class="chord">${ 
-                          renderChord(item.chords, line, song, key)
-                        }</td>
+                        <td class="chord"${fontStyleTag(line.chordFont)}>${ renderChord(item.chords, line, song, key) }</td>
                       `)}
                     `)}
                   </tr>
@@ -59,21 +58,21 @@ export default (
                   <tr>
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
-                        <td class="lyrics">${ item.lyrics}</td>
+                        <td class="lyrics"${fontStyleTag(line.textFont)}>${ item.lyrics}</td>
                       `)}
                       
                       ${ when(isTag(item), () => `
                         ${ when(isComment(item), () => `
-                          <td class="comment">${ item.value }</td>
+                          <td class="comment"${fontStyleTag(line.textFont)}>${ item.value }</td>
                         `) }
                         
                         ${ when(item.hasRenderableLabel(), () => `
-                          <td><h3 class="label">${ item.value }</h3></td>
+                          <td><h3 class="label"${fontStyleTag(line.textFont)}>${ item.value }</h3></td>
                         `) }
                       `) }
                       
                       ${ when(isEvaluatable(item), () => `
-                        <td class="lyrics">${ evaluate(item, metadata, configuration) }</td>
+                        <td class="lyrics"${fontStyleTag(line.textFont)}>${ evaluate(item, metadata, configuration) }</td>
                       `) }
                     `)}
                   </tr>

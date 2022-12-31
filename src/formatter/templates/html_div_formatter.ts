@@ -43,9 +43,7 @@ export default (
               ${ each(line.items, (item) => `
                 ${ when(isChordLyricsPair(item), () => `
                   <div class="column">
-                    ${ keep([renderChord(item.chords, line, song, key)], ([renderedChord]) => `
-                      <div class="chord"${ fontStyleTag(line.chordFont) }>${ renderedChord }</div>
-                    `) }
+                    <div class="chord"${ fontStyleTag(line.chordFont) }>${ renderChord(item.chords, line, song, key) }</div>
                     <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                   </div>
                 `) }
@@ -63,10 +61,7 @@ export default (
                 ${ when(isEvaluatable(item), () => `
                   <div class="column">
                     <div class="chord"></div>
-                    
-                    ${ keep([evaluate(item, metadata, configuration)], ([evaluated]) => `
-                      <div class="lyrics"${ fontStyleTag(line.textFont) }>${ evaluated }</div>
-                    `) }
+                    <div class="lyrics"${ fontStyleTag(line.textFont) }>${ evaluate(item, metadata, configuration) }</div>
                   </div>
                 `) }
               `) }
