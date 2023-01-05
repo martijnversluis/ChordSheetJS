@@ -63,7 +63,7 @@
     "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify",
     "jest": "jest",
     "test": "yarn lint && yarn jest",
-    "test:debug": "open -a \"Brave Browser\" chrome://inspect && node --nolazy --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --colors --verbose",
+    "jest:debug": "open -a \"Brave Browser\" chrome://inspect && node --nolazy --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --colors --verbose",
     "eslint": "node_modules/.bin/eslint --ext .ts .",
     "lint": "yarn build:code-generate && yarn eslint",
     "lint:fix": "yarn build:code-generate && node_modules/.bin/eslint --fix --ext .ts .",

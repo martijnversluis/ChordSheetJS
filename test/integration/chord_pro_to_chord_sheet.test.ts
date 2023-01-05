@@ -73,7 +73,7 @@ Let it [Am]be
 [G]wisdom, let it 
 {end_of_bridge}`.substring(1);
 
-    const expectedHTML = `
+    const expectedText = `
 Verse 1:
        Am
 Let it be
@@ -89,8 +89,102 @@ wisdom, let it`.substring(1);
     const song = new ChordProParser().parse(chordSheet);
     const formatted = new TextFormatter().format(song);
 
-    console.warn(formatted);
+    expect(formatted).toEqual(expectedText);
+  });
 
-    expect(formatted).toEqual(expectedHTML);
+  it('can expand chorus directives when expandChorusDirective=true', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = `
+Chorus 1:
+C
+Whisper words of
+
+Verse 1:
+       Am
+Let it be
+
+Repeat chorus 1:
+C
+Whisper words of
+
+Chorus 2:
+G
+wisdom, let it
+
+Repeat chorus 2:
+G
+wisdom, let it
+
+Repeat chorus 2 again:
+G
+wisdom, let it`.substring(1);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new TextFormatter({ expandChorusDirective: true }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
+
+  it('does not expand chorus directives when expandChorusDirective=false', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = `
+Chorus 1:
+C
+Whisper words of
+
+Verse 1:
+       Am
+Let it be
+
+Repeat chorus 1:
+
+Chorus 2:
+G
+wisdom, let it
+
+Repeat chorus 2:
+
+Repeat chorus 2 again:`.substring(1);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new TextFormatter({ expandChorusDirective: false }).format(song);
+
+    expect(formatted).toEqual(expectedText);
   });
 });

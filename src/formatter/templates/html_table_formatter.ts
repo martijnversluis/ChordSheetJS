@@ -28,10 +28,10 @@ export default (
     song: {
       title,
       subtitle,
-      bodyParagraphs,
       bodyLines,
       metadata,
     },
+    bodyParagraphs,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title}</h1>`) }

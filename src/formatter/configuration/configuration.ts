@@ -9,12 +9,14 @@ export type ConfigurationProperties = Record<string, any> & {
     separator: string,
   },
   key?: Key | string | null,
+  expandChorusDirective?: boolean,
 }
 
 export const defaultConfiguration: ConfigurationProperties = {
   evaluate: false,
   metadata: { separator: ',' },
   key: null,
+  expandChorusDirective: false,
 };
 
 class Configuration {
@@ -26,13 +28,12 @@ class Configuration {
 
   configuration: Record<string, any>;
 
-  constructor(configuration: ConfigurationProperties = defaultConfiguration) {
-    if ('evaluate' in configuration) {
-      this.evaluate = !!configuration.evaluate;
-    } else {
-      this.evaluate = !!defaultConfiguration.evaluate;
-    }
+  expandChorusDirective: boolean;
 
+  constructor(configuration: ConfigurationProperties = defaultConfiguration) {
+    const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
+    this.evaluate = !!mergedConfig.evaluate;
+    this.expandChorusDirective = !!mergedConfig.expandChorusDirective;
     this.metadata = new MetadataConfiguration(configuration.metadata);
     this.key = configuration.key ? Key.wrap(configuration.key) : null;
     this.configuration = configuration;

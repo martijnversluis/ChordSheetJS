@@ -42,9 +42,10 @@ class TextFormatter extends Formatter {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, metadata } = this.song;
+    const { bodyParagraphs, expandedBodyParagraphs, metadata } = this.song;
+    const { expandChorusDirective } = this.configuration;
 
-    return bodyParagraphs
+    return (expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs)
       .map((paragraph: Paragraph) => this.formatParagraph(paragraph, metadata))
       .join('\n\n');
   }

@@ -18,6 +18,8 @@ class Formatter {
      * from the song's original key (as indicated by the `{key}` directive) to the specified key.
      * Note that transposing will only work
      * if the original song key is set.
+     * @param {boolean} [configuration.expandChorusDirective=false] Whether or not to expand `{chorus}` directives
+     * by rendering the last defined chorus inline after the directive.
      */
   constructor(configuration: ConfigurationProperties | null = null) {
     this.configuration = new Configuration(configuration || {});
