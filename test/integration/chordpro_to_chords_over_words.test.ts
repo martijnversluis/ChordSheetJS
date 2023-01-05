@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { ChordProParser, ChordsOverWordsFormatter } from '../../src';
+import print from 'print';
 
 describe('chordpro to chords over words', () => {
   it('correctly parses and converts the song structure', () => {
@@ -27,6 +28,10 @@ D        Dsus               D        Dsus
     const expectedChordOverWords = fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8');
 
     const song = new ChordProParser().parse(chordpro);
+    song.paragraphs.forEach(p => {
+      print.out(p.lines);
+      print.out("=======================================================");
+    });
     const actualChordsOverWords = new ChordsOverWordsFormatter().format(song);
 
     expect(actualChordsOverWords).toEqual(expectedChordOverWords);
