@@ -223,4 +223,240 @@ Let it [Am]Be
 
     expect(formatted).toEqual(expectedHTML);
   });
+
+  it('can expand {chorus} directives when expandChorusDirective=true', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Chorus 1:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">C</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Verse 1:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Am</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">be</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 1:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">C</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Chorus 2:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">wisdom, </td>
+              <td class="lyrics">let it</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 2:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">wisdom, </td>
+              <td class="lyrics">let it</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 2 again:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">wisdom, </td>
+              <td class="lyrics">let it</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlTableFormatter({ expandChorusDirective: true }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
+
+  it('does not expand {chorus} directives when expandChorusDirective=false', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Chorus 1:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">C</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Verse 1:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Am</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">be</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 1:</h3></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Chorus 2:</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
+              <td class="chord"></td>
+            </tr>
+            <tr>
+              <td class="lyrics">wisdom, </td>
+              <td class="lyrics">let it</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 2:</h3></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Repeat chorus 2 again:</h3></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlTableFormatter({ expandChorusDirective: false }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
 });

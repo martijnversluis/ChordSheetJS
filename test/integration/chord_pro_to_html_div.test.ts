@@ -220,4 +220,216 @@ Let it [Am]Be
 
     expect(formatted).toEqual(expectedHTML);
   });
+
+  it('can expand {chorus} directives when expandChorusDirective=true', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 1:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">words of </div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph verse">
+          <div class="row">
+            <h3 class="label">Verse 1:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Am</div>
+              <div class="lyrics">be</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 1:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">words of </div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">wisdom, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 2:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">wisdom, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 2 again:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">wisdom, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlDivFormatter({ expandChorusDirective: true }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
+
+  it('does not expand {chorus} directives when expandChorusDirective=false', () => {
+    const chordSheet = `
+{start_of_chorus: Chorus 1:}
+[C]Whisper words of 
+{end_of_chorus}
+
+{start_of_verse: Verse 1:}
+Let it [Am]be
+{end_of_verse}
+
+{chorus: Repeat chorus 1:}
+
+{start_of_chorus: Chorus 2:}
+[G]wisdom, let it
+{end_of_chorus}
+
+{chorus: Repeat chorus 2:}
+
+{chorus: Repeat chorus 2 again:}`.substring(1);
+
+    const expectedText = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 1:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">words of </div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph verse">
+          <div class="row">
+            <h3 class="label">Verse 1:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Am</div>
+              <div class="lyrics">be</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 1:</h3>
+          </div>
+        </div>
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2:</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">wisdom, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 2:</h3>
+          </div>
+        </div>
+        <div class="paragraph">
+          <div class="row">
+            <h3 class="label">Repeat chorus 2 again:</h3>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlDivFormatter({ expandChorusDirective: false }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
 });

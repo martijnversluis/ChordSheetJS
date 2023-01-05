@@ -5,7 +5,7 @@ import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
 import Font from './font';
 
-type MapItemFunc = (_item: Item) => Item;
+type MapItemFunc = (_item: Item) => Item | null;
 
 export type LineType = 'verse' | 'chorus' | 'none';
 
@@ -31,6 +31,8 @@ class Line {
   key: string | null = null;
 
   transposeKey: string | null = null;
+
+  lineNumber: number | null = null;
 
   /**
    * The text font that applies to this line. Is derived from the directives:
@@ -59,6 +61,10 @@ class Line {
    */
   isEmpty(): boolean {
     return this.items.length === 0;
+  }
+
+  isNotEmpty(): boolean {
+    return !this.isEmpty();
   }
 
   /**
@@ -101,7 +107,7 @@ class Line {
         const clonedItem = item.clone();
         return func ? func(clonedItem) : clonedItem;
       })
-      .filter((item) => item);
+      .filter((item) => item !== null) as Item[];
 
     clonedLine.type = this.type;
     return clonedLine;

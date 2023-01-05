@@ -205,6 +205,13 @@ export const TITLESIZE = 'titlesize';
  */
 export const TITLECOLOUR = 'titlecolour';
 
+/**
+ * Chorus directive. Support repeating an earlier defined section.
+ * See https://www.chordpro.org/chordpro/directives-env_chorus/
+ * @type {string}
+ */
+export const CHORUS = 'chorus';
+
 const TITLE_SHORT = 't';
 const SUBTITLE_SHORT = 'st';
 const COMMENT_SHORT = 'c';
@@ -261,6 +268,7 @@ const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   START_OF_CHORUS,
   START_OF_BRIDGE,
   START_OF_TAB,
+  CHORUS,
 ];
 
 const ALIASES: Record<string, string> = {

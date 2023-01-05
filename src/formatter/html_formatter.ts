@@ -2,11 +2,13 @@ import Formatter from './formatter';
 import Configuration from './configuration/configuration';
 import Song from '../chord_sheet/song';
 import { breakingChange, scopeCss } from '../utilities';
+import Paragraph from '../chord_sheet/paragraph';
 
 export type HtmlTemplateArgs = {
   configuration: Configuration;
   song: Song;
   renderBlankLines?: boolean;
+  bodyParagraphs: Paragraph[],
 };
 
 export type Template = (_args: HtmlTemplateArgs) => string;
@@ -22,7 +24,15 @@ abstract class HtmlFormatter extends Formatter {
    * @returns {string} The HTML string
    */
   format(song: Song): string {
-    return this.template({ song, configuration: this.configuration });
+    const { bodyParagraphs, expandedBodyParagraphs } = song;
+
+    return this.template(
+      {
+        song,
+        configuration: this.configuration,
+        bodyParagraphs: this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs,
+      },
+    );
   }
 
   /**
