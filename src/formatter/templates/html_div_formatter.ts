@@ -43,7 +43,7 @@ export default (
               ${ each(line.items, (item) => `
                 ${ when(isChordLyricsPair(item), () => `
                   <div class="column">
-                    <div class="chord"${ fontStyleTag(line.chordFont) }>${ renderChord(item.chords, line, song, key) }</div>
+                    <div class="chord"${ fontStyleTag(line.chordFont) }>${ renderChord(item.chords, line, song, key, configuration.useUnicodeModifiers) }</div>
                     <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                   </div>
                 `) }

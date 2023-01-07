@@ -368,4 +368,49 @@ td {
 
     expect(new HtmlTableFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
   });
+
+  describe('with option useUnicodeModifiers:true', () => {
+    it('replaces # with unicode sharp', () => {
+      const songWithFlats = createSongFromAst([
+        [
+          chordLyricsPair('C#', 'Whisper words of wisdom'),
+        ],
+
+        [],
+
+        [
+          chordLyricsPair('A#m', 'Whisper words of wisdom'),
+        ],
+      ]);
+
+      const expectedChordSheet = stripHTML(`
+        <div class="chord-sheet">
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">C♯</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">A♯m</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      `);
+
+      const formatter = new HtmlTableFormatter({ renderBlankLines: false, useUnicodeModifiers: true });
+
+      expect(formatter.format(songWithFlats)).toEqual(expectedChordSheet);
+    });
+  });
 });

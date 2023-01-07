@@ -202,11 +202,11 @@ class Chord implements ChordProperties {
    * Converts the chord to a string, eg `Esus4/G#` or `1sus4/#3`
    * @returns {string} the chord string
    */
-  toString(): string {
-    const chordString = this.root.toString({ showMinor: false }) + (this.suffix || '');
+  toString({ unicodeModifier = false } = {}): string {
+    const chordString = this.root.toString({ showMinor: false, unicodeModifier }) + (this.suffix || '');
 
     if (this.bass) {
-      return `${chordString}/${this.bass.toString()}`;
+      return `${chordString}/${this.bass.toString({ unicodeModifier })}`;
     }
 
     return chordString;

@@ -38,6 +38,17 @@ class Key implements KeyProperties {
 
   modifier: Modifier | null = null;
 
+  get unicodeModifier(): string | null {
+    switch (this.modifier) {
+      case FLAT:
+        return '\u266d';
+      case SHARP:
+        return '\u266f';
+      default:
+        return null;
+    }
+  }
+
   minor = false;
 
   static parse(keyString: string | null): null | Key {
@@ -185,10 +196,10 @@ class Key implements KeyProperties {
     return this.toNumeral(key).toString();
   }
 
-  toString({ showMinor = true } = {}): string {
+  toString({ showMinor = true, unicodeModifier = false } = {}): string {
     switch (this.note.type) {
       case SYMBOL:
-        return this.formatChordSymbolString(showMinor);
+        return this.formatChordSymbolString(showMinor, unicodeModifier);
       case NUMERIC:
         return this.formatNumericString(showMinor);
       case NUMERAL:
@@ -198,8 +209,9 @@ class Key implements KeyProperties {
     }
   }
 
-  private formatChordSymbolString(showMinor: boolean): string {
-    return `${this.note}${this.modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
+  private formatChordSymbolString(showMinor: boolean, unicodeModifier: boolean): string {
+    const modifier = unicodeModifier ? this.unicodeModifier : this.modifier;
+    return `${this.note}${modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
   }
 
   private formatNumericString(showMinor: boolean): string {
