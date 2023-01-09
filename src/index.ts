@@ -1,86 +1,88 @@
+import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
+import ChordProFormatter from './formatter/chord_pro_formatter';
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
+import ChordSheetSerializer from './chord_sheet_serializer';
 import ChordsOverWordsParser from './parser/chords_over_words_parser';
-import UltimateGuitarParser from './parser/ultimate_guitar_parser';
-import TextFormatter from './formatter/text_formatter';
-import HtmlTableFormatter from './formatter/html_table_formatter';
-import HtmlDivFormatter from './formatter/html_div_formatter';
-import ChordProFormatter from './formatter/chord_pro_formatter';
-import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
-import Line from './chord_sheet/line';
-import Song from './chord_sheet/song';
-import Tag from './chord_sheet/tag';
 import Comment from './chord_sheet/comment';
+import Composite from './chord_sheet/chord_pro/composite';
+import HtmlDivFormatter from './formatter/html_div_formatter';
+import HtmlTableFormatter from './formatter/html_table_formatter';
+import Line from './chord_sheet/line';
+import Literal from './chord_sheet/chord_pro/literal';
 import Metadata from './chord_sheet/metadata';
 import Paragraph from './chord_sheet/paragraph';
+import Song from './chord_sheet/song';
+import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
-import Composite from './chord_sheet/chord_pro/composite';
-import Literal from './chord_sheet/chord_pro/literal';
-import ChordSheetSerializer from './chord_sheet_serializer';
+import TextFormatter from './formatter/text_formatter';
+import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 
 import {
   CHORUS,
   INDETERMINATE,
-  VERSE,
   NONE,
   TAB,
+  VERSE,
 } from './constants';
 
+export { default as Chord, parseChord } from './chord';
+export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
+export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
 export { default as ChordProParser } from './parser/chord_pro_parser';
 export { default as ChordSheetParser } from './parser/chord_sheet_parser';
+export { default as ChordSheetSerializer } from './chord_sheet_serializer';
 export { default as ChordsOverWordsParser } from './parser/chords_over_words_parser';
-export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
-export { default as TextFormatter } from './formatter/text_formatter';
-export { default as HtmlTableFormatter } from './formatter/html_table_formatter';
-export { default as HtmlDivFormatter } from './formatter/html_div_formatter';
-export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
-export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
-export { default as Line } from './chord_sheet/line';
-export { default as Song } from './chord_sheet/song';
-export { default as Tag } from './chord_sheet/tag';
 export { default as Comment } from './chord_sheet/comment';
+export { default as Composite } from './chord_sheet/chord_pro/composite';
+export { default as Formatter } from './formatter/formatter';
+export { default as HtmlFormatter } from './formatter/html_formatter';
+export { default as HtmlDivFormatter } from './formatter/html_div_formatter';
+export { default as HtmlTableFormatter } from './formatter/html_table_formatter';
+export { default as Key } from './key';
+export { default as Line } from './chord_sheet/line';
+export { default as Literal } from './chord_sheet/chord_pro/literal';
 export { default as Metadata } from './chord_sheet/metadata';
 export { default as Paragraph } from './chord_sheet/paragraph';
+export { default as Song } from './chord_sheet/song';
+export { default as Tag } from './chord_sheet/tag';
 export { default as Ternary } from './chord_sheet/chord_pro/ternary';
-export { default as Composite } from './chord_sheet/chord_pro/composite';
-export { default as Literal } from './chord_sheet/chord_pro/literal';
-export { default as ChordSheetSerializer } from './chord_sheet_serializer';
-export { default as Chord, parseChord } from './chord';
-export { default as Key } from './key';
+export { default as TextFormatter } from './formatter/text_formatter';
+export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
 
 export {
   CHORUS,
   INDETERMINATE,
-  VERSE,
   NONE,
-  TAB,
-  SYMBOL,
   NUMERIC,
+  SYMBOL,
+  TAB,
+  VERSE,
 } from './constants';
 
 export default {
+  ChordLyricsPair,
+  ChordProFormatter,
   ChordProParser,
   ChordSheetParser,
+  ChordSheetSerializer,
   ChordsOverWordsParser,
-  UltimateGuitarParser,
-  TextFormatter,
-  HtmlTableFormatter,
-  HtmlDivFormatter,
-  ChordProFormatter,
-  ChordLyricsPair,
-  Line,
-  Song,
-  Tag,
   Comment,
+  Composite,
+  HtmlDivFormatter,
+  HtmlTableFormatter,
+  Line,
+  Literal,
   Metadata,
   Paragraph,
+  Song,
+  Tag,
   Ternary,
-  Composite,
-  Literal,
-  ChordSheetSerializer,
+  TextFormatter,
+  UltimateGuitarParser,
   CHORUS,
   INDETERMINATE,
+  NONE,
   TAB,
   VERSE,
-  NONE,
 };
