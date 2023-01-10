@@ -200,6 +200,9 @@ class Chord implements ChordProperties {
 
   /**
    * Converts the chord to a string, eg `Esus4/G#` or `1sus4/#3`
+   * @param {Object} [configuration={}] options
+   * @param {boolean} [configuration.useUnicodeModifier=false] Whether or not to use unicode modifiers. 
+   * This will make `#` (sharp) look like `♯` and `b` (flat) look like `♭`
    * @returns {string} the chord string
    */
   toString({ unicodeModifier = false } = {}): string {
