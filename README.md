@@ -1393,7 +1393,7 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p>
         * [.isNumeric()](#Chord+isNumeric) ⇒ <code>boolean</code>
         * [.toNumericString([referenceKey])](#Chord+toNumericString) ⇒ <code>string</code>
         * [.isNumeral()](#Chord+isNumeral) ⇒ <code>boolean</code>
-        * [.toString()](#Chord+toString) ⇒ <code>string</code>
+        * [.toString([configuration])](#Chord+toString) ⇒ <code>string</code>
         * [.normalize([key], [options])](#Chord+normalize) ⇒ [<code>Chord</code>](#Chord)
         * [.useModifier(newModifier)](#Chord+useModifier) ⇒ [<code>Chord</code>](#Chord)
         * [.transposeUp()](#Chord+transposeUp) ⇒ [<code>Chord</code>](#Chord)
@@ -1511,11 +1511,17 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toString"></a>
 
-### chord.toString() ⇒ <code>string</code>
+### chord.toString([configuration]) ⇒ <code>string</code>
 <p>Converts the chord to a string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code></p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 **Returns**: <code>string</code> - <p>the chord string</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [configuration] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [configuration.useUnicodeModifier] | <code>boolean</code> | <code>false</code> | <p>Whether or not to use unicode modifiers. This will make <code>#</code> (sharp) look like <code>♯</code> and <code>b</code> (flat) look like <code>♭</code></p> |
+
 <a name="Chord+normalize"></a>
 
 ### chord.normalize([key], [options]) ⇒ [<code>Chord</code>](#Chord)

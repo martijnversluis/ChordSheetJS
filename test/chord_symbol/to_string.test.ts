@@ -70,7 +70,7 @@ describe('Chord', () => {
               modifier: 'b',
             });
 
-            expect(chord.toString({ unicodeModifier: true })).toEqual('E♭');
+            expect(chord.toString({ useUnicodeModifier: true })).toEqual('E♭');
           });
 
           it('returns the right string representation', () => {
@@ -79,7 +79,7 @@ describe('Chord', () => {
               modifier: '#',
             });
 
-            expect(chord.toString({ unicodeModifier: true })).toEqual('F♯');
+            expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');
           });
         });
       });

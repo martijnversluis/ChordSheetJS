@@ -29,12 +29,19 @@ function chordTransposeDistance(capo: number, transposeKey: string | null, songK
   return transpose;
 }
 
+interface RenderChordOptions {
+  renderKey?: Key | null;
+  useUnicodeModifier?: boolean;
+}
+
 export function renderChord(
   chordString: string,
   line: Line,
   song: Song,
-  renderKey: Key | null = null,
-  unicodeModifiers = false,
+  {
+    renderKey = null,
+    useUnicodeModifier = false,
+  }: RenderChordOptions = {},
 ): string {
   const chord = Chord.parse(chordString);
   const songKey = song.key;
@@ -50,7 +57,7 @@ export function renderChord(
   return chord
     .transpose(effectiveTransposeDistance)
     .normalize(effectiveKey)
-    .toString({ unicodeModifier: unicodeModifiers });
+    .toString({ useUnicodeModifier });
 }
 
 /**

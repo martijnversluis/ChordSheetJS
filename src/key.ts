@@ -196,10 +196,10 @@ class Key implements KeyProperties {
     return this.toNumeral(key).toString();
   }
 
-  toString({ showMinor = true, unicodeModifier = false } = {}): string {
+  toString({ showMinor = true, useUnicodeModifier = false } = {}): string {
     switch (this.note.type) {
       case SYMBOL:
-        return this.formatChordSymbolString(showMinor, unicodeModifier);
+        return this.formatChordSymbolString(showMinor, useUnicodeModifier);
       case NUMERIC:
         return this.formatNumericString(showMinor);
       case NUMERAL:
