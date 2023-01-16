@@ -48,7 +48,7 @@ export default (
                   <tr>
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
-                        <td class="chord"${fontStyleTag(line.chordFont)}>${ renderChord(item.chords, line, song, key) }</td>
+                        <td class="chord"${fontStyleTag(line.chordFont)}>${ renderChord(item.chords, line, song, { renderKey: key, useUnicodeModifier: configuration.useUnicodeModifiers }) }</td>
                       `)}
                     `)}
                   </tr>

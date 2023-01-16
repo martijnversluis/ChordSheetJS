@@ -18,6 +18,14 @@ describe('renderChord', () => {
     const song = new Song();
     song.setMetadata('key', 'F');
 
-    expect(renderChord('Dm7', line, song, Key.parse('B'))).toEqual('G#m7');
+    expect(renderChord('Dm7', line, song, { renderKey: Key.parse('B') })).toEqual('G#m7');
+  });
+
+  it('can render a chord with a unicode modifier', () => {
+    const line = createLine();
+    const song = new Song();
+    song.setMetadata('key', 'F');
+
+    expect(renderChord('Dm7', line, song, { renderKey: Key.parse('B'), useUnicodeModifier: true })).toEqual('G♯m7');
   });
 });

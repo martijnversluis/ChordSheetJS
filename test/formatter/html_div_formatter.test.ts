@@ -393,4 +393,45 @@ describe('HtmlDivFormatter', () => {
 
     expect(new HtmlDivFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
   });
+
+  describe('with option useUnicodeModifiers:true', () => {
+    it('replaces b with unicode flat', () => {
+      const songWithFlats = createSongFromAst([
+        [
+          chordLyricsPair('Gb', 'Whisper words of wisdom'),
+        ],
+
+        [],
+
+        [
+          chordLyricsPair('Ebm', 'Whisper words of wisdom'),
+        ],
+      ]);
+
+      const expectedChordSheet = stripHTML(`
+        <div class="chord-sheet">
+          <div class="paragraph">
+            <div class="row">
+              <div class="column">
+                <div class="chord">G♭</div>
+                <div class="lyrics">Whisper words of wisdom</div>
+              </div>
+            </div>
+          </div>
+          <div class="paragraph">
+            <div class="row">
+              <div class="column">
+                <div class="chord">E♭m</div>
+                <div class="lyrics">Whisper words of wisdom</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+
+      const formatter = new HtmlDivFormatter({ renderBlankLines: false, useUnicodeModifiers: true });
+
+      expect(formatter.format(songWithFlats)).toEqual(expectedChordSheet);
+    });
+  });
 });
