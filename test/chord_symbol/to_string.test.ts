@@ -63,24 +63,22 @@ describe('Chord', () => {
       });
 
       describe('with option unicodeModifer:true', () => {
-        describe('with sharp modifer', () => {
-          it('returns the right string representation', () => {
-            const chord = new Chord({
-              base: 'E',
-              modifier: 'b',
-            });
-
-            expect(chord.toString({ useUnicodeModifier: true })).toEqual('E♭');
+        it('returns the right string representation with flat symbol', () => {
+          const chord = new Chord({
+            base: 'E',
+            modifier: 'b',
           });
 
-          it('returns the right string representation', () => {
-            const chord = new Chord({
-              base: 'F',
-              modifier: '#',
-            });
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('E♭');
+        });
 
-            expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');
+        it('returns the right string representation with sharp symbol', () => {
+          const chord = new Chord({
+            base: 'F',
+            modifier: '#',
           });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');
         });
       });
     });

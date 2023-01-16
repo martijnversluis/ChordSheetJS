@@ -371,7 +371,7 @@ td {
 
   describe('with option useUnicodeModifiers:true', () => {
     it('replaces # with unicode sharp', () => {
-      const songWithFlats = createSongFromAst([
+      const songWithSharps = createSongFromAst([
         [
           chordLyricsPair('C#', 'Whisper words of wisdom'),
         ],
@@ -410,7 +410,7 @@ td {
 
       const formatter = new HtmlTableFormatter({ renderBlankLines: false, useUnicodeModifiers: true });
 
-      expect(formatter.format(songWithFlats)).toEqual(expectedChordSheet);
+      expect(formatter.format(songWithSharps)).toEqual(expectedChordSheet);
     });
   });
 });

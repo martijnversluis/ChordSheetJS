@@ -20,6 +20,7 @@ class Formatter {
      * if the original song key is set.
      * @param {boolean} [configuration.expandChorusDirective=false] Whether or not to expand `{chorus}` directives
      * by rendering the last defined chorus inline after the directive.
+     * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp symbols.
      */
   constructor(configuration: ConfigurationProperties | null = null) {
     this.configuration = new Configuration(configuration || {});

@@ -112,7 +112,15 @@ class TextFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      const chords = renderChord(item.chords, line, this.song, { renderKey: this.configuration.key });
+      const chords = renderChord(
+        item.chords,
+        line,
+        this.song,
+        {
+          renderKey: this.configuration.key,
+          useUnicodeModifier: this.configuration.useUnicodeModifiers,
+        },
+      );
       return padLeft(chords, this.chordLyricsPairLength(item, line));
     }
 
