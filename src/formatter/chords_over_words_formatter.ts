@@ -1,10 +1,10 @@
 import Formatter from './formatter';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
-import { renderChord } from '../helpers';
-import { hasTextContents } from '../template_helpers';
+import {renderChord} from '../helpers';
+import {hasTextContents} from '../template_helpers';
 import Song from '../chord_sheet/song';
-import { hasChordContents, isEmptyString, padLeft } from '../utilities';
+import {hasChordContents, isEmptyString, padLeft} from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 import Metadata from '../chord_sheet/metadata';
 import Line from '../chord_sheet/line';
@@ -39,11 +39,16 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, metadata } = this.song;
+    const { bodyParagraphs, bodyParagraphs: { length: count }, metadata } = this.song;
 
-    return bodyParagraphs
-      .map((paragraph) => this.formatParagraph(paragraph, metadata))
-      .join('\n\n');
+    const formattedParagraphs = bodyParagraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
+    const combined = formattedParagraphs.join('\n\n');
+
+    if (formattedParagraphs[count - 1].length === 0) {
+      return combined.substring(0, combined.length - 1);
+    }
+
+    return combined;
   }
 
   formatParagraph(paragraph: Paragraph, metadata: Metadata): string {

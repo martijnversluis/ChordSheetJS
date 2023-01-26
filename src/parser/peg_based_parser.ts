@@ -12,24 +12,6 @@ interface IParseOptions {
 }
 export type ParseFunction = (_input: string, _options?: IParseOptions) => any;
 
-const newLine = '\n';
-
-function hasTrailingNewLine(string: string): boolean {
-  return string.endsWith(newLine);
-}
-
-function addTrailingNewLine(string: string): string {
-  return `${string}${newLine}`;
-}
-
-function ensureTrailingNewLine(string: string): string {
-  if (hasTrailingNewLine(string)) {
-    return string;
-  }
-
-  return addTrailingNewLine(string);
-}
-
 /**
  * Parses a chords over words sheet
  */
@@ -46,7 +28,7 @@ class PegBasedParser {
   }
 
   protected parseWithParser(chordSheet: string, parser: ParseFunction): Song {
-    const ast = parser(normalizeLineEndings(ensureTrailingNewLine(chordSheet)));
+    const ast = parser(normalizeLineEndings(chordSheet));
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }

@@ -28,10 +28,6 @@ D        Dsus               D        Dsus
     const expectedChordOverWords = fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8');
 
     const song = new ChordProParser().parse(chordpro);
-    song.paragraphs.forEach(p => {
-      print.out(p.lines);
-      print.out("=======================================================");
-    });
     const actualChordsOverWords = new ChordsOverWordsFormatter().format(song);
 
     expect(actualChordsOverWords).toEqual(expectedChordOverWords);
