@@ -50,7 +50,7 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
     "ts-pegjs": "^3.0.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   },
   "scripts": {
     "build:suffix-normalize": "rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && ts-node src/normalize_mappings/generate-suffix-normalize-mapping.ts",
