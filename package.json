@@ -31,7 +31,7 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@types/jest": "^29.2.2",
     "@types/lodash.get": "^4.4.7",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "browserify": "^17.0.0",
