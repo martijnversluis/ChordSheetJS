@@ -139,8 +139,9 @@ export const TITLE = 'title';
  * @type {string}
  */
 export const TRANSPOSE = 'transpose';
+
 /**
- * New Key meta directive. See: https://github.com/BetterMusic/ChordChartJS/issues/53
+ * New Key meta directive. See: https://github.com/BetterMusic/ChordSheetJS/issues/53
  * @type {string}
  */
 export const NEW_KEY = 'new_key';
