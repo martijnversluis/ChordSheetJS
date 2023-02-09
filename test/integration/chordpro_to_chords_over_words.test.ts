@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { ChordProParser, ChordsOverWordsFormatter } from '../../src';
-import print from 'print';
 
 describe('chordpro to chords over words', () => {
   it('correctly parses and converts the song structure', () => {

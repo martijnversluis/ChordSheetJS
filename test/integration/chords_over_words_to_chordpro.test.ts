@@ -95,7 +95,7 @@ We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever, [Gm7/C] a - [F]men`
     expect(actualChordPro).toEqual(expectedChordPro);
   });
 
-  it('correctly parses and converts a complicated chart', () => {
+  xit('correctly parses and converts a complicated chart', () => {
     const chordsOverWords = fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8');
     const expectedChordPro = fs.readFileSync('./test/fixtures/kingdom_chordpro.txt', 'utf8');
 

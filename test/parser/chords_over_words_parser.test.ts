@@ -261,7 +261,6 @@ Ab2 - Eb/G Eb /
     expect(line2Pairs[8]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[9]).toBeChordLyricsPair('|', '');
 
-    console.log(lines[3].items);
     expect(lines[3].items.length).toEqual(0);
 
     expect(lines[4].items.length).toEqual(1);

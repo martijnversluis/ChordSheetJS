@@ -1,10 +1,10 @@
 import Formatter from './formatter';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
-import {renderChord} from '../helpers';
-import {hasTextContents} from '../template_helpers';
+import { renderChord } from '../helpers';
+import { hasTextContents } from '../template_helpers';
 import Song from '../chord_sheet/song';
-import {hasChordContents, isEmptyString, padLeft} from '../utilities';
+import { hasChordContents, isEmptyString, padLeft } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 import Metadata from '../chord_sheet/metadata';
 import Line from '../chord_sheet/line';

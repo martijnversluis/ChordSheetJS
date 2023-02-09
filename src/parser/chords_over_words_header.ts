@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 function combineChordSheetLines(newLine: string | null, lines, trailingLine): any[] {
   const hasEmptyLine = newLine && newLine.length > 0;
   const emptyLines = hasEmptyLine ? [{ type: 'line', items: [] }] : [];
@@ -20,11 +21,11 @@ function pairChordsWithLyrics(chordsLine, lyricsLine) {
 
     if (secondWordPosition !== -1 && secondWordPosition < end) {
       return [
-        { type: 'chordLyricsPair', ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition).trim() + " " },
+        { type: 'chordLyricsPair', ...chordData, lyrics: `${pairLyrics.substring(0, secondWordPosition).trim()} ` },
         { type: 'chordLyricsPair', chords: '', lyrics: pairLyrics.substring(secondWordPosition) },
       ];
     }
-    const trimmedLyrics = /.+\s+$/.test(pairLyrics) ? pairLyrics.trim() + " " : pairLyrics;
+    const trimmedLyrics = /.+\s+$/.test(pairLyrics) ? `${pairLyrics.trim()} ` : pairLyrics;
     return { type: 'chordLyricsPair', ...chordData, lyrics: trimmedLyrics };
   }).flat();
 
@@ -85,6 +86,7 @@ function lyricsToLine(lyricsLine) {
   return { type: 'line', items: [] };
 }
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 function arrangeChordSheetLines(chordSheetLines: any[]) {
   const arrangedLines: any[] = [];
   let lineIndex = 0;
