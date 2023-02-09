@@ -2,7 +2,7 @@ import Chord from './chord';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
-import { CAPO } from './chord_sheet/tag';
+import { CAPO, CHORD_STYLE, ChordType } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
@@ -29,10 +29,28 @@ function chordTransposeDistance(capo: number, transposeKey: string | null, songK
   return transpose;
 }
 
+function changeChordType(
+  chord: Chord,
+  type: ChordType,
+  referenceKey: Key | null,
+): Chord {
+  switch (type) {
+    case 'symbol':
+      return chord.toChordSymbol(referenceKey);
+    case 'numeral':
+      return chord.toNumeral(referenceKey);
+    case 'number':
+      return chord.toNumeric(referenceKey);
+    default:
+      return chord;
+  }
+}
+
 export function renderChord(chordString: string, line: Line, song: Song, renderKey: Key | null = null): string {
   const chord = Chord.parse(chordString);
   const songKey = song.key;
   const capo = parseInt(song.metadata.getSingle(CAPO), 10);
+  const chordType = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
   if (!chord) {
     return chordString;
@@ -41,10 +59,8 @@ export function renderChord(chordString: string, line: Line, song: Song, renderK
   const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey, renderKey);
   const effectiveKey = renderKey || Key.wrap(line.key || song.key)?.transpose(effectiveTransposeDistance) || null;
 
-  return chord
-    .transpose(effectiveTransposeDistance)
-    .normalize(effectiveKey)
-    .toString();
+  const transposedChord = chord.transpose(effectiveTransposeDistance).normalize(effectiveKey);
+  return changeChordType(transposedChord, chordType, effectiveKey).toString();
 }
 
 /**

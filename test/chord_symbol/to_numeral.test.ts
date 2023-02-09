@@ -44,6 +44,24 @@ describe('Chord', () => {
           bassModifier: 'b',
         });
       });
+
+      it('supports a minor chord', () => {
+        const originalChord = new Chord({
+          base: 'G',
+          modifier: null,
+          suffix: 'm',
+        });
+
+        const numericChord = originalChord.toNumeric('Bb');
+
+        expect(numericChord).toBeChord({
+          base: 'vi',
+          modifier: null,
+          suffix: null,
+          bassBase: null,
+          bassModifier: null,
+        });
+      });
     });
   });
 });

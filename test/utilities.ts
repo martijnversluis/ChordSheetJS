@@ -114,7 +114,7 @@ export function ternary(
 type TestCaseProps = {
   [key: string]: any;
   outcome: any;
-  index: number;
+  index: string;
 }
 
 export function eachTestCase(table: string, callback: (_testCase: TestCaseProps) => void) {
@@ -125,7 +125,7 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
   const testCases = caseLines.map((line) => {
     const columns = line.split('|').map((s) => s.trim());
     const values = columns.slice(1, -1);
-    const testCase = { index: parseInt(columns[0], 10) };
+    const testCase = { index: columns[0] };
 
     return names.reduce((acc, name, index) => ({
       ...acc,
