@@ -21,8 +21,8 @@ describe('Chord', () => {
           base: 'D',
           modifier: null,
           suffix: 'sus',
-          bassBase: 'A',
-          bassModifier: 'b',
+          bassBase: 'G',
+          bassModifier: '#',
         });
 
         expect(convertedChord).not.toBe(originalChord);
@@ -43,8 +43,8 @@ describe('Chord', () => {
           base: 'D',
           modifier: null,
           suffix: 'sus',
-          bassBase: 'A',
-          bassModifier: 'b',
+          bassBase: 'G',
+          bassModifier: '#',
         });
 
         expect(convertedChord).not.toBe(originalChord);

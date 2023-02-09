@@ -121,6 +121,14 @@ class Key implements KeyProperties {
     return this.minor || this.note.isMinor();
   }
 
+  toMajor(): Key {
+    if (this.isMinor()) {
+      return this.transpose(3).set({ minor: false });
+    }
+
+    return this.clone();
+  }
+
   clone(): Key {
     return this.set({});
   }
@@ -130,7 +138,7 @@ class Key implements KeyProperties {
 
     const transposeDistance = this.note.getTransposeDistance(key.minor) + modifierTransposition(this.modifier);
 
-    return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
+    return key.transpose(transposeDistance).normalize().useModifier(this.modifier || key.modifier);
   }
 
   toChordSymbolString(key: Key): string {
@@ -268,10 +276,6 @@ class Key implements KeyProperties {
     }
 
     return this.clone();
-  }
-
-  removeMinor(): Key {
-    return this.set({ minor: false });
   }
 
   normalizeEnharmonics(key: Key | string | null): Key {

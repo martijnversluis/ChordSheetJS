@@ -160,8 +160,7 @@ Mother Mary comes to me
     const chordOverWords = `
 title: Rattle
 Intro (5x)
-Eb(no3) / / / | / / / / |
-`.substring(1);
+Eb(no3) / / / | / / / / |`.substring(1);
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -184,6 +183,48 @@ Eb(no3) / / / | / / / / |
     expect(line2Pairs[7]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[8]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[9]).toBeChordLyricsPair('|', '');
+  });
+
+  it('supports two chords only sections with rhythm symbols and chords above eachother', () => {
+    const chordOverWords = `
+Interlude 4 *18
+Dm9 / C/E / | F9/A Bbmaj9 / A7(#9#5) |
+Dm9 / C/E /D - /Db - /C | F13 Bbmaj9 / A7(#9#5) |
+`.substring(1);
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordOverWords);
+    const { lines } = song;
+
+    expect(lines[0].items.length).toEqual(1);
+    expect(lines[0].items[0]).toBeTag('comment', 'Interlude 4 *18');
+
+    const line1Pairs = lines[1].items;
+    expect(line1Pairs[0]).toBeChordLyricsPair('Dm9', '');
+    expect(line1Pairs[1]).toBeChordLyricsPair('/', '');
+    expect(line1Pairs[2]).toBeChordLyricsPair('C/E', '');
+    expect(line1Pairs[3]).toBeChordLyricsPair('/', '');
+    expect(line1Pairs[4]).toBeChordLyricsPair('|', '');
+    expect(line1Pairs[5]).toBeChordLyricsPair('F9/A', '');
+    expect(line1Pairs[6]).toBeChordLyricsPair('Bbmaj9', '');
+    expect(line1Pairs[7]).toBeChordLyricsPair('/', '');
+    expect(line1Pairs[8]).toBeChordLyricsPair('A7(#9#5)', '');
+    expect(line1Pairs[9]).toBeChordLyricsPair('|', '');
+
+    const line2Pairs = lines[2].items;
+    expect(line2Pairs[0]).toBeChordLyricsPair('Dm9', '');
+    expect(line2Pairs[1]).toBeChordLyricsPair('/', '');
+    expect(line2Pairs[2]).toBeChordLyricsPair('C/E', '');
+    expect(line2Pairs[3]).toBeChordLyricsPair('/D', '');
+    expect(line2Pairs[4]).toBeChordLyricsPair('-', '');
+    expect(line2Pairs[5]).toBeChordLyricsPair('/Db', '');
+    expect(line2Pairs[6]).toBeChordLyricsPair('-', '');
+    expect(line2Pairs[7]).toBeChordLyricsPair('/C', '');
+    expect(line2Pairs[8]).toBeChordLyricsPair('|', '');
+    expect(line2Pairs[9]).toBeChordLyricsPair('F13', '');
+    expect(line2Pairs[10]).toBeChordLyricsPair('Bbmaj9', '');
+    expect(line2Pairs[11]).toBeChordLyricsPair('/', '');
+    expect(line2Pairs[12]).toBeChordLyricsPair('A7(#9#5)', '');
+    expect(line2Pairs[13]).toBeChordLyricsPair('|', '');
   });
 
   it('supports mixed chords only line & chords over words ', () => {
@@ -402,7 +443,48 @@ Let it   be, let it be
 
       const line1Pairs = lines[1].items;
       expect(line1Pairs[0]).toBeChordLyricsPair('', 'Let it');
-      expect(line1Pairs[1]).toBeChordLyricsPair('Am', '   ');
+      expect(line1Pairs[1]).toBeChordLyricsPair('Am', ' ');
+      expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
+      expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
+    });
+
+    it('correctly places a trailing chord when the trailing chord is pushed by the previous chord', () => {
+      const chordOverWords = `
+         Dm/C          G13      G13(#5) Gm7/C     F
+We’ll be singing for - ever and ever,         a - men
+`.substring(1);
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('', 'We’ll be ');
+      expect(linePairs[1]).toBeChordLyricsPair('Dm/C', 'singing ');
+      expect(linePairs[2]).toBeChordLyricsPair('', 'for - ');
+      expect(linePairs[3]).toBeChordLyricsPair('G13', 'ever ');
+      expect(linePairs[4]).toBeChordLyricsPair('', 'and ');
+      expect(linePairs[5]).toBeChordLyricsPair('G13(#5)', 'ever, ');
+      expect(linePairs[6]).toBeChordLyricsPair('Gm7/C', ' ');
+      expect(linePairs[7]).toBeChordLyricsPair('', 'a - ');
+      expect(linePairs[8]).toBeChordLyricsPair('F', 'men');
+    });
+
+    it('handles a complicated suffix', () => {
+      const chordOverWords = `
+Chorus 1
+      Am7(#9)            C/G
+Let it        be, let it be
+`.substring(1);
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines[0].items.length).toEqual(1);
+      expect(lines[0].items[0]).toBeTag('comment', 'Chorus 1');
+
+      const line1Pairs = lines[1].items;
+      expect(line1Pairs[0]).toBeChordLyricsPair('', 'Let it');
+      expect(line1Pairs[1]).toBeChordLyricsPair('Am7(#9)', ' ');
       expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });

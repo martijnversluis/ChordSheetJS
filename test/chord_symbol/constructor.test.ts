@@ -21,13 +21,13 @@ describe('Chord', () => {
       it('marks simple minor keys as minor', () => {
         const chord = new Chord({ base: 'E', suffix: 'm' });
 
-        expect(chord.root.minor).toBe(true);
+        expect(chord.root?.minor).toBe(true);
       });
 
       it('marks complex minor keys as minor', () => {
         const chord = new Chord({ base: 'E', suffix: 'm7' });
 
-        expect(chord.root.minor).toBe(true);
+        expect(chord.root?.minor).toBe(true);
       });
     });
   });

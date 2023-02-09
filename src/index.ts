@@ -7,6 +7,7 @@ import TextFormatter from './formatter/text_formatter';
 import HtmlTableFormatter from './formatter/html_table_formatter';
 import HtmlDivFormatter from './formatter/html_div_formatter';
 import ChordProFormatter from './formatter/chord_pro_formatter';
+import ChordsOverWordsFormatter from './formatter/chords_over_words_formatter';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Line from './chord_sheet/line';
 import Song from './chord_sheet/song';
@@ -36,6 +37,7 @@ export { default as TextFormatter } from './formatter/text_formatter';
 export { default as HtmlTableFormatter } from './formatter/html_table_formatter';
 export { default as HtmlDivFormatter } from './formatter/html_div_formatter';
 export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
+export { default as ChordsOverWordsFormatter } from './formatter/chords_over_words_formatter';
 export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
 export { default as Line } from './chord_sheet/line';
 export { default as Song } from './chord_sheet/song';
@@ -69,6 +71,7 @@ export default {
   HtmlTableFormatter,
   HtmlDivFormatter,
   ChordProFormatter,
+  ChordsOverWordsFormatter,
   ChordLyricsPair,
   Line,
   Song,

@@ -132,7 +132,7 @@ const majorExamples = {
     'bIII': 'F',
     'III': 'F#',
     'IV': 'G',
-    'bV': 'G#',
+    'bV': 'Ab',
     'V': 'A',
     'bVI': 'Bb',
     'VI': 'B',
@@ -241,7 +241,7 @@ const majorExamples = {
     'V': 'Eb',
     'bVI': 'E',
     'VI': 'F',
-    'bVII': 'F#',
+    'bVII': 'Gb',
     'VII': 'G',
   },
 };
@@ -357,7 +357,7 @@ const minorExamples = {
     'bii': 'Fm',
     'ii': 'F#m',
     'IIIm': 'Gm',
-    'biv': 'G#m',
+    'biv': 'Abm',
     'iv': 'Am',
     'bv': 'Bbm',
     'v': 'Bm',
@@ -415,21 +415,21 @@ const minorExamples = {
   'G#m': {
     'i': 'G#m',
     'bii': 'Am',
-    'ii': 'Bbm',
+    'ii': 'A#m',
     'IIIm': 'Bm',
     'biv': 'Cm',
     'iv': 'C#m',
     'bv': 'Dm',
-    'v': 'Ebm',
+    'v': 'D#m',
     'vi': 'Em',
     '#vi': 'Fm',
-    'bvii': 'F#m',
+    'bvii': 'Gbm',
     'vii': 'Gm',
   },
 };
 
 describe('numeral chords', () => {
-  describe('#toChordSymbol', () => {
+  describe('toChordSymbol', () => {
     describe('major Keys', () => {
       Object.entries(majorExamples).forEach(([key, conversions]) => {
         describe(`For key ${key}`, () => {
