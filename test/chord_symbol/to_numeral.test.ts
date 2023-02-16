@@ -52,7 +52,7 @@ describe('Chord', () => {
           suffix: 'm',
         });
 
-        const numericChord = originalChord.toNumeric('Bb');
+        const numericChord = originalChord.toNumeral('Bb');
 
         expect(numericChord).toBeChord({
           base: 'vi',

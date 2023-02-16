@@ -133,12 +133,27 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
     }), testCase);
   });
 
-  testCases.forEach((testCaseProps) => {
-    const testCase = testCaseProps as TestCaseProps;
-    const description = names.filter((n) => n !== 'outcome').map((name) => `${name}=${testCase[name]}`).join(', ');
+  const focusTests = testCases.some((testCase) => testCase.index === 'f');
+  const skipTests = testCases.some((testCase) => testCase.index === 's');
 
-    it(`returns ${testCase.outcome} for ${description} (${testCaseProps.index})`, () => {
-      callback(testCase);
+  testCases
+    .filter(({ index }) => {
+      if (focusTests) {
+        return index === 'f';
+      }
+
+      if (skipTests) {
+        return index !== 's';
+      }
+
+      return true;
+    })
+    .forEach((testCaseProps) => {
+      const testCase = testCaseProps as TestCaseProps;
+      const description = names.filter((n) => n !== 'outcome').map((name) => `${name}=${testCase[name]}`).join(', ');
+
+      it(`returns ${testCase.outcome} for ${description} (${testCaseProps.index})`, () => {
+        callback(testCase);
+      });
     });
-  });
 }

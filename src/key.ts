@@ -123,7 +123,10 @@ class Key implements KeyProperties {
 
   toMajor(): Key {
     if (this.isMinor()) {
-      return this.transpose(3).set({ minor: false });
+      return this.transpose(3).set({
+        minor: false,
+        note: this.note.toMajor(),
+      });
     }
 
     return this.clone();
@@ -171,6 +174,8 @@ class Key implements KeyProperties {
     if (this.isNumeral()) return this.set({ note: this.note.toNumeric() });
 
     if (!key) throw new Error('key is required');
+
+    debugger;
 
     return this.transposeNoteUpToKey(1, key);
   }
@@ -304,15 +309,17 @@ class Key implements KeyProperties {
   private transposeNoteUpToKey(note: number | string, key: Key) {
     let numericKey = new Key({ note });
     let symbolKey = key.clone().toMajor();
-    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
+    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key).toMajor();
 
     let count = 0;
 
-    while (!symbolKey.equals(reference.toMajor()) && count < 20) {
+    while (!symbolKey.useModifier(reference.modifier).equals(reference) && count < 20) {
       count += 1;
-      console.warn(`${symbolKey} != ${reference}`);
-      numericKey = numericKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
+      console.log([symbolKey.toString(), reference.toString(), numericKey.toString()]);
+      numericKey = numericKey.transposeUp();
+
+      symbolKey = symbolKey.transposeUp().normalize().useModifier(reference.modifier).normalizeEnharmonics(key);
+      console.log(['=>', symbolKey.toString(), reference.toString(), numericKey.toString()]);
     }
 
     return numericKey;
