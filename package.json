@@ -33,7 +33,7 @@
     "@types/lodash.get": "^4.4.7",
     "@types/node": "^18.14.1",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
-    "@typescript-eslint/parser": "^5.52.0",
+    "@typescript-eslint/parser": "^5.53.0",
     "browserify": "^17.0.0",
     "eslint": "^8.34.0",
     "eslint-config-airbnb-base": "^15.0.0",
