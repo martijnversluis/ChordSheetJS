@@ -11,6 +11,7 @@ export type ConfigurationProperties = Record<string, any> & {
   key?: Key | string | null,
   expandChorusDirective?: boolean,
   useUnicodeModifiers?: boolean,
+  normalizeChords?: boolean,
 }
 
 export const defaultConfiguration: ConfigurationProperties = {
@@ -19,6 +20,7 @@ export const defaultConfiguration: ConfigurationProperties = {
   key: null,
   expandChorusDirective: false,
   useUnicodeModifiers: false,
+  normalizeChords: true,
 };
 
 class Configuration {
@@ -34,11 +36,14 @@ class Configuration {
 
   useUnicodeModifiers: boolean;
 
+  normalizeChords: boolean;
+
   constructor(configuration: ConfigurationProperties = defaultConfiguration) {
     const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
     this.evaluate = !!mergedConfig.evaluate;
     this.expandChorusDirective = !!mergedConfig.expandChorusDirective;
     this.useUnicodeModifiers = !!mergedConfig.useUnicodeModifiers;
+    this.normalizeChords = !!mergedConfig.normalizeChords;
     this.metadata = new MetadataConfiguration(configuration.metadata);
     this.key = configuration.key ? Key.wrap(configuration.key) : null;
     this.configuration = configuration;

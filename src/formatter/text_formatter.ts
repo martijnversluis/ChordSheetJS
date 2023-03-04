@@ -94,7 +94,7 @@ class TextFormatter extends Formatter {
   }
 
   chordLyricsPairLength(chordLyricsPair: ChordLyricsPair, line: Line): number {
-    const chords = renderChord(chordLyricsPair.chords, line, this.song, { renderKey: this.configuration.key });
+    const chords = this.renderChords(chordLyricsPair, line);
     const { lyrics } = chordLyricsPair;
     const chordsLength = (chords || '').length;
     const lyricsLength = (lyrics || '').length;
@@ -106,21 +106,27 @@ class TextFormatter extends Formatter {
     return Math.max(chordsLength, lyricsLength);
   }
 
+  private renderChords(chordLyricsPair: ChordLyricsPair, line: Line) {
+    const chords = renderChord(
+      chordLyricsPair.chords,
+      line,
+      this.song,
+      {
+        renderKey: this.configuration.key,
+        useUnicodeModifier: this.configuration.useUnicodeModifiers,
+        normalizeChords: this.configuration.normalizeChords,
+      },
+    );
+    return chords;
+  }
+
   formatItemTop(item: Item, _metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
       return item.value || '';
     }
 
     if (item instanceof ChordLyricsPair) {
-      const chords = renderChord(
-        item.chords,
-        line,
-        this.song,
-        {
-          renderKey: this.configuration.key,
-          useUnicodeModifier: this.configuration.useUnicodeModifiers,
-        },
-      );
+      const chords = this.renderChords(item, line);
       return padLeft(chords, this.chordLyricsPairLength(item, line));
     }
 
