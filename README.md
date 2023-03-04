@@ -1128,6 +1128,7 @@ https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chord
 | [configuration.key] | [<code>Key</code>](#Key) \| <code>string</code> | <code></code> | <p>The key to use for rendering. The chord sheet will be transposed from the song's original key (as indicated by the <code>{key}</code> directive) to the specified key. Note that transposing will only work if the original song key is set.</p> |
 | [configuration.expandChorusDirective] | <code>boolean</code> | <code>false</code> | <p>Whether or not to expand <code>{chorus}</code> directives by rendering the last defined chorus inline after the directive.</p> |
 | [configuration.useUnicodeModifiers] | <code>boolean</code> | <code>false</code> | <p>Whether or not to use unicode flat and sharp symbols.</p> |
+| [configuration.normalizeChords] | <code>boolean</code> | <code>true</code> | <p>Whether or not to automatically normalize chords</p> |
 
 <a name="HtmlDivFormatter"></a>
 

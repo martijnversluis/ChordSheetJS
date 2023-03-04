@@ -93,4 +93,13 @@ The chords are in a broken key where sharps and flats are mixed`.substring(1);
 
     expect(new TextFormatter({ useUnicodeModifiers: true }).format(songWithCapo)).toEqual(expectedChordSheet);
   });
+
+  it('can skip chord normalization', () => {
+    const songWithSus2 = createSongFromAst([
+      [chordLyricsPair('Asus2', 'Let it be')],
+    ]);
+
+    const formatted = new TextFormatter({ normalizeChords: false }).format(songWithSus2);
+    expect(formatted).toEqual('Asus2\nLet it be');
+  });
 });

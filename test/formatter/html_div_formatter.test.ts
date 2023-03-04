@@ -434,4 +434,27 @@ describe('HtmlDivFormatter', () => {
       expect(formatter.format(songWithFlats)).toEqual(expectedChordSheet);
     });
   });
+
+  it('can skip chord normalization', () => {
+    const songWithSus2 = createSongFromAst([
+      [chordLyricsPair('Asus2', 'Let it be')],
+    ]);
+
+    const expectedHTML = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord">Asus2</div>
+              <div class="lyrics">Let it be</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const formatted = new HtmlDivFormatter({ normalizeChords: false }).format(songWithSus2);
+
+    expect(formatted).toEqual(expectedHTML);
+  });
 });
