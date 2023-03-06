@@ -7062,9 +7062,9 @@ ts-node@^10.7.0:
     yn "3.1.1"
 
 ts-pegjs@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-3.0.0.tgz#3883d0772c56a059a55c95e09a3e5f4e076acddc"
-  integrity sha512-0yTchsO04jfYl/85sibupLSb7PfXs890jN9WqXoI6+WrFilam3+44ZdjBwIKPc9n2jdSbcxfdMvXNNwNEHSLCg==
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-3.1.0.tgz#a308135d9a4bbe62d89327024d91af7bc80c1ac9"
+  integrity sha512-CZ80MYdzoh/setHAcrOdWh7ws4GsIPAahFEZ1019xPLe2snSzwuCLDAwQ0r7xHLIuOuRJ7v87jvz/Lr5YTLN4g==
 
 tsconfig-paths@^3.14.1:
   version "3.14.1"
