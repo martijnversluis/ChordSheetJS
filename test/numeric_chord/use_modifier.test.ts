@@ -1,58 +1,23 @@
 import Chord from '../../src/chord';
-import '../matchers';
 
 describe('Chord', () => {
   describe('numeric', () => {
     describe('useModifier', () => {
       describe('for a chord without modifier', () => {
         it('does not change the chord', () => {
-          const chord = new Chord({
-            base: 4,
-            modifier: null,
-            suffix: null,
-            bassBase: 4,
-            bassModifier: null,
-          });
-
-          const switchedChord = chord.useModifier('b');
-
-          expect(switchedChord).toBeChord({
-            base: 4, modifier: null, suffix: null, bassBase: 4, bassModifier: null,
-          });
+          expect(Chord.parse('4/4')?.useModifier('b').toString()).toEqual('4/4');
         });
       });
 
       describe('for #', () => {
         it('changes to b', () => {
-          const chord = new Chord({
-            base: 5,
-            modifier: '#',
-            suffix: null,
-            bassBase: 5,
-            bassModifier: '#',
-          });
-
-          const switchedChord = chord.useModifier('b');
-          expect(switchedChord).toBeChord({
-            base: 6, modifier: 'b', suffix: null, bassBase: 6, bassModifier: 'b',
-          });
+          expect(Chord.parse('#5/#5')?.useModifier('b').toString()).toEqual('b6/b6');
         });
       });
 
       describe('for b', () => {
         it('changes to #', () => {
-          const chord = new Chord({
-            base: 5,
-            modifier: 'b',
-            suffix: null,
-            bassBase: 5,
-            bassModifier: 'b',
-          });
-
-          const switchedChord = chord.useModifier('#');
-          expect(switchedChord).toBeChord({
-            base: 4, modifier: '#', suffix: null, bassBase: 4, bassModifier: '#',
-          });
+          expect(Chord.parse('b5/b5')?.useModifier('#').toString()).toEqual('#4/#4');
         });
       });
     });

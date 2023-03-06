@@ -1,4 +1,3 @@
-import Chord from '../chord';
 import MetadataAccessors from './metadata_accessors';
 
 import {
@@ -7,6 +6,7 @@ import {
   KEY,
   isReadonlyTag,
 } from './tag';
+import Key from '../key';
 
 function appendValue(array: string[], value: string): void {
   if (!array.includes(value)) {
@@ -176,17 +176,18 @@ class Metadata extends MetadataAccessors {
   }
 
   calculateKeyFromCapo(): string | undefined {
-    const capo = this.getSingle(CAPO);
-    const key = this.getSingle(KEY);
+    const capoString: string = this.getSingle(CAPO);
+    const keyString: string = this.getSingle(KEY);
 
-    if (capo && key) {
-      const chord = Chord.parse(key);
+    if (capoString && keyString) {
+      const key: Key | null = Key.parse(keyString);
 
-      if (!chord) {
-        throw new Error(`Could not parse ${key}`);
+      if (!key) {
+        throw new Error(`Could not parse ${keyString}`);
       }
 
-      return chord.transpose(parseInt(capo, 10)).toString();
+      const capo = parseInt(capoString, 10);
+      return key.transpose(capo).normalize().toString();
     }
 
     return undefined;

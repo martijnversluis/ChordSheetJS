@@ -5,23 +5,7 @@ describe('Chord', () => {
   describe('numeral', () => {
     describe('toNumeric', () => {
       it('returns a numeric version of the chord', () => {
-        const numeralChord = new Chord({
-          base: 'III',
-          modifier: '#',
-          suffix: 'sus4',
-          bassBase: 'V',
-          bassModifier: 'b',
-        });
-
-        const numericChord = numeralChord.toNumeric();
-
-        expect(numericChord).toBeChord({
-          base: 3,
-          modifier: '#',
-          suffix: 'sus4',
-          bassBase: 5,
-          bassModifier: 'b',
-        });
+        expect(Chord.parse('#IIIsus4/bV')?.toNumeric().toString()).toEqual('#3sus4/b5');
       });
     });
   });

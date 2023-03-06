@@ -58,6 +58,7 @@ export {
   SYMBOL,
   TAB,
   VERSE,
+  NUMERAL,
 } from './constants';
 
 export default {

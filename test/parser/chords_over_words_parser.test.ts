@@ -1,6 +1,6 @@
-import { ChordsOverWordsParser } from '../../src';
-
 import '../matchers';
+
+import { ChordsOverWordsParser } from '../../src';
 
 describe('ChordsOverWordsParser', () => {
   it('parses chords over words correctly', () => {

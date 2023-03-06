@@ -1,34 +1,35 @@
-import Key from '../../src/key';
-import '../matchers';
+import { buildKey } from '../utilities';
+import { NUMERIC, SYMBOL } from '../../src';
+import { NUMERAL } from '../../src/constants';
 
 describe('Key', () => {
   describe('useModifier', () => {
     describe('chord symbol', () => {
       describe('for a key without modifier', () => {
         it('does not change the key', () => {
-          const key = new Key({ note: 'F', modifier: null });
+          const key = buildKey('F', SYMBOL);
 
           const switchedKey = key.useModifier('b');
 
-          expect(switchedKey).toBeKey({ note: 'F', modifier: null });
+          expect(switchedKey.toString()).toEqual('F');
         });
       });
 
       describe('for #', () => {
         it('changes to b', () => {
-          const key = new Key({ note: 'G', modifier: '#' });
+          const key = buildKey('G', SYMBOL, '#');
 
           const switchedKey = key.useModifier('b');
-          expect(switchedKey).toBeKey({ note: 'A', modifier: 'b' });
+          expect(switchedKey.toString()).toEqual('Ab');
         });
       });
 
       describe('for b', () => {
         it('changes to #', () => {
-          const key = new Key({ note: 'G', modifier: 'b' });
+          const key = buildKey('G', SYMBOL, 'b');
 
           const switchedKey = key.useModifier('#');
-          expect(switchedKey).toBeKey({ note: 'F', modifier: '#' });
+          expect(switchedKey.toString()).toEqual('F#');
         });
       });
     });
@@ -36,29 +37,29 @@ describe('Key', () => {
     describe('numeric', () => {
       describe('for a key without modifier', () => {
         it('does not change the key', () => {
-          const key = new Key({ note: 4, modifier: null });
+          const key = buildKey(4, NUMERIC);
 
           const switchedKey = key.useModifier('b');
 
-          expect(switchedKey).toBeKey({ note: 4, modifier: null });
+          expect(switchedKey.toString()).toEqual('4');
         });
       });
 
       describe('for #', () => {
         it('changes to b', () => {
-          const key = new Key({ note: 5, modifier: '#' });
+          const key = buildKey(5, NUMERIC, '#');
 
           const switchedKey = key.useModifier('b');
-          expect(switchedKey).toBeKey({ note: 6, modifier: 'b' });
+          expect(switchedKey.toString()).toEqual('b6');
         });
       });
 
       describe('for b', () => {
         it('changes to #', () => {
-          const key = new Key({ note: 5, modifier: 'b' });
+          const key = buildKey(5, NUMERIC, 'b');
 
           const switchedKey = key.useModifier('#');
-          expect(switchedKey).toBeKey({ note: 4, modifier: '#' });
+          expect(switchedKey.toString()).toEqual('#4');
         });
       });
     });
@@ -66,29 +67,31 @@ describe('Key', () => {
     describe('numeral', () => {
       describe('for a key without modifier', () => {
         it('does not change the key', () => {
-          const key = new Key({ note: 'IV', modifier: null });
+          const key = buildKey('IV', NUMERAL);
 
           const switchedKey = key.useModifier('b');
 
-          expect(switchedKey).toBeKey({ note: 'IV', modifier: null });
+          expect(switchedKey.toString()).toEqual('IV');
         });
       });
 
       describe('for #', () => {
         it('changes to b', () => {
-          const key = new Key({ note: 'V', modifier: '#' });
+          const key = buildKey('V', NUMERAL, '#');
 
           const switchedKey = key.useModifier('b');
-          expect(switchedKey).toBeKey({ note: 'VI', modifier: 'b' });
+
+          expect(switchedKey.toString()).toEqual('bVI');
         });
       });
 
       describe('for b', () => {
         it('changes to #', () => {
-          const key = new Key({ note: 'V', modifier: 'b' });
+          const key = buildKey('V', NUMERAL, 'b');
 
           const switchedKey = key.useModifier('#');
-          expect(switchedKey).toBeKey({ note: 'IV', modifier: '#' });
+
+          expect(switchedKey.toString()).toEqual('#IV');
         });
       });
     });

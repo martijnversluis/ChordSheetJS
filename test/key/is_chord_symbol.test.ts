@@ -1,10 +1,11 @@
-import { Key } from '../../src';
+import { NUMERIC, SYMBOL } from '../../src';
+import { buildKey } from '../utilities';
 
 describe('Key', () => {
   describe('isChordSymbol', () => {
     describe('for a symbol key', () => {
       it('returns true', () => {
-        const key = new Key({ note: 'A', modifier: '#' });
+        const key = buildKey('A', SYMBOL, '#');
 
         expect(key.isChordSymbol()).toBe(true);
       });
@@ -12,7 +13,7 @@ describe('Key', () => {
 
     describe('for a numeric key', () => {
       it('returns false', () => {
-        const key = new Key({ note: 5, modifier: '#' });
+        const key = buildKey(5, NUMERIC, '#');
 
         expect(key.isChordSymbol()).toBe(false);
       });

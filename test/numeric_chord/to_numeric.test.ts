@@ -1,6 +1,4 @@
-import { Chord } from '../../src';
-
-import '../matchers';
+import { Chord, NUMERIC } from '../../src';
 
 describe('Chord', () => {
   describe('numeric', () => {
@@ -12,18 +10,13 @@ describe('Chord', () => {
           suffix: 'sus',
           bassBase: 5,
           bassModifier: 'b',
+          chordType: NUMERIC,
         });
 
         const numericChord = originalChord.toNumeric();
-        expect(numericChord).not.toBe(originalChord);
 
-        expect(numericChord).toBeChord({
-          base: 3,
-          modifier: '#',
-          suffix: 'sus',
-          bassBase: 5,
-          bassModifier: 'b',
-        });
+        expect(numericChord.equals(originalChord)).toBeTruthy();
+        expect(numericChord).not.toBe(originalChord);
       });
     });
   });

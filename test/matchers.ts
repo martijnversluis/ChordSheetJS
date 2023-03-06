@@ -112,31 +112,6 @@ function toBeLiteral(received, string) {
   return toBeClassInstanceWithProperties(received, Literal, { string });
 }
 
-function toBeChord(
-  received,
-  {
-    base = anything,
-    modifier = anything,
-    suffix = anything,
-    bassBase = anything,
-    bassModifier = anything,
-  },
-) {
-  return toBeClassInstanceWithProperties(
-    {
-      base: received.root.note.note,
-      modifier: received.root.modifier,
-      suffix: received.suffix,
-      bassBase: received.bass?.note?.note || null,
-      bassModifier: received.bass?.modifier || null,
-    },
-    null,
-    {
-      base, modifier, suffix, bassBase, bassModifier,
-    },
-  );
-}
-
 function toBeKey(received, { note, modifier, minor = false }) {
   return toBeClassInstanceWithProperties(
     {
@@ -167,7 +142,6 @@ expect.extend({
   toBeComment,
   toBeTernary,
   toBeLiteral,
-  toBeChord,
   toBeKey,
   toBeNote,
 });

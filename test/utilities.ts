@@ -20,6 +20,8 @@ import {
   Ternary,
   Song,
 } from '../src';
+import { ChordType, Modifier } from '../src/constants';
+import Key from '../src/key';
 
 export function createSong(lines, metadata: Record<string, string> = {}) {
   const song = new Song(metadata || new Metadata());
@@ -113,4 +115,24 @@ export function ternary(
     trueExpression: trueExpression || [],
     falseExpression: falseExpression || [],
   };
+}
+
+export function buildKey(
+  keyString: string | number,
+  keyType: ChordType,
+  modifier?: Modifier | null,
+  minor: boolean = false,
+) {
+  const resolvedKey = Key.resolve({
+    key: keyString,
+    keyType,
+    modifier: modifier || null,
+    minor: minor || false,
+  });
+
+  if (resolvedKey === null) {
+    throw Error(`Could not resolve ${keyType} key ${keyString}`);
+  }
+
+  return resolvedKey;
 }

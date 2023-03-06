@@ -1,18 +1,16 @@
-import { Key, NUMERIC, SYMBOL } from '../../src';
-import Note from '../../src/note';
+import { NUMERIC, SYMBOL } from '../../src';
+import { buildKey } from '../utilities';
 
 describe('Key', () => {
   describe('#is', () => {
     it('returns true when the provided type matches the note type', () => {
-      const note = new Note({ note: 5, type: NUMERIC });
-      const key = new Key({ note });
+      const key = buildKey(5, NUMERIC);
 
       expect(key.is(NUMERIC)).toBe(true);
     });
 
     it('returns false when the provided type does not match the note type', () => {
-      const note = new Note({ note: 5, type: NUMERIC });
-      const key = new Key({ note });
+      const key = buildKey(5, NUMERIC);
 
       expect(key.is(SYMBOL)).toBe(false);
     });

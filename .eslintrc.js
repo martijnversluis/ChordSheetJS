@@ -19,6 +19,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'quote-props': ['error', 'consistent-as-needed'],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-function': 'off',

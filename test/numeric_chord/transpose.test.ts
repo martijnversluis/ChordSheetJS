@@ -1,40 +1,18 @@
 import Chord from '../../src/chord';
-import '../matchers';
+import { NUMERIC } from '../../src';
 
 describe('Chord', () => {
   describe('numeric', () => {
     describe('transpose', () => {
       describe('when delta > 0', () => {
         it('transposes up', () => {
-          const chord = new Chord({
-            base: 2,
-            modifier: 'b',
-            suffix: null,
-            bassBase: 6,
-            bassModifier: '#',
-          });
-
-          const transposedChord = chord.transpose(5);
-          expect(transposedChord).toBeChord({
-            base: 5, modifier: 'b', suffix: null, bassBase: 2, bassModifier: '#',
-          });
+          expect(Chord.parse('b2/#6')?.transpose(5).toString()).toEqual('b5/#2');
         });
       });
 
       describe('when delta < 0', () => {
         it('transposes down', () => {
-          const chord = new Chord({
-            base: 6,
-            modifier: '#',
-            suffix: null,
-            bassBase: 7,
-            bassModifier: 'b',
-          });
-
-          const transposedChord = chord.transpose(-4);
-          expect(transposedChord).toBeChord({
-            base: 4, modifier: '#', suffix: null, bassBase: 5, bassModifier: 'b',
-          });
+          expect(Chord.parse('#6/b7')?.transpose(-4).toString()).toEqual('#4/b5');
         });
       });
 
@@ -46,12 +24,10 @@ describe('Chord', () => {
             suffix: null,
             bassBase: 1,
             bassModifier: 'b',
+            chordType: NUMERIC,
           });
 
-          const transposedChord = chord.transpose(0);
-          expect(transposedChord).toBeChord({
-            base: 7, modifier: '#', suffix: null, bassBase: 1, bassModifier: 'b',
-          });
+          expect(chord.transpose(0)).toEqual(chord);
         });
       });
     });

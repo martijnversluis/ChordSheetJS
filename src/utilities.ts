@@ -1,6 +1,10 @@
 import Line from './chord_sheet/line';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Item from './chord_sheet/item';
+import {
+  ChordType, FLAT, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
+} from './constants';
+import { GRADE_TO_KEY } from './scales';
 
 export const hasChordContents = (line: Line): boolean => (
   line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
@@ -67,14 +71,64 @@ export function isEmptyString(string: string | null | undefined): boolean {
   return (string === null || string === undefined || string === '');
 }
 
-export function isMinor(suffix: any): boolean {
-  if (typeof suffix !== 'string') {
-    return false;
+export function isMinor(key: string | number, keyType: ChordType, suffix: any): boolean {
+  switch (keyType) {
+    case NUMERAL:
+      return typeof key === 'string' && key.toLowerCase() === key;
+    default:
+      return typeof suffix === 'string'
+        && suffix[0] === 'm'
+        && suffix.substring(0, 2).toLowerCase() !== 'ma'
+        && suffix.substring(0, 3).toLowerCase() !== 'maj';
   }
-
-  return suffix[0] === 'm' && suffix.substring(0, 3).toLowerCase() !== 'maj';
 }
 
 export function normalizeLineEndings(string: string): string {
   return string.replace(/\r\n?/g, '\n');
+}
+
+export function gradeToKey(
+  type: ChordType,
+  modifier: ModifierMaybe | null,
+  preferredModifier: Modifier | null,
+  grade: number,
+  minor: boolean,
+): string {
+  const grades = GRADE_TO_KEY[type];
+  const mode = (minor ? MINOR : MAJOR);
+  let key: string | null = null;
+
+  if (modifier === SHARP || modifier === FLAT) {
+    key = grades[mode][modifier][grade];
+  }
+
+  if (!key) {
+    key = grades[mode][NO_MODIFIER][grade];
+  }
+
+  if (!key && preferredModifier) {
+    key = grades[mode][preferredModifier][grade];
+  }
+
+  if (!key) {
+    key = grades[mode][SHARP][grade];
+  }
+
+  if (!key) {
+    throw new Error(
+      `Could not resolve 
+      type=${type} 
+      modifier=${modifier} 
+      grade=${grade} 
+      preferredModifier=${preferredModifier} 
+      minor=${minor}
+to a key`,
+    );
+  }
+
+  if (minor && type === NUMERAL) {
+    key = key.toLowerCase();
+  }
+
+  return key;
 }
