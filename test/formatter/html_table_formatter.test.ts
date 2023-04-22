@@ -1,7 +1,7 @@
 import { HtmlTableFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
-import { defaultCss, scopedCss } from '../../src/formatter/html_table_formatter';
+import { htmlTableDefaultCss, scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
@@ -235,7 +235,7 @@ td {
   });
 
   it('exposes a CSS object', () => {
-    expect(typeof defaultCss).toEqual('object');
+    expect(typeof htmlTableDefaultCss).toEqual('object');
   });
 
   it('applies the correct normalization when a capo is active', () => {

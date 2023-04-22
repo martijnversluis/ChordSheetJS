@@ -2,7 +2,7 @@ import HtmlFormatter, { CSS, Template } from './html_formatter';
 import template from './templates/html_div_formatter';
 import { scopeCss } from '../utilities';
 
-export const defaultCss: CSS = {
+export const htmlDivDefaultCss: CSS = {
   '.chord:not(:last-child)': {
     paddingRight: '10px',
   },
@@ -30,7 +30,7 @@ export const defaultCss: CSS = {
  * @returns {string} the CSS string
  */
 export function scopedCss(scope: string): string {
-  return scopeCss(defaultCss, scope);
+  return scopeCss(htmlDivDefaultCss, scope);
 }
 
 /**
@@ -42,7 +42,7 @@ class HtmlDivFormatter extends HtmlFormatter {
   }
 
   get defaultCss(): CSS {
-    return defaultCss;
+    return htmlDivDefaultCss;
   }
 }
 

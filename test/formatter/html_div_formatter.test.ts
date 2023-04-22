@@ -1,7 +1,7 @@
 import { HtmlDivFormatter } from '../../src';
 import '../matchers';
 import song from '../fixtures/song';
-import { defaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
+import { htmlDivDefaultCss, scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
@@ -236,7 +236,7 @@ describe('HtmlDivFormatter', () => {
   });
 
   it('exposes the CSS object', () => {
-    expect(typeof defaultCss).toEqual('object');
+    expect(typeof htmlDivDefaultCss).toEqual('object');
   });
 
   it('applies the correct normalization when a capo is active', () => {
