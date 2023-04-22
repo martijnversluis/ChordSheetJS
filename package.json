@@ -32,7 +32,7 @@
     "@types/jest": "^29.2.2",
     "@types/lodash.get": "^4.4.7",
     "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.57.0",
     "browserify": "^17.0.0",
     "eslint": "^8.38.0",
