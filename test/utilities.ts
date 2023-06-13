@@ -3,7 +3,7 @@ import Metadata from '../src/chord_sheet/metadata';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import Item from '../src/chord_sheet/item';
 import ChordSheetSerializer, {
-  SerializedChordLyricsPair, SerializedComposite,
+  SerializedChordLyricsPair, SerializedComment, SerializedComposite,
   SerializedItem,
   SerializedSong,
   SerializedTag, SerializedTernary,
@@ -87,6 +87,10 @@ export function tag(name: string, value: string = ''): SerializedTag {
 
 export function chordLyricsPair(chords: string, lyrics: string): SerializedChordLyricsPair {
   return { type: 'chordLyricsPair', chords, lyrics };
+}
+
+export function comment(commentStr: string): SerializedComment {
+  return { type: 'comment', comment: commentStr };
 }
 
 export function ternary(

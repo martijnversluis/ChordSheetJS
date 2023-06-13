@@ -8,6 +8,7 @@ import Line from '../chord_sheet/line';
 import Metadata from '../chord_sheet/metadata';
 import Item from '../chord_sheet/item';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
+import Comment from '../chord_sheet/comment';
 
 const NEW_LINE = '\n';
 
@@ -43,11 +44,15 @@ class ChordProFormatter extends Formatter {
       return this.formatChordLyricsPair(item);
     }
 
+    if (item instanceof Comment) {
+      return this.formatComment(item);
+    }
+
     if ('evaluate' in item) {
       return this.formatOrEvaluateItem(item, metadata);
     }
 
-    throw new Error(`Don't know how to format a ${item.constructor.name}`);
+    throw new Error(`Don't know how to format a ${item}`);
   }
 
   formatOrEvaluateItem(item: Evaluatable, metadata: Metadata): string {
@@ -112,7 +117,7 @@ class ChordProFormatter extends Formatter {
     return '';
   }
 
-  formatTag(tag): string {
+  formatTag(tag: Tag): string {
     if (tag.hasValue()) {
       return `{${tag.originalName}: ${tag.value}}`;
     }
@@ -120,14 +125,14 @@ class ChordProFormatter extends Formatter {
     return `{${tag.originalName}}`;
   }
 
-  formatChordLyricsPair(chordLyricsPair): string {
+  formatChordLyricsPair(chordLyricsPair: ChordLyricsPair): string {
     return [
       this.formatChordLyricsPairChords(chordLyricsPair),
       this.formatChordLyricsPairLyrics(chordLyricsPair),
     ].join('');
   }
 
-  formatChordLyricsPairChords(chordLyricsPair): string {
+  formatChordLyricsPairChords(chordLyricsPair: ChordLyricsPair): string {
     if (chordLyricsPair.chords) {
       return `[${chordLyricsPair.chords}]`;
     }
@@ -135,8 +140,12 @@ class ChordProFormatter extends Formatter {
     return '';
   }
 
-  formatChordLyricsPairLyrics(chordLyricsPair): string {
+  formatChordLyricsPairLyrics(chordLyricsPair: ChordLyricsPair): string {
     return chordLyricsPair.lyrics || '';
+  }
+
+  formatComment(comment: Comment): string {
+    return `#${comment.content}`;
   }
 }
 

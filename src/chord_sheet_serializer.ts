@@ -49,7 +49,7 @@ export type SerializedTag = SerializedTraceInfo & {
   value: string,
 };
 
-type SerializedComment = {
+export type SerializedComment = {
   type: 'comment',
   comment: string,
 };
@@ -129,6 +129,10 @@ class ChordSheetSerializer {
       return this.serializeLiteral(item);
     }
 
+    if (item instanceof Comment) {
+      return this.serializeComment(item);
+    }
+
     throw new Error(`Don't know how to serialize ${item.constructor.name}`);
   }
 
@@ -165,6 +169,10 @@ class ChordSheetSerializer {
 
   serializeExpression(expression: AstType[]) {
     return expression.map((part) => this.serializeItem(part));
+  }
+
+  serializeComment(comment: Comment): SerializedComment {
+    return { type: COMMENT, comment: comment.content };
   }
 
   /**

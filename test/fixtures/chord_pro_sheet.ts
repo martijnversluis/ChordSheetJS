@@ -5,6 +5,7 @@ export default `
 {x_some_setting}
 {composer: John Lennon}
 {composer: Paul McCartney}
+#This is my favorite song
 
 Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
 

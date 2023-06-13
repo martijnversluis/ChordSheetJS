@@ -65,6 +65,15 @@ const serializedSong: SerializedSong = {
     },
     {
       type: 'line',
+      items: [
+        {
+          type: 'comment',
+          comment: 'This is my favorite song',
+        },
+      ],
+    },
+    {
+      type: 'line',
       items: [],
     },
     {
