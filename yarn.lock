@@ -2114,6 +2114,16 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
+"@ts-morph/common@~0.19.0":
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/@ts-morph/common/-/common-0.19.0.tgz#927fcd81d1bbc09c89c4a310a84577fb55f3694e"
+  integrity sha512-Unz/WHmd4pGax91rdIKWi51wnVUW11QttMEPpBiBgIewnc9UQIX7UDLxr5vRlqeByXCwhkF6VabSsI0raWcyAQ==
+  dependencies:
+    fast-glob "^3.2.12"
+    minimatch "^7.4.3"
+    mkdirp "^2.1.6"
+    path-browserify "^1.0.1"
+
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@tsconfig/node10/-/node10-1.0.8.tgz#c1e4e80d6f964fbecb3359c43bd48b40f7cadad9"
@@ -2735,6 +2745,13 @@ brace-expansion@^1.1.7:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
 
+brace-expansion@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-2.0.1.tgz#1edc459e0f0c548486ecf9fc99f2221364b9a0ae"
+  integrity sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==
+  dependencies:
+    balanced-match "^1.0.0"
+
 braces@^3.0.2, braces@~3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/braces/-/braces-3.0.2.tgz#3454e1a462ee8d599e236df336cd9ea4f8afe107"
@@ -3087,6 +3104,11 @@ co@^4.6.0:
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
+code-block-writer@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/code-block-writer/-/code-block-writer-12.0.0.tgz#4dd58946eb4234105aff7f0035977b2afdc2a770"
+  integrity sha512-q4dMFMlXtKR3XNBHyMHt/3pwYNA69EDk00lloMOaaUMKPUXBw6lpXtbu3MMVG6/uOihGnRDOlkyqsONEUj60+w==
+
 collect-all@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/collect-all/-/collect-all-1.0.4.tgz#50cd7119ac24b8e12a661f0f8c3aa0ea7222ddfc"
@@ -3172,6 +3194,11 @@ command-line-usage@^4.1.0:
     table-layout "^0.4.2"
     typical "^2.6.1"
 
+commander@^10.0.0:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
+  integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
+
 commander@^2.20.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
@@ -3186,11 +3213,6 @@ commander@^7.0.0, commander@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
-
-commander@^9.3.0:
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.3.0.tgz#f619114a5a2d2054e0d9ff1b31d5ccf89255e26b"
-  integrity sha512-hv95iU5uXPbK83mjrJKuZyFM/LBAoCV/XhVGkS5Je6tl7sxr6A0ITMw5WoRV46/UaJ46Nllm3Xt7IaJhXTIkzw==
 
 common-sequence@^2.0.2:
   version "2.0.2"
@@ -3990,6 +4012,17 @@ fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
+
+fast-glob@^3.2.12:
+  version "3.2.12"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.12.tgz#7f39ec99c2e6ab030337142da9e0c18f37afae80"
+  integrity sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
 
 fast-glob@^3.2.9:
   version "3.2.11"
@@ -5706,6 +5739,13 @@ minimatch@^3.0.4, minimatch@^3.0.5, minimatch@^3.1.1, minimatch@^3.1.2:
   dependencies:
     brace-expansion "^1.1.7"
 
+minimatch@^7.4.3:
+  version "7.4.6"
+  resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-7.4.6.tgz#845d6f254d8f4a5e4fd6baf44d5f10c8448365fb"
+  integrity sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==
+  dependencies:
+    brace-expansion "^2.0.1"
+
 minimist@^1.1.0, minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5, minimist@^1.2.6:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.7.tgz#daa1c4d91f507390437c6a8bc01078e7000c4d18"
@@ -5725,6 +5765,11 @@ mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
+
+mkdirp@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-2.1.6.tgz#964fbcb12b2d8c5d6fbc62a963ac95a273e2cc19"
+  integrity sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==
 
 module-deps@^6.2.3:
   version "6.2.3"
@@ -6119,7 +6164,7 @@ parse5@6.0.1:
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-6.0.1.tgz#e1a1c085c569b3dc08321184f19a39cc27f7c30b"
   integrity sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==
 
-path-browserify@^1.0.0:
+path-browserify@^1.0.0, path-browserify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
   integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
@@ -6165,12 +6210,12 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-peggy@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/peggy/-/peggy-2.0.1.tgz#d9bfde03b18d6ec2b9b85b2aa5af51577850152c"
-  integrity sha512-mBqfmdUAOVn7RILpXTbcRBhLfTR4Go0SresSnivGDdRylBOyVFJncFiVyCNNpPWq8HmgeRleXHs/Go4o8kQVXA==
+peggy@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/peggy/-/peggy-3.0.2.tgz#07d0578f1ab0ebbac25a202f544a454f37aa3af3"
+  integrity sha512-n7chtCbEoGYRwZZ0i/O3t1cPr6o+d9Xx4Zwy2LYfzv0vjchMBU0tO+qYYyvZloBPcgRgzYvALzGWHe609JjEpg==
   dependencies:
-    commander "^9.3.0"
+    commander "^10.0.0"
     source-map-generator "0.8.0"
 
 picocolors@^1.0.0:
@@ -6248,6 +6293,11 @@ prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
+
+prettier@^2.8.8:
+  version "2.8.8"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
+  integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
 pretty-format@^27.0.0, pretty-format@^27.5.1:
   version "27.5.1"
@@ -7106,6 +7156,14 @@ ts-jest@^27.1.4:
     semver "7.x"
     yargs-parser "20.x"
 
+ts-morph@^18.0.0:
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/ts-morph/-/ts-morph-18.0.0.tgz#b9e7a898ea115064585a8a775d86da6edc9c5b4e"
+  integrity sha512-Kg5u0mk19PIIe4islUI/HWRvm9bC1lHejK4S0oh1zaZ77TMZAEmQC0sHQYiu2RgCQFZKXz1fMVi/7nOOeirznA==
+  dependencies:
+    "@ts-morph/common" "~0.19.0"
+    code-block-writer "^12.0.0"
+
 ts-node@^10.7.0:
   version "10.9.1"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.1.tgz#e73de9102958af9e1f0b168a6ff320e25adcff4b"
@@ -7125,10 +7183,13 @@ ts-node@^10.7.0:
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
 
-ts-pegjs@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-3.1.0.tgz#a308135d9a4bbe62d89327024d91af7bc80c1ac9"
-  integrity sha512-CZ80MYdzoh/setHAcrOdWh7ws4GsIPAahFEZ1019xPLe2snSzwuCLDAwQ0r7xHLIuOuRJ7v87jvz/Lr5YTLN4g==
+ts-pegjs@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/ts-pegjs/-/ts-pegjs-4.2.1.tgz#2993ce4cb91906580fe0b3b7ca6bc3a79fe628c4"
+  integrity sha512-mK/O2pu6lzWUeKpEMA/wsa0GdYblfjJI1y0s0GqH6xCTvugQDOWPJbm5rY6AHivpZICuXIriCb+a7Cflbdtc2w==
+  dependencies:
+    prettier "^2.8.8"
+    ts-morph "^18.0.0"
 
 tsconfig-paths@^3.14.1:
   version "3.14.1"
