@@ -1,54 +1,16 @@
 import Chord from '../../src/chord';
-
-import '../matchers';
 import { Key } from '../../src';
 
 describe('Chord', () => {
   describe('numeric', () => {
     describe('toChordSymbol', () => {
       it('returns a chord symbol version', () => {
-        const originalChord = new Chord({
-          base: 5,
-          modifier: 'b',
-          suffix: 'sus',
-          bassBase: 7,
-          bassModifier: '#',
-        });
-
         const key = Key.parse('Ab');
-        const convertedChord = originalChord.toChordSymbol(key);
-
-        expect(convertedChord).toBeChord({
-          base: 'D',
-          modifier: null,
-          suffix: 'sus',
-          bassBase: 'G',
-          bassModifier: '#',
-        });
-
-        expect(convertedChord).not.toBe(originalChord);
+        expect(Chord.parse('b5sus/#7')?.toChordSymbol(key).toString()).toEqual('Dsus/G#');
       });
 
       it('accepts a string key', () => {
-        const originalChord = new Chord({
-          base: 5,
-          modifier: 'b',
-          suffix: 'sus',
-          bassBase: 7,
-          bassModifier: '#',
-        });
-
-        const convertedChord = originalChord.toChordSymbol('Ab');
-
-        expect(convertedChord).toBeChord({
-          base: 'D',
-          modifier: null,
-          suffix: 'sus',
-          bassBase: 'G',
-          bassModifier: '#',
-        });
-
-        expect(convertedChord).not.toBe(originalChord);
+        expect(Chord.parse('b5sus/#7')?.toChordSymbol('Ab').toString()).toEqual('Dsus/G#');
       });
     });
   });

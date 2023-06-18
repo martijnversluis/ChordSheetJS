@@ -1,97 +1,30 @@
 import Chord from '../../src/chord';
-import '../matchers';
 
 describe('Chord', () => {
   describe('chord symbol', () => {
     describe('normalize', () => {
       it('normalizes E#', () => {
-        const chord = new Chord({
-          base: 'E',
-          modifier: '#',
-          suffix: null,
-          bassBase: 'E',
-          bassModifier: '#',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'F', modifier: null, suffix: null, bassBase: 'F', bassModifier: null,
-        });
+        expect(Chord.parse('E#/E#')?.normalize().toString()).toEqual('F/F');
       });
 
       it('normalizes B#', () => {
-        const chord = new Chord({
-          base: 'B',
-          modifier: '#',
-          suffix: null,
-          bassBase: 'B',
-          bassModifier: '#',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'C', modifier: null, suffix: null, bassBase: 'C', bassModifier: null,
-        });
+        expect(Chord.parse('B#/B#')?.normalize().toString()).toEqual('C/C');
       });
 
       it('normalizes Cb', () => {
-        const chord = new Chord({
-          base: 'C',
-          modifier: 'b',
-          suffix: null,
-          bassBase: 'C',
-          bassModifier: 'b',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'B', modifier: null, suffix: null, bassBase: 'B', bassModifier: null,
-        });
+        expect(Chord.parse('Cb/Cb')?.normalize().toString()).toEqual('B/B');
       });
 
       it('normalizes Fb', () => {
-        const chord = new Chord({
-          base: 'F',
-          modifier: 'b',
-          suffix: null,
-          bassBase: 'F',
-          bassModifier: 'b',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'E', modifier: null, suffix: null, bassBase: 'E', bassModifier: null,
-        });
+        expect(Chord.parse('Fb/Fb')?.normalize().toString()).toEqual('E/E');
       });
 
       it('normalizes Em/A#', () => {
-        const chord = new Chord({
-          base: 'E',
-          modifier: null,
-          suffix: 'm',
-          bassBase: 'A',
-          bassModifier: '#',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'E', modifier: null, suffix: 'm', bassBase: 'B', bassModifier: 'b',
-        });
+        expect(Chord.parse('Em/A#')?.normalize().toString()).toEqual('Em/Bb');
       });
 
       it('normalizes D/F#', () => {
-        const chord = new Chord({
-          base: 'D',
-          modifier: null,
-          suffix: null,
-          bassBase: 'F',
-          bassModifier: '#',
-        });
-
-        const normalizedChord = chord.normalize();
-        expect(normalizedChord).toBeChord({
-          base: 'D', modifier: null, suffix: null, bassBase: 'F', bassModifier: '#',
-        });
+        expect(Chord.parse('D/F#')?.normalize().toString()).toEqual('D/F#');
       });
     });
   });

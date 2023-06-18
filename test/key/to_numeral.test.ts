@@ -1,7 +1,7 @@
 /* eslint quote-props: 0 */
 
-import { Key } from '../../src';
-import '../matchers';
+import { Key, NUMERAL } from '../../src';
+import { buildKey } from '../utilities';
 
 const examples = {
   'C': {
@@ -64,10 +64,10 @@ describe('Key', () => {
     });
 
     it('returns a clone when the key is already numeral', () => {
-      const key = new Key({ note: 5, modifier: '#' });
+      const key = buildKey(5, NUMERAL, '#');
       const numeralKey = key.toNumeral();
 
-      expect(numeralKey).toBeKey({ note: 'V', modifier: '#' });
+      expect(numeralKey).toEqual(key);
       expect(numeralKey).not.toBe(key);
     });
   });

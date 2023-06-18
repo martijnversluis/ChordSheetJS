@@ -87,7 +87,6 @@ class Chord implements ChordProperties {
     }
 
     chordSymbolChord = chordSymbolChord.normalize(referenceKey);
-
     return chordSymbolChord;
   }
 
@@ -127,7 +126,7 @@ class Chord implements ChordProperties {
       return this.transform((key) => key.toNumeric());
     }
 
-    const keyObj = Key.wrapOrFail(referenceKey);
+    const keyObj: Key | null = Key.wrap(referenceKey);
 
     return new Chord({
       suffix: normalizeChordSuffix(this.suffix),
@@ -204,9 +203,11 @@ class Chord implements ChordProperties {
    */
   toString(): string {
     let chordString = '';
+    const suffix = this.suffix || '';
+    const showMinor = suffix[0] !== 'm';
 
     if (this.root) {
-      chordString = this.root.toString({ showMinor: false }) + (this.suffix || '');
+      chordString = this.root.toString({ showMinor }) + (this.suffix || '');
     }
 
     if (this.bass) {
@@ -300,6 +301,7 @@ class Chord implements ChordProperties {
       bassModifier = null,
       root = null,
       bass = null,
+      chordType = null,
     }: {
       base?: string | number | null,
       modifier?: Modifier | null,
@@ -308,18 +310,38 @@ class Chord implements ChordProperties {
       bassModifier?: Modifier | null,
       root?: Key | null,
       bass?: Key | null,
+      chordType?: ChordType | null,
     },
   ) {
     this.suffix = suffix || null;
-    this.root = this.determineRoot(root, base, modifier, suffix);
-    this.bass = this.determineBass(bass, bassBase, bassModifier);
+    this.root = this.determineRoot({
+      root, base, modifier, suffix, chordType,
+    });
+    this.bass = this.determineBass({
+      bass, bassBase, bassModifier, chordType,
+    });
+  }
+
+  equals(otherChord: Chord): boolean {
+    return this.suffix === otherChord.suffix
+      && Key.equals(this.root, otherChord.root)
+      && Key.equals(this.bass, otherChord.bass);
   }
 
   determineRoot(
-    root: Key | null,
-    base: string | number | null,
-    modifier: Modifier | null,
-    suffix: string | null,
+    {
+      root,
+      base,
+      modifier,
+      suffix,
+      chordType,
+    }: {
+      root: Key | null,
+      base: string | number | null,
+      modifier: Modifier | null,
+      suffix: string | null,
+      chordType: ChordType | null,
+    },
   ): Key | null {
     if (root) {
       return root;
@@ -329,27 +351,59 @@ class Chord implements ChordProperties {
       return null;
     }
 
-    return new Key({ note: base, modifier, minor: isMinor(suffix) });
+    if (!chordType) {
+      throw new Error('Can\'t resolve at this point without a chord type');
+    }
+
+    return Key.resolve({
+      key: base,
+      keyType: chordType,
+      minor: isMinor(base, chordType, suffix),
+      modifier,
+    });
   }
 
-  determineBass(bass: Key | null, bassBase: string | number | null, bassModifier: Modifier | null): Key | null {
+  determineBass(
+    {
+      bass,
+      bassBase,
+      bassModifier,
+      chordType,
+    }: {
+      bass: Key | null,
+      bassBase: string | number | null,
+      bassModifier: Modifier | null,
+      chordType: ChordType | null,
+    },
+  ): Key | null {
     if (bass) {
       return bass;
     }
 
-    if (bassBase) {
-      return new Key({ note: bassBase, modifier: bassModifier || null, minor: false });
+    if (!bassBase) {
+      return null;
     }
 
-    return null;
+    if (!chordType) {
+      throw new Error('Can\'t resolve at this point without a chord type');
+    }
+
+    return Key.resolve({
+      key: bassBase,
+      modifier: bassModifier || null,
+      minor: false,
+      keyType: chordType,
+    });
+  }
+
+  isMinor(): boolean {
+    return this.root?.isMinor() || false;
   }
 
   makeMinor(): Chord {
-    if (!this.suffix || this.suffix[0] !== 'm') {
-      return this.set({ suffix: `m${this.suffix || ''}` });
-    }
-
-    return this.clone();
+    return this.set({
+      root: this.root?.makeMinor() || null,
+    });
   }
 
   set(properties: ChordProperties): Chord {

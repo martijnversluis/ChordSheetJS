@@ -1,5 +1,4 @@
 import { Metadata } from '../../src';
-import '../matchers';
 
 describe('Metadata', () => {
   describe('new', () => {

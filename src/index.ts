@@ -60,6 +60,7 @@ export {
   TAB,
   SYMBOL,
   NUMERIC,
+  NUMERAL,
 } from './constants';
 
 export default {

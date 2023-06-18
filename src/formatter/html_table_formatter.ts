@@ -8,17 +8,17 @@ import { scopeCss } from '../utilities';
  * @type {Object.<string, Object.<string, string>>}
  */
 export const htmlTableDefaultCss: CSS = {
-  h1: {
+  'h1': {
     fontSize: '1.5em',
   },
-  h2: {
+  'h2': {
     fontSize: '1.1em',
   },
-  table: {
+  'table': {
     borderSpacing: '0',
     color: 'inherit',
   },
-  td: {
+  'td': {
     padding: '3px 0',
   },
   '.chord:not(:last-child)': {

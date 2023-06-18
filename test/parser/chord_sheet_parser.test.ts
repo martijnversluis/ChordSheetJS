@@ -1,5 +1,4 @@
 import { ChordSheetParser } from '../../src';
-
 import '../matchers';
 
 const defaultChordSheet = `

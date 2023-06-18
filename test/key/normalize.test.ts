@@ -1,90 +1,55 @@
-import Key from '../../src/key';
-import '../matchers';
+import { buildKey } from '../utilities';
+import { NUMERIC, SYMBOL } from '../../src';
+import { NUMERAL } from '../../src/constants';
 
 describe('Key', () => {
   describe('normalize', () => {
     it('normalizes E#', () => {
-      const key = new Key({ note: 'E', modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'F', modifier: null });
+      expect(buildKey('E', SYMBOL, '#').normalize().toString()).toEqual('F');
     });
 
     it('normalizes B#', () => {
-      const key = new Key({ note: 'B', modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'C', modifier: null });
+      expect(buildKey('B', SYMBOL, '#').normalize().toString()).toEqual('C');
     });
 
     it('normalizes Cb', () => {
-      const key = new Key({ note: 'C', modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'B', modifier: null });
+      expect(buildKey('C', SYMBOL, 'b').normalize().toString()).toEqual('B');
     });
 
     it('normalizes Fb', () => {
-      const key = new Key({ note: 'F', modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'E', modifier: null });
+      expect(buildKey('F', SYMBOL, 'b').normalize().toString()).toEqual('E');
     });
 
     it('normalizes #3', () => {
-      const key = new Key({ note: 3, modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 4, modifier: null });
+      expect(buildKey(3, NUMERIC, '#').normalize().toString()).toEqual('4');
     });
 
     it('normalizes #7', () => {
-      const key = new Key({ note: '7', modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 1, modifier: null });
+      expect(buildKey('7', NUMERIC, '#').normalize().toString()).toEqual('1');
     });
 
     it('normalizes b1', () => {
-      const key = new Key({ note: 1, modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 7, modifier: null });
+      expect(buildKey(1, NUMERIC, 'b').normalize().toString()).toEqual('7');
     });
 
     it('normalizes b4', () => {
-      const key = new Key({ note: 4, modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 3, modifier: null });
+      expect(buildKey(4, NUMERIC, 'b').normalize().toString()).toEqual('3');
     });
 
     it('normalizes #III', () => {
-      const key = new Key({ note: 'III', modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'IV', modifier: null });
+      expect(buildKey('III', NUMERAL, '#').normalize().toString()).toEqual('IV');
     });
 
     it('normalizes #VII', () => {
-      const key = new Key({ note: 'VII', modifier: '#' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'I', modifier: null });
+      expect(buildKey('VII', NUMERAL, '#').normalize().toString()).toEqual('I');
     });
 
     it('normalizes bI', () => {
-      const key = new Key({ note: 'I', modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'VII', modifier: null });
+      expect(buildKey('I', NUMERAL, 'b').normalize().toString()).toEqual('VII');
     });
 
     it('normalizes bIV', () => {
-      const key = new Key({ note: 'IV', modifier: 'b' });
-
-      const normalizedKey = key.normalize();
-      expect(normalizedKey).toBeKey({ note: 'III', modifier: null });
+      expect(buildKey('IV', NUMERAL, 'b').normalize().toString()).toEqual('III');
     });
   });
 });
