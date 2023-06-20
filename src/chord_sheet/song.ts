@@ -15,16 +15,17 @@ import {
 } from '../constants';
 
 import Tag, {
+  CAPO,
   END_OF_CHORUS,
   END_OF_TAB,
   END_OF_VERSE,
+  KEY,
+  NEW_KEY,
   START_OF_CHORUS,
   START_OF_TAB,
   START_OF_VERSE,
   TRANSPOSE,
-  NEW_KEY,
-  CAPO,
-  KEY,
+  CHORUS as CHORUS_TAG,
 } from './tag';
 
 interface MapItemsCallback {
@@ -146,7 +147,56 @@ class Song extends MetadataAccessors {
     this.setCurrentProperties(this.sectionType);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
+    this.currentLine.lineNumber = this.lines.length - 1;
     return this.currentLine;
+  }
+
+  private expandLine(line: Line): Line[] {
+    const expandedLines = line.items.flatMap((item: Item) => {
+      if (item instanceof Tag && item.name === CHORUS_TAG) {
+        return this.getLastChorusBefore(line.lineNumber);
+      }
+
+      return [];
+    });
+
+    return [line, ...expandedLines];
+  }
+
+  private getLastChorusBefore(lineNumber: number | null): Line[] {
+    const lines: Line[] = [];
+
+    if (!lineNumber) {
+      return lines;
+    }
+
+    for (let i = lineNumber - 1; i >= 0; i -= 1) {
+      const line = this.lines[i];
+
+      if (line.type === CHORUS) {
+        const filteredLine = this.filterChorusStartEndDirectives(line);
+
+        if (!(line.isNotEmpty() && filteredLine.isEmpty())) {
+          lines.unshift(line);
+        }
+      } else if (lines.length > 0) {
+        break;
+      }
+    }
+
+    return lines;
+  }
+
+  private filterChorusStartEndDirectives(line: Line) {
+    return line.mapItems((item: Item) => {
+      if (item instanceof Tag) {
+        if (item.name === START_OF_CHORUS || item.name === END_OF_CHORUS) {
+          return null;
+        }
+      }
+
+      return item;
+    });
   }
 
   /**
@@ -154,10 +204,26 @@ class Song extends MetadataAccessors {
    * @member {Paragraph[]}
    */
   get paragraphs(): Paragraph[] {
+    return this.linesToParagraphs(this.lines);
+  }
+
+  /**
+   * The body paragraphs of the song, with any `{chorus}` tag expanded into the targetted chorus
+   * @type {Paragraph[]}
+   */
+  get expandedBodyParagraphs(): Paragraph[] {
+    return this.selectRenderableItems(
+      this.linesToParagraphs(
+        this.lines.flatMap((line: Line) => this.expandLine(line)),
+      ),
+    ) as Paragraph[];
+  }
+
+  linesToParagraphs(lines: Line[]) {
     let currentParagraph = new Paragraph();
     const paragraphs = [currentParagraph];
 
-    this.lines.forEach((line) => {
+    lines.forEach((line) => {
       if (line.isEmpty()) {
         currentParagraph = new Paragraph();
         paragraphs.push(currentParagraph);

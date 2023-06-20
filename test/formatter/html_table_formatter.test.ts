@@ -368,4 +368,205 @@ td {
 
     expect(new HtmlTableFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
   });
+
+  it('applies the correct normalization when a capo is active', () => {
+    const songWithCapo = new ChordSheetSerializer().deserialize({
+      type: 'chordSheet',
+      lines: [
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'key', value: 'F' }],
+        },
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'capo', value: '1' }],
+        },
+        {
+          type: 'line',
+          items: [
+            { type: 'chordLyricsPair', chords: '', lyrics: 'My ' },
+            { type: 'chordLyricsPair', chords: 'Dm7', lyrics: 'heart has always ' },
+            { type: 'chordLyricsPair', chords: 'C/E', lyrics: 'longed for something ' },
+            { type: 'chordLyricsPair', chords: 'F', lyrics: 'more' },
+          ],
+        },
+      ],
+    });
+
+    const expectedChordSheet = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">C#m7</td>
+              <td class="chord">B/D#</td>
+              <td class="chord">E</td>
+            </tr>
+            <tr>
+              <td class="lyrics">My </td>
+              <td class="lyrics">heart has always </td>
+              <td class="lyrics">longed for something </td>
+              <td class="lyrics">more</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlTableFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('can render in a different key', () => {
+    const expectedChordSheet = stripHTML(`
+      <h1>Let it be</h1>
+      <h2>ChordSheetJS example version</h2>
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="lyrics">Written by: </td>
+              <td class="lyrics">John Lennon,Paul McCartney</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Verse 1</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Cm</td>
+              <td class="chord">Eb/Bb</td>
+              <td class="chord">Ab</td>
+              <td class="chord">Eb</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">F</td>
+              <td class="chord">Bb</td>
+              <td class="chord">C</td>
+              <td class="chord">Bb</td>
+              <td class="chord">F/A</td>
+              <td class="chord">Gm</td>
+              <td class="chord">F</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wis</td>
+              <td class="lyrics">dom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td class="comment">Breakdown</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Gm</td>
+              <td class="chord">Ab</td>
+              <td class="chord">Eb</td>
+              <td class="chord">Bb</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlTableFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
+  });
+
+  describe('with option useUnicodeModifiers:true', () => {
+    it('replaces # with unicode sharp', () => {
+      const songWithSharps = createSongFromAst([
+        [
+          chordLyricsPair('C#', 'Whisper words of wisdom'),
+        ],
+
+        [],
+
+        [
+          chordLyricsPair('A#m', 'Whisper words of wisdom'),
+        ],
+      ]);
+
+      const expectedChordSheet = stripHTML(`
+        <div class="chord-sheet">
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">C♯</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">A♯m</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Whisper words of wisdom</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      `);
+
+      const formatter = new HtmlTableFormatter({ renderBlankLines: false, useUnicodeModifiers: true });
+
+      expect(formatter.format(songWithSharps)).toEqual(expectedChordSheet);
+    });
+
+    it('can skip chord normalization', () => {
+      const songWithSus2 = createSongFromAst([
+        [chordLyricsPair('Asus2', 'Let it be')],
+      ]);
+
+      const expectedHTML = stripHTML(`
+        <div class="chord-sheet">
+          <div class="paragraph">
+            <table class="row">
+              <tr>
+                <td class="chord">Asus2</td>
+              </tr>
+              <tr>
+                <td class="lyrics">Let it be</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      `);
+
+      const formatted = new HtmlTableFormatter({ normalizeChords: false }).format(songWithSus2);
+
+      expect(formatted).toEqual(expectedHTML);
+    });
+  });
 });

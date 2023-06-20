@@ -26,9 +26,9 @@ export default (
     song: {
       title,
       subtitle,
-      bodyParagraphs,
       metadata,
     },
+    bodyParagraphs,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title }</h1>`) }
@@ -43,10 +43,19 @@ export default (
               ${ each(line.items, (item) => `
                 ${ when(isChordLyricsPair(item), () => `
                   <div class="column">
-                    ${ keep([renderChord(item.chords, line, song, key)], ([renderedChord]) => `
-                      <div class="chord"${ renderedChord ? fontStyleTag(line.chordFont) : '' }>${ renderedChord }</div>
-                    `) }
-                    <div class="lyrics"${ item.lyrics ? fontStyleTag(line.textFont) : '' }>${ item.lyrics }</div>
+                    <div class="chord"${ fontStyleTag(line.chordFont) }>${ 
+                      renderChord(
+                        item.chords, 
+                        line, 
+                        song, 
+                        {
+                          renderKey: key, 
+                          useUnicodeModifier: configuration.useUnicodeModifiers,
+                          normalizeChords: configuration.normalizeChords,
+                        }
+                      ) 
+                    }</div>
+                    <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                   </div>
                 `) }
                 
@@ -63,10 +72,7 @@ export default (
                 ${ when(isEvaluatable(item), () => `
                   <div class="column">
                     <div class="chord"></div>
-                    
-                    ${ keep([evaluate(item, metadata, configuration)], ([evaluated]) => `
-                      <div class="lyrics"${ evaluated ? fontStyleTag(line.textFont) : '' }>${ evaluated }</div>
-                    `) }
+                    <div class="lyrics"${ fontStyleTag(line.textFont) }>${ evaluate(item, metadata, configuration) }</div>
                   </div>
                 `) }
               `) }

@@ -67,6 +67,28 @@ describe('Chord', () => {
           expect(chord.toString()).toEqual('Eb');
         });
       });
+
+      describe('with option unicodeModifer:true', () => {
+        it('returns the right string representation with flat symbol', () => {
+          const chord = new Chord({
+            base: 'E',
+            modifier: 'b',
+            chordType: SYMBOL,
+          });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('E♭');
+        });
+
+        it('returns the right string representation with sharp symbol', () => {
+          const chord = new Chord({
+            base: 'F',
+            modifier: '#',
+            chordType: SYMBOL,
+          });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');
+        });
+      });
     });
   });
 });

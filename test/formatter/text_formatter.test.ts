@@ -75,4 +75,31 @@ Whisper words of wisdom, let it be`.substring(1);
 
     expect(new TextFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
   });
+
+  it('renders unicode modifiers with option useUnicodeModifiers:true', () => {
+    const songWithCapo = createSongFromAst([
+      [
+        chordLyricsPair('', 'The '),
+        chordLyricsPair('C#', 'chords are in a '),
+        chordLyricsPair('Eb', 'broken key where '),
+        chordLyricsPair('F#', 'sharps and '),
+        chordLyricsPair('Ab', 'flats are mixed'),
+      ],
+    ]);
+
+    const expectedChordSheet = `
+    C♯              E♭               F♯         A♭
+The chords are in a broken key where sharps and flats are mixed`.substring(1);
+
+    expect(new TextFormatter({ useUnicodeModifiers: true }).format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('can skip chord normalization', () => {
+    const songWithSus2 = createSongFromAst([
+      [chordLyricsPair('Asus2', 'Let it be')],
+    ]);
+
+    const formatted = new TextFormatter({ normalizeChords: false }).format(songWithSus2);
+    expect(formatted).toEqual('Asus2\nLet it be');
+  });
 });

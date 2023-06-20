@@ -54,6 +54,17 @@ class Key implements KeyProperties {
 
   type: ChordType;
 
+  get unicodeModifier(): string | null {
+    switch (this.modifier) {
+      case FLAT:
+        return '\u266d';
+      case SHARP:
+        return '\u266f';
+      default:
+        return null;
+    }
+  }
+
   minor = false;
 
   referenceKeyGrade: number | null = null;
@@ -421,8 +432,14 @@ class Key implements KeyProperties {
     return this.toNumeral(key).toString();
   }
 
-  toString({ showMinor = true } = {}): string {
-    return `${this.note}${showMinor ? this.minorSign : ''}`;
+  toString({ showMinor = true, useUnicodeModifier = false } = {}): string {
+    let { note } = this;
+
+    if (useUnicodeModifier) {
+      note = note.replace('#', '\u266f').replace('b', '\u266d');
+    }
+
+    return `${note}${showMinor ? this.minorSign : ''}`;
   }
 
   get note(): string {
@@ -457,6 +474,11 @@ class Key implements KeyProperties {
       default:
         return '';
     }
+  }
+
+  private formatChordSymbolString(showMinor: boolean, unicodeModifier: boolean): string {
+    const modifier = unicodeModifier ? this.unicodeModifier : this.modifier;
+    return `${this.note}${modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
   }
 
   private isNaturalMinor() {

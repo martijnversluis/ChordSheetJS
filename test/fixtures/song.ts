@@ -1,5 +1,6 @@
 import {
   chordLyricsPair,
+  comment,
   createSongFromAst,
   tag,
   ternary,
@@ -13,6 +14,7 @@ export default createSongFromAst([
   [tag('x_some_setting', '')],
   [tag('composer', 'John Lennon')],
   [tag('composer', 'Paul McCartney')],
+  [comment('This is my favorite song')],
   [],
   [
     chordLyricsPair('', 'Written by: '),

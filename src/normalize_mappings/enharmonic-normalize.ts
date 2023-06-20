@@ -134,7 +134,7 @@ const enharmonics: Record<string, Record<string, string>> = {
   },
   'B': {
     'Eb': 'D#',
-  }
+  },
 };
 
 export default enharmonics;
