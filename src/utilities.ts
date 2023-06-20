@@ -88,11 +88,19 @@ export function normalizeLineEndings(string: string): string {
 }
 
 export function gradeToKey(
-  type: ChordType,
-  modifier: ModifierMaybe | null,
-  preferredModifier: Modifier | null,
-  grade: number,
-  minor: boolean,
+  {
+    type,
+    modifier,
+    preferredModifier,
+    grade,
+    minor,
+  }: {
+    type: ChordType,
+    modifier: ModifierMaybe | null,
+    preferredModifier: Modifier | null,
+    grade: number,
+    minor: boolean,
+  },
 ): string {
   const grades = GRADE_TO_KEY[type];
   const mode = (minor ? MINOR : MAJOR);
@@ -102,17 +110,10 @@ export function gradeToKey(
     key = grades[mode][modifier][grade];
   }
 
-  if (!key) {
-    key = grades[mode][NO_MODIFIER][grade];
-  }
-
-  if (!key && preferredModifier) {
-    key = grades[mode][preferredModifier][grade];
-  }
-
-  if (!key) {
-    key = grades[mode][SHARP][grade];
-  }
+  key
+    ||= (grades[mode][NO_MODIFIER][grade])
+    || (preferredModifier && grades[mode][preferredModifier][grade])
+    || (grades[mode][SHARP][grade]);
 
   if (!key) {
     throw new Error(

@@ -80,24 +80,27 @@ class Key implements KeyProperties {
     if (!trimmed) return null;
 
     for (let i = 0, count = KEY_TYPES.length; i < count; i += 1) {
-      const keyType = KEY_TYPES[i];
-      const match = trimmed.match(regexes[keyType]);
+      const resolvedKey = this.parseAsType(trimmed, KEY_TYPES[i]);
 
-      if (match) {
-        const { minor, note, modifier } = match.groups as { minor?: string, note: string, modifier?: Modifier };
-
-        const resolvedKey = this.resolve({
-          key: note,
-          keyType,
-          minor: minor || false,
-          modifier: modifier || null,
-        });
-
-        if (resolvedKey) return resolvedKey;
-      }
+      if (resolvedKey) return resolvedKey;
     }
 
     return null;
+  }
+
+  static parseAsType(trimmed: string, keyType: ChordType) {
+    const match = trimmed.match(regexes[keyType]);
+
+    if (!match) return null;
+
+    const { minor, note, modifier } = match.groups as { minor?: string, note: string, modifier?: Modifier };
+
+    return this.resolve({
+      key: note,
+      keyType,
+      minor: minor || false,
+      modifier: modifier || null,
+    });
   }
 
   static resolve(
@@ -134,14 +137,7 @@ class Key implements KeyProperties {
       }
     }
 
-    const uppercaseKey = keyString.toUpperCase();
-    let number;
-
-    if (keyType === NUMERIC) {
-      number = parseInt(keyString, 10);
-    } else {
-      number = ROMAN_NUMERALS.findIndex((numeral) => uppercaseKey === numeral) + 1;
-    }
+    const number = this.getNumberFromKey(keyString, keyType);
 
     return new Key({
       number,
@@ -151,6 +147,15 @@ class Key implements KeyProperties {
       preferredModifier: modifier || null,
       originalKeyString: keyString,
     });
+  }
+
+  static getNumberFromKey(keyString: string, keyType: ChordType) {
+    if (keyType === NUMERIC) {
+      return parseInt(keyString, 10);
+    }
+
+    const uppercaseKey = keyString.toUpperCase();
+    return ROMAN_NUMERALS.findIndex((numeral) => uppercaseKey === numeral) + 1;
   }
 
   static keyWithModifier(key: string, modifier: Modifier | null, type: ChordType): string {
@@ -444,23 +449,31 @@ class Key implements KeyProperties {
 
   get note(): string {
     if (this.grade === null) {
-      if (this.number === null) throw new Error('Not possible, grade and number are null');
-
-      if (this.isNumeric()) {
-        return `${this.modifier || ''}${this.number}`;
-      }
-
-      const numeral = ROMAN_NUMERALS[this.number - 1];
-      return `${this.modifier || ''}${this.isMinor() ? numeral.toLowerCase() : numeral}`;
+      return this.getNoteForNumber();
     }
 
-    if (this.isChordSymbol()) {
-      if (this.referenceKeyGrade === null) throw new Error('Not possible, reference key grade is null');
-
-      return gradeToKey(this.type, this.modifier, this.preferredModifier, this.effectiveGrade, this.minor);
+    if (this.isChordSymbol() && this.referenceKeyGrade === null) {
+      throw new Error('Not possible, reference key grade is null');
     }
 
-    return gradeToKey(this.type, this.modifier, this.preferredModifier, this.effectiveGrade, this.minor);
+    return gradeToKey({
+      type: this.type,
+      modifier: this.modifier,
+      preferredModifier: this.preferredModifier,
+      grade: this.effectiveGrade,
+      minor: this.minor,
+    });
+  }
+
+  private getNoteForNumber() {
+    if (this.number === null) throw new Error('Not possible, grade and number are null');
+
+    if (this.isNumeric()) {
+      return `${this.modifier || ''}${this.number}`;
+    }
+
+    const numeral = ROMAN_NUMERALS[this.number - 1];
+    return `${this.modifier || ''}${this.isMinor() ? numeral.toLowerCase() : numeral}`;
   }
 
   get minorSign() {
