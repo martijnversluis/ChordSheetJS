@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+const fs = require('fs');
+
+const suffixMappingFile = 'src/normalize_mappings/suffix-mapping.txt';
+const chordSuffixGrammarFile = 'src/parser/chord_suffix_grammar.pegjs';
+
+console.warn('\x1b[34m', '👷 Building suffix normalize mapping from suffix-mapping.txt');
+const data = fs.readFileSync(suffixMappingFile);
+
+const suffixes = data
+  .toString()
+  .split('\n')
+  .filter(s => s.trim().length > 0)
+  .flatMap((line) => line.split(/,\s*/))
+  .sort((a, b) => b.length - a.length)
+  .map((suffix) => `"${suffix}"`);
+
+let groups = [];
+
+// make a copy to avoid mutating original array
+let copy = [...suffixes];
+
+while (copy.length > 0) {
+  let chunk = copy.splice(0, 100);
+  groups.push(chunk);
+}
+
+const groupsGrammar = groups.map((suffixes, i) => (
+  `ChordSuffix${i}\n  = ${suffixes.join('\n  / ')}\n`
+));
+
+const chordSuffixGrammar = `
+ChordSuffix
+  = (${groupsGrammar.map((_grammar, i) => `ChordSuffix${i}`).join(' / ')})?
+
+${groupsGrammar.join('\n\n')}
+`;
+
+fs.writeFileSync(chordSuffixGrammarFile, chordSuffixGrammar, 'utf-8');
+console.warn('\x1b[32m', `✨ Successfully built ${chordSuffixGrammarFile}`);

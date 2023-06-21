@@ -22,9 +22,10 @@ ChordSheetLineWithNewLine
   }
 
 ChordSheetLine
-  = item:(DirectionLine / InlineMetadata / ChordsLine / LyricsLine) {
-    return item;
-  }
+  = line:DirectionLine { return line; }
+  / line:InlineMetadata { return line; }
+  / &(ChordsLine !WordChar) line:ChordsLine { return line; }
+  / line:LyricsLine { return line; }
 
 ChordLyricsLines
   = chordsLine:ChordsLine NewLine lyrics:NonEmptyLyrics {

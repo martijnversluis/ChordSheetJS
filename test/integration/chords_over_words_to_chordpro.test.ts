@@ -95,7 +95,21 @@ We’ll be [Dm7/A]singing for - [G13]ever and [G13(#5)]ever, [Gm7/C] a - [F]men`
     expect(actualChordPro).toEqual(expectedChordPro);
   });
 
-  xit('correctly parses and converts a complicated chart', () => {
+  it('correctly converts a lyric line where every starting letter could be a chord', () => {
+    const chordOverWords = `
+  C           G
+A breath from God`.substring(1);
+
+    const expectedChordPro = `
+A [C]breath from [G]God`.substring(1);
+
+    const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('correctly parses and converts a complicated chart', () => {
     const chordsOverWords = fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8');
     const expectedChordPro = fs.readFileSync('./test/fixtures/kingdom_chordpro.txt', 'utf8');
 
