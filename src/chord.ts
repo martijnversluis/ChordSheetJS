@@ -1,22 +1,9 @@
 import { parse } from './parser/chord_peg_parser';
 import Key from './key';
-import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
-import { deprecate, isMinor } from './utilities';
+import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 import {
   ChordType, Modifier, NUMERAL, NUMERIC, SYMBOL,
 } from './constants';
-
-function normalizeChordSuffix(suffix: string | null): string | null {
-  if (suffix === null) {
-    return null;
-  }
-
-  if (SUFFIX_MAPPING[suffix] === '[blank]') {
-    return null;
-  }
-
-  return SUFFIX_MAPPING[suffix] || suffix;
-}
 
 interface ChordProperties {
   root?: Key | null;

@@ -5,6 +5,7 @@ import {
   ChordType, FLAT, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
 } from './constants';
 import { GRADE_TO_KEY } from './scales';
+import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
 export const hasChordContents = (line: Line): boolean => (
   line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
@@ -150,4 +151,16 @@ to a key`,
   }
 
   return key;
+}
+
+export function normalizeChordSuffix(suffix: string | null): string | null {
+  if (suffix === null) {
+    return null;
+  }
+
+  if (SUFFIX_MAPPING[suffix] === '[blank]') {
+    return null;
+  }
+
+  return SUFFIX_MAPPING[suffix] || suffix;
 }
