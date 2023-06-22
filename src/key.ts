@@ -123,17 +123,15 @@ class Key implements KeyProperties {
       const grade = this.toGrade(keyString, modifier || NO_MODIFIER, keyType, isMinor);
 
       if (grade !== null) {
-        const keyObj = new Key({
+        return new Key({
           grade: 0,
           minor: isMinor,
           type: keyType,
           modifier: modifier || null,
           preferredModifier: modifier || null,
           referenceKeyGrade: grade,
+          originalKeyString: keyString,
         });
-
-        keyObj.originalKeyString = keyString;
-        return keyObj;
       }
     }
 
