@@ -1,11 +1,12 @@
 import Line from './chord_sheet/line';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Item from './chord_sheet/item';
-import {
-  ChordType, FLAT, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
-} from './constants';
 import { GRADE_TO_KEY } from './scales';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
+
+import {
+  ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
+} from './constants';
 
 export const hasChordContents = (line: Line): boolean => (
   line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
@@ -88,6 +89,29 @@ export function normalizeLineEndings(string: string): string {
   return string.replace(/\r\n?/g, '\n');
 }
 
+class GradeSet {
+  grades: Record<ModifierMaybe, Record<number, string>>;
+
+  constructor(grades: Record<ModifierMaybe, Record<number, string>>) {
+    this.grades = grades;
+  }
+
+  determineGrade(modifier: ModifierMaybe | null, preferredModifier: Modifier | null, grade: number) {
+    return this.getGradeForModifier(modifier, grade)
+      || this.getGradeForModifier(NO_MODIFIER, grade)
+      || this.getGradeForModifier(preferredModifier, grade)
+      || this.getGradeForModifier(SHARP, grade);
+  }
+
+  getGradeForModifier(modifier: ModifierMaybe | null, grade: number) {
+    if (modifier) {
+      return this.grades[modifier][grade];
+    }
+
+    return null;
+  }
+}
+
 function determineKey({
   type,
   modifier,
@@ -101,27 +125,9 @@ function determineKey({
   grade: number,
   minor: boolean,
 }) {
-  const grades = GRADE_TO_KEY[type];
   const mode = (minor ? MINOR : MAJOR);
-  let key: string | null = null;
-
-  if (modifier === SHARP || modifier === FLAT) {
-    key = grades[mode][modifier][grade];
-  }
-
-  if (!key) {
-    key = grades[mode][NO_MODIFIER][grade];
-  }
-
-  if (!key && preferredModifier) {
-    key = grades[mode][preferredModifier][grade];
-  }
-
-  if (!key) {
-    key = grades[mode][SHARP][grade];
-  }
-
-  return key;
+  const grades = GRADE_TO_KEY[type][mode];
+  return new GradeSet(grades).determineGrade(modifier, preferredModifier, grade);
 }
 
 export function gradeToKey(
