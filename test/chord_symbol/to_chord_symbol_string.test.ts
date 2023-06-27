@@ -5,27 +5,11 @@ describe('Chord', () => {
     describe('toChordSymbolString', () => {
       describe('for a chord symbol', () => {
         it('converts correctly to a string', () => {
-          const chord = new Chord({
-            base: 'E',
-            modifier: 'b',
-            suffix: 'sus',
-            bassBase: 'G',
-            bassModifier: '#',
-          });
-
-          expect(chord.toChordSymbolString()).toEqual('Ebsus/G#');
+          expect(Chord.parse('Ebsus/G#')?.toChordSymbolString()).toEqual('Ebsus/G#');
         });
 
         it('converts correctly minor chord to a string', () => {
-          const chord = new Chord({
-            base: 'G',
-            modifier: null,
-            suffix: 'm7',
-            bassBase: 'C',
-            bassModifier: null,
-          });
-
-          expect(chord.toChordSymbolString()).toEqual('Gm7/C');
+          expect(Chord.parse('Gm7/C')?.toChordSymbolString()).toEqual('Gm7/C');
         });
       });
     });

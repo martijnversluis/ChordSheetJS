@@ -1,11 +1,11 @@
-import { Key } from '../../src';
-import '../matchers';
+import { Key, SYMBOL } from '../../src';
+import { buildKey } from '../utilities';
 
 describe('Key', () => {
   describe('wrap', () => {
     describe('when an key object is passed', () => {
       it('returns the key object', () => {
-        const key = new Key({ note: 'A', modifier: 'b' });
+        const key = buildKey('A', SYMBOL, 'b');
         const wrappedKey = Key.wrap(key);
 
         expect(key).toBe(wrappedKey);
@@ -16,7 +16,13 @@ describe('Key', () => {
       it('returns the parsed key', () => {
         const wrappedKey = Key.wrap('Ab');
 
-        expect(wrappedKey).toBeKey({ note: 'A', modifier: 'b' });
+        expect(wrappedKey).toMatchObject({
+          referenceKeyGrade: 8,
+          grade: 0,
+          modifier: 'b',
+          type: SYMBOL,
+          minor: false,
+        });
       });
     });
   });

@@ -1,6 +1,4 @@
-import { Chord } from '../../src';
-
-import '../matchers';
+import { Chord, NUMERIC } from '../../src';
 
 describe('Chord', () => {
   describe('numeric', () => {
@@ -8,43 +6,106 @@ describe('Chord', () => {
       describe('numeric chord without bass', () => {
         it('parses a simple numeric chord', () => {
           const chord = Chord.parse('4');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: null, bassBase: null, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: null,
+            suffix: null,
           });
         });
 
         it('parses a numeric chord with suffix', () => {
           const chord = Chord.parse('4sus');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'sus', bassBase: null, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: null,
+            suffix: 'sus',
           });
         });
 
         it('parses a numeric chord with modifier', () => {
           const chord = Chord.parse('#4');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: null, bassBase: null, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: null,
+            suffix: null,
           });
         });
 
         it('parses a numeric chord with modifier and suffix', () => {
           const chord = Chord.parse('#4sus');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'sus', bassBase: null, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: null,
+            suffix: 'sus',
           });
         });
 
         it('parses a numeric chord with confusing suffix', () => {
           const chord = Chord.parse('4ma9(#11)');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'ma9(#11)', bassBase: null, bassModifier: null,
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: null,
+            suffix: 'ma9(#11)',
           });
         });
 
         it('parses a numeric chord with modifier and confusing suffix', () => {
           const chord = Chord.parse('#4maj9b11');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'maj9b11', bassBase: null, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
           });
         });
       });
@@ -52,43 +113,157 @@ describe('Chord', () => {
       describe('numeric chord with bass', () => {
         it('parses a simple numeric chord', () => {
           const chord = Chord.parse('4/1');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: null, bassBase: 1, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: null,
           });
         });
 
         it('parses a numeric chord with suffix', () => {
           const chord = Chord.parse('4sus/1');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'sus', bassBase: 1, bassModifier: null,
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: 'sus',
           });
         });
 
         it('parses a numeric chord with modifier', () => {
           const chord = Chord.parse('#4/#1');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: null, bassBase: 1, bassModifier: '#',
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: null,
           });
         });
 
         it('parses a numeric chord with modifier and suffix', () => {
           const chord = Chord.parse('#4sus/#1');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'sus', bassBase: 1, bassModifier: '#',
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: 'sus',
           });
         });
 
         it('parses a numeric chord with confusing suffix', () => {
           const chord = Chord.parse('4ma9(#11)/#1');
-          expect(chord).toBeChord({
-            base: 4, modifier: null, suffix: 'ma9(#11)', bassBase: 1, bassModifier: '#',
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: null,
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: 'ma9(#11)',
           });
         });
 
         it('parses a numeric chord with modifier and confusing suffix', () => {
           const chord = Chord.parse('#4maj9b11/#1');
-          expect(chord).toBeChord({
-            base: 4, modifier: '#', suffix: 'maj9b11', bassBase: 1, bassModifier: '#',
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 4,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '4',
+            },
+            bass: {
+              grade: null,
+              number: 1,
+              modifier: '#',
+              type: NUMERIC,
+              minor: false,
+              referenceKeyGrade: null,
+              originalKeyString: '1',
+            },
+            suffix: 'maj9b11',
           });
         });
       });

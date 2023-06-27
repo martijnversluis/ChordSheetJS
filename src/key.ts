@@ -1,32 +1,44 @@
-import Note from './note';
 import {
-  ChordType, Modifier, NUMERAL, NUMERIC, SYMBOL,
+  ChordType,
+  FLAT,
+  MAJOR,
+  MINOR,
+  Modifier,
+  ModifierMaybe,
+  NO_MODIFIER,
+  NUMERAL,
+  NUMERIC,
+  ROMAN_NUMERALS,
+  SHARP,
+  SYMBOL,
 } from './constants';
+
+import { KEY_TO_GRADE } from './scales';
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
-import { isEmptyString } from './utilities';
+import { gradeToKey } from './utilities';
 
-const FLAT = 'b';
-const SHARP = '#';
-
-const symbolKeyRegex = /^(?<note>[A-G])(?<modifier>#|b)?(?<minor>m)?$/i;
-const numericKeyRegex = /^(?<modifier>#|b)?(?<note>[1-7])(?<minor>m)?$/;
-const numeralKeyRegex = /^(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2})$/;
-
-const regexes = [symbolKeyRegex, numericKeyRegex, numeralKeyRegex];
-
-function modifierTransposition(modifier: Modifier | null): number {
-  switch (modifier) {
-    case SHARP: return 1;
-    case FLAT: return -1;
-    default: return 0;
-  }
-}
+const regexes: Record<ChordType, RegExp> = {
+  symbol: /^(?<key>((?<note>[A-G])(?<modifier>#|b)?))(?<minor>m)?$/i,
+  numeric: /^(?<key>(?<modifier>#|b)?(?<note>[1-7]))(?<minor>m)?$/,
+  numeral: /^(?<key>(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2}))$/,
+};
 
 interface KeyProperties {
-  note?: Note;
-  modifier?: Modifier | null;
+  grade?: number | null;
+  number?: number | null;
+  type?: ChordType;
   minor?: boolean;
+  modifier?: Modifier | null;
+  referenceKeyGrade?: number | null;
+  preferredModifier?: Modifier | null,
 }
+
+const KEY_TYPES: ChordType[] = [SYMBOL, NUMERIC, NUMERAL];
+const NATURAL_MINORS = [1, 2, 5];
+const NO_FLAT_GRADES = [4, 11];
+const NO_FLAT_NUMBERS = [1, 4];
+const NO_SHARP_GRADES = [5, 0];
+const NO_SHARP_NUMBERS = [3, 7];
 
 /**
  * Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).
@@ -34,9 +46,13 @@ interface KeyProperties {
  * The only function considered public API is `Key.distance`
  */
 class Key implements KeyProperties {
-  note: Note;
+  grade: number | null;
 
-  modifier: Modifier | null = null;
+  number: number | null = null;
+
+  modifier: Modifier | null;
+
+  type: ChordType;
 
   get unicodeModifier(): string | null {
     switch (this.modifier) {
@@ -51,19 +67,137 @@ class Key implements KeyProperties {
 
   minor = false;
 
+  referenceKeyGrade: number | null = null;
+
+  originalKeyString: string | null = null;
+
+  preferredModifier: Modifier | null;
+
   static parse(keyString: string | null): null | Key {
-    if (!keyString || isEmptyString(keyString)) return null;
+    if (!keyString) return null;
 
-    for (let i = 0, count = regexes.length; i < count; i += 1) {
-      const match = keyString.match(regexes[i]);
+    const trimmed = keyString.trim();
+    if (!trimmed) return null;
 
-      if (match) {
-        const { note, modifier, minor } = match.groups as { note: string, modifier?: Modifier, minor?: string };
-        return new Key({ note, modifier, minor: !!minor });
-      }
+    for (let i = 0, count = KEY_TYPES.length; i < count; i += 1) {
+      const resolvedKey = this.parseAsType(trimmed, KEY_TYPES[i]);
+
+      if (resolvedKey) return resolvedKey;
     }
 
     return null;
+  }
+
+  static parseAsType(trimmed: string, keyType: ChordType) {
+    const match = trimmed.match(regexes[keyType]);
+
+    if (!match) return null;
+
+    const { minor, note, modifier } = match.groups as { minor?: string, note: string, modifier?: Modifier };
+
+    return this.resolve({
+      key: note,
+      keyType,
+      minor: minor || false,
+      modifier: modifier || null,
+    });
+  }
+
+  static resolve(
+    {
+      key,
+      keyType,
+      minor,
+      modifier,
+    }: {
+      key: string | number,
+      keyType: ChordType,
+      minor: string | boolean,
+      modifier: Modifier | null,
+    },
+  ): Key | null {
+    const keyString = `${key}`;
+    const isMinor = this.isMinor(keyString, keyType, minor);
+
+    if (keyType === SYMBOL) {
+      const grade = this.toGrade(keyString, modifier || NO_MODIFIER, keyType, isMinor);
+
+      if (grade !== null) {
+        return new Key({
+          grade: 0,
+          minor: isMinor,
+          type: keyType,
+          modifier: modifier || null,
+          preferredModifier: modifier || null,
+          referenceKeyGrade: grade,
+          originalKeyString: keyString,
+        });
+      }
+    }
+
+    const number = this.getNumberFromKey(keyString, keyType);
+
+    return new Key({
+      number,
+      minor: isMinor,
+      type: keyType,
+      modifier: modifier || null,
+      preferredModifier: modifier || null,
+      originalKeyString: keyString,
+    });
+  }
+
+  static getNumberFromKey(keyString: string, keyType: ChordType) {
+    if (keyType === NUMERIC) {
+      return parseInt(keyString, 10);
+    }
+
+    const uppercaseKey = keyString.toUpperCase();
+    return ROMAN_NUMERALS.findIndex((numeral) => uppercaseKey === numeral) + 1;
+  }
+
+  static keyWithModifier(key: string, modifier: Modifier | null, type: ChordType): string {
+    const normalizedKey = key.toUpperCase();
+    const modifierString = modifier || '';
+
+    if (type === SYMBOL) {
+      return `${normalizedKey}${modifierString}`;
+    }
+
+    return `${modifierString}${normalizedKey}`;
+  }
+
+  static toGrade(key: string, modifier: ModifierMaybe, type: ChordType, isMinor: boolean): number | null {
+    const mode = (isMinor ? MINOR : MAJOR);
+    const grades = KEY_TO_GRADE[type][mode][modifier];
+
+    if (key in grades) {
+      return grades[key];
+    }
+
+    const upperCaseKey = key.toUpperCase();
+
+    if (upperCaseKey in grades) {
+      return grades[upperCaseKey];
+    }
+
+    return null;
+  }
+
+  static isMinor(key: string, keyType: ChordType, minor: string | undefined | boolean) {
+    switch (keyType) {
+      case 'numeral':
+        return key.toLowerCase() === key;
+      default:
+        switch (typeof minor) {
+          case 'string':
+            return minor === 'm' || minor.toLowerCase() === 'min';
+          case 'boolean':
+            return minor;
+          default:
+            return false;
+        }
+    }
   }
 
   static parseOrFail(keyString: string | null): Key {
@@ -74,8 +208,10 @@ class Key implements KeyProperties {
     return parsed;
   }
 
-  static wrap(keyStringOrObject: Key | string): Key | null {
+  static wrap(keyStringOrObject: Key | string | null): Key | null {
     if (keyStringOrObject instanceof Key) return keyStringOrObject;
+
+    if (keyStringOrObject === null) return null;
 
     return this.parse(keyStringOrObject);
   }
@@ -104,44 +240,109 @@ class Key implements KeyProperties {
     return this.wrapOrFail(oneKey).distanceTo(otherKey);
   }
 
-  distanceTo(otherKey: Key | string): number {
-    const otherKeyObj = Key.wrapOrFail(otherKey);
-    let key = this.useModifier(otherKeyObj.modifier);
-    let delta = 0;
-
-    while (!key.equals(otherKeyObj) && delta < 20) {
-      key = key.transposeUp().useModifier(otherKeyObj.modifier);
-      delta += 1;
-    }
-
-    return delta;
+  constructor(
+    {
+      grade = null,
+      number = null,
+      minor,
+      type,
+      modifier,
+      referenceKeyGrade = null,
+      originalKeyString = null,
+      preferredModifier = null,
+    }: {
+      grade?: number | null,
+      number?: number | null,
+      minor: boolean,
+      type: ChordType,
+      modifier: Modifier | null,
+      referenceKeyGrade?: number | null,
+      originalKeyString?: string | null,
+      preferredModifier: Modifier | null,
+    },
+  ) {
+    this.grade = grade;
+    this.number = number;
+    this.minor = minor;
+    this.type = type;
+    this.modifier = modifier;
+    this.preferredModifier = preferredModifier;
+    this.referenceKeyGrade = referenceKeyGrade;
+    this.originalKeyString = originalKeyString;
   }
 
-  constructor(
-    { note, modifier = null, minor = false }:
-      { note: Note | string | number, modifier?: Modifier | null, minor?: boolean },
-  ) {
-    this.note = (note instanceof Note) ? note : Note.parse(note);
-    this.modifier = modifier || null;
-    this.minor = minor || false;
+  distanceTo(otherKey: Key | string): number {
+    const otherKeyObj = Key.wrapOrFail(otherKey);
+    return Key.shiftGrade(otherKeyObj.effectiveGrade - this.effectiveGrade);
+  }
 
-    if (this.minor) this.note.minor = true;
+  get effectiveGrade(): number {
+    if (this.grade === null) {
+      throw new Error('Cannot calculate effectiveGrade without a grade');
+    }
+
+    return Key.shiftGrade(this.grade + (this.referenceKeyGrade || 0));
   }
 
   isMinor(): boolean {
-    return this.minor || this.note.isMinor();
+    return this.minor;
+  }
+
+  makeMinor(): Key {
+    return this.set({ minor: true });
+  }
+
+  get relativeMajor(): Key {
+    return this.changeGrade(+3).set({ minor: false });
+  }
+
+  get relativeMinor(): Key {
+    return this.changeGrade(-3).set({ minor: true });
   }
 
   clone(): Key {
     return this.set({});
   }
 
-  toChordSymbol(key: Key): Key {
-    if (this.is(SYMBOL)) return this.clone();
+  private ensureGrade() {
+    if (this.grade === null) {
+      this.calculateGradeFromNumber();
+    }
+  }
 
-    const transposeDistance = this.note.getTransposeDistance(key.minor) + modifierTransposition(this.modifier);
+  private calculateGradeFromNumber() {
+    if (this.number === null) {
+      throw new Error('Cannot calculate grade, number is null');
+    }
 
-    return key.transpose(transposeDistance).normalize().useModifier(key.modifier);
+    this.grade = Key.toGrade(
+      this.number.toString(),
+      this.modifier || NO_MODIFIER,
+      NUMERIC,
+      this.isMinor(),
+    );
+
+    this.number = null;
+  }
+
+  toChordSymbol(key: Key | string): Key {
+    if (this.isChordSymbol()) return this.clone();
+
+    const { modifier } = this;
+
+    this.ensureGrade();
+
+    const keyObj = Key.wrapOrFail(key);
+    const chordSymbol = this.set({
+      referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
+      grade: 0,
+      type: SYMBOL,
+      modifier: null,
+      preferredModifier: modifier || keyObj.modifier,
+    });
+
+    const normalized = chordSymbol.normalizeEnharmonics(keyObj);
+    return modifier ? normalized.set({ preferredModifier: modifier, modifier: null }) : normalized;
   }
 
   toChordSymbolString(key: Key): string {
@@ -149,7 +350,7 @@ class Key implements KeyProperties {
   }
 
   is(type: ChordType): boolean {
-    return this.note.is(type);
+    return this.type === type;
   }
 
   isNumeric(): boolean {
@@ -165,31 +366,69 @@ class Key implements KeyProperties {
   }
 
   equals(otherKey: Key): boolean {
-    return this.note.equals(otherKey.note) && this.modifier === otherKey.modifier;
+    return this.grade === otherKey.grade
+      && this.number === otherKey.number
+      && this.modifier === otherKey.modifier
+      && this.preferredModifier === otherKey.preferredModifier
+      && this.type === otherKey.type
+      && this.minor === otherKey.minor;
   }
 
-  toNumeric(key: Key | null = null): Key {
-    if (this.isNumeric()) return this.clone();
+  static equals(oneKey: Key | null, otherKey: Key | null) {
+    if (oneKey === null) {
+      return otherKey === null;
+    }
 
-    if (this.isNumeral()) return this.set({ note: this.note.toNumeric() });
+    if (otherKey === null) {
+      return false;
+    }
 
-    if (!key) throw new Error('key is required');
+    return oneKey.equals(otherKey);
+  }
 
-    return this.transposeNoteUpToKey(1, key);
+  toNumeric(key: Key | string | null = null): Key {
+    if (this.isNumeric()) {
+      return this.clone();
+    }
+
+    if (this.isNumeral()) {
+      return this.set({ type: NUMERIC });
+    }
+
+    const referenceKey = Key.wrapOrFail(key);
+    const referenceKeyGrade = referenceKey.effectiveGrade;
+
+    return this.set({
+      type: NUMERIC,
+      grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
+      referenceKeyGrade: 0,
+      modifier: referenceKey.modifier,
+      preferredModifier: referenceKey.modifier,
+    });
   }
 
   toNumericString(key: Key | null = null): string {
     return this.toNumeric(key).toString();
   }
 
-  toNumeral(key: Key | null = null): Key {
-    if (this.isNumeral()) return this.clone();
+  toNumeral(key: Key | string | null = null): Key {
+    if (this.isNumeral()) {
+      return this.clone();
+    }
 
-    if (this.isNumeric()) return this.set({ note: this.note.toNumeral() });
+    if (this.isNumeric()) {
+      return this.set({ type: NUMERAL });
+    }
 
-    if (key) return this.transposeNoteUpToKey('I', key);
-
-    return this.clone();
+    const referenceKey = Key.wrapOrFail(key);
+    const referenceKeyGrade = referenceKey.effectiveGrade;
+    return this.set({
+      type: NUMERAL,
+      grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
+      referenceKeyGrade: 0,
+      modifier: null,
+      preferredModifier: referenceKey.modifier || this.modifier,
+    });
   }
 
   toNumeralString(key: Key | null = null): string {
@@ -197,29 +436,65 @@ class Key implements KeyProperties {
   }
 
   toString({ showMinor = true, useUnicodeModifier = false } = {}): string {
-    switch (this.note.type) {
+    let { note } = this;
+
+    if (useUnicodeModifier) {
+      note = note.replace('#', '\u266f').replace('b', '\u266d');
+    }
+
+    return `${note}${showMinor ? this.minorSign : ''}`;
+  }
+
+  get note(): string {
+    if (this.grade === null) {
+      return this.getNoteForNumber();
+    }
+
+    if (this.isChordSymbol() && this.referenceKeyGrade === null) {
+      throw new Error('Not possible, reference key grade is null');
+    }
+
+    return gradeToKey({
+      type: this.type,
+      modifier: this.modifier,
+      preferredModifier: this.preferredModifier,
+      grade: this.effectiveGrade,
+      minor: this.minor,
+    });
+  }
+
+  private getNoteForNumber() {
+    if (this.number === null) throw new Error('Not possible, grade and number are null');
+
+    if (this.isNumeric()) {
+      return `${this.modifier || ''}${this.number}`;
+    }
+
+    const numeral = ROMAN_NUMERALS[this.number - 1];
+    return `${this.modifier || ''}${this.isMinor() ? numeral.toLowerCase() : numeral}`;
+  }
+
+  get minorSign() {
+    if (!this.minor) return '';
+
+    switch (this.type) {
       case SYMBOL:
-        return this.formatChordSymbolString(showMinor, useUnicodeModifier);
+        return 'm';
       case NUMERIC:
-        return this.formatNumericString(showMinor);
-      case NUMERAL:
-        return this.formatNumeralString();
+        return this.isNaturalMinor() ? '' : 'm';
       default:
-        throw new Error(`Unexpected note type ${this.note.type}`);
+        return '';
     }
   }
 
-  private formatChordSymbolString(showMinor: boolean, unicodeModifier: boolean): string {
-    const modifier = unicodeModifier ? this.unicodeModifier : this.modifier;
-    return `${this.note}${modifier || ''}${this.minor && showMinor ? 'm' : ''}`;
-  }
+  private isNaturalMinor() {
+    this.ensureGrade();
 
-  private formatNumericString(showMinor: boolean): string {
-    return `${this.modifier || ''}${this.note}${this.minor && showMinor ? 'm' : ''}`;
-  }
+    if (!this.grade) {
+      throw new Error('Expected grade to be set, but it is is still empty.');
+    }
 
-  private formatNumeralString(): string {
-    return `${this.modifier || ''}${this.note}`;
+    return NATURAL_MINORS.includes(this.grade);
   }
 
   transpose(delta: number): Key {
@@ -236,47 +511,87 @@ class Key implements KeyProperties {
     return transposedKey.useModifier(originalModifier);
   }
 
+  changeGrade(delta) {
+    if (this.referenceKeyGrade) {
+      return this.set({ referenceKeyGrade: Key.shiftGrade(this.referenceKeyGrade + delta) });
+    }
+
+    this.ensureGrade();
+
+    return this.set({ grade: Key.shiftGrade(this.grade + delta) });
+  }
+
   transposeUp(): Key {
-    if (this.modifier === FLAT) return this.set({ modifier: null });
+    const normalizedKey = this.normalize();
+    let key: Key = normalizedKey.changeGrade(+1);
 
-    if (this.note.isOneOf(3, 7, 'E', 'B')) return this.set({ note: this.note.up() });
+    if (this.modifier || !key.canBeSharp()) {
+      key = key.useModifier(null);
+    } else if (key.canBeSharp()) {
+      key = key.useModifier(SHARP);
+    }
 
-    if (this.modifier === SHARP) return this.set({ note: this.note.up(), modifier: null });
-
-    return this.set({ modifier: SHARP });
+    key = key.set({ preferredModifier: SHARP }).normalize();
+    return key;
   }
 
   transposeDown(): Key {
-    if (this.modifier === SHARP) return this.set({ modifier: null });
+    const normalizedKey = this.normalize();
+    let key: Key = normalizedKey.changeGrade(-1);
 
-    if (this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.set({ note: this.note.down() });
+    if (this.modifier || !key.canBeFlat()) {
+      key = key.useModifier(null);
+    } else if (key.canBeFlat()) {
+      key = key.useModifier(FLAT);
     }
 
-    if (this.modifier === FLAT) return this.set({ note: this.note.down(), modifier: null });
+    return key.set({ preferredModifier: FLAT });
+  }
 
-    return this.set({ modifier: FLAT });
+  canBeFlat() {
+    if (this.number !== null) {
+      return !NO_FLAT_NUMBERS.includes(this.number);
+    }
+
+    return !NO_FLAT_GRADES.includes(this.effectiveGrade);
+  }
+
+  canBeSharp() {
+    if (this.number !== null) {
+      return !NO_SHARP_NUMBERS.includes(this.number);
+    }
+
+    return !NO_SHARP_GRADES.includes(this.effectiveGrade);
+  }
+
+  setGrade(newGrade: number): Key {
+    return this.set({
+      grade: Key.shiftGrade(newGrade),
+    });
+  }
+
+  static shiftGrade(grade: number) {
+    if (grade < 0) {
+      return this.shiftGrade(grade + 12);
+    }
+
+    return grade % 12;
   }
 
   useModifier(newModifier: Modifier | null): Key {
-    if (this.modifier === FLAT && newModifier === SHARP) {
-      return this.set({ note: this.note.down(), modifier: SHARP });
-    }
-
-    if (this.modifier === SHARP && newModifier === FLAT) {
-      return this.set({ note: this.note.up(), modifier: FLAT });
-    }
-
-    return this.clone();
+    this.ensureGrade();
+    return this.set({ modifier: newModifier });
   }
 
   normalize(): Key {
-    if (this.modifier === SHARP && this.note.isOneOf(3, 7, 'E', 'B')) {
-      return this.set({ note: this.note.up(), modifier: null });
+    this.ensureGrade();
+
+    if (this.modifier === SHARP && !this.canBeSharp()) {
+      return this.set({ modifier: null });
     }
 
-    if (this.modifier === FLAT && this.note.isOneOf(1, 4, 'C', 'F')) {
-      return this.set({ note: this.note.down(), modifier: null });
+    if (this.modifier === FLAT && !this.canBeFlat()) {
+      return this.set({ modifier: null });
     }
 
     return this.clone();
@@ -293,33 +608,28 @@ class Key implements KeyProperties {
       const thisKeyString = this.toString({ showMinor: false });
 
       if (enharmonics && enharmonics[thisKeyString]) {
-        return Key.parseOrFail(enharmonics[thisKeyString]);
+        return Key
+          .parseOrFail(enharmonics[thisKeyString])
+          .set({ minor: this.minor });
       }
     }
 
     return this.clone();
   }
 
-  private set(attributes: KeyProperties): Key {
+  private set(attributes: KeyProperties, overwrite: boolean = true): Key {
     return new Key({
-      note: this.note.clone(),
+      ...(overwrite ? {} : attributes),
+      grade: this.grade,
+      number: this.number,
+      type: this.type,
       modifier: this.modifier,
       minor: this.minor,
-      ...attributes,
+      referenceKeyGrade: this.referenceKeyGrade,
+      originalKeyString: this.originalKeyString,
+      preferredModifier: this.preferredModifier,
+      ...(overwrite ? attributes : {}),
     });
-  }
-
-  private transposeNoteUpToKey(note: number | string, key: Key) {
-    let numericKey = new Key({ note });
-    let symbolKey = key.clone();
-    const reference = this.clone().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
-
-    while (!symbolKey.equals(reference)) {
-      numericKey = numericKey.transposeUp().useModifier(key.modifier);
-      symbolKey = symbolKey.transposeUp().normalize().useModifier(key.modifier).normalizeEnharmonics(key);
-    }
-
-    return numericKey;
   }
 }
 

@@ -1,166 +1,164 @@
-import Key from '../../src/key';
-import '../matchers';
+import { buildKey } from '../utilities';
+import { NUMERIC, SYMBOL } from '../../src';
+import { NUMERAL } from '../../src/constants';
 
 describe('Key', () => {
   describe('transposeUp', () => {
     describe('for 1, 2, 4, 5 and 6', () => {
       it('returns the # version', () => {
-        const key = new Key({ note: 6, modifier: null });
+        const key = buildKey(6, NUMERIC);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 6, modifier: '#' });
+        expect(transposedKey.toString()).toEqual('#6');
       });
     });
 
     describe('for #1, #2, #4, #5 and #6', () => {
       it('returns the next note without #', () => {
-        const key = new Key({ note: 6, modifier: '#' });
+        const key = buildKey(6, NUMERIC, '#');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 7, modifier: null });
+        expect(transposedKey.toString()).toEqual('7');
       });
     });
 
     describe('for 3 and 7', () => {
       it('returns the next note', () => {
-        const key = new Key({ note: 3, modifier: null });
+        const key = buildKey(3, NUMERIC);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 4, modifier: null });
+        expect(transposedKey.toString()).toEqual('4');
       });
     });
 
     describe('for b2, b3, b5, b6 and b7', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 2, modifier: 'b' });
+        const key = buildKey(2, NUMERIC, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 2, modifier: null });
+        expect(transposedKey.toString()).toEqual('2');
       });
     });
 
     describe('for b1 and b4', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 1, modifier: 'b' });
+        const key = buildKey(1, NUMERIC, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 1, modifier: null });
+        expect(transposedKey.toString()).toEqual('1');
       });
     });
 
     describe('for I, II, IV, V and VI', () => {
       it('returns the # version', () => {
-        const key = new Key({ note: 'VI', modifier: null });
+        const key = buildKey('VI', NUMERAL);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'VI', modifier: '#' });
+        expect(transposedKey.toString()).toEqual('#VI');
       });
     });
 
     describe('for #I, #II, #IV, #V and #VI', () => {
       it('returns the next note without #', () => {
-        const key = new Key({ note: 'VI', modifier: '#' });
+        const key = buildKey('VI', NUMERAL, '#');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'VII', modifier: null });
+        expect(transposedKey.toString()).toEqual('VII');
       });
     });
 
     describe('for III and VII', () => {
       it('returns the next note', () => {
-        const key = new Key({ note: 'III', modifier: null });
+        const key = buildKey('III', NUMERAL);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'IV', modifier: null });
+        expect(transposedKey.toString()).toEqual('IV');
       });
     });
 
     describe('for bII, bIII, bV, bVI and bVII', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 'II', modifier: 'b' });
+        const key = buildKey('II', NUMERAL, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'II', modifier: null });
+        expect(transposedKey.toString()).toEqual('II');
       });
     });
 
     describe('for bI and bIV', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 'I', modifier: 'b' });
+        const key = buildKey('I', NUMERAL, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'I', modifier: null });
+        expect(transposedKey.toString()).toEqual('I');
       });
     });
 
     describe('for #E and #B', () => {
       it('returns the next note with #', () => {
-        const key = new Key({ note: 3, modifier: '#' });
+        const key = buildKey(3, NUMERIC, '#');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 4, modifier: '#' });
+        expect(transposedKey.toString()).toEqual('#4');
       });
     });
 
     describe('for C, D, F, G and A', () => {
       it('returns the # version', () => {
-        const key = new Key({ note: 'A', modifier: null });
+        const key = buildKey('A', SYMBOL);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'A', modifier: '#' });
+        expect(transposedKey.toString()).toEqual('A#');
       });
     });
 
     describe('for C#, D#, F#, G# and A#', () => {
       it('returns the next note without #', () => {
-        const key = new Key({ note: 'A', modifier: '#' });
+        const key = buildKey('A', SYMBOL, '#');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'B', modifier: null });
+        expect(transposedKey.toString()).toEqual('B');
       });
     });
 
     describe('for E and B', () => {
       it('returns the next note', () => {
-        const key = new Key({ note: 'E', modifier: null });
+        const key = buildKey('E', SYMBOL);
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'F', modifier: null });
+        expect(transposedKey.toString()).toEqual('F');
       });
     });
 
     describe('for Db, Eb, Gb, Ab and Bb', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 'D', modifier: 'b' });
+        const key = buildKey('D', SYMBOL, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'D', modifier: null });
+        expect(transposedKey.toString()).toEqual('D');
       });
     });
 
     describe('for Cb and Fb', () => {
       it('returns the note without b', () => {
-        const key = new Key({ note: 'C', modifier: 'b' });
+        const key = buildKey('C', SYMBOL, 'b');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'C', modifier: null });
+        expect(transposedKey.toString()).toEqual('C');
       });
     });
 
     describe('for E# and B#', () => {
       it('returns the next note with #', () => {
-        const key = new Key({ note: 'E', modifier: '#' });
+        const key = buildKey('E', SYMBOL, '#');
 
         const transposedKey = key.transposeUp();
-        expect(transposedKey).toBeKey({ note: 'F', modifier: '#' });
+        expect(transposedKey.toString()).toEqual('F#');
       });
     });
 
     it('correctly handles minor keys', () => {
-      const key = new Key({ note: 'E', modifier: '#', minor: true });
-
-      const transposedKey = key.transposeUp();
-      expect(transposedKey).toBeKey({ note: 'F', modifier: '#', minor: true });
+      expect(buildKey('E', SYMBOL, '#', true).transposeUp().toString()).toEqual('F#m');
     });
   });
 });

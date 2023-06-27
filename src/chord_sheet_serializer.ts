@@ -9,7 +9,7 @@ import Line from './chord_sheet/line';
 import AstType from './chord_sheet/ast_type';
 import Item from './chord_sheet/item';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
-import { Modifier } from './constants';
+import { ChordType, Modifier } from './constants';
 
 const CHORD_SHEET = 'chordSheet';
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
@@ -33,7 +33,7 @@ type SerializedChord = {
   suffix: string | null,
   bassBase: string | null,
   bassModifier: Modifier | null,
-  chordType: string,
+  chordType: ChordType,
 };
 
 export type SerializedChordLyricsPair = {

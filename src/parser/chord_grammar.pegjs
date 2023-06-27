@@ -13,6 +13,9 @@ ChordSymbol
   = root:ChordSymbolRoot modifier:ChordModifier? suffix:$(ChordSuffix) bass:ChordSymbolBass? {
   	  return { base: root, modifier, suffix, ...bass, chordType: "symbol" };
     }
+  / bass:ChordSymbolBass {
+      return { base: null, modifier: null, suffix: null, ...bass, chordType: "symbol" };
+    }
 
 ChordSymbolRoot
   = [A-Ga-g]
@@ -26,6 +29,9 @@ Numeral
   = modifier:ChordModifier? root:NumeralRoot suffix:$(ChordSuffix) bass:NumeralBass? {
       return { base: root, modifier, suffix, ...bass, chordType: "numeral" };
     }
+  / bass:NumeralBass {
+      return { base: null, modifier: null, suffix: null, ...bass, chordType: "numeral" };
+    }
 
 NumeralRoot
   = "III" / "iii" / "VII" / "vii" / "II" / "ii" / "IV" / "iv" / "VI" / "vi" / "I" / "i" / "V" / "v"
@@ -38,6 +44,9 @@ NumeralBass
 Numeric
   = modifier:ChordModifier? root:NumericRoot suffix:$(ChordSuffix) bass:NumericBass? {
       return { base: root, modifier, suffix, ...bass, chordType: "numeric" };
+    }
+  / bass:NumericBass {
+      return { base: null, modifier: null, suffix: null, ...bass, chordType: "numeric" };
     }
 
 NumericRoot

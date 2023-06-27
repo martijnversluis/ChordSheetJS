@@ -4,18 +4,6 @@ import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toBeChord(
-        {
-          base,
-          modifier,
-          suffix,
-          bassBase,
-          bassModifier,
-        }
-        ): CustomMatcherResult;
-
-      toBeNote({ note, type, minor }): CustomMatcherResult;
-
       toBeKey({ note, modifier, minor = false }): CustomMatcherResult;
 
       toBeChordLyricsPair(chords: string, lyrics: string): CustomMatcherResult;

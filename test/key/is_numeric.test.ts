@@ -1,10 +1,12 @@
-import { Key } from '../../src';
+import { NUMERIC, SYMBOL } from '../../src';
+import { buildKey } from '../utilities';
+import { NUMERAL } from '../../src/constants';
 
 describe('Key', () => {
   describe('isNumeric', () => {
     describe('for a symbol key', () => {
       it('returns false', () => {
-        const key = new Key({ note: 'A', modifier: '#' });
+        const key = buildKey('A', SYMBOL, '#');
 
         expect(key.isNumeric()).toBe(false);
       });
@@ -12,7 +14,7 @@ describe('Key', () => {
 
     describe('for a numeric key', () => {
       it('returns true', () => {
-        const key = new Key({ note: 5, modifier: '#' });
+        const key = buildKey(5, NUMERIC, '#');
 
         expect(key.isNumeric()).toBe(true);
       });
@@ -20,7 +22,7 @@ describe('Key', () => {
 
     describe('for a numeral', () => {
       it('returns false', () => {
-        const key = new Key({ note: 'V', modifier: '#' });
+        const key = buildKey('V', NUMERAL, '#');
 
         expect(key.isNumeric()).toBe(false);
       });

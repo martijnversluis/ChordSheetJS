@@ -1,4 +1,5 @@
 import Chord from '../../src/chord';
+import { SYMBOL } from '../../src';
 
 describe('Chord', () => {
   describe('chord symbol', () => {
@@ -10,6 +11,7 @@ describe('Chord', () => {
           suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
+          chordType: SYMBOL,
         });
 
         expect(chord.toString()).toEqual('Ebsus/G#');
@@ -22,6 +24,7 @@ describe('Chord', () => {
             modifier: 'b',
             suffix: 'sus',
             bassBase: 'G',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString()).toEqual('Ebsus/G');
@@ -34,6 +37,7 @@ describe('Chord', () => {
             base: 'E',
             modifier: 'b',
             suffix: 'sus',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString()).toEqual('Ebsus');
@@ -45,6 +49,7 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             suffix: 'sus',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString()).toEqual('Esus');
@@ -56,6 +61,7 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             modifier: 'b',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString()).toEqual('Eb');
@@ -67,6 +73,7 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'E',
             modifier: 'b',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString({ useUnicodeModifier: true })).toEqual('E♭');
@@ -76,6 +83,7 @@ describe('Chord', () => {
           const chord = new Chord({
             base: 'F',
             modifier: '#',
+            chordType: SYMBOL,
           });
 
           expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');

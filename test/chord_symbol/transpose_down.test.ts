@@ -1,109 +1,41 @@
 import Chord from '../../src/chord';
-import '../matchers';
 
 describe('Chord', () => {
   describe('chord symbol', () => {
     describe('transposeUp', () => {
       describe('for D, E, G, A, B', () => {
         it('returns the b version', () => {
-          const chord = new Chord({
-            base: 'A',
-            modifier: null,
-            suffix: null,
-            bassBase: 'G',
-            bassModifier: null,
-          });
-
-          const transposedChord = chord.transposeDown();
-
-          expect(transposedChord).toBeChord({
-            base: 'A', modifier: 'b', suffix: null, bassBase: 'G', bassModifier: 'b',
-          });
+          expect(Chord.parse('A/G')?.transposeDown().toString()).toEqual('Ab/Gb');
         });
       });
 
       describe('for C#, D#, F#, G# and A#', () => {
         it('returns the note without #', () => {
-          const chord = new Chord({
-            base: 'A',
-            modifier: '#',
-            suffix: null,
-            bassBase: 'G',
-            bassModifier: '#',
-          });
-
-          const transposedChord = chord.transposeDown();
-          expect(transposedChord).toBeChord({
-            base: 'A', modifier: null, suffix: null, bassBase: 'G', bassModifier: null,
-          });
+          expect(Chord.parse('A#/G#')?.transposeDown().toString()).toEqual('A/G');
         });
       });
 
       describe('for F and C', () => {
         it('returns the previous note', () => {
-          const chord = new Chord({
-            base: 'F',
-            modifier: null,
-            suffix: null,
-            bassBase: 'C',
-            bassModifier: null,
-          });
-
-          const transposedChord = chord.transposeDown();
-          expect(transposedChord).toBeChord({
-            base: 'E', modifier: null, suffix: null, bassBase: 'B', bassModifier: null,
-          });
+          expect(Chord.parse('F/C')?.transposeDown().toString()).toEqual('E/B');
         });
       });
 
       describe('for Db, Eb, Gb, Ab and Bb', () => {
         it('returns the previous note without b', () => {
-          const chord = new Chord({
-            base: 'D',
-            modifier: 'b',
-            suffix: null,
-            bassBase: 'E',
-            bassModifier: 'b',
-          });
-
-          const transposedChord = chord.transposeDown();
-          expect(transposedChord).toBeChord({
-            base: 'C', modifier: null, suffix: null, bassBase: 'D', bassModifier: null,
-          });
+          expect(Chord.parse('Db/Eb')?.transposeDown().toString()).toEqual('C/D');
         });
       });
 
       describe('for B# and E#', () => {
         it('returns the note without #', () => {
-          const chord = new Chord({
-            base: 'B',
-            modifier: '#',
-            suffix: null,
-            bassBase: 'E',
-            bassModifier: '#',
-          });
-
-          const transposedChord = chord.transposeDown();
-          expect(transposedChord).toBeChord({
-            base: 'B', modifier: null, suffix: null, bassBase: 'E', bassModifier: null,
-          });
+          expect(Chord.parse('B#/E#')?.transposeDown().toString()).toEqual('B/E');
         });
       });
 
       describe('for Fb and Cb', () => {
         it('returns the previous note with b', () => {
-          const chord = new Chord({
-            base: 'F',
-            modifier: 'b',
-            suffix: null,
-            bassBase: 'C',
-            bassModifier: 'b',
-          });
-
-          const transposedChord = chord.transposeDown();
-          expect(transposedChord).toBeChord({
-            base: 'E', modifier: 'b', suffix: null, bassBase: 'B', bassModifier: 'b',
-          });
+          expect(Chord.parse('Fb/Cb')?.transposeDown().toString()).toEqual('Eb/Bb');
         });
       });
     });

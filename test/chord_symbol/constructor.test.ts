@@ -1,33 +1,21 @@
 import Chord from '../../src/chord';
-import '../matchers';
+import { SYMBOL } from '../../src';
 
 describe('Chord', () => {
   describe('chord symbol', () => {
     describe('constructor', () => {
       it('assigns the right instance variables', () => {
-        const chord = new Chord({
-          base: 'E',
-          modifier: 'b',
-          suffix: 'sus',
-          bassBase: 'G',
-          bassModifier: '#',
-        });
-
-        expect(chord).toBeChord({
-          base: 'E', modifier: 'b', suffix: 'sus', bassBase: 'G', bassModifier: '#',
-        });
+        expect(Chord.parse('Ebsus/G#')?.toString()).toEqual('Ebsus/G#');
       });
 
       it('marks simple minor keys as minor', () => {
-        const chord = new Chord({ base: 'E', suffix: 'm' });
-
-        expect(chord.root.minor).toBe(true);
+        expect(Chord.parse('Em')?.isMinor()).toBe(true);
       });
 
       it('marks complex minor keys as minor', () => {
-        const chord = new Chord({ base: 'E', suffix: 'm7' });
+        const chord = new Chord({ base: 'E', suffix: 'm7', chordType: SYMBOL });
 
-        expect(chord.root.minor).toBe(true);
+        expect(chord.root?.minor).toBe(true);
       });
     });
   });

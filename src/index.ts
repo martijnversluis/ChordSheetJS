@@ -32,6 +32,7 @@ export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
 export { default as ChordProParser } from './parser/chord_pro_parser';
 export { default as ChordSheetParser } from './parser/chord_sheet_parser';
 export { default as ChordSheetSerializer } from './chord_sheet_serializer';
+export { default as ChordsOverWordsFormatter } from './formatter/chords_over_words_formatter';
 export { default as ChordsOverWordsParser } from './parser/chords_over_words_parser';
 export { default as Comment } from './chord_sheet/comment';
 export { default as Composite } from './chord_sheet/chord_pro/composite';
@@ -58,6 +59,7 @@ export {
   SYMBOL,
   TAB,
   VERSE,
+  NUMERAL,
 } from './constants';
 
 export default {

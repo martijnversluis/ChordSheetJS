@@ -1,5 +1,5 @@
 import Chord from '../../src/chord';
-import '../matchers';
+import { SYMBOL } from '../../src';
 
 describe('Chord', () => {
   describe('chord symbol', () => {
@@ -11,18 +11,12 @@ describe('Chord', () => {
           suffix: 'sus',
           bassBase: 'G',
           bassModifier: '#',
+          chordType: SYMBOL,
         });
 
         const convertedChord = originalChord.toChordSymbol();
 
-        expect(convertedChord).toBeChord({
-          base: 'E',
-          modifier: 'b',
-          suffix: 'sus',
-          bassBase: 'G',
-          bassModifier: '#',
-        });
-
+        expect(convertedChord.equals(originalChord)).toBeTruthy();
         expect(convertedChord).not.toBe(originalChord);
       });
     });
