@@ -338,10 +338,7 @@ class Chord implements ChordProperties {
     }
 
     if (!base) return null;
-
-    if (!chordType) {
-      throw new Error('Can\'t resolve at this point without a chord type');
-    }
+    if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
     return Key.resolve({
       key: base,
@@ -364,17 +361,9 @@ class Chord implements ChordProperties {
       chordType: ChordType | null,
     },
   ): Key | null {
-    if (bass) {
-      return bass;
-    }
-
-    if (!bassBase) {
-      return null;
-    }
-
-    if (!chordType) {
-      throw new Error('Can\'t resolve at this point without a chord type');
-    }
+    if (bass) return bass;
+    if (!bassBase) return null;
+    if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
     return Key.resolve({
       key: bassBase,
