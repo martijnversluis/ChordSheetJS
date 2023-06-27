@@ -380,6 +380,8 @@ metadata.get('author')   // =&gt; 'John'</p>
 <dd><p>Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/</p></dd>
 <dt><a href="#ChordProFormatter">ChordProFormatter</a></dt>
 <dd><p>Formats a song into a ChordPro chord sheet</p></dd>
+<dt><a href="#ChordsOverWordsFormatter">ChordsOverWordsFormatter</a></dt>
+<dd><p>Formats a song into a plain text chord sheet</p></dd>
 <dt><a href="#Formatter">Formatter</a></dt>
 <dd><p>Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object</p></dd>
 <dt><a href="#HtmlDivFormatter">HtmlDivFormatter</a></dt>
@@ -1111,6 +1113,24 @@ https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chord
 
 **Kind**: instance method of [<code>ChordProFormatter</code>](#ChordProFormatter)  
 **Returns**: <code>string</code> - <p>The ChordPro string</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+
+<a name="ChordsOverWordsFormatter"></a>
+
+## ChordsOverWordsFormatter
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: global class  
+<a name="ChordsOverWordsFormatter+format"></a>
+
+### chordsOverWordsFormatter.format(song) ⇒ <code>string</code>
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: instance method of [<code>ChordsOverWordsFormatter</code>](#ChordsOverWordsFormatter)  
+**Returns**: <code>string</code> - <p>the chord sheet</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |

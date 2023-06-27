@@ -109,9 +109,18 @@ function determineKey({
     key = grades[mode][modifier][grade];
   }
 
-  key ||= grades[mode][NO_MODIFIER][grade];
-  if (preferredModifier) key ||= grades[mode][preferredModifier][grade];
-  key ||= (grades[mode][SHARP][grade]);
+  if (!key) {
+    key = grades[mode][NO_MODIFIER][grade];
+  }
+
+  if (!key && preferredModifier) {
+    key = grades[mode][preferredModifier][grade];
+  }
+
+  if (!key) {
+    key = grades[mode][SHARP][grade];
+  }
+
   return key;
 }
 
