@@ -24,7 +24,7 @@
     "@babel/core": "^7.22.9",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-env": "^7.22.9",
     "@babel/preset-typescript": "^7.22.5",
     "@parcel/packager-ts": "2.9.3",
     "@parcel/transformer-typescript-types": "2.9.3",
