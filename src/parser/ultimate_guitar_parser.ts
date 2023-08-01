@@ -35,15 +35,22 @@ class UltimateGuitarParser extends ChordSheetParser {
       this.endSection();
     }
 
+    const tmp = this.song.currentLine;
+    // Always add comment line even for Verse and Chorus
+    if (OTHER_METADATA_LINE_REGEX.test(line)) {
+      this.parseMetadataLine(line);
+    }
+
     if (VERSE_LINE_REGEX.test(line)) {
       this.startNewLine();
       this.startSection(VERSE);
     } else if (CHORUS_LINE_REGEX.test(line)) {
       this.startNewLine();
       this.startSection(CHORUS);
-    } else if (OTHER_METADATA_LINE_REGEX.test(line)) {
-      this.parseMetadataLine(line);
-    } else {
+    }
+
+    // If we haven't started a new line above
+    if (this.song.currentLine === tmp) {
       super.parseLine(line);
     }
   }
@@ -81,6 +88,7 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.currentSectionType = sectionType;
     this.song.setCurrentProperties(sectionType);
 
+    // this is happening, but tag not rendered?
     if (sectionType in startSectionTags) {
       this.song.addTag(new Tag(startSectionTags[sectionType]));
     }
