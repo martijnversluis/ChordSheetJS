@@ -9,8 +9,8 @@ import Tag, {
   START_OF_VERSE,
 } from '../chord_sheet/tag';
 
-const VERSE_LINE_REGEX = /^\[Verse.*]/;
-const CHORUS_LINE_REGEX = /^\[Chorus]/;
+const VERSE_LINE_REGEX = /^\[Verse.*]/i;
+const CHORUS_LINE_REGEX = /^\[Chorus]/i;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 
 const startSectionTags = {
