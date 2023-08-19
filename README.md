@@ -8,6 +8,7 @@ A JavaScript library for parsing and formatting chord sheets
 - [How to ...?](#how-to-)
 - [Supported ChordPro directives](#supported-chordpro-directives)
 - [API docs](#api-docs)
+- [Contributing](CONTRIBUTING.md)
 
 ## Installation
 
