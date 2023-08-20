@@ -366,7 +366,7 @@ subject to breaking changes between major versions.
 <dd><p>Represents a chord with the corresponding (partial) lyrics</p></dd>
 <dt><a href="#Comment">Comment</a></dt>
 <dd><p>Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview</p></dd>
-<dt><a href="#Line">Line</a></dt>
+<dt><a href="#Line">Line</a> : <code><a href="#Font">Font</a></code></dt>
 <dd><p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p></dd>
 <dt><a href="#Metadata">Metadata</a></dt>
 <dd><p>Stores song metadata. Properties can be accessed using the get() method:</p>
@@ -453,6 +453,10 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 ## Members
 
 <dl>
+<dt><a href="#Font">Font</a> : <code>string</code> | <code>null</code></dt>
+<dd><p>The font color</p></dd>
+<dt><a href="#FontSize">FontSize</a> : <code>number</code></dt>
+<dd><p>The font size</p></dd>
 <dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
 <dd><p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p></dd>
 <dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
@@ -634,12 +638,13 @@ For a CSS string see [scopedCss](scopedCss)</p></dd>
 **Kind**: instance method of [<code>Comment</code>](#Comment)  
 <a name="Line"></a>
 
-## Line
+## Line : [<code>Font</code>](#Font)
 <p>Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag</p>
 
 **Kind**: global class  
 
-* [Line](#Line)
+* [Line](#Line) : [<code>Font</code>](#Font)
+    * [new Line()](#new_Line_new)
     * [.isEmpty()](#Line+isEmpty) ⇒ <code>boolean</code>
     * [.addItem(item)](#Line+addItem)
     * [.hasRenderableItems()](#Line+hasRenderableItems) ⇒ <code>boolean</code>
@@ -647,6 +652,13 @@ For a CSS string see [scopedCss](scopedCss)</p></dd>
     * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
     * [.isChorus()](#Line+isChorus) ⇒ <code>boolean</code>
     * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
+
+<a name="new_Line_new"></a>
+
+### new Line()
+<p>The chord font that applies to this line. Is derived from the directives:
+<code>chordfont</code>, <code>chordsize</code> and <code>chordcolour</code>
+See: https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
 
 <a name="Line+isEmpty"></a>
 
@@ -750,9 +762,16 @@ else it returns an array of strings.</p>
 **Kind**: global class  
 
 * [Paragraph](#Paragraph)
+    * [.addLine](#Paragraph+addLine) : [<code>Array.&lt;Line&gt;</code>](#Line)
     * [.type](#Paragraph+type) ⇒ <code>string</code>
     * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
+<a name="Paragraph+addLine"></a>
+
+### paragraph.addLine : [<code>Array.&lt;Line&gt;</code>](#Line)
+<p>The [Line](#Line) items of which the paragraph consists</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+type"></a>
 
 ### paragraph.type ⇒ <code>string</code>
@@ -1676,6 +1695,64 @@ Can be deserialized using [deserialize](deserialize)</p>
 | oneKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the key</p> |
 | otherKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the other key</p> |
 
+<a name="Font"></a>
+
+## Font : <code>string</code> \| <code>null</code>
+<p>The font color</p>
+
+**Kind**: global variable  
+<a name="Font+toCssString"></a>
+
+### font.toCssString() ⇒ <code>string</code>
+<p>Converts the font, size and color to a CSS string.
+If possible, font and size are combined to the <code>font</code> shorthand.
+If <code>font</code> contains double quotes (<code>&quot;</code>) those will be converted to single quotes (<code>'</code>).</p>
+
+**Kind**: instance method of [<code>Font</code>](#Font)  
+**Returns**: <code>string</code> - <p>The CSS string</p>  
+**Example**  
+```js
+// Returns "font-family: 'Times New Roman'"
+new Font({ font: '"Times New Roman"' }).toCssString()
+```
+**Example**  
+```js
+// Returns "color: red; font-family: Verdana"
+new Font({ font: 'Verdana', colour: 'red' }).toCssString()
+```
+**Example**  
+```js
+// Returns "font: 30px Verdana"
+new Font({ font: 'Verdana', size: '30' }).toCssString()
+```
+**Example**  
+```js
+// Returns "color: blue; font: 30% Verdana"
+new Font({ font: 'Verdana', size: '30%', colour: 'blue' }).toCssString()
+```
+<a name="FontSize"></a>
+
+## FontSize : <code>number</code>
+<p>The font size</p>
+
+**Kind**: global variable  
+<a name="FontSize+toString"></a>
+
+### fontSize.toString() ⇒ <code>string</code>
+<p>Stringifies the font size by concatenating size and unit</p>
+
+**Kind**: instance method of [<code>FontSize</code>](#FontSize)  
+**Returns**: <code>string</code> - <p>The font size</p>  
+**Example**  
+```js
+// Returns "30px"
+new FontSize(30, 'px').toString()
+```
+**Example**  
+```js
+// Returns "120%"
+new FontSize(120, '%').toString()
+```
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>
