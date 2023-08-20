@@ -7,7 +7,7 @@ ChordModifier
   = "#" / "b"
 
 ChordSuffix
-  = [a-zA-Z0-9()#\+]*
+  = [a-zA-Z0-9()#\+\-]*
 
 ChordSymbol
   = root:ChordSymbolRoot modifier:ChordModifier? suffix:$(ChordSuffix) bass:ChordSymbolBass? {
