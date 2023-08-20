@@ -39,14 +39,20 @@ class ChordSheetParser {
    * @param {boolean} [options.preserveWhitespace=true] whether to preserve trailing whitespace for chords
    * @deprecated
    */
-  constructor({ preserveWhitespace = true }: { preserveWhitespace?: boolean } = {}) {
-    deprecate(
-      `ChordSheetParser is deprecated, please use ChordsOverWordsParser. 
+  constructor(
+    { preserveWhitespace = true }: { preserveWhitespace?: boolean } = {},
+    showDeprecationWarning: boolean = true,
+  ) {
+    if (showDeprecationWarning) {
+      deprecate(
+        `ChordSheetParser is deprecated, please use ChordsOverWordsParser.
 
-ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks 
-support for many variations. Besides that, some chordpro feature have been ported back 
-to ChordsOverWordsParser, which adds some interesting functionality.`,
-    );
+  ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+  support for many variations. Besides that, some chordpro feature have been ported back
+  to ChordsOverWordsParser, which adds some interesting functionality.`,
+      );
+    }
+
     this.preserveWhitespace = preserveWhitespace;
   }
 
