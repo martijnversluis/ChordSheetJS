@@ -1,7 +1,7 @@
 import Formatter from './formatter';
 import Configuration from './configuration/configuration';
 import Song from '../chord_sheet/song';
-import { breakingChange, scopeCss } from '../utilities';
+import { scopeCss } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 
 export type HtmlTemplateArgs = {
@@ -37,17 +37,6 @@ abstract class HtmlFormatter extends Formatter {
 
   /**
    * Generates basic CSS, optionally scoped within the provided selector, to use with the HTML output
-   * @deprecated
-   */
-  static cssString(_scope = ''): void {
-    breakingChange(
-      'The class method cssString() was removed in favor of the instance PROPERTY. '
-      + 'Please use `new <Formatter>().cssString` instead.',
-    );
-  }
-
-  /**
-   * Generates basic CSS, optionally scoped within the provided selector, to use with the HTML output
    *
    * For example, execute cssString('.chordSheetViewer') will result in CSS like:
    *
@@ -60,17 +49,6 @@ abstract class HtmlFormatter extends Formatter {
    */
   cssString(scope = ''): string {
     return scopeCss(this.defaultCss, scope);
-  }
-
-  /**
-   * Basic CSS, in object style à la useStyles, to use with the HTML output
-   * @deprecated
-   */
-  static cssObject(): void {
-    breakingChange(
-      'The class method cssObject() was removed in favor of the instance PROPERTY. '
-      + 'Please use `new <Formatter>().cssObject` instead.',
-    );
   }
 
   /**

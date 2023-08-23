@@ -65,10 +65,6 @@ export function deprecate(message: string): void {
   }
 }
 
-export function breakingChange(message: string): void {
-  throw new Error(`BREAKING CHANGE: ${message}`);
-}
-
 export function isEmptyString(string: string | null | undefined): boolean {
   return (string === null || string === undefined || string === '');
 }
