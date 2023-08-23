@@ -2,7 +2,7 @@ import HtmlFormatter, { CSS, Template } from './html_formatter';
 import template from './templates/html_div_formatter';
 import { scopeCss } from '../utilities';
 
-export const defaultCss: CSS = {
+const defaultCss: CSS = {
   '.chord:not(:last-child)': {
     paddingRight: '10px',
   },
