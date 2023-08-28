@@ -3,7 +3,8 @@ import {
   CHORUS,
   NONE,
   VERSE,
-  TAB, Ternary,
+  TAB,
+  Ternary,
 } from '../../src';
 
 import '../matchers';

@@ -18,10 +18,6 @@ interface WhenCallback {
   (): string;
 }
 
-interface KeepCallback {
-  (_items: any[]): string;
-}
-
 export { isEvaluatable } from './utilities';
 
 export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordLyricsPair;
@@ -42,10 +38,6 @@ export function each(collection: any[], callback: EachCallback): string {
 
 export function when(condition: any, callback: WhenCallback): string {
   return condition ? callback() : '';
-}
-
-export function keep(variables: any[], callback: KeepCallback): string {
-  return callback.call(null, variables);
 }
 
 export const hasTextContents = (line: Line): boolean => (
@@ -76,13 +68,9 @@ export const paragraphClasses = (paragraph: Paragraph): string => {
   return classes.join(' ');
 };
 
-export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: Configuration): string => {
-  if (!metadata) {
-    throw new Error('cannot evaluate, metadata is null');
-  }
-
-  return item.evaluate(metadata, configuration.get('metadata.separator'));
-};
+export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: Configuration): string => (
+  item.evaluate(metadata, configuration.get('metadata.separator'))
+);
 
 export function fontStyleTag(font: Font) {
   const cssString = font.toCssString();

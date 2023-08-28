@@ -3,11 +3,12 @@ import { renderChord } from '../../helpers';
 
 import {
   each,
-  evaluate, fontStyleTag,
+  evaluate,
+  fontStyleTag,
   isChordLyricsPair,
   isComment,
   isEvaluatable,
-  isTag, keep,
+  isTag,
   lineClasses,
   lineHasContents,
   paragraphClasses,
