@@ -2,8 +2,14 @@ import { parse } from './parser/chord_peg_parser';
 import Key from './key';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 import { deprecate, isMinor } from './utilities';
+import ChordParsingError from './chord_parsing_error';
+
 import {
-  ChordType, Modifier, NUMERAL, NUMERIC, SYMBOL,
+  ChordType,
+  Modifier,
+  NUMERAL,
+  NUMERIC,
+  SYMBOL,
 } from './constants';
 
 function normalizeChordSuffix(suffix: string | null): string | null {
@@ -49,8 +55,15 @@ class Chord implements ChordProperties {
   }
 
   static parseOrFail(chordString: string): Chord {
-    const ast = parse(chordString.trim());
-    return new Chord(ast);
+    const trimmedChord = chordString.trim();
+
+    try {
+      const ast = parse(trimmedChord);
+      return new Chord(ast);
+    } catch (error) {
+      const errorObj = error as Error;
+      throw new ChordParsingError(`Failed parsing '${trimmedChord}': ${errorObj.message}`);
+    }
   }
 
   /**
