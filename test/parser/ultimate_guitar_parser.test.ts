@@ -48,6 +48,40 @@ consectetur adipiscing elit.`.substring(1);
     expect(line3Items[0]).toBeTag('end_of_verse', '');
   });
 
+  it('parses verses and choruses case-insensitively', () => {
+    const chordSheetVerseChorus = `
+[VERSE 1]
+C     G               Am
+Lorem ipsum dolor sit amet,
+[chorus]
+C           G          F
+consectetur adipiscing elit.`.substring(1);
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetVerseChorus);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(6);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_verse', '');
+
+    const line1Items = lines[1].items;
+    expect(line1Items.length).toEqual(3);
+
+    const line2Items = lines[2].items;
+    expect(line2Items[0]).toBeTag('end_of_verse', '');
+
+    const line3Items = lines[3].items;
+    expect(line3Items[0]).toBeTag('start_of_chorus', '');
+
+    const line4Items = lines[4].items;
+    expect(line4Items.length).toEqual(3);
+
+    const line5Items = lines[5].items;
+    expect(line5Items[0]).toBeTag('end_of_chorus', '');
+  });
+
   it('adds unknown sections as comments', () => {
     const chordSheetInstrumental = `
 [Instrumental]

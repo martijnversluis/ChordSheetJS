@@ -9,8 +9,8 @@ import Tag, {
   START_OF_VERSE,
 } from '../chord_sheet/tag';
 
-const VERSE_LINE_REGEX = /^\[Verse.*]/;
-const CHORUS_LINE_REGEX = /^\[Chorus]/;
+const VERSE_LINE_REGEX = /^\[Verse.*]/i;
+const CHORUS_LINE_REGEX = /^\[Chorus]/i;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 
 const startSectionTags = {
@@ -29,6 +29,15 @@ const endSectionTags = {
  */
 class UltimateGuitarParser extends ChordSheetParser {
   currentSectionType: string | null = null;
+
+  /**
+   * Instantiate a chord sheet parser
+   * @param {Object} [options={}] options
+   * @param {boolean} [options.preserveWhitespace=true] whether to preserve trailing whitespace for chords
+   */
+  constructor({ preserveWhitespace = true }: { preserveWhitespace?: boolean } = {}) {
+    super({ preserveWhitespace }, false);
+  }
 
   parseLine(line): void {
     if (this.isSectionEnd()) {

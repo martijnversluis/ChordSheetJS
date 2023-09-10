@@ -1,10 +1,12 @@
 import Line from './chord_sheet/line';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Item from './chord_sheet/item';
-import {
-  ChordType, FLAT, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
-} from './constants';
 import { GRADE_TO_KEY } from './scales';
+import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
+
+import {
+  ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
+} from './constants';
 
 export const hasChordContents = (line: Line): boolean => (
   line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
@@ -63,10 +65,6 @@ export function deprecate(message: string): void {
   }
 }
 
-export function breakingChange(message: string): void {
-  throw new Error(`BREAKING CHANGE: ${message}`);
-}
-
 export function isEmptyString(string: string | null | undefined): boolean {
   return (string === null || string === undefined || string === '');
 }
@@ -87,32 +85,65 @@ export function normalizeLineEndings(string: string): string {
   return string.replace(/\r\n?/g, '\n');
 }
 
-export function gradeToKey(
+class GradeSet {
+  grades: Record<ModifierMaybe, Record<number, string>>;
+
+  constructor(grades: Record<ModifierMaybe, Record<number, string>>) {
+    this.grades = grades;
+  }
+
+  determineGrade(modifier: ModifierMaybe | null, preferredModifier: Modifier | null, grade: number) {
+    return this.getGradeForModifier(modifier, grade)
+      || this.getGradeForModifier(NO_MODIFIER, grade)
+      || this.getGradeForModifier(preferredModifier, grade)
+      || this.getGradeForModifier(SHARP, grade);
+  }
+
+  getGradeForModifier(modifier: ModifierMaybe | null, grade: number) {
+    if (modifier) {
+      return this.grades[modifier][grade];
+    }
+
+    return null;
+  }
+}
+
+function determineKey({
+  type,
+  modifier,
+  preferredModifier,
+  grade,
+  minor,
+}: {
   type: ChordType,
   modifier: ModifierMaybe | null,
   preferredModifier: Modifier | null,
   grade: number,
   minor: boolean,
-): string {
-  const grades = GRADE_TO_KEY[type];
+}) {
   const mode = (minor ? MINOR : MAJOR);
-  let key: string | null = null;
+  const grades = GRADE_TO_KEY[type][mode];
+  return new GradeSet(grades).determineGrade(modifier, preferredModifier, grade);
+}
 
-  if (modifier === SHARP || modifier === FLAT) {
-    key = grades[mode][modifier][grade];
-  }
-
-  if (!key) {
-    key = grades[mode][NO_MODIFIER][grade];
-  }
-
-  if (!key && preferredModifier) {
-    key = grades[mode][preferredModifier][grade];
-  }
-
-  if (!key) {
-    key = grades[mode][SHARP][grade];
-  }
+export function gradeToKey(
+  {
+    type,
+    modifier,
+    preferredModifier,
+    grade,
+    minor,
+  }: {
+    type: ChordType,
+    modifier: ModifierMaybe | null,
+    preferredModifier: Modifier | null,
+    grade: number,
+    minor: boolean,
+  },
+): string {
+  let key = determineKey({
+    type, modifier, preferredModifier, grade, minor,
+  });
 
   if (!key) {
     throw new Error(
@@ -131,4 +162,16 @@ to a key`,
   }
 
   return key;
+}
+
+export function normalizeChordSuffix(suffix: string | null): string | null {
+  if (suffix === null) {
+    return null;
+  }
+
+  if (SUFFIX_MAPPING[suffix] === '[blank]') {
+    return null;
+  }
+
+  return SUFFIX_MAPPING[suffix] || suffix;
 }

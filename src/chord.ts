@@ -1,9 +1,7 @@
 import { parse } from './parser/chord_peg_parser';
 import Key from './key';
-import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
-import { deprecate, isMinor } from './utilities';
+import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 import ChordParsingError from './chord_parsing_error';
-
 import {
   ChordType,
   Modifier,
@@ -11,18 +9,6 @@ import {
   NUMERIC,
   SYMBOL,
 } from './constants';
-
-function normalizeChordSuffix(suffix: string | null): string | null {
-  if (suffix === null) {
-    return null;
-  }
-
-  if (SUFFIX_MAPPING[suffix] === '[blank]') {
-    return null;
-  }
-
-  return SUFFIX_MAPPING[suffix] || suffix;
-}
 
 interface ChordProperties {
   root?: Key | null;
@@ -363,13 +349,8 @@ class Chord implements ChordProperties {
       return root;
     }
 
-    if (!base) {
-      return null;
-    }
-
-    if (!chordType) {
-      throw new Error('Can\'t resolve at this point without a chord type');
-    }
+    if (!base) return null;
+    if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
     return Key.resolve({
       key: base,
@@ -392,17 +373,9 @@ class Chord implements ChordProperties {
       chordType: ChordType | null,
     },
   ): Key | null {
-    if (bass) {
-      return bass;
-    }
-
-    if (!bassBase) {
-      return null;
-    }
-
-    if (!chordType) {
-      throw new Error('Can\'t resolve at this point without a chord type');
-    }
+    if (bass) return bass;
+    if (!bassBase) return null;
+    if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
     return Key.resolve({
       key: bassBase,
