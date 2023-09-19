@@ -350,16 +350,6 @@ class Song extends MetadataAccessors {
     this.metadata.add(name, value);
   }
 
-  /**
-   * The song's metadata. Please use {@link metadata} instead.
-   * @deprecated
-   * @returns {@link Metadata} The metadata
-   */
-  get metaData(): Metadata {
-    deprecate('metaData has been deprecated, please use metadata instead (notice the lowercase "d")');
-    return this.metadata;
-  }
-
   getMetadata(name: string): string | string[] | undefined {
     return this.metadata.getMetadata(name);
   }
