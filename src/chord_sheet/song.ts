@@ -2,7 +2,6 @@ import Line, { LineType } from './line';
 import Paragraph from './paragraph';
 import Key from '../key';
 import ChordLyricsPair from './chord_lyrics_pair';
-import { deprecate } from '../utilities';
 import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
@@ -349,16 +348,6 @@ class Song extends MetadataAccessors {
 
   setMetadata(name: string, value: string): void {
     this.metadata.add(name, value);
-  }
-
-  /**
-   * The song's metadata. Please use {@link metadata} instead.
-   * @deprecated
-   * @returns {@link Metadata} The metadata
-   */
-  get metaData(): Metadata {
-    deprecate('metaData has been deprecated, please use metadata instead (notice the lowercase "d")');
-    return this.metadata;
   }
 
   getMetadata(name: string): string | string[] | undefined {
