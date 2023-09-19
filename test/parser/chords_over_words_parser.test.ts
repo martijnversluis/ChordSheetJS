@@ -488,6 +488,28 @@ Let it        be, let it be
       expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });
+
+    it('handles a lyrics line that starts with a "I" which can be a numeral chord ', () => {
+      const chordOverWords = `
+Verse 1
+  Dm7                   Bb                F2
+I searched the stars to knock on Heaven's door
+`.substring(1);
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines[0].items.length).toEqual(1);
+      expect(lines[0].items[0]).toBeTag('comment', 'Verse 1');
+
+      const line1Pairs = lines[1].items;
+      expect(line1Pairs[0]).toBeChordLyricsPair('', 'I ');
+      expect(line1Pairs[1]).toBeChordLyricsPair('Dm7', 'searched ');
+      expect(line1Pairs[2]).toBeChordLyricsPair('', 'the stars to ');
+      expect(line1Pairs[3]).toBeChordLyricsPair('Bb', 'knock ');
+      expect(line1Pairs[4]).toBeChordLyricsPair('', 'on Heaven\'s ');
+      expect(line1Pairs[5]).toBeChordLyricsPair('F2', 'door');
+    });
   });
 
   it('support CR line endings', () => {

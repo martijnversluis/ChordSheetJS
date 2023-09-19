@@ -32,11 +32,6 @@ describe('Chord', () => {
         const chord = Chord.parseOrFail('1sus4').normalize().toString();
         expect(chord).toBe('1sus');
       });
-
-      it('returns the suffix when it\'s not in the config', () => {
-        const chord = Chord.parseOrFail('113(add2)').normalize().toString();
-        expect(chord).toBe('113(add2)');
-      });
     });
   });
 });

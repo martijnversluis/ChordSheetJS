@@ -43,7 +43,7 @@ import {
   VERSE,
 } from './constants';
 
-export { default as Chord, parseChord } from './chord';
+export { default as Chord } from './chord';
 export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
 export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
 export { default as ChordProParser } from './parser/chord_pro_parser';

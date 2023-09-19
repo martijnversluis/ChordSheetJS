@@ -1,8 +1,13 @@
 import { parse } from './parser/chord_peg_parser';
 import Key from './key';
-import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
+import { isMinor, normalizeChordSuffix } from './utilities';
+import ChordParsingError from './chord_parsing_error';
 import {
-  ChordType, Modifier, NUMERAL, NUMERIC, SYMBOL,
+  ChordType,
+  Modifier,
+  NUMERAL,
+  NUMERIC,
+  SYMBOL,
 } from './constants';
 
 interface ChordProperties {
@@ -36,8 +41,15 @@ class Chord implements ChordProperties {
   }
 
   static parseOrFail(chordString: string): Chord {
-    const ast = parse(chordString.trim());
-    return new Chord(ast);
+    const trimmedChord = chordString.trim();
+
+    try {
+      const ast = parse(trimmedChord);
+      return new Chord(ast);
+    } catch (error) {
+      const errorObj = error as Error;
+      throw new ChordParsingError(`Failed parsing '${trimmedChord}': ${errorObj.message}`);
+    }
   }
 
   /**
@@ -196,13 +208,8 @@ class Chord implements ChordProperties {
     const suffix = this.suffix || '';
     const showMinor = suffix[0] !== 'm';
 
-    if (this.root) {
-      chordString = this.root.toString({ showMinor, useUnicodeModifier }) + (this.suffix || '');
-    }
-
-    if (this.bass) {
-      return `${chordString}/${this.bass.toString({ useUnicodeModifier })}`;
-    }
+    if (this.root) chordString = this.root.toString({ showMinor, useUnicodeModifier }) + suffix;
+    if (this.bass) return `${chordString}/${this.bass.toString({ useUnicodeModifier })}`;
 
     return chordString;
   }
@@ -235,10 +242,7 @@ class Chord implements ChordProperties {
 
     if (this.root) {
       normalizedRoot = this.root.normalize();
-
-      if (key) {
-        normalizedRoot = normalizedRoot.normalizeEnharmonics(key);
-      }
+      if (key) normalizedRoot = normalizedRoot.normalizeEnharmonics(key);
     }
 
     return this.set({
@@ -333,10 +337,7 @@ class Chord implements ChordProperties {
       chordType: ChordType | null,
     },
   ): Key | null {
-    if (root) {
-      return root;
-    }
-
+    if (root) return root;
     if (!base) return null;
     if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
@@ -404,17 +405,6 @@ class Chord implements ChordProperties {
       bass: this.bass ? transformFunc(this.bass) : null,
     });
   }
-}
-
-/**
- * Tries to parse a chord string into a chord
- * @param chordString the chord string, eg Esus4/G# or 1sus4/#3
- * @deprecated Please use {@link Chord.parse} instead
- * @returns {Chord|null}
- */
-export function parseChord(chordString: string): Chord | null {
-  deprecate('parseChord() is deprecated, please use Chord.parse() instead');
-  return Chord.parse(chordString);
 }
 
 export default Chord;

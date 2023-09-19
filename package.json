@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
+    "@babel/helper-get-function-arity": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
     "@babel/preset-env": "^7.16.11",
@@ -53,12 +54,13 @@
   },
   "scripts": {
     "build:suffix-normalize": "rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && ts-node src/normalize_mappings/generate-suffix-normalize-mapping.ts",
+    "build:chord-suffix-grammar": "bin/generate_chord_suffix_grammar",
     "build:pegjs:chordpro": "peggy --plugin ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
     "build:pegjs:chords-over-words": "bin/generate_parser chords_over_words",
-    "build:pegjs:chord": "peggy --plugin ts-pegjs -o src/parser/chord_peg_parser.ts src/parser/chord_grammar.pegjs",
+    "build:pegjs:chord": "bin/combine_files src/parser/chord_grammar.pegjs src/parser/chord_suffix_grammar.pegjs src/parser/chord_combined_grammer.pegjs && peggy --plugin ts-pegjs -o src/parser/chord_peg_parser.ts src/parser/chord_combined_grammer.pegjs",
     "build:pegjs": "yarn build:pegjs:chord && yarn build:pegjs:chordpro && yarn build:pegjs:chords-over-words",
     "build:scales": "bin/generate_scales && yarn eslint:fix src/scales.ts",
-    "build:code-generate": "yarn build:suffix-normalize && yarn build:pegjs && yarn build:scales",
+    "build:code-generate": "yarn build:suffix-normalize && yarn build:chord-suffix-grammar && yarn build:pegjs && yarn build:scales",
     "build:sources": "parcel build",
     "build:browserify": "browserify lib/index.js --outfile lib/bundle.js --standalone ChordSheetJS",
     "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify",

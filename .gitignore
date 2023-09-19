@@ -6,3 +6,5 @@ src/parser/*_peg_parser.ts
 .tool-versions
 src/normalize_mappings/suffix-normalize-mapping.ts
 .parcel-cache
+src/parser/chord_combined_grammer.pegjs
+src/parser/chord_suffix_grammar.pegjs
