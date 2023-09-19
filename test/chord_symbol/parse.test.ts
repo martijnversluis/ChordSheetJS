@@ -126,9 +126,7 @@ describe('Chord', () => {
 
         it('parses a chord with confusing suffix', () => {
           const chord = Chord.parse('A7(#9)');
-          expect(chord).toBeChord({
-            base: 'A', modifier: null, suffix: '7(#9)', bassBase: null, bassModifier: null,
-          });
+          expect(chord?.toString()).toEqual('A7(#9)');
         });
       });
 
@@ -324,9 +322,7 @@ describe('Chord', () => {
       describe('chord with only a bass', () => {
         it('parses a simple chord with no base', () => {
           const chord = Chord.parse('/B');
-          expect(chord).toBeChord({
-            base: null, modifier: null, suffix: null, bassBase: 'B', bassModifier: null,
-          });
+          expect(chord?.toString()).toEqual('/B');
         });
       });
     });

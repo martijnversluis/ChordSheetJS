@@ -340,7 +340,7 @@ class Key implements KeyProperties {
 
     this.ensureGrade();
 
-    const keyObj = Key.wrapOrFail(this.modifier || key);
+    const keyObj = Key.wrapOrFail(key);
     const chordSymbol = this.set({
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
