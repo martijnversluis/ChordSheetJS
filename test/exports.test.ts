@@ -29,7 +29,6 @@ import ChordSheetJS, {
   SYMBOL,
   TAB,
   VERSE,
-  parseChord,
 } from '../src';
 
 describe('exports', () => {
@@ -64,7 +63,6 @@ describe('exports', () => {
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
-    expect(parseChord).toBeDefined();
   });
 
   it('supplies all constants as properties of the default export', () => {

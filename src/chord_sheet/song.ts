@@ -2,7 +2,6 @@ import Line, { LineType } from './line';
 import Paragraph from './paragraph';
 import Key from '../key';
 import ChordLyricsPair from './chord_lyrics_pair';
-import { deprecate } from '../utilities';
 import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';

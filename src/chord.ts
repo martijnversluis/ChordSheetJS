@@ -1,6 +1,6 @@
 import { parse } from './parser/chord_peg_parser';
 import Key from './key';
-import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
+import { isMinor, normalizeChordSuffix } from './utilities';
 import ChordParsingError from './chord_parsing_error';
 import {
   ChordType,
@@ -405,17 +405,6 @@ class Chord implements ChordProperties {
       bass: this.bass ? transformFunc(this.bass) : null,
     });
   }
-}
-
-/**
- * Tries to parse a chord string into a chord
- * @param chordString the chord string, eg Esus4/G# or 1sus4/#3
- * @deprecated Please use {@link Chord.parse} instead
- * @returns {Chord|null}
- */
-export function parseChord(chordString: string): Chord | null {
-  deprecate('parseChord() is deprecated, please use Chord.parse() instead');
-  return Chord.parse(chordString);
 }
 
 export default Chord;
