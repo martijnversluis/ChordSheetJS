@@ -38,6 +38,22 @@ function valuesEqual(expected: any, actual: any): boolean {
   return expected === actual;
 }
 
+function getObjectType(object) {
+  if (object === null) {
+    return 'null';
+  }
+
+  if (object === undefined) {
+    return 'undefined';
+  }
+
+  if ('constructor' in object) {
+    return `an instance of ${object.constructor.name}`;
+  }
+
+  return `${object} (${typeof object})`;
+}
+
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
   const pass = (!klass || received instanceof klass)
@@ -60,7 +76,7 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
       if (type !== 'object') {
         errors.push(`it was a ${type} with value ${received}`);
       } else if (klass && !(received instanceof klass)) {
-        errors.push(`it was a instance of ${received.constructor.name}`);
+        errors.push(`it was ${getObjectType(received)}`);
       } else {
         propertyNames.forEach((name) => {
           const actualProperty = received[name];

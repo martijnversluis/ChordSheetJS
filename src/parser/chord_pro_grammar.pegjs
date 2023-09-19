@@ -1,8 +1,8 @@
 ChordSheet
-  = lines: LineWithNewline* line: Line? {
+  = lines:LineWithNewline* trailingLine:Line? {
       return {
         type: 'chordSheet',
-        lines: [...lines, line],
+        lines: [...lines, trailingLine],
       };
     }
 

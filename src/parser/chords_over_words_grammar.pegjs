@@ -10,42 +10,19 @@ ChordSheet
     }
 
 ChordSheetContents
-  = newLine:NewLine? items:ChordSheetItemWithNewLine* trailingItem:ChordSheetItem? {
-    const hasEmptyLine = newLine?.length > 0;
-    const emptyLines = hasEmptyLine ? [{ type: "line", items: [] }] : [];
-    return [...emptyLines, ...items, trailingItem];
+  = newLine:NewLine? lines:ChordSheetLineWithNewLine* trailingLine:ChordSheetLine? {
+    const allLines = combineChordSheetLines(newLine, lines, trailingLine);
+    const arrangedLines = arrangeChordSheetLines(allLines);
+    return arrangedLines;
   }
 
-ChordSheetItemWithNewLine
-  = item:ChordSheetItem NewLine {
+ChordSheetLineWithNewLine
+  = item:ChordSheetLine NewLine {
     return item;
   }
 
-ChordSheetItem
-  = item:(DirectionLine / InlineMetadata / ChordLyricsLines / ChordsLine / LyricsLine) {
-    if (item.type === "chordsLine") {
-      return {
-        type: "line",
-        items: item.items.map((item) => {
-          const chordLyricsPair = {
-            type: "chordLyricsPair"
-          };
-
-          if (item.type === "chord") {
-            return {
-              ...chordLyricsPair,
-              chord: item
-            };
-          }
-
-          return {
-            ...chordLyricsPair,
-            chords: item.value
-          };
-        })
-      };
-    }
-
+ChordSheetLine
+  = item:(DirectionLine / InlineMetadata / ChordsLine / LyricsLine) {
     return item;
   }
 
@@ -65,12 +42,12 @@ ChordLyricsLines
 
         if (secondWordPosition && secondWordPosition < end) {
           return [
-            { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition) },
+            { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition).trim() + " " },
             { type: "chordLyricsPair", chords: "", lyrics: pairLyrics.substring(secondWordPosition) },
           ];
         }
-
-        return { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics };
+		    const trimmedLyrics = /.+\s+$/.test(pairLyrics) ? pairLyrics.trim() + " " : pairLyrics;
+        return { type: "chordLyricsPair", ...chordData, lyrics: trimmedLyrics };
       }).flat();
 
       const firstChord = chords[0];
@@ -90,8 +67,13 @@ ChordLyricsLines
       return { type: "line", items: chordLyricsPairs };
     }
 
+SingleChordsLine
+  = chordsLine:ChordsLine & (NewLine ChordsLine) {
+      return chordsLine;
+    }
+
 ChordsLine
-  = items:(RhythmSymbolWithSpacing / ChordWithSpacing)+ {
+  = items:(ChordWithSpacing / RhythmSymbolWithSpacing)+ {
       return {
         type: "chordsLine",
         items
@@ -104,7 +86,7 @@ RhythmSymbolWithSpacing
     }
 
 RhythmSymbol
-  = symbol:("/" / "|" / "-") {
+  = symbol:("/" / "|" / "-" / "x") {
       return {
         type: "symbol",
         value: symbol,
@@ -114,16 +96,7 @@ RhythmSymbol
 
 LyricsLine
   = lyrics:Lyrics {
-  	if (lyrics.length === 0) {
-      return { type: "line", items: [] };
-    }
-
-    return {
-      type: "line",
-      items: [
-        { type: "chordLyricsPair", chords: "", lyrics }
-      ]
-    };
+    return { type: "lyricsLine", content: lyrics };
   }
 
 Lyrics

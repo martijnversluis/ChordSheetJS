@@ -300,6 +300,14 @@ class Key implements KeyProperties {
     return this.changeGrade(-3).set({ minor: true });
   }
 
+  toMajor(): Key {
+    if (this.isMinor()) {
+      return this.transpose(3).set({ minor: false });
+    }
+
+    return this.clone();
+  }
+
   clone(): Key {
     return this.set({});
   }
@@ -595,10 +603,6 @@ class Key implements KeyProperties {
     }
 
     return this.clone();
-  }
-
-  removeMinor(): Key {
-    return this.set({ minor: false });
   }
 
   normalizeEnharmonics(key: Key | string | null): Key {

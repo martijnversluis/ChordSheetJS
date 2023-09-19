@@ -429,7 +429,7 @@ const minorExamples = {
 };
 
 describe('numeral chords', () => {
-  describe('#toChordSymbol', () => {
+  describe('toChordSymbol', () => {
     describe('major Keys', () => {
       Object.entries(majorExamples).forEach(([key, conversions]) => {
         describe(`For key ${key}`, () => {

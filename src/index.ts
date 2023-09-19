@@ -3,6 +3,7 @@ import ChordProFormatter from './formatter/chord_pro_formatter';
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
 import ChordSheetSerializer from './chord_sheet_serializer';
+import ChordsOverWordsFormatter from './formatter/chords_over_words_formatter';
 import ChordsOverWordsParser from './parser/chords_over_words_parser';
 import Comment from './chord_sheet/comment';
 import Composite from './chord_sheet/chord_pro/composite';
@@ -53,8 +54,8 @@ export { default as ChordsOverWordsParser } from './parser/chords_over_words_par
 export { default as Comment } from './chord_sheet/comment';
 export { default as Composite } from './chord_sheet/chord_pro/composite';
 export { default as Formatter } from './formatter/formatter';
-export { default as HtmlFormatter } from './formatter/html_formatter';
 export { default as HtmlDivFormatter } from './formatter/html_div_formatter';
+export { default as HtmlFormatter } from './formatter/html_formatter';
 export { default as HtmlTableFormatter } from './formatter/html_table_formatter';
 export { default as Key } from './key';
 export { default as Line } from './chord_sheet/line';
@@ -95,29 +96,30 @@ export {
 } from './constants';
 
 export default {
+  CHORUS,
   ChordLyricsPair,
   ChordProFormatter,
   ChordProParser,
   ChordSheetParser,
   ChordSheetSerializer,
+  ChordsOverWordsFormatter,
   ChordsOverWordsParser,
   Comment,
   Composite,
   HtmlDivFormatter,
   HtmlTableFormatter,
+  INDETERMINATE,
   Line,
   Literal,
   Metadata,
+  NONE,
   Paragraph,
   Song,
+  TAB,
   Tag,
   Ternary,
   TextFormatter,
   UltimateGuitarParser,
-  CHORUS,
-  INDETERMINATE,
-  NONE,
-  TAB,
   VERSE,
   templateHelpers,
 };

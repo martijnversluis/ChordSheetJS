@@ -65,7 +65,7 @@ class Chord implements ChordProperties {
 
     let chordSymbolChord = new Chord({
       suffix: this.suffix ? normalizeChordSuffix(this.suffix) : null,
-      root: this.root?.toChordSymbol(keyObj),
+      root: this.root?.toChordSymbol(keyObj) || null,
       bass: this.bass?.toChordSymbol(keyObj) || null,
     });
 
@@ -117,7 +117,7 @@ class Chord implements ChordProperties {
 
     return new Chord({
       suffix: normalizeChordSuffix(this.suffix),
-      root: this.root?.toNumeric(keyObj),
+      root: this.root?.toNumeric(keyObj) || null,
       bass: this.bass?.toNumeric(keyObj) || null,
     });
   }
