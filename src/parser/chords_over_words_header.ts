@@ -5,12 +5,8 @@ function combineChordSheetLines(newLine: string | null, lines, trailingLine): an
   return [...emptyLines, ...lines, trailingLine];
 }
 
-function pairChordsWithLyrics(chordsLine, lyricsLine) {
-  const { content: lyrics } = lyricsLine;
-
-  const chords = chordsLine.items;
-
-  const chordLyricsPairs = chords.map((chord, i) => {
+function constructChordLyricsPairs(chords, lyrics) {
+  return chords.map((chord, i) => {
     const nextChord = chords[i + 1];
     const start = chord.column - 1;
     const end = nextChord ? nextChord.column - 1 : lyrics.length;
@@ -28,7 +24,13 @@ function pairChordsWithLyrics(chordsLine, lyricsLine) {
     const trimmedLyrics = /.+\s+$/.test(pairLyrics) ? `${pairLyrics.trim()} ` : pairLyrics;
     return { type: 'chordLyricsPair', ...chordData, lyrics: trimmedLyrics };
   }).flat();
+}
 
+function pairChordsWithLyrics(chordsLine, lyricsLine) {
+  const { content: lyrics } = lyricsLine;
+
+  const chords = chordsLine.items;
+  const chordLyricsPairs = constructChordLyricsPairs(chords, lyrics);
   const firstChord = chords[0];
 
   if (firstChord && firstChord.column > 1) {
@@ -86,6 +88,20 @@ function lyricsToLine(lyricsLine) {
   return { type: 'line', items: [] };
 }
 
+function buildLine(chordSheetLine, nextLine) {
+  const { type } = chordSheetLine;
+
+  if (type === 'lyricsLine') {
+    return [lyricsToLine(chordSheetLine), false];
+  } if (type === 'chordsLine') {
+    if (nextLine && nextLine.type === 'lyricsLine' && nextLine.content && nextLine.content.length > 0) {
+      return [pairChordsWithLyrics(chordSheetLine, nextLine), true];
+    }
+    return [chordsToLine(chordSheetLine), false];
+  }
+  return [chordSheetLine, false];
+}
+
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 function arrangeChordSheetLines(chordSheetLines: any[]) {
   const arrangedLines: any[] = [];
@@ -94,24 +110,10 @@ function arrangeChordSheetLines(chordSheetLines: any[]) {
 
   while (lineIndex <= lastLineIndex) {
     const chordSheetLine = chordSheetLines[lineIndex];
-    const { type } = chordSheetLine;
-
-    if (type === 'lyricsLine') {
-      arrangedLines.push(lyricsToLine(chordSheetLine));
-    } else if (type === 'chordsLine') {
-      const nextLine = chordSheetLines[lineIndex + 1];
-
-      if (nextLine && nextLine.type === 'lyricsLine' && nextLine.content && nextLine.content.length > 0) {
-        arrangedLines.push(pairChordsWithLyrics(chordSheetLine, nextLine));
-        lineIndex += 1;
-      } else {
-        arrangedLines.push(chordsToLine(chordSheetLine));
-      }
-    } else {
-      arrangedLines.push(chordSheetLine);
-    }
-
-    lineIndex += 1;
+    const nextLine = chordSheetLines[lineIndex + 1];
+    const [arrangedLine, skipNextLine] = buildLine(chordSheetLine, nextLine);
+    arrangedLines.push(arrangedLine);
+    lineIndex += (skipNextLine ? 2 : 1);
   }
 
   return arrangedLines;
