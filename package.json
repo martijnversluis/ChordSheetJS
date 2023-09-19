@@ -21,7 +21,7 @@
   "homepage": "https://github.com/bettermusic/ChordChartJS",
   "devDependencies": {
     "@babel/cli": "^7.22.15",
-    "@babel/core": "^7.22.15",
+    "@babel/core": "^7.22.20",
     "@babel/helper-get-function-arity": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
