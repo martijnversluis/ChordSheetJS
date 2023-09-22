@@ -81,3 +81,19 @@ export function fontStyleTag(font: Font) {
 
   return '';
 }
+
+export default {
+  isEvaluatable,
+  isChordLyricsPair,
+  lineHasContents,
+  isTag,
+  isComment,
+  stripHTML,
+  each,
+  when,
+  hasTextContents,
+  lineClasses,
+  paragraphClasses,
+  evaluate,
+  fontStyleTag,
+};

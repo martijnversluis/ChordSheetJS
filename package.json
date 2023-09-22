@@ -50,6 +50,7 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "ts-pegjs": "^3.0.0",
+    "tsc": "^2.0.4",
     "typescript": "^4.6.3"
   },
   "scripts": {
@@ -63,7 +64,8 @@
     "build:code-generate": "yarn build:suffix-normalize && yarn build:chord-suffix-grammar && yarn build:pegjs && yarn build:scales",
     "build:sources": "parcel build",
     "build:browserify": "browserify lib/index.js --outfile lib/bundle.js --standalone ChordSheetJS",
-    "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify",
+    "build:check-types": "tsc lib/main.d.ts",
+    "build": "yarn build:code-generate && yarn build:sources && yarn build:browserify && yarn build:check-types",
     "dev": "parcel watch --no-cache",
     "jest": "jest",
     "test": "yarn lint && yarn jest",
