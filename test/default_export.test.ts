@@ -24,7 +24,6 @@ describe('default export', () => {
     'INDETERMINATE',
     'VERSE',
     'NONE',
-    'templateHelpers',
   ].forEach((constantName) => {
     it(`contains ${constantName}`, () => {
       expect(typeof chordsheetjs[constantName]).not.toEqual('undefined');
