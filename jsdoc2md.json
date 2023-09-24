@@ -12,6 +12,6 @@
     "ignore": ["**/*.(test|spec).ts"],
     "babelrc": false,
     "presets": [["@babel/preset-env", { "targets": { "node": true } }], "@babel/preset-typescript"],
-    "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"]
+    "plugins": ["@babel/transform-class-properties", "@babel/transform-object-rest-spread"]
   }
 }
