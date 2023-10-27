@@ -2031,12 +2031,19 @@
     "@parcel/utils" "2.9.3"
     posthtml "^0.16.4"
 
-"@parcel/packager-ts@2.9.3":
-  version "2.9.3"
-  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.9.3.tgz#3a17de9a20ba6dbf964a7d007d9244a47eeee034"
-  integrity sha512-Vd9dm1FqaFDw/kWCh95zgGS08HvIpSLg5Aa+AIhFiM0G+kpRSItcBSNJVwC7JKmLk1rmQhmQKoCKX26+nvyAzA==
+"@parcel/packager-ts@2.10.1":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.10.1.tgz#a47126a9a0260e4b461252c82cdcc2de3c78a56b"
+  integrity sha512-tiXzqjUWB0ZT/X83w09OOaji/I5IJYpywBRC18ZQLHSgabBzMV7G4wRIYxhw9/JnXcjiPtA6mPrSmCozYHQDOQ==
   dependencies:
-    "@parcel/plugin" "2.9.3"
+    "@parcel/plugin" "2.10.1"
+
+"@parcel/plugin@2.10.1":
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@parcel/plugin/-/plugin-2.10.1.tgz#47b25cd93b483c8c643ff9382715e6fc726b9dd0"
+  integrity sha512-fhsWI5dzsmkQ2ye6jArDMiObw4yBkp3UoqAYCG/pGSsGXDpn8N0tOknRfycH509CGvw6ooGg6LORhFgak4cjDw==
+  dependencies:
+    "@parcel/types" "2.10.1"
 
 "@parcel/plugin@2.10.1":
   version "2.10.1"
