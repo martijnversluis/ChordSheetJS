@@ -2,7 +2,7 @@ import Chord from './chord';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
-import { CAPO } from './chord_sheet/tag';
+import { CAPO, CHORD_STYLE, ChordType } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
@@ -13,7 +13,12 @@ export function transposeDistance(transposeKey: string, songKey: string): number
   return Key.distance(songKey, transposeKey);
 }
 
-function chordTransposeDistance(capo: number, transposeKey: string | null, songKey: string, renderKey: Key | null) {
+function chordTransposeDistance(
+  capo: number,
+  transposeKey: string | null,
+  songKey: string,
+  renderKey: Key | null | undefined,
+) {
   let transpose = -1 * (capo || 0);
 
   if (songKey) {
@@ -27,6 +32,23 @@ function chordTransposeDistance(capo: number, transposeKey: string | null, songK
   }
 
   return transpose;
+}
+
+function changeChordType(
+  chord: Chord,
+  type: ChordType,
+  referenceKey: Key | null,
+): Chord {
+  switch (type) {
+    case 'symbol':
+      return chord.toChordSymbol(referenceKey);
+    case 'numeral':
+      return chord.toNumeral(referenceKey);
+    case 'number':
+      return chord.toNumeric(referenceKey);
+    default:
+      return chord;
+  }
 }
 
 interface RenderChordOptions {
@@ -48,6 +70,7 @@ export function renderChord(
   const chord = Chord.parse(chordString);
   const songKey = song.key;
   const capo = parseInt(song.metadata.getSingle(CAPO), 10);
+  const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
   if (!chord) {
     return chordString;
@@ -58,7 +81,7 @@ export function renderChord(
   const transposedChord = chord.transpose(effectiveTransposeDistance);
   const normalizedChord = (normalizeChords ? transposedChord.normalize(effectiveKey) : transposedChord);
 
-  return normalizedChord.toString({ useUnicodeModifier });
+  return changeChordType(normalizedChord, chordStyle, effectiveKey).toString({ useUnicodeModifier });
 }
 
 /**
