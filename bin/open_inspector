@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+browser_app_id=$(defaults read com.apple.LaunchServices/com.apple.launchservices.secure LSHandlers | sed -n -e "/LSHandlerURLScheme = https;/{x;p;d;}" -e 's/.*=[^"]"\(.*\)";/\1/g' -e x)
+
+osascript <<APPLE_SCRIPT
+tell application id "${browser_app_id}"
+  open location "chrome://inspect"
+end tell
+APPLE_SCRIPT

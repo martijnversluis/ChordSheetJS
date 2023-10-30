@@ -432,4 +432,60 @@ Let it [Am]be
 
     expect(formatted).toEqual(expectedText);
   });
+
+  it('can change chord type', () => {
+    const chordSheet = `
+{key: C}
+{chord_style: symbol}
+Let it [1]be, let it [1/5]be,
+let it [4]be, let it [1]be`.substring(1);
+
+    const expectedOutput = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">be, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">C/G</div>
+              <div class="lyrics">be,</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">F</div>
+              <div class="lyrics">be, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">be</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const song = new ChordProParser().parse(chordSheet);
+    const actualOutput = new HtmlDivFormatter().format(song);
+
+    expect(actualOutput).toEqual(expectedOutput);
+  });
 });

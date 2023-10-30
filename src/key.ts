@@ -34,7 +34,7 @@ interface KeyProperties {
 }
 
 const KEY_TYPES: ChordType[] = [SYMBOL, NUMERIC, NUMERAL];
-const NATURAL_MINORS = [1, 2, 5];
+const NATURAL_MINORS = [1, 2, 3, 4, 5, 8, 9, 10];
 const NO_FLAT_GRADES = [4, 11];
 const NO_FLAT_NUMBERS = [1, 4];
 const NO_SHARP_GRADES = [5, 0];
@@ -410,7 +410,7 @@ class Key implements KeyProperties {
       type: NUMERIC,
       grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
       referenceKeyGrade: 0,
-      modifier: referenceKey.modifier,
+      modifier: null,
       preferredModifier: referenceKey.modifier,
     });
   }
