@@ -212,6 +212,16 @@ export const TITLECOLOUR = 'titlecolour';
  */
 export const CHORUS = 'chorus';
 
+/**
+ * Chord type directive. Determines the type of chords used in the rendered chord sheet.
+ * Possible values are 'symbol', 'numeral' and 'number'
+ * @see https://github.com/bettermusic/ChordSheetJS/issues/352
+ * @type {string}
+ */
+export const CHORD_STYLE = 'chord_style';
+
+export type ChordType = 'symbol' | 'numeral' | 'number' | null;
+
 const TITLE_SHORT = 't';
 const SUBTITLE_SHORT = 'st';
 const COMMENT_SHORT = 'c';
@@ -231,6 +241,7 @@ export const META_TAGS = [
   ALBUM,
   ARTIST,
   CAPO,
+  CHORD_STYLE,
   COMPOSER,
   COPYRIGHT,
   DURATION,
