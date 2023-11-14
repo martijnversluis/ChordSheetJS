@@ -19,6 +19,7 @@ interface WhenCallback {
 }
 
 export { isEvaluatable } from './utilities';
+export { renderChord } from './helpers';
 
 export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordLyricsPair;
 

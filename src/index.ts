@@ -33,6 +33,7 @@ import {
   paragraphClasses,
   evaluate,
   fontStyleTag,
+  renderChord,
 } from './template_helpers';
 
 import {
@@ -82,6 +83,7 @@ export const templateHelpers = {
   paragraphClasses,
   evaluate,
   fontStyleTag,
+  renderChord,
 };
 
 export {
