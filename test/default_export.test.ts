@@ -29,27 +29,4 @@ describe('default export', () => {
       expect(typeof chordsheetjs[constantName]).not.toEqual('undefined');
     });
   });
-
-  describe('templateHelpers', () => {
-    [
-      'isEvaluatable',
-      'isChordLyricsPair',
-      'lineHasContents',
-      'isTag',
-      'isComment',
-      'stripHTML',
-      'each',
-      'when',
-      'hasTextContents',
-      'lineClasses',
-      'paragraphClasses',
-      'evaluate',
-      'fontStyleTag',
-      'renderChord',
-    ].forEach((helperName) => {
-      it(`contains ${helperName}`, () => {
-        expect(typeof chordsheetjs.templateHelpers[helperName]).not.toEqual('undefined');
-      });
-    });
-  });
 });

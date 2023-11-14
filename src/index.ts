@@ -20,23 +20,6 @@ import TextFormatter from './formatter/text_formatter';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 
 import {
-  isEvaluatable,
-  isChordLyricsPair,
-  lineHasContents,
-  isTag,
-  isComment,
-  stripHTML,
-  each,
-  when,
-  hasTextContents,
-  lineClasses,
-  paragraphClasses,
-  evaluate,
-  fontStyleTag,
-  renderChord,
-} from './template_helpers';
-
-import {
   CHORUS,
   INDETERMINATE,
   NONE,
@@ -68,23 +51,7 @@ export { default as Tag } from './chord_sheet/tag';
 export { default as Ternary } from './chord_sheet/chord_pro/ternary';
 export { default as TextFormatter } from './formatter/text_formatter';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
-
-export const templateHelpers = {
-  isEvaluatable,
-  isChordLyricsPair,
-  lineHasContents,
-  isTag,
-  isComment,
-  stripHTML,
-  each,
-  when,
-  hasTextContents,
-  lineClasses,
-  paragraphClasses,
-  evaluate,
-  fontStyleTag,
-  renderChord,
-};
+export { default as templateHelpers } from './template_helpers';
 
 export {
   CHORUS,
@@ -123,5 +90,4 @@ export default {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
-  templateHelpers,
 };
