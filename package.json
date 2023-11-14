@@ -31,7 +31,7 @@
     "@parcel/transformer-typescript-types": "2.10.1",
     "@testing-library/jest-dom": "^6.1.4",
     "@types/jest": "^29.2.2",
-    "@types/lodash.get": "^4.4.8",
+    "@types/lodash.get": "^4.4.9",
     "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
