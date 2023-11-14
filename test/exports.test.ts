@@ -46,6 +46,7 @@ const {
   paragraphClasses,
   evaluate,
   fontStyleTag,
+  renderChord,
 } = templateHelpers;
 
 describe('exports', () => {
@@ -97,6 +98,7 @@ describe('exports', () => {
     expect(paragraphClasses).toBeDefined();
     expect(evaluate).toBeDefined();
     expect(fontStyleTag).toBeDefined();
+    expect(renderChord).toBeDefined();
   });
 
   it('supplies all constants as properties of the default export', () => {
