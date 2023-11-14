@@ -134,14 +134,6 @@ class Note implements NoteProperties {
     return this.minor;
   }
 
-  toMajor(): Note {
-    return this.set({ minor: false });
-  }
-
-  toMinor(): Note {
-    return this.set({ minor: true });
-  }
-
   equals(otherNote: Note): boolean {
     return this._note === otherNote._note && this.type === otherNote.type && this.minor === otherNote.minor;
   }
