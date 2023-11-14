@@ -9,6 +9,7 @@ import Metadata from './chord_sheet/metadata';
 import Configuration from './formatter/configuration/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
+import { renderChord } from './helpers';
 
 interface EachCallback {
   (_item: any): string;
@@ -97,4 +98,5 @@ export default {
   paragraphClasses,
   evaluate,
   fontStyleTag,
+  renderChord,
 };
