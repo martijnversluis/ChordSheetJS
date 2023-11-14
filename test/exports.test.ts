@@ -47,6 +47,7 @@ const {
   evaluate,
   fontStyleTag,
   renderChord,
+  hasChordContents,
 } = templateHelpers;
 
 describe('exports', () => {
@@ -99,6 +100,7 @@ describe('exports', () => {
     expect(evaluate).toBeDefined();
     expect(fontStyleTag).toBeDefined();
     expect(renderChord).toBeDefined();
+    expect(hasChordContents).toBeDefined();
   });
 
   it('supplies all constants as properties of the default export', () => {
