@@ -25,4 +25,4 @@ const source = peggy.generate(input, {
   format: 'commonjs',
 });
 
-fs.writeFileSync(outputFile, `import print from 'print';\n\n${source}`);
+fs.writeFileSync(outputFile, `import { chopFirstWord } from './parser_helpers';\n\n${source}`);
