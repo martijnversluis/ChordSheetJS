@@ -36,19 +36,19 @@ ChordLyricsLines
         const start = chord.column - 1;
         const end = nextChord ? nextChord.column - 1 : lyrics.length;
         const pairLyrics = lyrics.substring(start, end);
-        const result = /(\s+)(\S+)/.exec(pairLyrics);
-        const secondWordPosition = result ? (result.index + result[1].length) : null;
+
+        const [firstWord, rest] = chopFirstWord(pairLyrics);
 
         const chordData = (chord.type === "chord") ? { chord } : { chords: chord.value };
 
-        if (secondWordPosition && secondWordPosition < end) {
+        if (rest) {
           return [
-            { type: "chordLyricsPair", ...chordData, lyrics: pairLyrics.substring(0, secondWordPosition).trim() + " " },
-            { type: "chordLyricsPair", chords: "", lyrics: pairLyrics.substring(secondWordPosition) },
+            { type: "chordLyricsPair", ...chordData, lyrics: `${firstWord} ` },
+            { type: "chordLyricsPair", chords: "", lyrics: rest },
           ];
         }
-		    const trimmedLyrics = /.+\s+$/.test(pairLyrics) ? pairLyrics.trim() + " " : pairLyrics;
-        return { type: "chordLyricsPair", ...chordData, lyrics: trimmedLyrics };
+
+        return { type: "chordLyricsPair", ...chordData, lyrics: firstWord };
       }).flat();
 
       const firstChord = chords[0];
