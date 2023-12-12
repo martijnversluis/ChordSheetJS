@@ -5,6 +5,15 @@ describe('Tag', () => {
     t: 'title',
     st: 'subtitle',
     c: 'comment',
+    soc: 'start_of_chorus',
+    eoc: 'end_of_chorus',
+    sot: 'start_of_tab',
+    eot: 'end_of_tab',
+    nk: 'new_key',
+    cf: 'chordfont',
+    cs: 'chordsize',
+    tf: 'textfont',
+    ts: 'textsize',
   };
 
   Object.keys(expectedAliases).forEach((alias) => {
