@@ -85,6 +85,51 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
+        
+        <div class="paragraph bridge">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Bridge 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Bridge line</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph grid">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Grid 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Grid line</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Tab line</td>
+            </tr>
+          </table>
+        </div>
       </div>
     `);
 
@@ -356,6 +401,49 @@ td {
               <td class="lyrics">wisdom, let it </td>
               <td class="lyrics">be </td>
               <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph bridge">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Bridge 1</h3>
+              </td>
+            </tr>
+          </table>
+          
+          <table class="row">
+            <tr>
+              <td class="lyrics">Bridge line</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph grid">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Grid 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Grid line</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Tab line</td>
             </tr>
           </table>
         </div>

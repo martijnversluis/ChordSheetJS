@@ -2,9 +2,24 @@ import { Tag } from '../../src';
 
 describe('Tag', () => {
   const expectedAliases = {
-    t: 'title',
-    st: 'subtitle',
     c: 'comment',
+    cf: 'chordfont',
+    cs: 'chordsize',
+    eob: 'end_of_bridge',
+    eoc: 'end_of_chorus',
+    eog: 'end_of_grid',
+    eot: 'end_of_tab',
+    eov: 'end_of_verse',
+    nk: 'new_key',
+    sob: 'start_of_bridge',
+    soc: 'start_of_chorus',
+    sog: 'start_of_grid',
+    sot: 'start_of_tab',
+    sov: 'start_of_verse',
+    st: 'subtitle',
+    t: 'title',
+    tf: 'textfont',
+    ts: 'textsize',
   };
 
   Object.keys(expectedAliases).forEach((alias) => {
