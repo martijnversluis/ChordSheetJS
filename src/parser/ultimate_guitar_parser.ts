@@ -9,8 +9,8 @@ import Tag, {
   START_OF_VERSE,
 } from '../chord_sheet/tag';
 
-const VERSE_LINE_REGEX = /^\[Verse.*]/i;
-const CHORUS_LINE_REGEX = /^\[Chorus]/i;
+const VERSE_LINE_REGEX = /^\[(Verse.*)]/i;
+const CHORUS_LINE_REGEX = /^\[(Chorus)]/i;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 
 const startSectionTags = {
@@ -46,10 +46,12 @@ class UltimateGuitarParser extends ChordSheetParser {
 
     if (VERSE_LINE_REGEX.test(line)) {
       this.startNewLine();
-      this.startSection(VERSE);
+      const label = line.match(VERSE_LINE_REGEX)[1];
+      this.startSection(VERSE, label);
     } else if (CHORUS_LINE_REGEX.test(line)) {
       this.startNewLine();
-      this.startSection(CHORUS);
+      const label = line.match(CHORUS_LINE_REGEX)[1];
+      this.startSection(CHORUS, label);
     } else if (OTHER_METADATA_LINE_REGEX.test(line)) {
       this.parseMetadataLine(line);
     } else {
@@ -82,7 +84,7 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.endSection({ addNewLine: false });
   }
 
-  startSection(sectionType) {
+  startSection(sectionType: 'verse' | 'chorus', label: string) {
     if (this.currentSectionType) {
       this.endSection();
     }
@@ -91,7 +93,7 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.song.setCurrentProperties(sectionType);
 
     if (sectionType in startSectionTags) {
-      this.song.addTag(new Tag(startSectionTags[sectionType]));
+      this.song.addTag(new Tag(startSectionTags[sectionType], label));
     }
   }
 
