@@ -310,6 +310,111 @@ const serializedSong: SerializedSong = {
         },
       ],
     },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_bridge',
+          value: 'Bridge 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: '',
+          lyrics: 'Bridge line',
+          chord: null,
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_bridge',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_grid',
+          value: 'Grid 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: '',
+          lyrics: 'Grid line',
+          chord: null,
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_grid',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_tab',
+          value: 'Tab 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: '',
+          lyrics: 'Tab line',
+          chord: null,
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_tab',
+          value: '',
+        },
+      ],
+    },
   ],
 };
 

@@ -1,9 +1,9 @@
 /**
- * Used to mark a paragraph as verse
+ * Used to mark a paragraph as bridge
  * @constant
  * @type {string}
  */
-export const VERSE = 'verse';
+export const BRIDGE = 'bridge';
 
 /**
  * Used to mark a paragraph as chorus
@@ -13,11 +13,11 @@ export const VERSE = 'verse';
 export const CHORUS = 'chorus';
 
 /**
- * Used to mark a paragraph as not containing a line marked with a type
+ * Used to mark a paragraph as grid
  * @constant
  * @type {string}
  */
-export const NONE = 'none';
+export const GRID = 'grid';
 
 /**
  * Used to mark a paragraph as containing lines with both verse and chorus type
@@ -27,13 +27,27 @@ export const NONE = 'none';
 export const INDETERMINATE = 'indeterminate';
 
 /**
+ * Used to mark a paragraph as not containing a line marked with a type
+ * @constant
+ * @type {string}
+ */
+export const NONE = 'none';
+
+/**
  * Used to mark a paragraph as tab
  * @constant
  * @type {string}
  */
 export const TAB = 'tab';
 
-export type ParagraphType = 'verse' | 'chorus' | 'none' | 'indeterminate' | 'tab';
+/**
+ * Used to mark a paragraph as verse
+ * @constant
+ * @type {string}
+ */
+export const VERSE = 'verse';
+
+export type ParagraphType = 'bridge' | 'chorus' | 'grid' | 'indeterminate' | 'none' | 'tab' | 'verse';
 
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';

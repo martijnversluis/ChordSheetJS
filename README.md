@@ -473,6 +473,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#END_OF_GRID">END_OF_GRID</a> : <code>string</code></dt>
+<dd><p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
 <dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
@@ -488,6 +490,8 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#START_OF_GRID">START_OF_GRID</a> : <code>string</code></dt>
+<dd><p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
 <dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
@@ -530,16 +534,20 @@ See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#CHORD_STYLE">CHORD_STYLE</a> : <code>string</code></dt>
 <dd><p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
 Possible values are 'symbol', 'numeral' and 'number'</p></dd>
-<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#BRIDGE">BRIDGE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as bridge</p></dd>
 <dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as chorus</p></dd>
-<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as not containing a line marked with a type</p></dd>
+<dt><a href="#GRID">GRID</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as grid</p></dd>
 <dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p></dd>
+<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as not containing a line marked with a type</p></dd>
 <dt><a href="#TAB">TAB</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as tab</p></dd>
+<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as verse</p></dd>
 </dl>
 
 ## Functions
@@ -639,8 +647,11 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
     * [.addItem(item)](#Line+addItem)
     * [.hasRenderableItems()](#Line+hasRenderableItems) ⇒ <code>boolean</code>
     * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
-    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
+    * [.isBridge()](#Line+isBridge) ⇒ <code>boolean</code>
     * [.isChorus()](#Line+isChorus) ⇒ <code>boolean</code>
+    * [.isGrid()](#Line+isGrid) ⇒ <code>boolean</code>
+    * [.isTab()](#Line+isTab) ⇒ <code>boolean</code>
+    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
     * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
 
 <a name="Line+isEmpty"></a>
@@ -672,16 +683,34 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
 <p>Returns a deep copy of the line and all of its items</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+isVerse"></a>
+<a name="Line+isBridge"></a>
 
-### line.isVerse() ⇒ <code>boolean</code>
-<p>Indicates whether the line type is [VERSE](#VERSE)</p>
+### line.isBridge() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [BRIDGE](#BRIDGE)</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+isChorus"></a>
 
 ### line.isChorus() ⇒ <code>boolean</code>
 <p>Indicates whether the line type is [CHORUS](#CHORUS)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isGrid"></a>
+
+### line.isGrid() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [GRID](#GRID)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isTab"></a>
+
+### line.isTab() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [TAB](#TAB)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isVerse"></a>
+
+### line.isVerse() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [VERSE](#VERSE)</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+hasContent"></a>
@@ -1695,6 +1724,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global constant  
+<a name="END_OF_GRID"></a>
+
+## END\_OF\_GRID : <code>string</code>
+<p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
 <a name="END_OF_TAB"></a>
 
 ## END\_OF\_TAB : <code>string</code>
@@ -1736,6 +1771,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 
 ## START\_OF\_CHORUS : <code>string</code>
 <p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
+
+**Kind**: global constant  
+<a name="START_OF_GRID"></a>
+
+## START\_OF\_GRID : <code>string</code>
+<p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
 
 **Kind**: global constant  
 <a name="START_OF_TAB"></a>
@@ -1861,10 +1902,10 @@ Possible values are 'symbol', 'numeral' and 'number'</p>
 
 **Kind**: global constant  
 **See**: https://github.com/bettermusic/ChordSheetJS/issues/352  
-<a name="VERSE"></a>
+<a name="BRIDGE"></a>
 
-## VERSE : <code>string</code>
-<p>Used to mark a paragraph as verse</p>
+## BRIDGE : <code>string</code>
+<p>Used to mark a paragraph as bridge</p>
 
 **Kind**: global constant  
 <a name="CHORUS"></a>
@@ -1873,10 +1914,10 @@ Possible values are 'symbol', 'numeral' and 'number'</p>
 <p>Used to mark a paragraph as chorus</p>
 
 **Kind**: global constant  
-<a name="NONE"></a>
+<a name="GRID"></a>
 
-## NONE : <code>string</code>
-<p>Used to mark a paragraph as not containing a line marked with a type</p>
+## GRID : <code>string</code>
+<p>Used to mark a paragraph as grid</p>
 
 **Kind**: global constant  
 <a name="INDETERMINATE"></a>
@@ -1885,10 +1926,22 @@ Possible values are 'symbol', 'numeral' and 'number'</p>
 <p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
 
 **Kind**: global constant  
+<a name="NONE"></a>
+
+## NONE : <code>string</code>
+<p>Used to mark a paragraph as not containing a line marked with a type</p>
+
+**Kind**: global constant  
 <a name="TAB"></a>
 
 ## TAB : <code>string</code>
 <p>Used to mark a paragraph as tab</p>
+
+**Kind**: global constant  
+<a name="VERSE"></a>
+
+## VERSE : <code>string</code>
+<p>Used to mark a paragraph as verse</p>
 
 **Kind**: global constant  
 <a name="scopedCss"></a>

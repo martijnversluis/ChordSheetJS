@@ -56,6 +56,12 @@ export const END_OF_BRIDGE = 'end_of_bridge';
 export const END_OF_CHORUS = 'end_of_chorus';
 
 /**
+ * End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/
+ * @type {string}
+ */
+export const END_OF_GRID = 'end_of_grid';
+
+/**
  * End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
  * @type {string}
  */
@@ -97,6 +103,12 @@ export const START_OF_BRIDGE = 'start_of_bridge';
  * @type {string}
  */
 export const START_OF_CHORUS = 'start_of_chorus';
+
+/**
+ * Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/
+ * @type {string}
+ */
+export const START_OF_GRID = 'start_of_grid';
 
 /**
  * Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
@@ -222,18 +234,24 @@ export const CHORD_STYLE = 'chord_style';
 
 export type ChordType = 'symbol' | 'numeral' | 'number' | null;
 
-const TITLE_SHORT = 't';
-const SUBTITLE_SHORT = 'st';
-const COMMENT_SHORT = 'c';
-const START_OF_CHORUS_SHORT = 'soc';
-const END_OF_CHORUS_SHORT = 'eoc';
-const START_OF_TAB_SHORT = 'sot';
-const END_OF_TAB_SHORT = 'eot';
-const NEW_KEY_SHORT = 'nk';
 const CHORDFONT_SHORT = 'cf';
 const CHORDSIZE_SHORT = 'cs';
+const COMMENT_SHORT = 'c';
+const END_OF_BRIDGE_SHORT = 'eob';
+const END_OF_CHORUS_SHORT = 'eoc';
+const END_OF_GRID_SHORT = 'eog';
+const END_OF_TAB_SHORT = 'eot';
+const END_OF_VERSE_SHORT = 'eov';
+const NEW_KEY_SHORT = 'nk';
+const START_OF_BRIDGE_SHORT = 'sob';
+const START_OF_CHORUS_SHORT = 'soc';
+const START_OF_GRID_SHORT = 'sog';
+const START_OF_TAB_SHORT = 'sot';
+const START_OF_VERSE_SHORT = 'sov';
+const SUBTITLE_SHORT = 'st';
 const TEXTFONT_SHORT = 'tf';
 const TEXTSIZE_SHORT = 'ts';
+const TITLE_SHORT = 't';
 
 const RENDERABLE_TAGS = [COMMENT];
 
@@ -257,8 +275,12 @@ export const META_TAGS = [
 export const READ_ONLY_TAGS = [_KEY];
 
 const SECTION_DELIMITERS = [
+  START_OF_BRIDGE,
+  END_OF_BRIDGE,
   START_OF_CHORUS,
   END_OF_CHORUS,
+  START_OF_GRID,
+  END_OF_GRID,
   START_OF_TAB,
   END_OF_TAB,
   START_OF_VERSE,
@@ -275,26 +297,33 @@ const INLINE_FONT_TAGS = [
 ];
 
 const DIRECTIVES_WITH_RENDERABLE_LABEL = [
-  START_OF_VERSE,
-  START_OF_CHORUS,
-  START_OF_BRIDGE,
-  START_OF_TAB,
   CHORUS,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_TAB,
+  START_OF_VERSE,
 ];
 
 const ALIASES: Record<string, string> = {
-  [TITLE_SHORT]: TITLE,
-  [SUBTITLE_SHORT]: SUBTITLE,
-  [COMMENT_SHORT]: COMMENT,
-  [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
-  [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
-  [START_OF_TAB_SHORT]: START_OF_TAB,
-  [END_OF_TAB_SHORT]: END_OF_TAB,
-  [NEW_KEY_SHORT]: NEW_KEY,
   [CHORDFONT_SHORT]: CHORDFONT,
   [CHORDSIZE_SHORT]: CHORDSIZE,
+  [COMMENT_SHORT]: COMMENT,
+  [END_OF_BRIDGE_SHORT]: END_OF_BRIDGE,
+  [END_OF_CHORUS_SHORT]: END_OF_CHORUS,
+  [END_OF_GRID_SHORT]: END_OF_GRID,
+  [END_OF_TAB_SHORT]: END_OF_TAB,
+  [END_OF_VERSE_SHORT]: END_OF_VERSE,
+  [NEW_KEY_SHORT]: NEW_KEY,
+  [START_OF_BRIDGE_SHORT]: START_OF_BRIDGE,
+  [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
+  [START_OF_GRID_SHORT]: START_OF_GRID,
+  [START_OF_TAB_SHORT]: START_OF_TAB,
+  [START_OF_VERSE_SHORT]: START_OF_VERSE,
+  [SUBTITLE_SHORT]: SUBTITLE,
   [TEXTFONT_SHORT]: TEXTFONT,
   [TEXTSIZE_SHORT]: TEXTSIZE,
+  [TITLE_SHORT]: TITLE,
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
