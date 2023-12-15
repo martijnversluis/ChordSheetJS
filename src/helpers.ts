@@ -94,8 +94,8 @@ export function renderChord(
  */
 export function getCapos(key: Key | string): Record<string, string> {
   const keyObj = Key.wrapOrFail(key);
-  const chord_type = keyObj.type === 'solfege' ? 'solfege' : 'symbol'
-  return capos[chord_type]![Key.toString(key)];
+  const chordType = keyObj.type === 'solfege' ? 'solfege' : 'symbol';
+  return capos[chordType][Key.toString(key)];
 }
 
 /**
@@ -105,7 +105,6 @@ export function getCapos(key: Key | string): Record<string, string> {
  */
 export function getKeys(key: Key | string): string[] {
   const keyObj = Key.wrapOrFail(key);
-  const chord_type = keyObj.type === 'solfege' ? 'solfege' : 'symbol'
-
-  return keyObj.isMinor() ? minorKeys[chord_type]! : majorKeys[chord_type]!;
+  const chordType = keyObj.type === 'solfege' ? 'solfege' : 'symbol';
+  return keyObj.isMinor() ? minorKeys[chordType] : majorKeys[chordType];
 }

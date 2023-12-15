@@ -1,3 +1,5 @@
+/* eslint max-len: 0 */
+
 import { getKeys } from '../src/helpers';
 
 describe('getKeys', () => {
@@ -10,12 +12,10 @@ describe('getKeys', () => {
   });
 
   it('returns the applicable keys for a major key solfege', () => {
-    expect(getKeys('La'))
-    .toEqual(['La', 'Sib', 'Si', 'Do', 'Do#', 'Reb', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Solb', 'Sol', 'Sol#', 'Lab']);
+    expect(getKeys('La')).toEqual(['La', 'Sib', 'Si', 'Do', 'Do#', 'Reb', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Solb', 'Sol', 'Sol#', 'Lab']);
   });
 
   it('returns the applicable keys for a minor key solfege', () => {
-    expect(getKeys('Rem'))
-    .toEqual(['Fa#m', 'Solm', 'Sol#m', 'Lam', 'Sibm', 'Sim', 'Dom', 'Do#m', 'Rem', 'Re#m', 'Mibm', 'Mim', 'Fam']);
+    expect(getKeys('Rem')).toEqual(['Fa#m', 'Solm', 'Sol#m', 'Lam', 'Sibm', 'Sim', 'Dom', 'Do#m', 'Rem', 'Re#m', 'Mibm', 'Mim', 'Fam']);
   });
 });

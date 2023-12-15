@@ -13,7 +13,7 @@ describe('Chord', () => {
         expect(Chord.parse('bVsus/#VII')?.toChordSymbol('Ab').toString()).toEqual('Dsus/G#');
       });
     });
-  
+
     describe('toChordSolfege', () => {
       it('returns a chord solfege version', () => {
         const key = Key.parse('Lab');

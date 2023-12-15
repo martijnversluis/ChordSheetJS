@@ -3,7 +3,7 @@ import '../matchers';
 import { exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
-//TODO: Implement chordsOverWordsFormatter for solfege
+// TODO: Implement chordsOverWordsFormatter for solfege
 describe('ChordsOverWordsFormatter', () => {
   it('formats a song to a text chord sheet correctly', () => {
     const formatter = new ChordsOverWordsFormatter();

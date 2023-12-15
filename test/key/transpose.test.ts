@@ -1,9 +1,9 @@
 import { buildKey } from '../utilities';
-import { 
-  NUMERAL, 
-  NUMERIC, 
-  SOLFEGE, 
-  SYMBOL, 
+import {
+  NUMERAL,
+  NUMERIC,
+  SOLFEGE,
+  SYMBOL,
 } from '../../src/constants';
 
 describe('Key', () => {

@@ -1,17 +1,15 @@
-import { ChordType } from './constants';
-
-export const majorKeys: Partial<Record<ChordType, string[]>> = {
-  'solfege': ['La', 'Sib', 'Si', 'Do', 'Do#', 'Reb', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Solb', 'Sol', 'Sol#', 'Lab'],
-  'symbol': ['A', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab'],
+export const majorKeys: Record<'symbol' | 'solfege', string[]> = {
+  solfege: ['La', 'Sib', 'Si', 'Do', 'Do#', 'Reb', 'Re', 'Mib', 'Mi', 'Fa', 'Fa#', 'Solb', 'Sol', 'Sol#', 'Lab'],
+  symbol: ['A', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab'],
 };
 
-export const minorKeys: Partial<Record<ChordType, string[]>> = {
-  'solfege': ['Fa#m', 'Solm', 'Sol#m', 'Lam', 'Sibm', 'Sim', 'Dom', 'Do#m', 'Rem', 'Re#m', 'Mibm', 'Mim', 'Fam',],
-  'symbol': ['F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm', 'Cm', 'C#m', 'Dm', 'D#m', 'Ebm', 'Em', 'Fm',],
+export const minorKeys: Record<'symbol' | 'solfege', string[]> = {
+  solfege: ['Fa#m', 'Solm', 'Sol#m', 'Lam', 'Sibm', 'Sim', 'Dom', 'Do#m', 'Rem', 'Re#m', 'Mibm', 'Mim', 'Fam'],
+  symbol: ['F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm', 'Cm', 'C#m', 'Dm', 'D#m', 'Ebm', 'Em', 'Fm'],
 };
 
-export const capos: Partial<Record<ChordType, Record<string, Record<string, string>>>> = {
-  'solfege': {
+export const capos: Record<'symbol' | 'solfege', Record<string, Record<string, string>>> = {
+  solfege: {
     'Sib': {
       1: 'La', 3: 'Sol', 6: 'Mi', 8: 'Re', 10: 'Do',
     },
@@ -72,7 +70,7 @@ export const capos: Partial<Record<ChordType, Record<string, Record<string, stri
     'Mibm': { 1: 'Rem', 4: 'Sim', 6: 'Lam' },
     'Re#m': { 1: 'Rem', 4: 'Sim', 6: 'Lam' },
   },
-  'symbol': {
+  symbol: {
     'Bb': {
       1: 'A', 3: 'G', 6: 'E', 8: 'D', 10: 'C',
     },
@@ -132,5 +130,5 @@ export const capos: Partial<Record<ChordType, Record<string, Record<string, stri
     'Dm': { 3: 'Bm', 5: 'Am', 8: 'F#m' },
     'Ebm': { 1: 'Dm', 4: 'Bm', 6: 'Am' },
     'D#m': { 1: 'Dm', 4: 'Bm', 6: 'Am' },
-  },  
-}
+  },
+};

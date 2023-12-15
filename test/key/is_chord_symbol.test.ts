@@ -18,7 +18,7 @@ describe('Key', () => {
         expect(key.isChordSymbol()).toBe(false);
       });
     });
-  
+
     describe('for a solfege key', () => {
       it('returns false', () => {
         const key = buildKey('La', SOLFEGE, '#');

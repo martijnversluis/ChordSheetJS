@@ -195,7 +195,6 @@ class Note implements NoteProperties {
   }
 
   change(delta: number): Note {
-    //TODO: Test this
     if (this.isChordSolfege()) {
       const solfegeNote = this._note as string;
       const currentIndex = solfegeNotes.indexOf(solfegeNote);
