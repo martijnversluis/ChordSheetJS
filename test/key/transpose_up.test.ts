@@ -1,6 +1,6 @@
 import { buildKey } from '../utilities';
 import { NUMERIC, SYMBOL } from '../../src';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('transposeUp', () => {
@@ -159,6 +159,64 @@ describe('Key', () => {
 
     it('correctly handles minor keys', () => {
       expect(buildKey('E', SYMBOL, '#', true).transposeUp().toString()).toEqual('F#m');
+    });
+
+    describe('for Do, Re, Fa, Sol and La', () => {
+      it('returns the # version', () => {
+        const key = buildKey('La', SOLFEGE);
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('La#');
+      });
+    });
+
+    describe('for Do#, Re#, Fa#, Sol# and La#', () => {
+      it('returns the next note without #', () => {
+        const key = buildKey('La', SOLFEGE, '#');
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('Si');
+      });
+    });
+
+    describe('for Mi and Si', () => {
+      it('returns the next note', () => {
+        const key = buildKey('Mi', SOLFEGE);
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('Fa');
+      });
+    });
+
+    describe('for Reb, Mib, Solb, Lab and Sib', () => {
+      it('returns the note without b', () => {
+        const key = buildKey('Re', SOLFEGE, 'b');
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('Re');
+      });
+    });
+
+    describe('for Dob and Fab', () => {
+      it('returns the note without b', () => {
+        const key = buildKey('Do', SOLFEGE, 'b');
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('Do');
+      });
+    });
+
+    describe('for Mi# and Si#', () => {
+      it('returns the next note with #', () => {
+        const key = buildKey('Mi', SOLFEGE, '#');
+
+        const transposedKey = key.transposeUp();
+        expect(transposedKey.toString()).toEqual('Fa#');
+      });
+    });
+
+    it('correctly handles minor keys', () => {
+      expect(buildKey('Mi', SOLFEGE, '#', true).transposeUp().toString()).toEqual('Fa#m');
     });
   });
 });

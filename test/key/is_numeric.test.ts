@@ -1,12 +1,20 @@
 import { NUMERIC, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('isNumeric', () => {
     describe('for a symbol key', () => {
       it('returns false', () => {
         const key = buildKey('A', SYMBOL, '#');
+
+        expect(key.isNumeric()).toBe(false);
+      });
+    });
+
+    describe('for a solfege key', () => {
+      it('returns false', () => {
+        const key = buildKey('La', SOLFEGE, '#');
 
         expect(key.isNumeric()).toBe(false);
       });

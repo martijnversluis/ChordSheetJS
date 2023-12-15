@@ -42,6 +42,8 @@ function changeChordType(
   switch (type) {
     case 'symbol':
       return chord.toChordSymbol(referenceKey);
+    case 'solfege':
+      return chord.toChordSolfege(referenceKey);
     case 'numeral':
       return chord.toNumeral(referenceKey);
     case 'number':
@@ -91,7 +93,9 @@ export function renderChord(
  * values are the effective key for that capo.
  */
 export function getCapos(key: Key | string): Record<string, string> {
-  return capos[Key.toString(key)];
+  const keyObj = Key.wrapOrFail(key);
+  const chord_type = keyObj.type === 'solfege' ? 'solfege' : 'symbol'
+  return capos[chord_type]![Key.toString(key)];
 }
 
 /**
@@ -101,5 +105,7 @@ export function getCapos(key: Key | string): Record<string, string> {
  */
 export function getKeys(key: Key | string): string[] {
   const keyObj = Key.wrapOrFail(key);
-  return keyObj.isMinor() ? minorKeys : majorKeys;
+  const chord_type = keyObj.type === 'solfege' ? 'solfege' : 'symbol'
+
+  return keyObj.isMinor() ? minorKeys[chord_type]! : majorKeys[chord_type]!;
 }

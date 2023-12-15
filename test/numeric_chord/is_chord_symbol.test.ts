@@ -9,5 +9,12 @@ describe('Chord', () => {
         });
       });
     });
+    describe('isChordSolfege', () => {
+      describe('for a numeric chord', () => {
+        it('returns false', () => {
+          expect(Chord.parse('1/3')?.isChordSolfege()).toBe(false);
+        });
+      });
+    });
   });
 });

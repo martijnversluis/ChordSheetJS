@@ -1,8 +1,9 @@
 import { ChordsOverWordsFormatter } from '../../src';
 import '../matchers';
-import song from '../fixtures/song';
+import { exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
+//TODO: Implement chordsOverWordsFormatter for solfege
 describe('ChordsOverWordsFormatter', () => {
   it('formats a song to a text chord sheet correctly', () => {
     const formatter = new ChordsOverWordsFormatter();
@@ -35,7 +36,7 @@ Grid line
 Tab 1
 Tab line`.substring(1);
 
-    expect(formatter.format(song)).toEqual(expectedChordSheet);
+    expect(formatter.format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   it('omits the lyrics line when it is empty', () => {

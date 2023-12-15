@@ -17,6 +17,7 @@ import {
   NUMERIC,
   SHARP,
   SYMBOL,
+  SOLFEGE,
 } from './constants';
 
 export const KEY_TO_GRADE: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<string, number>>>> = {
@@ -87,6 +88,78 @@ export const KEY_TO_GRADE: Record<ChordType, Record<Mode, Record<ModifierMaybe, 
         A: 8,
         B: 10,
         C: 11,
+      },
+
+    },
+
+  },
+
+  [SOLFEGE]: {
+
+    [MAJOR]: {
+
+      [NO_MODIFIER]: {
+        Do: 0,
+        Re: 2,
+        Mi: 4,
+        Fa: 5,
+        Sol: 7,
+        La: 9,
+        Si: 11,
+      },
+
+      [SHARP]: {
+        Si: 0,
+        Do: 1,
+        Re: 3,
+        Mi: 5,
+        Fa: 6,
+        Sol: 8,
+        La: 10,
+      },
+
+      [FLAT]: {
+        Re: 1,
+        Mi: 3,
+        Fa: 4,
+        Sol: 6,
+        La: 8,
+        Si: 10,
+        Do: 11,
+      },
+
+    },
+
+    [MINOR]: {
+
+      [NO_MODIFIER]: {
+        Do: 0,
+        Re: 2,
+        Mi: 4,
+        Fa: 5,
+        Sol: 7,
+        La: 9,
+        Si: 11,
+      },
+
+      [SHARP]: {
+        Si: 0,
+        Do: 1,
+        Re: 3,
+        Mi: 5,
+        Fa: 6,
+        Sol: 8,
+        La: 10,
+      },
+
+      [FLAT]: {
+        Re: 1,
+        Mi: 3,
+        Fa: 4,
+        Sol: 6,
+        La: 8,
+        Si: 10,
+        Do: 11,
       },
 
     },
@@ -307,6 +380,78 @@ export const GRADE_TO_KEY: Record<ChordType, Record<Mode, Record<ModifierMaybe, 
         8: 'Ab',
         10: 'Bb',
         11: 'Cb',
+      },
+
+    },
+
+  },
+
+  [SOLFEGE]: {
+
+    [MAJOR]: {
+
+      [NO_MODIFIER]: {
+        0: 'Do',
+        2: 'Re',
+        4: 'Mi',
+        5: 'Fa',
+        7: 'Sol',
+        9: 'La',
+        11: 'Si',
+      },
+
+      [SHARP]: {
+        0: 'Si#',
+        1: 'Do#',
+        3: 'Re#',
+        5: 'Mi#',
+        6: 'Fa#',
+        8: 'Sol#',
+        10: 'La#',
+      },
+
+      [FLAT]: {
+        1: 'Reb',
+        3: 'Mib',
+        4: 'Fab',
+        6: 'Solb',
+        8: 'Lab',
+        10: 'Sib',
+        11: 'Dob',
+      },
+
+    },
+
+    [MINOR]: {
+
+      [NO_MODIFIER]: {
+        0: 'Do',
+        2: 'Re',
+        4: 'Mi',
+        5: 'Fa',
+        7: 'Sol',
+        9: 'La',
+        11: 'Si',
+      },
+
+      [SHARP]: {
+        0: 'Si#',
+        1: 'Do#',
+        3: 'Re#',
+        5: 'Mi#',
+        6: 'Fa#',
+        8: 'Sol#',
+        10: 'La#',
+      },
+
+      [FLAT]: {
+        1: 'Reb',
+        3: 'Mib',
+        4: 'Fab',
+        6: 'Solb',
+        8: 'Lab',
+        10: 'Sib',
+        11: 'Dob',
       },
 
     },

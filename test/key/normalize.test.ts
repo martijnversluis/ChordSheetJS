@@ -1,6 +1,6 @@
 import { buildKey } from '../utilities';
 import { NUMERIC, SYMBOL } from '../../src';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('normalize', () => {
@@ -18,6 +18,22 @@ describe('Key', () => {
 
     it('normalizes Fb', () => {
       expect(buildKey('F', SYMBOL, 'b').normalize().toString()).toEqual('E');
+    });
+
+    it('normalizes Mi#', () => {
+      expect(buildKey('Mi', SOLFEGE, '#').normalize().toString()).toEqual('Fa');
+    });
+
+    it('normalizes Si#', () => {
+      expect(buildKey('Si', SOLFEGE, '#').normalize().toString()).toEqual('Do');
+    });
+
+    it('normalizes Dob', () => {
+      expect(buildKey('Do', SOLFEGE, 'b').normalize().toString()).toEqual('Si');
+    });
+
+    it('normalizes Fab', () => {
+      expect(buildKey('Fa', SOLFEGE, 'b').normalize().toString()).toEqual('Mi');
     });
 
     it('normalizes #3', () => {

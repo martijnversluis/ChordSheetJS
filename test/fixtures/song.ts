@@ -7,7 +7,7 @@ import {
 } from '../utilities';
 
 // This Song object mimics the chord pro sheet in chord_pro_sheet.js
-export default createSongFromAst([
+export const exampleSongSymbol = createSongFromAst([
   [tag('title', 'Let it be')],
   [tag('subtitle', 'ChordSheetJS example version')],
   [tag('key', 'C')],
@@ -60,6 +60,75 @@ export default createSongFromAst([
     chordLyricsPair('Bb', 'wisdom, let it '),
     chordLyricsPair('F', 'be '),
     chordLyricsPair('C', ''),
+  ],
+  [tag('end_of_chorus')],
+  [],
+  [tag('start_of_bridge', 'Bridge 1')],
+  [chordLyricsPair('', 'Bridge line')],
+  [tag('end_of_bridge')],
+  [],
+  [tag('start_of_grid', 'Grid 1')],
+  [chordLyricsPair('', 'Grid line')],
+  [tag('end_of_grid')],
+  [],
+  [tag('start_of_tab', 'Tab 1')],
+  [chordLyricsPair('', 'Tab line')],
+  [tag('end_of_tab')],
+]);
+
+export const exampleSongSolfege = createSongFromAst([
+  [tag('title', 'Let it be')],
+  [tag('subtitle', 'ChordSheetJS example version')],
+  [tag('key', 'Do')],
+  [tag('x_some_setting', '')],
+  [tag('composer', 'John Lennon')],
+  [tag('composer', 'Paul McCartney')],
+  [comment('This is my favorite song')],
+  [],
+  [
+    chordLyricsPair('', 'Written by: '),
+    ternary({
+      variable: 'composer',
+      trueExpression: [ternary({ variable: null })],
+      falseExpression: [
+        'No composer defined for ',
+        ternary({
+          variable: 'title',
+          trueExpression: [ternary({ variable: null })],
+          falseExpression: ['Untitled song'],
+        }),
+      ],
+    }),
+  ],
+  [],
+  [tag('start_of_verse', 'Verse 1')],
+  [
+    chordLyricsPair('', 'Let it '),
+    chordLyricsPair('Lam', 'be, let it '),
+    chordLyricsPair('Do/Sol', 'be, let it '),
+    chordLyricsPair('Fa', 'be, let it '),
+    chordLyricsPair('Do', 'be'),
+  ],
+  [tag('transpose', '2')],
+  [
+    chordLyricsPair('Do', 'Whisper words of '),
+    chordLyricsPair('Fa', 'wis'),
+    chordLyricsPair('Sol', 'dom, let it '),
+    chordLyricsPair('Fa', 'be '),
+    chordLyricsPair('Do/Mi', ' '),
+    chordLyricsPair('Rem', ' '),
+    chordLyricsPair('Do', ''),
+  ],
+  [tag('end_of_verse')],
+  [],
+  [tag('start_of_chorus')],
+  [tag('comment', 'Breakdown')],
+  [tag('transpose', 'Sol')],
+  [
+    chordLyricsPair('Lam', 'Whisper words of '),
+    chordLyricsPair('Sib', 'wisdom, let it '),
+    chordLyricsPair('Fa', 'be '),
+    chordLyricsPair('Do', ''),
   ],
   [tag('end_of_chorus')],
   [],

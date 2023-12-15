@@ -4,7 +4,8 @@ import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import { deprecate, normalizeLineEndings } from '../utilities';
 
 const WHITE_SPACE = /\s/;
-const CHORD_LINE_REGEX = /^\s*((([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?)(\s|$)+)+(\s|$)+/;
+const CHORD_LINE_REGEX = 
+/^\s*((([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 /**
  * Parses a normal chord sheet

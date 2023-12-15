@@ -1,7 +1,7 @@
 import Note from '../../src/note';
 
 describe('Note', () => {
-  describe('#isMinor', () => {
+  describe('#isMinor', () => { 
     it('returns true for minor numerals', () => {
       expect(Note.parse('iii').isMinor()).toBe(true);
     });

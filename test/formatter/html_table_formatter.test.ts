@@ -1,6 +1,6 @@
 import { HtmlTableFormatter } from '../../src';
 import '../matchers';
-import song from '../fixtures/song';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
@@ -8,7 +8,7 @@ import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 import { chordLyricsPair, createSongFromAst } from '../utilities';
 
 describe('HtmlTableFormatter', () => {
-  it('formats a song to a html chord sheet correctly', () => {
+  it('formats a symbol song to a html chord sheet correctly', () => {
     const expectedChordSheet = stripHTML(`
       <h1>Let it be</h1>
       <h2>ChordSheetJS example version</h2>
@@ -133,7 +133,135 @@ describe('HtmlTableFormatter', () => {
       </div>
     `);
 
-    expect(new HtmlTableFormatter().format(song)).toEqual(expectedChordSheet);
+    expect(new HtmlTableFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
+  });
+
+  it('formats a solfege song to a html chord sheet correctly', () => {
+    const expectedChordSheet = stripHTML(`
+      <h1>Let it be</h1>
+      <h2>ChordSheetJS example version</h2>
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="lyrics">Written by: </td>
+              <td class="lyrics">John Lennon,Paul McCartney</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph verse">
+          <table class="row">
+            <tr>
+              <td><h3 class="label">Verse 1</h3></td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Lam</td>
+              <td class="chord">Do/Sol</td>
+              <td class="chord">Fa</td>
+              <td class="chord">Do</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Re</td>
+              <td class="chord">Sol</td>
+              <td class="chord">La</td>
+              <td class="chord">Sol</td>
+              <td class="chord">Re/Fa#</td>
+              <td class="chord">Mim</td>
+              <td class="chord">Re</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wis</td>
+              <td class="lyrics">dom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"> </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td class="comment">Breakdown</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Mim</td>
+              <td class="chord">Fa</td>
+              <td class="chord">Do</td>
+              <td class="chord">Sol</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph bridge">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Bridge 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Bridge line</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph grid">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Grid 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Grid line</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="lyrics">Tab line</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlTableFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
 
   describe('with option renderBlankLines:false', () => {
@@ -450,7 +578,7 @@ td {
       </div>
     `);
 
-    expect(new HtmlTableFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
+    expect(new HtmlTableFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   describe('with option useUnicodeModifiers:true', () => {

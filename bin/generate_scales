@@ -2,11 +2,11 @@
 
 const fs = require('fs');
 
-const { FLAT, MAJOR, MINOR, NO_MODIFIER, NUMERAL, NUMERIC, SHARP, SYMBOL } = require('../src/constants');
+const { FLAT, MAJOR, MINOR, NO_MODIFIER, NUMERAL, NUMERIC, SHARP, SYMBOL, SOLFEGE } = require('../src/constants');
 const { default: SCALES } = require('../data/scales');
 
 const MODIFIERS = { 'NO_MODIFIER': NO_MODIFIER, 'SHARP': SHARP, 'FLAT': FLAT };
-const KEY_TYPES = { 'SYMBOL': SYMBOL, 'NUMERIC': NUMERIC, 'NUMERAL': NUMERAL };
+const KEY_TYPES = { 'SYMBOL': SYMBOL, 'SOLFEGE': SOLFEGE, 'NUMERIC': NUMERIC, 'NUMERAL': NUMERAL };
 const MODES = { 'MAJOR': MAJOR, 'MINOR': MINOR };
 
 const keyToGradeMapping = `
@@ -29,6 +29,7 @@ const keyToGradeMapping = `
     NUMERIC, 
     SHARP, 
     SYMBOL,
+    SOLFEGE
   } from './constants';
 
   export const KEY_TO_GRADE: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<string, number>>>> = {

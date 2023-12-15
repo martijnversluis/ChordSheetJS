@@ -52,6 +52,7 @@ export type ParagraphType = 'bridge' | 'chorus' | 'grid' | 'indeterminate' | 'no
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';
 export const NUMERAL = 'numeral';
+export const SOLFEGE = 'solfege';
 
 export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
@@ -62,7 +63,7 @@ export const NO_MODIFIER = 'NM';
 export type NoModifier = 'NM';
 export type ModifierMaybe = Modifier | NoModifier;
 
-export type ChordType = 'symbol' | 'numeric' | 'numeral';
+export type ChordType = 'symbol' | 'solfege' | 'numeric' | 'numeral';
 
 export const MINOR = 'm';
 export const MAJOR = 'M';
