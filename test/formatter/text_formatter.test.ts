@@ -36,7 +36,6 @@ Tab line`.substring(1);
   });
 
   it('formats a solfege song to a text chord sheet correctly', () => {
-    // FIXME: Fix "wis dom" spaced
     const expectedChordSheet = `
 LET IT BE
 ChordSheetJS example version

@@ -19,33 +19,21 @@ export const capos: Record<'symbol' | 'solfege', Record<string, Record<string, s
     'Mib': {
       1: 'Re', 3: 'Do', 6: 'La', 8: 'Sol',
     },
-    'Db': {
-      1: 'Do', 4: 'La', 6: 'Sol', 9: 'Mi',
-    },
-    'Do#': {
-      1: 'Do', 4: 'La', 6: 'Sol', 9: 'Mi',
-    },
+    'Db': { 1: 'Do', 4: 'La', 6: 'Sol', 9: 'Mi' },
+    'Do#': { 1: 'Do', 4: 'La', 6: 'Sol', 9: 'Mi' },
     'Mi': {
       2: 'Re', 4: 'Do', 7: 'La', 9: 'Sol',
     },
     'Fa': {
       1: 'Mi', 3: 'Re', 5: 'Do', 6: 'Si', 8: 'La', 10: 'Sol',
     },
-    'Fa#': {
-      2: 'Mi', 4: 'Re', 6: 'Do', 7: 'Si', 9: 'La',
-    },
-    'Solb': {
-      2: 'Mi', 4: 'Re', 6: 'Do', 7: 'Si', 9: 'La',
-    },
+    'Fa#': { 2: 'Mi', 4: 'Re', 6: 'Do', 7: 'Si', 9: 'La' },
+    'Solb': { 2: 'Mi', 4: 'Re', 6: 'Do', 7: 'Si', 9: 'La' },
     'Sol': {
       3: 'Mi', 5: 'Re', 7: 'Do', 8: 'Si', 10: 'La',
     },
-    'Sol#': {
-      1: 'Sol', 4: 'Mi', 6: 'Re', 8: 'Do',
-    },
-    'Lab': {
-      1: 'Sol', 4: 'Mi', 6: 'Re', 8: 'Do',
-    },
+    'Sol#': { 1: 'Sol', 4: 'Mi', 6: 'Re', 8: 'Do'},
+    'Lab': { 1: 'Sol', 4: 'Mi', 6: 'Re', 8: 'Do' },
     'La': {
       2: 'Sol', 5: 'Mi', 7: 'Re', 9: 'Do',
     },
@@ -57,7 +45,7 @@ export const capos: Record<'symbol' | 'solfege', Record<string, Record<string, s
     },
     'Lam': { 3: 'Fa#m', 5: 'Mim', 7: 'Rem' },
     'Sibm': {
-      1: 'Am', 4: 'Fa#m', 6: 'Mim', 8: 'Rem',
+      1: 'Lam', 4: 'Fa#m', 6: 'Mim', 8: 'Rem',
     },
     'Sim': { 2: 'Lam', 5: 'Fa#m', 7: 'Mim' },
     'Dom': {
