@@ -1960,12 +1960,12 @@
     "@parcel/utils" "2.11.0"
     posthtml "^0.16.4"
 
-"@parcel/packager-ts@2.10.3":
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.10.3.tgz#a4122522234dd61f0a401811957571611ebeed2e"
-  integrity sha512-15IQNe6H/zb1R6Ds8+hu+OLFFPW6QWYpPXlTuhaFDAr6ZHa6iCJIK8Lq+n6GnOhuFzS0GZX4N8YU8FjcXXJR9g==
+"@parcel/packager-ts@2.11.0":
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.11.0.tgz#f001d3e6d7760180e16820b0501b0d7a0ac7ac14"
+  integrity sha512-j9TxAz65nHYo/c2aEwGcPUE2F6qOenr6vm1YR8jHnahrW9LEPXkZjSJA1i85Hs+ihAQKpSatMJzO5RojBgcevw==
   dependencies:
-    "@parcel/plugin" "2.10.3"
+    "@parcel/plugin" "2.11.0"
 
 "@parcel/packager-wasm@2.11.0":
   version "2.11.0"
