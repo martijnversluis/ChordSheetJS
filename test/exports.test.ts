@@ -82,8 +82,6 @@ describe('exports', () => {
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
-<<<<<<< HEAD
-=======
     expect(templateHelpers).toBeDefined();
   });
 
@@ -103,7 +101,6 @@ describe('exports', () => {
     expect(fontStyleTag).toBeDefined();
     expect(renderChord).toBeDefined();
     expect(hasChordContents).toBeDefined();
->>>>>>> a13511781abdca0e984a1ef095fc68c26f2fca9a
   });
 
   it('supplies all constants as properties of the default export', () => {
