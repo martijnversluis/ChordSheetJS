@@ -29,7 +29,26 @@ import ChordSheetJS, {
   SYMBOL,
   TAB,
   VERSE,
+  templateHelpers,
 } from '../src';
+
+const {
+  isEvaluatable,
+  isChordLyricsPair,
+  lineHasContents,
+  isTag,
+  isComment,
+  stripHTML,
+  each,
+  when,
+  hasTextContents,
+  lineClasses,
+  paragraphClasses,
+  evaluate,
+  fontStyleTag,
+  renderChord,
+  hasChordContents,
+} = templateHelpers;
 
 describe('exports', () => {
   it('supplies all required constants as named exports', () => {
@@ -63,6 +82,28 @@ describe('exports', () => {
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
+<<<<<<< HEAD
+=======
+    expect(templateHelpers).toBeDefined();
+  });
+
+  it('supplies all template helpers', () => {
+    expect(isEvaluatable).toBeDefined();
+    expect(isChordLyricsPair).toBeDefined();
+    expect(lineHasContents).toBeDefined();
+    expect(isTag).toBeDefined();
+    expect(isComment).toBeDefined();
+    expect(stripHTML).toBeDefined();
+    expect(each).toBeDefined();
+    expect(when).toBeDefined();
+    expect(hasTextContents).toBeDefined();
+    expect(lineClasses).toBeDefined();
+    expect(paragraphClasses).toBeDefined();
+    expect(evaluate).toBeDefined();
+    expect(fontStyleTag).toBeDefined();
+    expect(renderChord).toBeDefined();
+    expect(hasChordContents).toBeDefined();
+>>>>>>> a13511781abdca0e984a1ef095fc68c26f2fca9a
   });
 
   it('supplies all constants as properties of the default export', () => {

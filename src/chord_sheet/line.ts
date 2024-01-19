@@ -1,13 +1,21 @@
 import ChordLyricsPair from './chord_lyrics_pair';
 import Tag from './tag';
 import Comment from './comment';
-import { CHORUS, NONE, VERSE } from '../constants';
 import Item from './item';
 import Font from './font';
 
+import {
+  BRIDGE,
+  CHORUS,
+  GRID,
+  NONE,
+  TAB,
+  VERSE,
+} from '../constants';
+
 type MapItemFunc = (_item: Item) => Item | null;
 
-export type LineType = 'verse' | 'chorus' | 'none';
+export type LineType = 'bridge' | 'chorus' | 'grid' | 'none' | 'tab' | 'verse';
 
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
@@ -114,11 +122,11 @@ class Line {
   }
 
   /**
-   * Indicates whether the line type is {@link VERSE}
+   * Indicates whether the line type is {@link BRIDGE}
    * @returns {boolean}
    */
-  isVerse(): boolean {
-    return this.type === VERSE;
+  isBridge(): boolean {
+    return this.type === BRIDGE;
   }
 
   /**
@@ -127,6 +135,30 @@ class Line {
    */
   isChorus(): boolean {
     return this.type === CHORUS;
+  }
+
+  /**
+   * Indicates whether the line type is {@link GRID}
+   * @returns {boolean}
+   */
+  isGrid(): boolean {
+    return this.type === GRID;
+  }
+
+  /**
+   * Indicates whether the line type is {@link TAB}
+   * @returns {boolean}
+   */
+  isTab(): boolean {
+    return this.type === TAB;
+  }
+
+  /**
+   * Indicates whether the line type is {@link VERSE}
+   * @returns {boolean}
+   */
+  isVerse(): boolean {
+    return this.type === VERSE;
   }
 
   /**

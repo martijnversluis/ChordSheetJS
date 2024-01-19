@@ -10,7 +10,13 @@ import TraceInfo from './trace_info';
 import FontStack from './font_stack';
 
 import {
-  CHORUS, NONE, ParagraphType, TAB, VERSE,
+  BRIDGE,
+  CHORUS,
+  GRID,
+  NONE,
+  ParagraphType,
+  TAB,
+  VERSE,
 } from '../constants';
 
 import Tag, {
@@ -25,7 +31,27 @@ import Tag, {
   START_OF_VERSE,
   TRANSPOSE,
   CHORUS as CHORUS_TAG,
+  START_OF_GRID,
+  END_OF_GRID,
+  START_OF_BRIDGE,
+  END_OF_BRIDGE,
 } from './tag';
+
+const START_TAG_TO_SECTION_TYPE = {
+  [START_OF_BRIDGE]: BRIDGE,
+  [START_OF_CHORUS]: CHORUS,
+  [START_OF_GRID]: GRID,
+  [START_OF_TAB]: TAB,
+  [START_OF_VERSE]: VERSE,
+};
+
+const END_TAG_TO_SECTION_TYPE = {
+  [END_OF_BRIDGE]: BRIDGE,
+  [END_OF_CHORUS]: CHORUS,
+  [END_OF_GRID]: GRID,
+  [END_OF_TAB]: TAB,
+  [END_OF_VERSE]: VERSE,
+};
 
 interface MapItemsCallback {
   (_item: Item): Item | null;
@@ -276,33 +302,13 @@ class Song extends MetadataAccessors {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    switch (tag.name) {
-      case START_OF_CHORUS:
-        this.startSection(CHORUS, tag);
-        break;
+    if (tag.name in START_TAG_TO_SECTION_TYPE) {
+      this.startSection(START_TAG_TO_SECTION_TYPE[tag.name], tag);
+      return;
+    }
 
-      case END_OF_CHORUS:
-        this.endSection(CHORUS, tag);
-        break;
-
-      case START_OF_TAB:
-        this.startSection(TAB, tag);
-        break;
-
-      case END_OF_TAB:
-        this.endSection(TAB, tag);
-        break;
-
-      case START_OF_VERSE:
-        this.startSection(VERSE, tag);
-        break;
-
-      case END_OF_VERSE:
-        this.endSection(VERSE, tag);
-        break;
-
-      default:
-        break;
+    if (tag.name in END_TAG_TO_SECTION_TYPE) {
+      this.endSection(END_TAG_TO_SECTION_TYPE[tag.name], tag);
     }
   }
 
