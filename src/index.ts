@@ -4,7 +4,6 @@ import ChordProFormatter from './formatter/chord_pro_formatter';
 import ChordProParser from './parser/chord_pro_parser';
 import ChordSheetParser from './parser/chord_sheet_parser';
 import ChordSheetSerializer from './chord_sheet_serializer';
-import ChordsOverWordsFormatter from './formatter/chords_over_words_formatter';
 import ChordsOverWordsParser from './parser/chords_over_words_parser';
 import Comment from './chord_sheet/comment';
 import Composite from './chord_sheet/chord_pro/composite';
@@ -21,26 +20,6 @@ import TextFormatter from './formatter/text_formatter';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 
 import {
-<<<<<<< HEAD
-  isEvaluatable,
-  isChordLyricsPair,
-  lineHasContents,
-  isTag,
-  isComment,
-  stripHTML,
-  each,
-  when,
-  hasTextContents,
-  lineClasses,
-  paragraphClasses,
-  evaluate,
-  fontStyleTag,
-  renderChord,
-} from './template_helpers';
-
-import {
-=======
->>>>>>> a13511781abdca0e984a1ef095fc68c26f2fca9a
   CHORUS,
   INDETERMINATE,
   NONE,
@@ -93,7 +72,6 @@ export default {
   ChordProParser,
   ChordSheetParser,
   ChordSheetSerializer,
-  ChordsOverWordsFormatter,
   ChordsOverWordsParser,
   Comment,
   Composite,
