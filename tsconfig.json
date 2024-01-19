@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "outDir": "./lib",
     "module": "commonjs",
     "target": "es6",
@@ -15,8 +14,5 @@
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
     "strict": true
-  },
-  "types": ["node", "jest", "@testing-library/jest-dom"],
-  "include": ["./src","./test"],
-  "exclude": ["node_modules"]
+  }
 }
