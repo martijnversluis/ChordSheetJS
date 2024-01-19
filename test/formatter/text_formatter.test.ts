@@ -21,7 +21,16 @@ Whisper words of wisdom, let it be
 
 Breakdown
 Em               F              C  G
-Whisper words of wisdom, let it be`.substring(1);
+Whisper words of wisdom, let it be
+
+Bridge 1
+Bridge line
+
+Grid 1
+Grid line
+
+Tab 1
+Tab line`.substring(1);
 
     expect(new TextFormatter().format(song)).toEqual(expectedChordSheet);
   });
@@ -71,7 +80,16 @@ Whisper words of wisdom, let it be
 
 Breakdown
 Gm               Ab             Eb Bb
-Whisper words of wisdom, let it be`.substring(1);
+Whisper words of wisdom, let it be
+
+Bridge 1
+Bridge line
+
+Grid 1
+Grid line
+
+Tab 1
+Tab line`.substring(1);
 
     expect(new TextFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
   });

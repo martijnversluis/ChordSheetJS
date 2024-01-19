@@ -19,4 +19,16 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 {comment: Breakdown}
 {transpose: G}
 [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
-{end_of_chorus}`.substring(1);
+{end_of_chorus}
+
+{start_of_bridge: Bridge 1}
+Bridge line
+{end_of_bridge}
+
+{start_of_grid: Grid 1}
+Grid line
+{end_of_grid}
+
+{start_of_tab: Tab 1}
+Tab line
+{end_of_tab}`.substring(1);

@@ -197,7 +197,7 @@ Let it [Am]Be
             </div>
           </div>
         </div>
-        <div class="paragraph">
+        <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 3</h3>
           </div>

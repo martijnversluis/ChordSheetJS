@@ -473,6 +473,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#END_OF_GRID">END_OF_GRID</a> : <code>string</code></dt>
+<dd><p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
 <dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
@@ -488,6 +490,8 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
+<dt><a href="#START_OF_GRID">START_OF_GRID</a> : <code>string</code></dt>
+<dd><p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
 <dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
@@ -530,16 +534,20 @@ See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#CHORD_STYLE">CHORD_STYLE</a> : <code>string</code></dt>
 <dd><p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
 Possible values are 'symbol', 'numeral' and 'number'</p></dd>
-<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#BRIDGE">BRIDGE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as bridge</p></dd>
 <dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as chorus</p></dd>
-<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
-<dd><p>Used to mark a paragraph as not containing a line marked with a type</p></dd>
+<dt><a href="#GRID">GRID</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as grid</p></dd>
 <dt><a href="#INDETERMINATE">INDETERMINATE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as containing lines with both verse and chorus type</p></dd>
+<dt><a href="#NONE">NONE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as not containing a line marked with a type</p></dd>
 <dt><a href="#TAB">TAB</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as tab</p></dd>
+<dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as verse</p></dd>
 </dl>
 
 ## Functions
@@ -639,8 +647,11 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
     * [.addItem(item)](#Line+addItem)
     * [.hasRenderableItems()](#Line+hasRenderableItems) ⇒ <code>boolean</code>
     * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
-    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
+    * [.isBridge()](#Line+isBridge) ⇒ <code>boolean</code>
     * [.isChorus()](#Line+isChorus) ⇒ <code>boolean</code>
+    * [.isGrid()](#Line+isGrid) ⇒ <code>boolean</code>
+    * [.isTab()](#Line+isTab) ⇒ <code>boolean</code>
+    * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
     * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
 
 <a name="Line+isEmpty"></a>
@@ -672,16 +683,34 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
 <p>Returns a deep copy of the line and all of its items</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
-<a name="Line+isVerse"></a>
+<a name="Line+isBridge"></a>
 
-### line.isVerse() ⇒ <code>boolean</code>
-<p>Indicates whether the line type is [VERSE](#VERSE)</p>
+### line.isBridge() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [BRIDGE](#BRIDGE)</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+isChorus"></a>
 
 ### line.isChorus() ⇒ <code>boolean</code>
 <p>Indicates whether the line type is [CHORUS](#CHORUS)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isGrid"></a>
+
+### line.isGrid() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [GRID](#GRID)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isTab"></a>
+
+### line.isTab() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [TAB](#TAB)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isVerse"></a>
+
+### line.isVerse() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [VERSE](#VERSE)</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+hasContent"></a>
@@ -1695,6 +1724,268 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 **Kind**: global constant  
+<a name="END_OF_GRID"></a>
+
+## END\_OF\_GRID : <code>string</code>
+<p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="END_OF_TAB"></a>
+
+## END\_OF\_TAB : <code>string</code>
+<p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p>
+
+**Kind**: global constant  
+<a name="END_OF_VERSE"></a>
+
+## END\_OF\_VERSE : <code>string</code>
+<p>End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
+
+**Kind**: global constant  
+<a name="KEY"></a>
+
+## KEY : <code>string</code>
+<p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p>
+
+**Kind**: global constant  
+<a name="_KEY"></a>
+
+## \_KEY : <code>string</code>
+<p>_Key meta directive. Reflects the key as transposed by the capo value
+See https://www.chordpro.org/chordpro/directives-key/</p>
+
+**Kind**: global constant  
+<a name="LYRICIST"></a>
+
+## LYRICIST : <code>string</code>
+<p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p>
+
+**Kind**: global constant  
+<a name="START_OF_BRIDGE"></a>
+
+## START\_OF\_BRIDGE : <code>string</code>
+<p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global constant  
+<a name="START_OF_CHORUS"></a>
+
+## START\_OF\_CHORUS : <code>string</code>
+<p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
+
+**Kind**: global constant  
+<a name="START_OF_GRID"></a>
+
+## START\_OF\_GRID : <code>string</code>
+<p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="START_OF_TAB"></a>
+
+## START\_OF\_TAB : <code>string</code>
+<p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p>
+
+**Kind**: global constant  
+<a name="START_OF_VERSE"></a>
+
+## START\_OF\_VERSE : <code>string</code>
+<p>Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
+
+**Kind**: global constant  
+<a name="SUBTITLE"></a>
+
+## SUBTITLE : <code>string</code>
+<p>Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/</p>
+
+**Kind**: global constant  
+<a name="TEMPO"></a>
+
+## TEMPO : <code>string</code>
+<p>Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/</p>
+
+**Kind**: global constant  
+<a name="TIME"></a>
+
+## TIME : <code>string</code>
+<p>Time meta directive. See https://www.chordpro.org/chordpro/directives-time/</p>
+
+**Kind**: global constant  
+<a name="TITLE"></a>
+
+## TITLE : <code>string</code>
+<p>Title meta directive. See https://www.chordpro.org/chordpro/directives-title/</p>
+
+**Kind**: global constant  
+<a name="TRANSPOSE"></a>
+
+## TRANSPOSE : <code>string</code>
+<p>Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/</p>
+
+**Kind**: global constant  
+<a name="NEW_KEY"></a>
+
+## NEW\_KEY : <code>string</code>
+<p>New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53</p>
+
+**Kind**: global constant  
+<a name="YEAR"></a>
+
+## YEAR : <code>string</code>
+<p>Year meta directive. See https://www.chordpro.org/chordpro/directives-year/</p>
+
+**Kind**: global constant  
+<a name="CHORDFONT"></a>
+
+## CHORDFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global constant  
+<a name="CHORDSIZE"></a>
+
+## CHORDSIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global constant  
+<a name="CHORDCOLOUR"></a>
+
+## CHORDCOLOUR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/</p>
+
+**Kind**: global constant  
+<a name="TEXTFONT"></a>
+
+## TEXTFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global constant  
+<a name="TEXTSIZE"></a>
+
+## TEXTSIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global constant  
+<a name="TEXTCOLOUR"></a>
+
+## TEXTCOLOUR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/</p>
+
+**Kind**: global constant  
+<a name="TITLEFONT"></a>
+
+## TITLEFONT : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global constant  
+<a name="TITLESIZE"></a>
+
+## TITLESIZE : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global constant  
+<a name="TITLECOLOUR"></a>
+
+## TITLECOLOUR : <code>string</code>
+<p>Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/</p>
+
+**Kind**: global constant  
+<a name="CHORUS"></a>
+
+## CHORUS : <code>string</code>
+<p>Chorus directive. Support repeating an earlier defined section.
+See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
+
+**Kind**: global constant  
+<a name="CHORD_STYLE"></a>
+
+## CHORD\_STYLE : <code>string</code>
+<p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
+Possible values are 'symbol', 'numeral' and 'number'</p>
+
+**Kind**: global constant  
+**See**: https://github.com/bettermusic/ChordSheetJS/issues/352  
+<a name="BRIDGE"></a>
+
+## BRIDGE : <code>string</code>
+<p>Used to mark a paragraph as bridge</p>
+
+**Kind**: global constant  
+<a name="CHORUS"></a>
+
+## CHORUS : <code>string</code>
+<p>Used to mark a paragraph as chorus</p>
+
+**Kind**: global constant  
+<a name="GRID"></a>
+
+## GRID : <code>string</code>
+<p>Used to mark a paragraph as grid</p>
+
+**Kind**: global constant  
+<a name="INDETERMINATE"></a>
+
+## INDETERMINATE : <code>string</code>
+<p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
+
+**Kind**: global constant  
+<a name="NONE"></a>
+
+## NONE : <code>string</code>
+<p>Used to mark a paragraph as not containing a line marked with a type</p>
+
+**Kind**: global constant  
+<a name="TAB"></a>
+
+## TAB : <code>string</code>
+<p>Used to mark a paragraph as tab</p>
+
+**Kind**: global constant  
+<a name="ARTIST"></a>
+
+## ARTIST : <code>string</code>
+<p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p>
+
+**Kind**: global constant  
+<a name="CAPO"></a>
+
+## CAPO : <code>string</code>
+<p>Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/</p>
+
+**Kind**: global constant  
+<a name="COMMENT"></a>
+
+## COMMENT : <code>string</code>
+<p>Comment directive. See https://www.chordpro.org/chordpro/directives-comment/</p>
+
+**Kind**: global constant  
+<a name="COMPOSER"></a>
+
+## COMPOSER : <code>string</code>
+<p>Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/</p>
+
+**Kind**: global constant  
+<a name="COPYRIGHT"></a>
+
+## COPYRIGHT : <code>string</code>
+<p>Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/</p>
+
+**Kind**: global constant  
+<a name="DURATION"></a>
+
+## DURATION : <code>string</code>
+<p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p>
+
+**Kind**: global constant  
+<a name="END_OF_BRIDGE"></a>
+
+## END\_OF\_BRIDGE : <code>string</code>
+<p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p>
+
+**Kind**: global constant  
+<a name="END_OF_CHORUS"></a>
+
+## END\_OF\_CHORUS : <code>string</code>
+<p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
+
+**Kind**: global constant  
 <a name="END_OF_TAB"></a>
 
 ## END\_OF\_TAB : <code>string</code>
@@ -1865,30 +2156,6 @@ Possible values are 'symbol', 'numeral' and 'number'</p>
 
 ## VERSE : <code>string</code>
 <p>Used to mark a paragraph as verse</p>
-
-**Kind**: global constant  
-<a name="CHORUS"></a>
-
-## CHORUS : <code>string</code>
-<p>Used to mark a paragraph as chorus</p>
-
-**Kind**: global constant  
-<a name="NONE"></a>
-
-## NONE : <code>string</code>
-<p>Used to mark a paragraph as not containing a line marked with a type</p>
-
-**Kind**: global constant  
-<a name="INDETERMINATE"></a>
-
-## INDETERMINATE : <code>string</code>
-<p>Used to mark a paragraph as containing lines with both verse and chorus type</p>
-
-**Kind**: global constant  
-<a name="TAB"></a>
-
-## TAB : <code>string</code>
-<p>Used to mark a paragraph as tab</p>
 
 **Kind**: global constant  
 <a name="scopedCss"></a>

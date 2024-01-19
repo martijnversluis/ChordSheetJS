@@ -156,9 +156,12 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
     })
     .forEach((testCaseProps) => {
       const testCase = testCaseProps as TestCaseProps;
-      const description = names.filter((n) => n !== 'outcome').map((name) => `${name}=${testCase[name]}`).join(', ');
 
-      it(`returns ${testCase.outcome} for ${description} (${testCaseProps.index})`, () => {
+      const description = names
+        .filter((n) => n !== 'outcome')
+        .map((name) => `${name}=${JSON.stringify(testCase[name])}`).join(', ');
+
+      it(`returns ${JSON.stringify(testCase.outcome)} for ${description} (${testCaseProps.index})`, () => {
         callback(testCase);
       });
     });

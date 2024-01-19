@@ -196,7 +196,8 @@ Let it [Am]Be
             </tr>
           </table>
         </div>
-        <div class="paragraph">
+        
+        <div class="paragraph bridge">
           <table class="row">
             <tr>
               <td>

@@ -105,6 +105,42 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+        
+        <div class="paragraph bridge">
+          <div class="row">
+            <h3 class="label">Bridge 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Bridge line</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph grid">
+          <div class="row">
+            <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Grid line</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph tab">
+          <div class="row">
+            <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Tab line</div>
+            </div>
+          </div>
+        </div>
       </div>
     `);
 
@@ -381,6 +417,40 @@ describe('HtmlDivFormatter', () => {
             <div class="column">
               <div class="chord">Bb</div>
               <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph bridge">
+          <div class="row">
+            <h3 class="label">Bridge 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Bridge line</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph grid">
+          <div class="row">
+            <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Grid line</div>
+            </div>
+          </div>
+        </div>
+        <div class="paragraph tab">
+          <div class="row">
+            <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">Tab line</div>
             </div>
           </div>
         </div>

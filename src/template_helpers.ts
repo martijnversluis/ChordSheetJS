@@ -1,7 +1,7 @@
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Tag from './chord_sheet/tag';
 import { INDETERMINATE, NONE } from './constants';
-import { isEmptyString, isEvaluatable } from './utilities';
+import { hasChordContents, isEmptyString, isEvaluatable } from './utilities';
 import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import Paragraph from './chord_sheet/paragraph';
@@ -9,6 +9,7 @@ import Metadata from './chord_sheet/metadata';
 import Configuration from './formatter/configuration/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
+import { renderChord } from './helpers';
 
 interface EachCallback {
   (_item: any): string;
@@ -18,7 +19,7 @@ interface WhenCallback {
   (): string;
 }
 
-export { isEvaluatable } from './utilities';
+export { hasChordContents, isEvaluatable } from './utilities';
 export { renderChord } from './helpers';
 
 export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordLyricsPair;
@@ -82,3 +83,21 @@ export function fontStyleTag(font: Font) {
 
   return '';
 }
+
+export default {
+  isEvaluatable,
+  isChordLyricsPair,
+  lineHasContents,
+  isTag,
+  isComment,
+  stripHTML,
+  each,
+  when,
+  hasTextContents,
+  lineClasses,
+  paragraphClasses,
+  evaluate,
+  fontStyleTag,
+  renderChord,
+  hasChordContents,
+};
