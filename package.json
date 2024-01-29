@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
-    "@babel/cli": "^7.17.6",
+    "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/helper-get-function-arity": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
