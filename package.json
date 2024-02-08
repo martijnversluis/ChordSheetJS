@@ -41,7 +41,7 @@
     "husky": "^8.0.1",
     "jest": "^27.0.1",
     "jsdoc-babel": "^0.5.0",
-    "jsdoc-to-markdown": "^8.0.0",
+    "jsdoc-to-markdown": "^8.0.1",
     "parcel": "^2.4.1",
     "parcel-transformer-hbs": "^1.0.4",
     "peggy": "^2.0.1",

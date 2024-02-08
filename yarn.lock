@@ -5541,14 +5541,13 @@ jsdoc-babel@^0.5.0:
     jsdoc-regex "^1.0.1"
     lodash "^4.17.10"
 
-jsdoc-parse@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/jsdoc-parse/-/jsdoc-parse-6.2.0.tgz#2b71d3925acfc4badc72526f2470766e0561f6b5"
-  integrity sha512-Afu1fQBEb7QHt6QWX/6eUWvYHJofB90Fjx7FuJYF7mnG9z5BkAIpms1wsnvYLytfmqpEENHs/fax9p8gvMj7dw==
+jsdoc-parse@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/jsdoc-parse/-/jsdoc-parse-6.2.1.tgz#d67bb57816f741de8d0ec8ec197cc5fd8146165f"
+  integrity sha512-9viGRUUtWOk/G4V0+nQ6rfLucz5plxh5I74WbNSNm9h9NWugCDVX4jbG8hZP9QqKGpdTPDE+qJXzaYNos3wqTA==
   dependencies:
     array-back "^6.2.2"
     lodash.omit "^4.5.0"
-    lodash.pick "^4.4.0"
     reduce-extract "^1.0.0"
     sort-array "^4.1.5"
     test-value "^3.0.0"
@@ -5558,17 +5557,17 @@ jsdoc-regex@^1.0.1:
   resolved "https://registry.yarnpkg.com/jsdoc-regex/-/jsdoc-regex-1.0.1.tgz#8424428d5b563ad8c5c7fbec079b9a8b09c8dcfa"
   integrity sha1-hCRCjVtWOtjFx/vsB5uaiwnI3Po=
 
-jsdoc-to-markdown@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/jsdoc-to-markdown/-/jsdoc-to-markdown-8.0.0.tgz#27f32ed200d3b84dbf22a49beed485790f93b3ce"
-  integrity sha512-2FQvYkg491+FP6s15eFlgSSWs69CvQrpbABGYBtvAvGWy/lWo8IKKToarT283w59rQFrpcjHl3YdhHCa3l7gXg==
+jsdoc-to-markdown@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/jsdoc-to-markdown/-/jsdoc-to-markdown-8.0.1.tgz#e21aeb2a8d844ec7c31ee4fd8dc5dcf7ea5625fa"
+  integrity sha512-qJfNJhkq2C26UYoOdj8L1yheTJlk1veCsxwRejRmj07XZKCn7oSkuPErx6+JoNi8afCaUKdIM5oUu0uF2/T8iw==
   dependencies:
     array-back "^6.2.2"
     command-line-tool "^0.8.0"
     config-master "^3.1.0"
     dmd "^6.2.0"
     jsdoc-api "^8.0.0"
-    jsdoc-parse "^6.2.0"
+    jsdoc-parse "^6.2.1"
     walk-back "^5.1.0"
 
 jsdoc@^4.0.0:
@@ -5853,11 +5852,6 @@ lodash.padend@^4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/lodash.padend/-/lodash.padend-4.6.1.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
   integrity sha1-U8y6BH0G4VjTEfRdpiX05J5vFm4=
-
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
-  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
 
 lodash@^4.17.10, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
