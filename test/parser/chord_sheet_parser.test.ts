@@ -1,11 +1,12 @@
 import { ChordSheetParser } from '../../src';
 import '../matchers';
+import { heredoc } from '../utilities';
 
-const defaultChordSheet = `
+const defaultChordSheet = heredoc`
        Am         C/G        F          C
 Let it be, let it be, let it be, let it be
 C                F  G           F  C/E Dm C
-Whisper words of wisdom, let it be`.substring(1);
+Whisper words of wisdom, let it be`;
 
 describe('ChordSheetParser', () => {
   it('parses a regular chord sheet correctly', () => {
@@ -33,14 +34,14 @@ describe('ChordSheetParser', () => {
   });
 
   it('groups lines by paragraph', () => {
-    const chordSheetWithParagraphs = `
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-C                F  G           F  C/E Dm C
-Whisper words of wisdom, let it be
-
-Am               Bb             F  C
-Whisper words of wisdom, let it be`.substring(1);
+    const chordSheetWithParagraphs = heredoc`
+             Am         C/G        F          C
+      Let it be, let it be, let it be, let it be
+      C                F  G           F  C/E Dm C
+      Whisper words of wisdom, let it be
+      
+      Am               Bb             F  C
+      Whisper words of wisdom, let it be`;
 
     const parser = new ChordSheetParser();
     const song = parser.parse(chordSheetWithParagraphs);

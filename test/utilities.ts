@@ -1,27 +1,35 @@
+import theredoc from 'theredoc';
+
 import { LineType } from '../src/chord_sheet/line';
 import Metadata from '../src/chord_sheet/metadata';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import Item from '../src/chord_sheet/item';
+
 import ChordSheetSerializer, {
-  SerializedChordLyricsPair, SerializedComment, SerializedComposite,
+  SerializedChordLyricsPair,
+  SerializedComment,
+  SerializedComposite,
   SerializedItem,
   SerializedSong,
-  SerializedTag, SerializedTernary,
+  SerializedTag,
+  SerializedTernary,
 } from '../src/chord_sheet_serializer';
 
 import {
-  ChordLyricsPair,
-  Line,
-  Tag,
-  NONE,
-  Paragraph,
-  Literal,
-  Composite,
-  Ternary,
-  Song,
+  ChordLyricsPair, Composite, Line, Literal, NONE, Paragraph, Song, Tag, Ternary,
 } from '../src';
 import { ChordType, Modifier } from '../src/constants';
 import Key from '../src/key';
+
+export function heredoc(strings: TemplateStringsArray, ...values: any[]): string {
+  return theredoc(strings, ...values);
+}
+
+export function mark(str: string): string {
+  return str
+    .replace(/\n/g, '␊\n')
+    .replace(/\r/g, '␍\r');
+}
 
 export function createSong(lines, metadata: Record<string, string> = {}) {
   const song = new Song(metadata || new Metadata());

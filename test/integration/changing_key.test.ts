@@ -1,14 +1,15 @@
 import { ChordProFormatter, ChordProParser } from '../../src';
+import { heredoc } from '../utilities';
 
 describe('changing the key of an existing song (symbol chords)', () => {
   it('updates the key directive and transposes the chords', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.changeKey('D');
@@ -18,8 +19,8 @@ Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`.substring(1);
   });
 
   it('does not fail when the original song key is not set', () => {
-    const chordSheet = `
-Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`.substring(1);
+    const chordSheet = heredoc`
+      Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordSheet);
 
@@ -27,12 +28,12 @@ Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`.substring(1);
   });
 
   it('supports programmatically setting the song key before changing key', () => {
-    const chordSheet = `
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const chordSheet = heredoc`
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordSheet);
     const updatedSong = song.setKey('C').changeKey('D');

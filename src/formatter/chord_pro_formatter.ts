@@ -10,8 +10,6 @@ import Item from '../chord_sheet/item';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
 import Comment from '../chord_sheet/comment';
 
-const NEW_LINE = '\n';
-
 /**
  * Formats a song into a ChordPro chord sheet
  */
@@ -26,7 +24,7 @@ class ChordProFormatter extends Formatter {
 
     return lines
       .map((line) => this.formatLine(line, metadata))
-      .join(NEW_LINE);
+      .join('\n');
   }
 
   formatLine(line: Line, metadata: Metadata): string {

@@ -1,18 +1,19 @@
 import '../matchers';
 
 import { ChordsOverWordsParser } from '../../src';
+import { heredoc } from '../utilities';
 
 describe('ChordsOverWordsParser', () => {
   it('parses chords over words correctly', () => {
-    const chordOverWords = `
-title: Let it be
-key: C
----
-Chorus 1:
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-C                G              F  C/E Dm C
-Whisper words of wisdom, let it be`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      key: C
+      ---
+      Chorus 1:
+             Am         C/G        F          C
+      Let it be, let it be, let it be, let it be
+      C                G              F  C/E Dm C
+      Whisper words of wisdom, let it be`;
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -51,16 +52,15 @@ Whisper words of wisdom, let it be`.substring(1);
   });
 
   it('allows for frontmatter separator to be optional', () => {
-    const chordOverWords = `
-title: Let it be
-key: C
-
-Chorus 1:
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-C                G              F  C/E Dm C
-Whisper words of wisdom, let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      key: C
+      
+      Chorus 1:
+             Am         C/G        F          C
+      Let it be, let it be, let it be, let it be
+      C                G              F  C/E Dm C
+      Whisper words of wisdom, let it be`;
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -101,12 +101,11 @@ Whisper words of wisdom, let it be
   });
 
   it('parses simple chords over words with only 1 metadata', () => {
-    const chordOverWords = `
-title: Let it be
-Chorus 1:
-       Am
-Let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      Chorus 1:
+             Am
+      Let it be`;
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -123,16 +122,15 @@ Let it be
   });
 
   it('correctly differentiates between lyric only lines and comments', () => {
-    const chordOverWords = `
-Chorus 1:
-       Am
-Let it be
-Whisper words of wisdom, let it be
-
-Verse
-When I find myself in times of trouble
-Mother Mary comes to me
-`.substring(1);
+    const chordOverWords = heredoc`
+      Chorus 1:
+             Am
+      Let it be
+      Whisper words of wisdom, let it be
+      
+      Verse
+      When I find myself in times of trouble
+      Mother Mary comes to me`;
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -157,10 +155,10 @@ Mother Mary comes to me
   });
 
   it('supports a chords only section with rhythm symbols ', () => {
-    const chordOverWords = `
-title: Rattle
-Intro (5x)
-Eb(no3) / / / | / / / / |`.substring(1);
+    const chordOverWords = heredoc`
+      title: Rattle
+      Intro (5x)
+      Eb(no3) / / / | / / / / |`;
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -186,11 +184,11 @@ Eb(no3) / / / | / / / / |`.substring(1);
   });
 
   it('supports two chords only sections with rhythm symbols and chords above eachother', () => {
-    const chordOverWords = `
-Interlude 4 *18
-Dm9 / C/E / | F9/A Bbmaj9 / A7(#9#5) |
-Dm9 / C/E /D - /Db - /C | F13 Bbmaj9 / A7(#9#5) |
-`.substring(1);
+    const chordOverWords = heredoc`
+      Interlude 4 *18
+      Dm9 / C/E / | F9/A Bbmaj9 / A7(#9#5) |
+      Dm9 / C/E /D - /Db - /C | F13 Bbmaj9 / A7(#9#5) |`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -228,16 +226,15 @@ Dm9 / C/E /D - /Db - /C | F13 Bbmaj9 / A7(#9#5) |
   });
 
   it('supports mixed chords only line & chords over words ', () => {
-    const chordOverWords = `
-title: Rattle
-Intro (5x)
-Eb(no3) / / / | / / / / |
-
-Verse 1
-Eb                   Ebsus         Eb      
-Saturday was silent, surely it was through
-Ab2 - Eb/G Eb /
-`.substring(1);
+    const chordOverWords = heredoc`
+      title: Rattle
+      Intro (5x)
+      Eb(no3) / / / | / / / / |
+      
+      Verse 1
+      Eb                   Ebsus         Eb      
+      Saturday was silent, surely it was through
+      Ab2 - Eb/G Eb /`;
 
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
@@ -282,12 +279,12 @@ Ab2 - Eb/G Eb /
   });
 
   it('parses comment without a ":"', () => {
-    const chordOverWords = `
-title: Let it be
-Chorus 1
-       Am
-Let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      Chorus 1
+             Am
+      Let it be`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -304,11 +301,11 @@ Let it be
   });
 
   it('parses simple chords over words with no metadata', () => {
-    const chordOverWords = `
-Chorus 1:
-       Am
-Let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      Chorus 1:
+             Am
+      Let it be`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -322,16 +319,16 @@ Let it be
   });
 
   it('supports transpose & new_key directive', () => {
-    const chordOverWords = `
-title: Let it be
-key: C
-Chorus 1:
-       Am
-Let it be
-nk: G
-       Em
-Let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      key: C
+      Chorus 1:
+             Am
+      Let it be
+      nk: G
+             Em
+      Let it be`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -358,16 +355,16 @@ Let it be
   });
 
   it('supports traditional metadata with brackets', () => {
-    const chordOverWords = `
-{title: Let it be}
-{key: C}
-Chorus 1:
-       Am
-Let it be
-{nk: G}
-       Em
-Let it be
-`.substring(1);
+    const chordOverWords = heredoc`
+      {title: Let it be}
+      {key: C}
+      Chorus 1:
+             Am
+      Let it be
+      {nk: G}
+             Em
+      Let it be`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -387,11 +384,12 @@ Let it be
   });
 
   it('new line is not required at the end', () => {
-    const chordOverWords = `
-title: Let it be
-Chorus 1:
-       Am
-Let it be`.substring(1);
+    const chordOverWords = heredoc`
+      title: Let it be
+      Chorus 1:
+             Am
+      Let it be`;
+
     const parser = new ChordsOverWordsParser();
     const song = parser.parse(chordOverWords);
     const { lines } = song;
@@ -409,11 +407,11 @@ Let it be`.substring(1);
 
   describe('chord placement', () => {
     it('pairs chord with only one lyric', () => {
-      const chordOverWords = `
-Chorus 1:
-       Am         C/G
-Let it be, let it be
-`.substring(1);
+      const chordOverWords = heredoc`
+        Chorus 1:
+               Am         C/G
+        Let it be, let it be`;
+
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
       const { lines } = song;
@@ -429,11 +427,11 @@ Let it be, let it be
     });
 
     it('correctly places a trailing chord', () => {
-      const chordOverWords = `
-Chorus 1
-      Am            C/G
-Let it   be, let it be
-`.substring(1);
+      const chordOverWords = heredoc`
+        Chorus 1
+              Am            C/G
+        Let it   be, let it be`;
+
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
       const { lines } = song;
@@ -449,10 +447,10 @@ Let it   be, let it be
     });
 
     it('correctly places a trailing chord when the trailing chord is pushed by the previous chord', () => {
-      const chordOverWords = `
-         Dm/C          G13      G13(#5) Gm7/C     F
-We’ll be singing for - ever and ever,         a - men
-`.substring(1);
+      const chordOverWords = heredoc`
+                 Dm/C          G13      G13(#5) Gm7/C     F
+        We’ll be singing for - ever and ever,         a - men`;
+
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
       const { lines } = song;
@@ -470,11 +468,11 @@ We’ll be singing for - ever and ever,         a - men
     });
 
     it('handles a complicated suffix', () => {
-      const chordOverWords = `
-Chorus 1
-      Am7(#9)            C/G
-Let it        be, let it be
-`.substring(1);
+      const chordOverWords = heredoc`
+        Chorus 1
+              Am7(#9)            C/G
+        Let it        be, let it be`;
+
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
       const { lines } = song;
@@ -490,11 +488,11 @@ Let it        be, let it be
     });
 
     it('handles a lyrics line that starts with a "I" which can be a numeral chord ', () => {
-      const chordOverWords = `
-Verse 1
-  Dm7                   Bb                F2
-I searched the stars to knock on Heaven's door
-`.substring(1);
+      const chordOverWords = heredoc`
+        Verse 1
+          Dm7                   Bb                F2
+        I searched the stars to knock on Heaven's door`;
+
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
       const { lines } = song;

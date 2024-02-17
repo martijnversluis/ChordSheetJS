@@ -1,29 +1,27 @@
-import {
-  ChordProParser,
-  ChordProFormatter,
-} from '../../src';
+import { ChordProFormatter, ChordProParser } from '../../src';
+import { heredoc } from '../utilities';
 
 describe('chordpro e2e', () => {
   it('correctly parses and evaluates meta expressions', () => {
-    const chordSheet = `
-{title: A}
-{artist: B}
-%{title}
-%{artist|%{}}
-%{artist=X|artist is X|artist is not X}
-%{c|c is set|c is unset}
-%{artist|artist is %{}|artist is unset}
-%{title|title is set and c is %{c|set|unset}|title is unset}`.substring(1);
+    const chordSheet = heredoc`
+      {title: A}
+      {artist: B}
+      %{title}
+      %{artist|%{}}
+      %{artist=X|artist is X|artist is not X}
+      %{c|c is set|c is unset}
+      %{artist|artist is %{}|artist is unset}
+      %{title|title is set and c is %{c|set|unset}|title is unset}`;
 
-    const expectedEvaluation = `
-{title: A}
-{artist: B}
-A
-B
-artist is not X
-c is unset
-artist is B
-title is set and c is unset`.substring(1);
+    const expectedEvaluation = heredoc`
+      {title: A}
+      {artist: B}
+      A
+      B
+      artist is not X
+      c is unset
+      artist is B
+      title is set and c is unset`;
 
     const song = new ChordProParser().parse(chordSheet);
     const formatted = new ChordProFormatter({ evaluate: true }).format(song);
@@ -32,15 +30,15 @@ title is set and c is unset`.substring(1);
   });
 
   it('correctly parses and formats meta expressions', () => {
-    const chordSheet = `
-{title: A}
-{artist: B}
-%{title}
-%{artist|%{}}
-%{artist=X|artist is X|artist is not X}
-%{c|c is set|c is unset}
-%{artist|artist is %{}|artist is unset}
-%{title|title is set and c is %{c|set|unset}|title is unset}`.substring(1);
+    const chordSheet = heredoc`
+      {title: A}
+      {artist: B}
+      %{title}
+      %{artist|%{}}
+      %{artist=X|artist is X|artist is not X}
+      %{c|c is set|c is unset}
+      %{artist|artist is %{}|artist is unset}
+      %{title|title is set and c is %{c|set|unset}|title is unset}`;
 
     const song = new ChordProParser().parse(chordSheet);
     const formatted = new ChordProFormatter({ evaluate: false }).format(song);
@@ -56,10 +54,10 @@ title is set and c is unset`.substring(1);
   });
 
   it('correctly parses and formats meta expressions', () => {
-    const chordSheet = `
-    {key: Numbers}
-    
-    [Ab] Hello`.substring(1);
+    const chordSheet = heredoc`
+      {key: Numbers}
+      
+      [Ab] Hello`;
 
     const song = new ChordProParser().parse(chordSheet);
     const formatted = new ChordProFormatter({ evaluate: false }).format(song);

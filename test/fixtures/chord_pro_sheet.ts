@@ -1,4 +1,6 @@
-export const chordProSheetSymbol = `
+import { heredoc } from '../utilities';
+
+export const chordProSheetSymbol = heredoc`
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
 {key: C}
@@ -31,9 +33,9 @@ Grid line
 
 {start_of_tab: Tab 1}
 Tab line
-{end_of_tab}`.substring(1);
+{end_of_tab}`;
 
-export const chordProSheetSolfege = `
+export const chordProSheetSolfege = heredoc`
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
 {key: Do}
@@ -66,4 +68,4 @@ Grid line
 
 {start_of_tab: Tab 1}
 Tab line
-{end_of_tab}`.substring(1);
+{end_of_tab}`;

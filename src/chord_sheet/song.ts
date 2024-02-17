@@ -10,31 +10,25 @@ import TraceInfo from './trace_info';
 import FontStack from './font_stack';
 
 import {
-  BRIDGE,
-  CHORUS,
-  GRID,
-  NONE,
-  ParagraphType,
-  TAB,
-  VERSE,
+  BRIDGE, CHORUS, GRID, NONE, ParagraphType, TAB, VERSE,
 } from '../constants';
 
 import Tag, {
   CAPO,
+  CHORUS as CHORUS_TAG,
+  END_OF_BRIDGE,
   END_OF_CHORUS,
+  END_OF_GRID,
   END_OF_TAB,
   END_OF_VERSE,
   KEY,
   NEW_KEY,
+  START_OF_BRIDGE,
   START_OF_CHORUS,
+  START_OF_GRID,
   START_OF_TAB,
   START_OF_VERSE,
   TRANSPOSE,
-  CHORUS as CHORUS_TAG,
-  START_OF_GRID,
-  END_OF_GRID,
-  START_OF_BRIDGE,
-  END_OF_BRIDGE,
 } from './tag';
 
 const START_TAG_TO_SECTION_TYPE = {

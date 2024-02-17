@@ -3,34 +3,36 @@ import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
-import { chordLyricsPair, createSongFromAst, tag } from '../utilities';
+import {
+  chordLyricsPair, createSongFromAst, heredoc, tag,
+} from '../utilities';
 
 describe('TextFormatter', () => {
   it('formats a symbol song to a text chord sheet correctly', () => {
-    const expectedChordSheet = `
-LET IT BE
-ChordSheetJS example version
-
-Written by: John Lennon,Paul McCartney
-
-Verse 1
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-D                G  A           G  D/F# Em D
-Whisper words of wisdom, let it be
-
-Breakdown
-Em               F              C  G
-Whisper words of wisdom, let it be
-
-Bridge 1
-Bridge line
-
-Grid 1
-Grid line
-
-Tab 1
-Tab line`.substring(1);
+    const expectedChordSheet = heredoc`
+      LET IT BE
+      ChordSheetJS example version
+      
+      Written by: John Lennon,Paul McCartney
+      
+      Verse 1
+             Am         C/G        F          C
+      Let it be, let it be, let it be, let it be
+      D                G  A           G  D/F# Em D
+      Whisper words of wisdom, let it be
+      
+      Breakdown
+      Em               F              C  G
+      Whisper words of wisdom, let it be
+      
+      Bridge 1
+      Bridge line
+      
+      Grid 1
+      Grid line
+      
+      Tab 1
+      Tab line`;
 
     expect(new TextFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -67,10 +69,10 @@ Tab line`.substring(1);
   it('omits the lyrics line when it is empty', () => {
     const formatter = new TextFormatter();
 
-    const expectedChordSheet = `
+    const expectedChordSheet = heredoc`
 Intro:  C
        Am         C/G        F          C
-Let it be, let it be, let it be, let it be`.substring(1);
+Let it be, let it be, let it be, let it be`;
 
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
   });
@@ -87,38 +89,38 @@ Let it be, let it be, let it be, let it be`.substring(1);
       ],
     ]);
 
-    const expectedChordSheet = `
-   C#m7             B/D#                 E
-My heart has always longed for something more`.substring(1);
+    const expectedChordSheet = heredoc`
+         C#m7             B/D#                 E
+      My heart has always longed for something more`;
 
     expect(new TextFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
   });
 
   it('can render in a different key', () => {
-    const expectedChordSheet = `
-LET IT BE
-ChordSheetJS example version
-
-Written by: John Lennon,Paul McCartney
-
-Verse 1
-       Cm         Eb/Bb      Ab         Eb
-Let it be, let it be, let it be, let it be
-F                Bb C           Bb F/A Gm F
-Whisper words of wisdom, let it be
-
-Breakdown
-Gm               Ab             Eb Bb
-Whisper words of wisdom, let it be
-
-Bridge 1
-Bridge line
-
-Grid 1
-Grid line
-
-Tab 1
-Tab line`.substring(1);
+    const expectedChordSheet = heredoc`
+      LET IT BE
+      ChordSheetJS example version
+      
+      Written by: John Lennon,Paul McCartney
+      
+      Verse 1
+             Cm         Eb/Bb      Ab         Eb
+      Let it be, let it be, let it be, let it be
+      F                Bb C           Bb F/A Gm F
+      Whisper words of wisdom, let it be
+      
+      Breakdown
+      Gm               Ab             Eb Bb
+      Whisper words of wisdom, let it be
+      
+      Bridge 1
+      Bridge line
+      
+      Grid 1
+      Grid line
+      
+      Tab 1
+      Tab line`;
 
     expect(new TextFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -134,9 +136,9 @@ Tab line`.substring(1);
       ],
     ]);
 
-    const expectedChordSheet = `
-    C♯              E♭               F♯         A♭
-The chords are in a broken key where sharps and flats are mixed`.substring(1);
+    const expectedChordSheet = heredoc`
+          C♯              E♭               F♯         A♭
+      The chords are in a broken key where sharps and flats are mixed`;
 
     expect(new TextFormatter({ useUnicodeModifiers: true }).format(songWithCapo)).toEqual(expectedChordSheet);
   });
