@@ -31,7 +31,7 @@
     "@parcel/transformer-typescript-types": "2.11.0",
     "@types/jest": "^27.4.1",
     "@types/lodash.get": "^4.4.7",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.11.19",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "browserify": "^17.0.0",
