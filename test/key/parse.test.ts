@@ -1,5 +1,5 @@
 import { Key, SYMBOL } from '../../src';
-import { NUMERAL, NUMERIC } from '../../src/constants';
+import { NUMERAL, NUMERIC, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('parse', () => {
@@ -27,6 +27,34 @@ describe('Key', () => {
           minor: false,
           referenceKeyGrade: 6,
           originalKeyString: 'F',
+        });
+      });
+    });
+
+    describe('chord solfege key', () => {
+      it('parses a simple key', () => {
+        const key = Key.parse('Mi');
+
+        expect(key).toMatchObject({
+          grade: 0,
+          modifier: null,
+          type: SOLFEGE,
+          minor: false,
+          referenceKeyGrade: 4,
+          originalKeyString: 'Mi',
+        });
+      });
+
+      it('parses a key with modifier', () => {
+        const key = Key.parse('Fa#');
+
+        expect(key).toMatchObject({
+          grade: 0,
+          modifier: '#',
+          type: SOLFEGE,
+          minor: false,
+          referenceKeyGrade: 6,
+          originalKeyString: 'Fa',
         });
       });
     });

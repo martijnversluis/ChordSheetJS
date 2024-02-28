@@ -58,6 +58,7 @@ export {
   INDETERMINATE,
   NONE,
   NUMERIC,
+  SOLFEGE,
   SYMBOL,
   TAB,
   VERSE,

@@ -10,6 +10,7 @@ import {
   NUMERIC,
   ROMAN_NUMERALS,
   SHARP,
+  SOLFEGE,
   SYMBOL,
 } from './constants';
 
@@ -18,7 +19,8 @@ import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 import { gradeToKey } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
-  symbol: /^(?<key>((?<note>[A-G])(?<modifier>#|b)?))(?<minor>m)?$/i,
+  symbol: /^(?<key>((?<note>[A-Ga-g])(?<modifier>#|b)?))(?<minor>m)?$/,
+  solfege: /^(?<key>((?<note>Do|Re|Mi|Fa|Sol|La|Si|do|re|mi|fa|sol|la|si)(?<modifier>#|b)?))(?<minor>m)?$/,
   numeric: /^(?<key>(?<modifier>#|b)?(?<note>[1-7]))(?<minor>m)?$/,
   numeral: /^(?<key>(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2}))$/,
 };
@@ -33,7 +35,7 @@ interface KeyProperties {
   preferredModifier?: Modifier | null,
 }
 
-const KEY_TYPES: ChordType[] = [SYMBOL, NUMERIC, NUMERAL];
+const KEY_TYPES: ChordType[] = [SYMBOL, SOLFEGE, NUMERIC, NUMERAL];
 const NATURAL_MINORS = [1, 2, 3, 4, 5, 8, 9, 10];
 const NO_FLAT_GRADES = [4, 11];
 const NO_FLAT_NUMBERS = [1, 4];
@@ -119,7 +121,7 @@ class Key implements KeyProperties {
     const keyString = `${key}`;
     const isMinor = this.isMinor(keyString, keyType, minor);
 
-    if (keyType === SYMBOL) {
+    if (keyType === SYMBOL || keyType === SOLFEGE) {
       const grade = this.toGrade(keyString, modifier || NO_MODIFIER, keyType, isMinor);
 
       if (grade !== null) {
@@ -159,6 +161,10 @@ class Key implements KeyProperties {
   static keyWithModifier(key: string, modifier: Modifier | null, type: ChordType): string {
     const normalizedKey = key.toUpperCase();
     const modifierString = modifier || '';
+
+    if (type === SOLFEGE) {
+      return `${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}${modifierString}`;
+    }
 
     if (type === SYMBOL) {
       return `${normalizedKey}${modifierString}`;
@@ -353,8 +359,32 @@ class Key implements KeyProperties {
     return modifier ? normalized.set({ preferredModifier: modifier, modifier: null }) : normalized;
   }
 
+  toChordSolfege(key: Key | string): Key {
+    if (this.isChordSolfege()) return this.clone();
+
+    const { modifier } = this;
+
+    this.ensureGrade();
+
+    const keyObj = Key.wrapOrFail(key);
+    const chordSolfege = this.set({
+      referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
+      grade: 0,
+      type: SOLFEGE,
+      modifier: null,
+      preferredModifier: modifier || keyObj.modifier,
+    });
+
+    const normalized = chordSolfege.normalizeEnharmonics(keyObj);
+    return modifier ? normalized.set({ preferredModifier: modifier, modifier: null }) : normalized;
+  }
+
   toChordSymbolString(key: Key): string {
     return this.toChordSymbol(key).toString();
+  }
+
+  toChordSolfegeString(key: Key): string {
+    return this.toChordSolfege(key).toString();
   }
 
   is(type: ChordType): boolean {
@@ -367,6 +397,10 @@ class Key implements KeyProperties {
 
   isChordSymbol(): boolean {
     return this.is(SYMBOL);
+  }
+
+  isChordSolfege(): boolean {
+    return this.is(SOLFEGE);
   }
 
   isNumeral(): boolean {
@@ -458,7 +492,7 @@ class Key implements KeyProperties {
       return this.getNoteForNumber();
     }
 
-    if (this.isChordSymbol() && this.referenceKeyGrade === null) {
+    if ((this.isChordSymbol() || this.isChordSolfege()) && this.referenceKeyGrade === null) {
       throw new Error('Not possible, reference key grade is null');
     }
 
@@ -487,6 +521,8 @@ class Key implements KeyProperties {
 
     switch (this.type) {
       case SYMBOL:
+        return 'm';
+      case SOLFEGE:
         return 'm';
       case NUMERIC:
         return this.isNaturalMinor() ? '' : 'm';

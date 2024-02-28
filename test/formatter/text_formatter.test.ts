@@ -1,12 +1,12 @@
 import { TextFormatter } from '../../src';
 import '../matchers';
-import song from '../fixtures/song';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
 import { chordLyricsPair, createSongFromAst, tag } from '../utilities';
 
 describe('TextFormatter', () => {
-  it('formats a song to a text chord sheet correctly', () => {
+  it('formats a symbol song to a text chord sheet correctly', () => {
     const expectedChordSheet = `
 LET IT BE
 ChordSheetJS example version
@@ -32,7 +32,36 @@ Grid line
 Tab 1
 Tab line`.substring(1);
 
-    expect(new TextFormatter().format(song)).toEqual(expectedChordSheet);
+    expect(new TextFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
+  });
+
+  it('formats a solfege song to a text chord sheet correctly', () => {
+    const expectedChordSheet = `
+LET IT BE
+ChordSheetJS example version
+
+Written by: John Lennon,Paul McCartney
+
+Verse 1
+       Lam        Do/Sol     Fa         Do
+Let it be, let it be, let it be, let it be
+Re               Sol La          Sol Re/Fa# Mim Re
+Whisper words of wis dom, let it be
+
+Breakdown
+Mim              Fa             Do Sol
+Whisper words of wisdom, let it be
+
+Bridge 1
+Bridge line
+
+Grid 1
+Grid line
+
+Tab 1
+Tab line`.substring(1);
+
+    expect(new TextFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
 
   it('omits the lyrics line when it is empty', () => {
@@ -91,7 +120,7 @@ Grid line
 Tab 1
 Tab line`.substring(1);
 
-    expect(new TextFormatter({ key: 'Eb' }).format(song)).toEqual(expectedChordSheet);
+    expect(new TextFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   it('renders unicode modifiers with option useUnicodeModifiers:true', () => {

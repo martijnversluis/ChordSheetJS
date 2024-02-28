@@ -226,13 +226,13 @@ export const CHORUS = 'chorus';
 
 /**
  * Chord type directive. Determines the type of chords used in the rendered chord sheet.
- * Possible values are 'symbol', 'numeral' and 'number'
+ * Possible values are 'solfege', 'symbol', 'numeral' and 'number'
  * @see https://github.com/bettermusic/ChordSheetJS/issues/352
  * @type {string}
  */
 export const CHORD_STYLE = 'chord_style';
 
-export type ChordType = 'symbol' | 'numeral' | 'number' | null;
+export type ChordType = 'symbol' | 'numeral' | 'number' | 'solfege' | null;
 
 const CHORDFONT_SHORT = 'cf';
 const CHORDSIZE_SHORT = 'cs';

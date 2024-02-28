@@ -533,7 +533,7 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#CHORD_STYLE">CHORD_STYLE</a> : <code>string</code></dt>
 <dd><p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
-Possible values are 'symbol', 'numeral' and 'number'</p></dd>
+Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 <dt><a href="#BRIDGE">BRIDGE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as bridge</p></dd>
 <dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
@@ -1405,6 +1405,9 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p>
         * [.toChordSymbol([referenceKey])](#Chord+toChordSymbol) ⇒ [<code>Chord</code>](#Chord)
         * [.toChordSymbolString([referenceKey])](#Chord+toChordSymbolString) ⇒ <code>string</code>
         * [.isChordSymbol()](#Chord+isChordSymbol) ⇒ <code>boolean</code>
+        * [.toChordSolfege([referenceKey])](#Chord+toChordSolfege) ⇒ [<code>Chord</code>](#Chord)
+        * [.toChordSolfegeString([referenceKey])](#Chord+toChordSolfegeString) ⇒ <code>string</code>
+        * [.isChordSolfege()](#Chord+isChordSolfege) ⇒ <code>boolean</code>
         * [.toNumeric([referenceKey])](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
         * [.toNumeral([referenceKey])](#Chord+toNumeral) ⇒ [<code>Chord</code>](#Chord)
         * [.toNumeralString([referenceKey])](#Chord+toNumeralString) ⇒ <code>string</code>
@@ -1459,6 +1462,41 @@ When the chord is already a chord symbol, it will return a string version of the
 
 ### chord.isChordSymbol() ⇒ <code>boolean</code>
 <p>Determines whether the chord is a chord symbol</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+<a name="Chord+toChordSolfege"></a>
+
+### chord.toChordSolfege([referenceKey]) ⇒ [<code>Chord</code>](#Chord)
+<p>Converts the chord to a chord solfege, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>Mi</code> will return the chord symbol <code>La#</code>.
+When the chord is already a chord solfege, it will return a clone of the object.</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the chord solfege</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [referenceKey] | [<code>Key</code>](#Key) \| <code>string</code> \| <code>null</code> | <code></code> | <p>the reference key. The key is required when converting a numeric or numeral.</p> |
+
+<a name="Chord+toChordSolfegeString"></a>
+
+### chord.toChordSolfegeString([referenceKey]) ⇒ <code>string</code>
+<p>Converts the chord to a chord solfege string, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>E</code> will return the chord solfege <code>A#</code>.
+When the chord is already a chord solfege, it will return a string version of the chord.</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - <p>the chord solfege string</p>  
+**See**: {toChordSolfege}  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [referenceKey] | [<code>Key</code>](#Key) \| <code>string</code> \| <code>null</code> | <code></code> | <p>the reference key. The key is required when converting a numeric or numeral.</p> |
+
+<a name="Chord+isChordSolfege"></a>
+
+### chord.isChordSolfege() ⇒ <code>boolean</code>
+<p>Determines whether the chord is a chord solfege</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toNumeric"></a>
@@ -1545,6 +1583,10 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 ### chord.normalize([key], [options]) ⇒ [<code>Chord</code>](#Chord)
 <p>Normalizes the chord root and bass notes:</p>
 <ul>
+<li>Fab becomes Mi</li>
+<li>Dob becomes Si</li>
+<li>Si# becomes Do</li>
+<li>Mi# becomes Fa</li>
 <li>Fb becomes E</li>
 <li>Cb becomes B</li>
 <li>B# becomes C</li>
@@ -1898,7 +1940,7 @@ See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 ## CHORD\_STYLE : <code>string</code>
 <p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
-Possible values are 'symbol', 'numeral' and 'number'</p>
+Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p>
 
 **Kind**: global constant  
 **See**: https://github.com/bettermusic/ChordSheetJS/issues/352  

@@ -20,8 +20,10 @@ describe('Note', () => {
 
     it('errors for other note types', () => {
       const chordSymbol = Note.parse('E');
+      const chordSolfege = Note.parse('Mi');
 
       expect(() => chordSymbol.toNumeric()).toThrow('Converting a symbol note to numeric is not supported');
+      expect(() => chordSolfege.toNumeric()).toThrow('Converting a solfege note to numeric is not supported');
     });
   });
 });

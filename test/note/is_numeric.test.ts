@@ -10,6 +10,10 @@ describe('Note', () => {
       expect(Note.parse('F').isNumeric()).toBe(false);
     });
 
+    it('returns false if the note is a chord solfege', () => {
+      expect(Note.parse('Fa').isNumeric()).toBe(false);
+    });
+
     it('returns false if the note is a numeral', () => {
       expect(Note.parse('IV').isNumeric()).toBe(false);
     });

@@ -1,6 +1,6 @@
 import { buildKey } from '../utilities';
 import { NUMERIC, SYMBOL } from '../../src';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('transposeDown', () => {
@@ -109,6 +109,42 @@ describe('Key', () => {
     describe('for Fb and Cb', () => {
       it('returns the previous note with b', () => {
         expect(buildKey('F', SYMBOL, 'b').transposeDown().toString()).toEqual('Eb');
+      });
+    });
+
+    describe('for Re, Mi, Sol, La, Si', () => {
+      it('returns the b version', () => {
+        expect(buildKey('La', SOLFEGE).transposeDown().toString()).toEqual('Lab');
+      });
+    });
+
+    describe('for Do#, Re#, Fa#, Sol# and La#', () => {
+      it('returns the note without #', () => {
+        expect(buildKey('La', SOLFEGE, '#').transposeDown().toString()).toEqual('La');
+      });
+    });
+
+    describe('for Fa and Do', () => {
+      it('returns the previous note', () => {
+        expect(buildKey('Fa', SOLFEGE).transposeDown().toString()).toEqual('Mi');
+      });
+    });
+
+    describe('for Reb, Mib, Solb, Lab and Sib', () => {
+      it('returns the previous note without b', () => {
+        expect(buildKey('Re', SOLFEGE, 'b').transposeDown().toString()).toEqual('Do');
+      });
+    });
+
+    describe('for Si# and Mi#', () => {
+      it('returns the note without #', () => {
+        expect(buildKey('Si', SOLFEGE, '#').transposeDown().toString()).toEqual('Si');
+      });
+    });
+
+    describe('for Fab and Dob', () => {
+      it('returns the previous note with b', () => {
+        expect(buildKey('Fa', SOLFEGE, 'b').transposeDown().toString()).toEqual('Mib');
       });
     });
   });
