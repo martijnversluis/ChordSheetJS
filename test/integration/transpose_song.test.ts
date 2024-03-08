@@ -1,19 +1,17 @@
 import {
-  ChordProFormatter,
-  ChordProParser,
-  ChordSheetParser,
-  TextFormatter,
+  ChordProFormatter, ChordProParser, ChordSheetParser, TextFormatter,
 } from '../../src';
+import { heredoc } from '../utilities';
 
 describe('transposing a song', () => {
   it('transposes with a delta', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transpose(2);
@@ -23,13 +21,13 @@ Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
   });
 
   it('normalizes chords on transpose with a delta when enabled', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [G2]be, let it [D]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [G2]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transpose(2, { normalizeChordSuffix: true });
@@ -39,13 +37,13 @@ Let it [Bm]be, let it [D/A]be, let it [G2]be, let it [D]be`.substring(1);
   });
 
   it('transposes up', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`;
 
-    const changedSheet = `
-{key: C#}
-Let it [A#m]be, let it [C#/G#]be, let it [F#sus2]be, let it [C#]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: C#}
+      Let it [A#m]be, let it [C#/G#]be, let it [F#sus2]be, let it [C#]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeUp();
@@ -55,13 +53,13 @@ Let it [A#m]be, let it [C#/G#]be, let it [F#sus2]be, let it [C#]be`.substring(1)
   });
 
   it('normalizes chords on transpose up when enabled', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [Fsus2]be, let it [C]be`;
 
-    const changedSheet = `
-{key: C#}
-Let it [A#m]be, let it [C#/G#]be, let it [F#2]be, let it [C#]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: C#}
+      Let it [A#m]be, let it [C#/G#]be, let it [F#2]be, let it [C#]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeUp({ normalizeChordSuffix: true });
@@ -71,13 +69,13 @@ Let it [A#m]be, let it [C#/G#]be, let it [F#2]be, let it [C#]be`.substring(1);
   });
 
   it('transposes down', () => {
-    const chordpro = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
+    const chordpro = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`;
 
-    const changedSheet = `
-{key: Db}
-Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: Db}
+      Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeDown();
@@ -87,13 +85,13 @@ Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`.substring(1)
   });
 
   it('normalizes on transpose down when enabled', () => {
-    const chordpro = `
-{key: D}
-Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`.substring(1);
+    const chordpro = heredoc`
+      {key: D}
+      Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`;
 
-    const changedSheet = `
-{key: Db}
-Let it [Bbm]be, let it [Db/Ab]be, let it [Gb2]be, let it [Db]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: Db}
+      Let it [Bbm]be, let it [Db/Ab]be, let it [Gb2]be, let it [Db]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeDown({ normalizeChordSuffix: true });
@@ -103,13 +101,13 @@ Let it [Bbm]be, let it [Db/Ab]be, let it [Gb2]be, let it [Db]be`.substring(1);
   });
 
   it('may be transposed without a key', () => {
-    const chordpro = `
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be`.substring(1);
+    const chordpro = heredoc`
+             Am         C/G        F          C
+      Let it be, let it be, let it be, let it be`;
 
-    const changedSheet = `
-       Bm         D/A        G          D
-Let it be, let it be, let it be, let it be`.substring(1);
+    const changedSheet = heredoc`
+             Bm         D/A        G          D
+      Let it be, let it be, let it be, let it be`;
 
     const song = new ChordSheetParser().parse(chordpro);
     const updatedSong = song.transpose(2);

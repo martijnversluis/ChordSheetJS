@@ -5,7 +5,7 @@ import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
-import { chordLyricsPair, createSongFromAst } from '../utilities';
+import { chordLyricsPair, createSongFromAst, heredoc } from '../utilities';
 
 describe('HtmlTableFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -310,93 +310,93 @@ describe('HtmlTableFormatter', () => {
   });
 
   it('generates a CSS string', () => {
-    const expectedCss = `
-h1 {
-  font-size: 1.5em;
-}
-
-h2 {
-  font-size: 1.1em;
-}
-
-table {
-  border-spacing: 0;
-  color: inherit;
-}
-
-td {
-  padding: 3px 0;
-}
-
-.chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.paragraph {
-  margin-bottom: 1em;
-}`.substring(1);
+    const expectedCss = heredoc`
+      h1 {
+        font-size: 1.5em;
+      }
+      
+      h2 {
+        font-size: 1.1em;
+      }
+      
+      table {
+        border-spacing: 0;
+        color: inherit;
+      }
+      
+      td {
+        padding: 3px 0;
+      }
+      
+      .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .paragraph {
+        margin-bottom: 1em;
+      }`;
 
     const actualCss = new HtmlTableFormatter().cssString();
     expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a scoped CSS string from the instance method', () => {
-    const expectedCss = `
-.someScope h1 {
-  font-size: 1.5em;
-}
-
-.someScope h2 {
-  font-size: 1.1em;
-}
-
-.someScope table {
-  border-spacing: 0;
-  color: inherit;
-}
-
-.someScope td {
-  padding: 3px 0;
-}
-
-.someScope .chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.someScope .paragraph {
-  margin-bottom: 1em;
-}`.substring(1);
+    const expectedCss = heredoc`
+      .someScope h1 {
+        font-size: 1.5em;
+      }
+      
+      .someScope h2 {
+        font-size: 1.1em;
+      }
+      
+      .someScope table {
+        border-spacing: 0;
+        color: inherit;
+      }
+      
+      .someScope td {
+        padding: 3px 0;
+      }
+      
+      .someScope .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .someScope .paragraph {
+        margin-bottom: 1em;
+      }`;
 
     const actualCss = new HtmlTableFormatter().cssString('.someScope');
     expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a scoped CSS string from the exposed function', () => {
-    const expectedCss = `
-.someScope h1 {
-  font-size: 1.5em;
-}
-
-.someScope h2 {
-  font-size: 1.1em;
-}
-
-.someScope table {
-  border-spacing: 0;
-  color: inherit;
-}
-
-.someScope td {
-  padding: 3px 0;
-}
-
-.someScope .chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.someScope .paragraph {
-  margin-bottom: 1em;
-}`.substring(1);
+    const expectedCss = heredoc`
+      .someScope h1 {
+        font-size: 1.5em;
+      }
+      
+      .someScope h2 {
+        font-size: 1.1em;
+      }
+      
+      .someScope table {
+        border-spacing: 0;
+        color: inherit;
+      }
+      
+      .someScope td {
+        padding: 3px 0;
+      }
+      
+      .someScope .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .someScope .paragraph {
+        margin-bottom: 1em;
+      }`;
 
     const actualCss = scopedCss('.someScope');
     expect(actualCss).toEqual(expectedCss);

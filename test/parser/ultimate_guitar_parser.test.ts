@@ -1,12 +1,13 @@
 import fs from 'fs';
 import '../matchers';
 
-import { UltimateGuitarParser, ChordProFormatter } from '../../src';
+import { ChordProFormatter, UltimateGuitarParser } from '../../src';
+import { heredoc } from '../utilities';
+import { normalizeLineEndings } from '../../src/utilities';
 
 describe('UltimateGuitarParser', () => {
   it('starts and ends a single verse tag correctly', () => {
-    const chordSheetVerseTag = `
-[Verse 1]`.substring(1);
+    const chordSheetVerseTag = '[Verse 1]';
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetVerseTag);
@@ -22,12 +23,12 @@ describe('UltimateGuitarParser', () => {
   });
 
   it('parses a single verse correctly', () => {
-    const chordSheetVerse = `
-[Verse 1]
-C     G               Am
-Lorem ipsum dolor sit amet,
-C           G          F
-consectetur adipiscing elit.`.substring(1);
+    const chordSheetVerse = heredoc`
+      [Verse 1]
+      C     G               Am
+      Lorem ipsum dolor sit amet,
+      C           G          F
+      consectetur adipiscing elit.`;
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetVerse);
@@ -49,13 +50,13 @@ consectetur adipiscing elit.`.substring(1);
   });
 
   it('parses verses and choruses case-insensitively', () => {
-    const chordSheetVerseChorus = `
-[VERSE 1]
-C     G               Am
-Lorem ipsum dolor sit amet,
-[chorus]
-C           G          F
-consectetur adipiscing elit.`.substring(1);
+    const chordSheetVerseChorus = heredoc`
+      [VERSE 1]
+      C     G               Am
+      Lorem ipsum dolor sit amet,
+      [chorus]
+      C           G          F
+      consectetur adipiscing elit.`;
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetVerseChorus);
@@ -83,30 +84,29 @@ consectetur adipiscing elit.`.substring(1);
   });
 
   it('adds unknown sections as comments', () => {
-    const chordSheetInstrumental = `
-[Instrumental]
-F  C Dm
-`.substring(1); // to do: support chords-only line with no following lyrics or empty line
+    const chordSheetInstrumental = heredoc`
+      [Instrumental]
+      F  C Dm`;
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheetInstrumental);
     const { lines } = song;
 
-    expect(lines.length).toEqual(3);
+    expect(lines.length).toEqual(2);
 
     const line0Items = lines[0].items;
     expect(line0Items[0]).toBeTag('comment', 'Instrumental');
 
     const line1Items = lines[1].items;
-    expect(line1Items.length).toEqual(3);
-
-    const line2Items = lines[2].items;
-    expect(line2Items.length).toEqual(0);
+    expect(line1Items.length).toEqual(1);
   });
 
   it('parses entire chord sheet with several sections correctly', () => {
     const chordSheet = fs.readFileSync('./test/fixtures/ultimate_guitar_chordsheet.txt', 'utf8');
-    const expected = fs.readFileSync('./test/fixtures/ultimate_guitar_chordsheet_expected_chordpro_format.txt', 'utf8');
+
+    const expected = normalizeLineEndings(
+      fs.readFileSync('./test/fixtures/ultimate_guitar_chordsheet_expected_chordpro_format.txt', 'utf8'),
+    );
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheet);

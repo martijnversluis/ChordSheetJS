@@ -1,13 +1,30 @@
-#!/usr/bin/env ts-node
+/* eslint indent: 0 */
 
-const fs = require('fs');
+import fs from 'fs';
 
-const { FLAT, MAJOR, MINOR, NO_MODIFIER, NUMERAL, NUMERIC, SHARP, SYMBOL, SOLFEGE } = require('../src/constants');
-const { default: SCALES } = require('../data/scales');
+import SCALES from '../data/scales';
 
-const MODIFIERS = { 'NO_MODIFIER': NO_MODIFIER, 'SHARP': SHARP, 'FLAT': FLAT };
-const KEY_TYPES = { 'SYMBOL': SYMBOL, 'SOLFEGE': SOLFEGE, 'NUMERIC': NUMERIC, 'NUMERAL': NUMERAL };
-const MODES = { 'MAJOR': MAJOR, 'MINOR': MINOR };
+import {
+  FLAT,
+  MAJOR,
+  MINOR,
+  NO_MODIFIER,
+  NUMERAL,
+  NUMERIC,
+  SHARP,
+  SYMBOL,
+  SOLFEGE,
+} from '../src/constants';
+
+const MODIFIERS = { NO_MODIFIER, SHARP, FLAT };
+const MODES = { MAJOR, MINOR };
+
+const KEY_TYPES = {
+  SYMBOL,
+  SOLFEGE,
+  NUMERIC,
+  NUMERAL,
+};
 
 const keyToGradeMapping = `
   /*
@@ -47,16 +64,16 @@ const keyToGradeMapping = `
                           if (keyString === null) {
                             return null;
                           }
-  
+
                           const keyWithoutModifier = keyString.replace(/#|b/g, '');
                           return `${keyWithoutModifier}: ${grade}`;
-                        }).filter(v => v).join(',\n')
+                        }).filter((v) => v).join(',\n')
                       }
                     },
                   `).join('\n')
                 }
               },
-            `).join('\n')    
+            `).join('\n')
           }
         },
       `).join('\n')
@@ -78,9 +95,9 @@ const keyToGradeMapping = `
                           if (keyString === null) {
                             return null;
                           }
-            
+
                           return `${grade}: '${keyString}',`;
-                        }).filter(v => v).join('\n')
+                        }).filter((v) => v).join('\n')
                       }
                     },
                   `).join('\n')

@@ -1,14 +1,15 @@
 import { ChordProFormatter, ChordProParser } from '../../src';
+import { heredoc } from '../utilities';
 
 describe('setting the key of an existing song', () => {
   it('updates the key directive', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey('D');
@@ -18,12 +19,12 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
   });
 
   it('adds the key directive', () => {
-    const chordpro = `
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
-    const changedSheet = `
-{key: D}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const changedSheet = heredoc`
+      {key: D}
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey('D');
@@ -33,12 +34,12 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
   });
 
   it('removes the key directive when passing null', () => {
-    const chordpro = `
-{key: C}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const chordpro = heredoc`
+      {key: C}
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
-    const changedSheet = `
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`.substring(1);
+    const changedSheet = heredoc`
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey(null);

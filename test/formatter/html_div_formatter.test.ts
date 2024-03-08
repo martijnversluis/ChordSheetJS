@@ -5,7 +5,7 @@ import { scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
-import { chordLyricsPair, createSongFromAst } from '../utilities';
+import { chordLyricsPair, createSongFromAst, heredoc } from '../utilities';
 
 describe('HtmlDivFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -328,78 +328,78 @@ describe('HtmlDivFormatter', () => {
   });
 
   it('generates a CSS string', () => {
-    const expectedCss = `
-.chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.paragraph {
-  margin-bottom: 1em;
-}
-
-.row {
-  display: flex;
-}
-
-.chord:after {
-  content: '\\200b';
-}
-
-.lyrics:after {
-  content: '\\200b';
-}`.substring(1);
+    const expectedCss = heredoc`
+      .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .paragraph {
+        margin-bottom: 1em;
+      }
+      
+      .row {
+        display: flex;
+      }
+      
+      .chord:after {
+        content: '\\200b';
+      }
+      
+      .lyrics:after {
+        content: '\\200b';
+      }`;
 
     const actualCss = new HtmlDivFormatter().cssString();
     expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a scoped CSS string with the instance method', () => {
-    const expectedCss = `
-.someScope .chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.someScope .paragraph {
-  margin-bottom: 1em;
-}
-
-.someScope .row {
-  display: flex;
-}
-
-.someScope .chord:after {
-  content: '\\200b';
-}
-
-.someScope .lyrics:after {
-  content: '\\200b';
-}`.substring(1);
+    const expectedCss = heredoc`
+      .someScope .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .someScope .paragraph {
+        margin-bottom: 1em;
+      }
+      
+      .someScope .row {
+        display: flex;
+      }
+      
+      .someScope .chord:after {
+        content: '\\200b';
+      }
+      
+      .someScope .lyrics:after {
+        content: '\\200b';
+      }`;
 
     const actualCss = new HtmlDivFormatter().cssString('.someScope');
     expect(actualCss).toEqual(expectedCss);
   });
 
   it('generates a scoped CSS string with the exposed function', () => {
-    const expectedCss = `
-.someScope .chord:not(:last-child) {
-  padding-right: 10px;
-}
-
-.someScope .paragraph {
-  margin-bottom: 1em;
-}
-
-.someScope .row {
-  display: flex;
-}
-
-.someScope .chord:after {
-  content: '\\200b';
-}
-
-.someScope .lyrics:after {
-  content: '\\200b';
-}`.substring(1);
+    const expectedCss = heredoc`
+      .someScope .chord:not(:last-child) {
+        padding-right: 10px;
+      }
+      
+      .someScope .paragraph {
+        margin-bottom: 1em;
+      }
+      
+      .someScope .row {
+        display: flex;
+      }
+      
+      .someScope .chord:after {
+        content: '\\200b';
+      }
+      
+      .someScope .lyrics:after {
+        content: '\\200b';
+      }`;
 
     const actualCss = scopedCss('.someScope');
     expect(actualCss).toEqual(expectedCss);
