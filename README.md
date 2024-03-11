@@ -457,6 +457,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dl>
 <dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
 <dd><p>Album meta directive. See https://www.chordpro.org/chordpro/directives-album/</p></dd>
+<dt><a href="#ARRANGER">ARRANGER</a> : <code>string</code></dt>
+<dd><p>Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/</p></dd>
 <dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
 <dd><p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p></dd>
 <dt><a href="#CAPO">CAPO</a> : <code>string</code></dt>
@@ -486,6 +488,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
+<dt><a href="#SORTTITLE">SORTTITLE</a> : <code>string</code></dt>
+<dd><p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p></dd>
 <dt><a href="#START_OF_BRIDGE">START_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
@@ -1718,6 +1722,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>Album meta directive. See https://www.chordpro.org/chordpro/directives-album/</p>
 
 **Kind**: global constant  
+<a name="ARRANGER"></a>
+
+## ARRANGER : <code>string</code>
+<p>Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/</p>
+
+**Kind**: global constant  
 <a name="ARTIST"></a>
 
 ## ARTIST : <code>string</code>
@@ -1801,6 +1811,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 
 ## LYRICIST : <code>string</code>
 <p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p>
+
+**Kind**: global constant  
+<a name="SORTTITLE"></a>
+
+## SORTTITLE : <code>string</code>
+<p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p>
 
 **Kind**: global constant  
 <a name="START_OF_BRIDGE"></a>
