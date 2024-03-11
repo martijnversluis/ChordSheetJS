@@ -8,6 +8,12 @@ import TraceInfo from './trace_info';
 export const ALBUM = 'album';
 
 /**
+ * Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/
+ * @type {string}
+ */
+export const ARRANGER = 'arranger';
+
+/**
  * Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
  * @type {string}
  */
@@ -91,6 +97,12 @@ export const _KEY = '_key';
  * @type {string}
  */
 export const LYRICIST = 'lyricist';
+
+/**
+ * Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/
+ * @type {string}
+ */
+export const SORTTITLE = 'sorttitle';
 
 /**
  * Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
@@ -257,6 +269,7 @@ const RENDERABLE_TAGS = [COMMENT];
 
 export const META_TAGS = [
   ALBUM,
+  ARRANGER,
   ARTIST,
   CAPO,
   CHORD_STYLE,
@@ -265,10 +278,11 @@ export const META_TAGS = [
   DURATION,
   KEY,
   LYRICIST,
+  SORTTITLE,
+  SUBTITLE,
   TEMPO,
   TIME,
   TITLE,
-  SUBTITLE,
   YEAR,
 ];
 
