@@ -10,13 +10,10 @@ import Configuration from './formatter/configuration/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import { renderChord } from './helpers';
+import When, { WhenCallback } from './template_helpers/when';
 
 interface EachCallback {
   (_item: any): string;
-}
-
-interface WhenCallback {
-  (): string;
 }
 
 export { hasChordContents, isEvaluatable } from './utilities';
@@ -38,8 +35,8 @@ export function each(collection: any[], callback: EachCallback): string {
   return collection.map(callback).join('');
 }
 
-export function when(condition: any, callback: WhenCallback): string {
-  return condition ? callback() : '';
+export function when(condition: any, callback: WhenCallback | null = null): When {
+  return new When(condition, callback);
 }
 
 export const hasTextContents = (line: Line): boolean => (

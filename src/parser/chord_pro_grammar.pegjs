@@ -26,6 +26,7 @@ Line
 
 Token
   = Tag
+  / AnnotationLyricsPair
   / ChordLyricsPair
   / MetaTernary
   / lyrics:Lyrics {
@@ -37,8 +38,17 @@ Comment
       return comment;
     }
 
+AnnotationLyricsPair
+  = annotation:Annotation lyrics:$(Lyrics*) space:$(Space*) {
+      return {
+        type: 'chordLyricsPair',
+        annotation: annotation || '',
+        lyrics: lyrics + (space || ''),
+      };
+    }
+
 ChordLyricsPair
-  = chords: Chord lyrics:$(LyricsChar*) space:$(Space*) {
+  = chords:Chord lyrics:$(LyricsChar*) space:$(Space*) {
       return {
         type: 'chordLyricsPair',
         chords: chords || '',
@@ -53,6 +63,11 @@ Lyrics
 
 LyricsCharOrSpace
   = (LyricsChar / Space)
+
+Annotation
+  = !Escape "[*" annotation:ChordChar+ "]" {
+      return annotation.map(c => c.char || c).join('');
+    }
 
 Chord
   = !Escape "[" chords:ChordChar* "]" {

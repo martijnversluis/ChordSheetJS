@@ -272,6 +272,13 @@ This part is [G]key
     expect(song.title).toEqual('my {title}');
   });
 
+  it('parses annotation', () => {
+    const chordSheet = '[*Full band!]Let it be';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeChordLyricsPair('', 'Let it be', 'Full band!');
+  });
+
   it('parses simple ternaries', () => {
     const chordSheet = '%{title}';
     const song = new ChordProParser().parse(chordSheet);

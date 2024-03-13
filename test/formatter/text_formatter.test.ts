@@ -18,7 +18,7 @@ describe('TextFormatter', () => {
       Verse 1
              Am         C/G        F          C
       Let it be, let it be, let it be, let it be
-      D                G  A           G  D/F# Em D
+      D       strong   G  A           G  D/F# Em D
       Whisper words of wisdom, let it be
       
       Breakdown
@@ -47,7 +47,7 @@ Written by: John Lennon,Paul McCartney
 Verse 1
        Lam        Do/Sol     Fa         Do
 Let it be, let it be, let it be, let it be
-Re               Sol La          Sol Re/Fa# Mim Re
+Re      strong   Sol La          Sol Re/Fa# Mim Re
 Whisper words of wis dom, let it be
 
 Breakdown
@@ -106,7 +106,7 @@ Let it be, let it be, let it be, let it be`;
       Verse 1
              Cm         Eb/Bb      Ab         Eb
       Let it be, let it be, let it be, let it be
-      F                Bb C           Bb F/A Gm F
+      F       strong   Bb C           Bb F/A Gm F
       Whisper words of wisdom, let it be
       
       Breakdown

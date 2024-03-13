@@ -46,6 +46,7 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord">D</td>
+              <td class="annotation">strong</td>
               <td class="chord">G</td>
               <td class="chord">A</td>
               <td class="chord">G</td>
@@ -54,7 +55,8 @@ describe('HtmlTableFormatter', () => {
               <td class="chord">D</td>
             </tr>
             <tr>
-              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
               <td class="lyrics">wis</td>
               <td class="lyrics">dom, let it </td>
               <td class="lyrics">be </td>
@@ -174,6 +176,7 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord">Re</td>
+              <td class="annotation">strong</td>
               <td class="chord">Sol</td>
               <td class="chord">La</td>
               <td class="chord">Sol</td>
@@ -182,7 +185,8 @@ describe('HtmlTableFormatter', () => {
               <td class="chord">Re</td>
             </tr>
             <tr>
-              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
               <td class="lyrics">wis</td>
               <td class="lyrics">dom, let it </td>
               <td class="lyrics">be </td>
@@ -493,6 +497,7 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord">F</td>
+              <td class="annotation">strong</td>
               <td class="chord">Bb</td>
               <td class="chord">C</td>
               <td class="chord">Bb</td>
@@ -501,7 +506,8 @@ describe('HtmlTableFormatter', () => {
               <td class="chord">F</td>
             </tr>
             <tr>
-              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">Whisper </td>
+              <td class="lyrics">words of </td>
               <td class="lyrics">wis</td>
               <td class="lyrics">dom, let it </td>
               <td class="lyrics">be </td>

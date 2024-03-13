@@ -140,7 +140,10 @@ describe('Song', () => {
       const changedSong = song.mapLines((line) => (
         line.mapItems((item) => {
           if (item instanceof ChordLyricsPair) {
-            return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
+            return item
+              .transpose(2, 'D')
+              .setLyrics((item.lyrics || '').toUpperCase())
+              .setAnnotation((item.annotation || '').toUpperCase());
           }
 
           if (item instanceof Tag) {
@@ -173,7 +176,10 @@ describe('Song', () => {
       const changedSong = song.mapLines((line) => (
         line.mapItems((item) => {
           if (item instanceof ChordLyricsPair) {
-            return item.transpose(2, 'Re').setLyrics((item.lyrics || '').toUpperCase());
+            return item
+              .transpose(2, 'Re')
+              .setLyrics((item.lyrics || '').toUpperCase())
+              .setAnnotation((item.annotation || '').toUpperCase());
           }
 
           if (item instanceof Tag) {
@@ -204,7 +210,10 @@ describe('Song', () => {
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
-          return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
+          return item
+            .transpose(2, 'D')
+            .setLyrics((item.lyrics || '').toUpperCase())
+            .setAnnotation((item.annotation || '').toUpperCase());
         }
 
         if (item instanceof Tag) {
@@ -232,7 +241,10 @@ describe('Song', () => {
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
-          return item.transpose(2, 'Re').setLyrics((item.lyrics || '').toUpperCase());
+          return item
+            .transpose(2, 'Re')
+            .setLyrics((item.lyrics || '').toUpperCase())
+            .setAnnotation((item.annotation || '').toUpperCase());
         }
 
         if (item instanceof Tag) {

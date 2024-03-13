@@ -4,7 +4,7 @@ import Tag from '../chord_sheet/tag';
 import { renderChord } from '../helpers';
 import { hasTextContents } from '../template_helpers';
 import Song from '../chord_sheet/song';
-import { hasChordContents, isEmptyString, padLeft } from '../utilities';
+import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 import Metadata from '../chord_sheet/metadata';
 import Line from '../chord_sheet/line';
@@ -65,7 +65,7 @@ class TextFormatter extends Formatter {
 
     return parts
       .filter((p) => !isEmptyString(p))
-      .map((part) => (part || '').trimRight())
+      .map((part) => (part || '').trimEnd())
       .join('\n');
   }
 
@@ -86,7 +86,7 @@ class TextFormatter extends Formatter {
   }
 
   formatLineTop(line: Line, metadata: Metadata): string | null {
-    if (hasChordContents(line)) {
+    if (hasRemarkContents(line)) {
       return this.formatLineWithFormatter(line, this.formatItemTop, metadata);
     }
 
@@ -94,16 +94,16 @@ class TextFormatter extends Formatter {
   }
 
   chordLyricsPairLength(chordLyricsPair: ChordLyricsPair, line: Line): number {
-    const chords = this.renderChords(chordLyricsPair, line);
+    const content = chordLyricsPair.annotation || this.renderChords(chordLyricsPair, line);
     const { lyrics } = chordLyricsPair;
-    const chordsLength = (chords || '').length;
+    const contentLength = (content || '').length;
     const lyricsLength = (lyrics || '').length;
 
-    if (chordsLength >= lyricsLength) {
-      return chordsLength + 1;
+    if (contentLength >= lyricsLength) {
+      return contentLength + 1;
     }
 
-    return Math.max(chordsLength, lyricsLength);
+    return Math.max(contentLength, lyricsLength);
   }
 
   private renderChords(chordLyricsPair: ChordLyricsPair, line: Line) {
@@ -126,8 +126,8 @@ class TextFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      const chords = this.renderChords(item, line);
-      return padLeft(chords, this.chordLyricsPairLength(item, line));
+      const content = item.annotation || this.renderChords(item, line);
+      return padLeft(content, this.chordLyricsPairLength(item, line));
     }
 
     return '';

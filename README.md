@@ -575,22 +575,24 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 **Kind**: global class  
 
 * [ChordLyricsPair](#ChordLyricsPair)
-    * [new ChordLyricsPair(chords, lyrics)](#new_ChordLyricsPair_new)
+    * [new ChordLyricsPair(chords, lyrics, annotation)](#new_ChordLyricsPair_new)
     * [.chords](#ChordLyricsPair+chords) : <code>string</code>
     * [.lyrics](#ChordLyricsPair+lyrics) : <code>string</code>
+    * [.annotation](#ChordLyricsPair+annotation) : <code>string</code>
     * [.isRenderable()](#ChordLyricsPair+isRenderable) ⇒ <code>boolean</code>
     * [.clone()](#ChordLyricsPair+clone) ⇒ [<code>ChordLyricsPair</code>](#ChordLyricsPair)
 
 <a name="new_ChordLyricsPair_new"></a>
 
-### new ChordLyricsPair(chords, lyrics)
+### new ChordLyricsPair(chords, lyrics, annotation)
 <p>Initialises a ChordLyricsPair</p>
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | chords | <code>string</code> |  | <p>The chords</p> |
-| lyrics | <code>string</code> | <code>null</code> | <p>The lyrics</p> |
+| lyrics | <code>string</code> \| <code>null</code> | <code>null</code> | <p>The lyrics</p> |
+| annotation | <code>string</code> \| <code>null</code> | <code>null</code> | <p>The annotation</p> |
 
 <a name="ChordLyricsPair+chords"></a>
 
@@ -602,6 +604,12 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 
 ### chordLyricsPair.lyrics : <code>string</code>
 <p>The lyrics</p>
+
+**Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
+<a name="ChordLyricsPair+annotation"></a>
+
+### chordLyricsPair.annotation : <code>string</code>
+<p>The annotation</p>
 
 **Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="ChordLyricsPair+isRenderable"></a>

@@ -1,11 +1,7 @@
 import print from 'print';
 
 import {
-  ChordLyricsPair,
-  Tag,
-  Comment,
-  Ternary,
-  Literal,
+  ChordLyricsPair, Comment, Literal, Tag, Ternary,
 } from '../src';
 
 function typeRepresentation(type, value) {
@@ -108,8 +104,8 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
   };
 }
 
-function toBeChordLyricsPair(received, chords, lyrics) {
-  return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics });
+function toBeChordLyricsPair(received, chords, lyrics, annotation = '') {
+  return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics, annotation });
 }
 
 function toBeTag(received, name, value) {

@@ -41,6 +41,7 @@ export type SerializedChordLyricsPair = {
   chord?: SerializedChord | null,
   chords: string,
   lyrics: string | null,
+  annotation?: string | null,
 };
 
 export type SerializedTag = SerializedTraceInfo & {
@@ -150,6 +151,7 @@ class ChordSheetSerializer {
       chords: chordLyricsPair.chords,
       chord: null,
       lyrics: chordLyricsPair.lyrics,
+      annotation: chordLyricsPair.annotation,
     };
   }
 
@@ -232,11 +234,14 @@ class ChordSheetSerializer {
   }
 
   parseChordLyricsPair(astComponent: SerializedChordLyricsPair): ChordLyricsPair {
-    const { chord, chords, lyrics } = astComponent;
+    const {
+      chord, chords, lyrics, annotation,
+    } = astComponent;
 
     return new ChordLyricsPair(
       chord ? new Chord(chord).toString() : chords,
       lyrics,
+      annotation,
     );
   }
 
