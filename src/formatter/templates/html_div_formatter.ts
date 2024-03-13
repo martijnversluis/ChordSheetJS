@@ -1,5 +1,5 @@
-import { HtmlTemplateArgs } from "../html_formatter";
-import { renderChord } from '../../helpers';
+import {HtmlTemplateArgs} from "../html_formatter";
+import {renderChord} from '../../helpers';
 
 import {
   each,
@@ -44,18 +44,22 @@ export default (
               ${ each(line.items, (item) => `
                 ${ when(isChordLyricsPair(item), () => `
                   <div class="column">
-                    <div class="chord"${ fontStyleTag(line.chordFont) }>${ 
-                      renderChord(
-                        item.chords, 
-                        line, 
-                        song, 
-                        {
-                          renderKey: key, 
-                          useUnicodeModifier: configuration.useUnicodeModifiers,
-                          normalizeChords: configuration.normalizeChords,
-                        }
-                      ) 
-                    }</div>
+                   ${ when(item.annotation).then(() => `
+                     <div class="annotation"${ fontStyleTag(line.chordFont) }>${item.annotation}</div>
+                   `).else(() => `
+                      <div class="chord"${ fontStyleTag(line.chordFont) }>${
+                        renderChord(
+                          item.chords,
+                          line,
+                          song,
+                          {
+                            renderKey: key,
+                            useUnicodeModifier: configuration.useUnicodeModifiers,
+                            normalizeChords: configuration.normalizeChords,
+                          }
+                        )
+                      }</div>
+                   `) }
                     <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                   </div>
                 `) }

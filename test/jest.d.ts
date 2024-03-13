@@ -6,7 +6,7 @@ declare global {
     interface Matchers<R> {
       toBeKey({ note, modifier, minor = false }): CustomMatcherResult;
 
-      toBeChordLyricsPair(chords: string, lyrics: string): CustomMatcherResult;
+      toBeChordLyricsPair(chords: string, lyrics: string, annotation?: string): CustomMatcherResult;
 
       toBeLiteral(contents: string): CustomMatcherResult;
 

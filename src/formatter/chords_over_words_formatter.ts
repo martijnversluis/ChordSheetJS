@@ -4,7 +4,7 @@ import Tag from '../chord_sheet/tag';
 import { renderChord } from '../helpers';
 import { hasTextContents } from '../template_helpers';
 import Song from '../chord_sheet/song';
-import { hasChordContents, isEmptyString, padLeft } from '../utilities';
+import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 import Metadata from '../chord_sheet/metadata';
 import Line from '../chord_sheet/line';
@@ -87,7 +87,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatLineTop(line: Line, metadata: Metadata): string | null {
-    if (hasChordContents(line)) {
+    if (hasRemarkContents(line)) {
       return this.formatLineWithFormatter(line, this.formatItemTop, metadata);
     }
 
@@ -95,7 +95,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   chordLyricsPairLength(chordLyricsPair: ChordLyricsPair, line: Line): number {
-    const chords = renderChord(
+    const content = chordLyricsPair.annotation || renderChord(
       chordLyricsPair.chords,
       line,
       this.song,
@@ -103,14 +103,14 @@ class ChordsOverWordsFormatter extends Formatter {
     );
 
     const { lyrics } = chordLyricsPair;
-    const chordsLength = (chords || '').length;
+    const contentLength = (content || '').length;
     const lyricsLength = (lyrics || '').length;
 
-    if (chordsLength >= lyricsLength) {
-      return chordsLength + 1;
+    if (contentLength >= lyricsLength) {
+      return contentLength + 1;
     }
 
-    return Math.max(chordsLength, lyricsLength);
+    return Math.max(contentLength, lyricsLength);
   }
 
   formatItemTop(item: Item, _metadata: Metadata, line: Line): string {
@@ -119,8 +119,9 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      const chords = renderChord(item.chords, line, this.song, { renderKey: this.configuration.key });
-      return padLeft(chords, this.chordLyricsPairLength(item, line));
+      const content = item.annotation
+        || renderChord(item.chords, line, this.song, { renderKey: this.configuration.key });
+      return padLeft(content, this.chordLyricsPairLength(item, line));
     }
 
     return '';

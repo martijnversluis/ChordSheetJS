@@ -1,6 +1,6 @@
-import { hasChordContents, isEvaluatable } from '../../utilities';
-import { renderChord } from '../../helpers';
-import { HtmlTemplateArgs } from '../html_formatter';
+import {hasChordContents, isEvaluatable} from '../../utilities';
+import {renderChord} from '../../helpers';
+import {HtmlTemplateArgs} from '../html_formatter';
 
 import {
   each,
@@ -48,18 +48,22 @@ export default (
                   <tr>
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
-                        <td class="chord"${fontStyleTag(line.chordFont)}>${ 
-                          renderChord(
-                            item.chords, 
-                            line, 
-                            song, 
-                            { 
-                              renderKey: key, 
-                              useUnicodeModifier: configuration.useUnicodeModifiers,
-                              normalizeChords: configuration.normalizeChords,
-                            },
-                          ) 
-                        }</td>
+                        ${when(item.annotation).then(() => `
+                          <td class="annotation"${fontStyleTag(line.chordFont)}>${item.annotation}</td>
+                        `).else(() => `
+                          <td class="chord"${fontStyleTag(line.chordFont)}>${
+                            renderChord(
+                              item.chords,
+                              line,
+                              song,
+                              {
+                                renderKey: key,
+                                useUnicodeModifier: configuration.useUnicodeModifiers,
+                                normalizeChords: configuration.normalizeChords,
+                              },
+                            )
+                          }</td>
+                        `)}
                       `)}
                     `)}
                   </tr>

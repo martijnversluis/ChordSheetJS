@@ -1,9 +1,5 @@
 import {
-  chordLyricsPair,
-  comment,
-  createSongFromAst,
-  tag,
-  ternary,
+  chordLyricsPair, comment, createSongFromAst, tag, ternary,
 } from '../utilities';
 
 // This Song object mimics the chord pro sheet in chord_pro_sheet.js
@@ -42,7 +38,8 @@ export const exampleSongSymbol = createSongFromAst([
   ],
   [tag('transpose', '2')],
   [
-    chordLyricsPair('C', 'Whisper words of '),
+    chordLyricsPair('C', 'Whisper '),
+    chordLyricsPair('', 'words of ', 'strong'),
     chordLyricsPair('F', 'wis'),
     chordLyricsPair('G', 'dom, let it '),
     chordLyricsPair('F', 'be '),
@@ -111,7 +108,8 @@ export const exampleSongSolfege = createSongFromAst([
   ],
   [tag('transpose', '2')],
   [
-    chordLyricsPair('Do', 'Whisper words of '),
+    chordLyricsPair('Do', 'Whisper '),
+    chordLyricsPair('', 'words of ', 'strong'),
     chordLyricsPair('Fa', 'wis'),
     chordLyricsPair('Sol', 'dom, let it '),
     chordLyricsPair('Fa', 'be '),

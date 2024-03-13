@@ -14,7 +14,7 @@ Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
 {start_of_verse: Verse 1}
 Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 {transpose: 2}
-[C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
+[C]Whisper [*strong]words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
 {end_of_verse}
 
 {start_of_chorus}
@@ -49,7 +49,7 @@ Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
 {start_of_verse: Verse 1}
 Let it [Lam]be, let it [Do/Sol]be, let it [Fa]be, let it [Do]be
 {transpose: 2}
-[Do]Whisper words of [Fa]wis[Sol]dom, let it [Fa]be [Do/Mi] [Rem] [Do]
+[Do]Whisper [*strong]words of [Fa]wis[Sol]dom, let it [Fa]be [Do/Mi] [Rem] [Do]
 {end_of_verse}
 
 {start_of_chorus}

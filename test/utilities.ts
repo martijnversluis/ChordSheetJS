@@ -95,8 +95,10 @@ export function tag(name: string, value: string = ''): SerializedTag {
   return { type: 'tag', name, value };
 }
 
-export function chordLyricsPair(chords: string, lyrics: string): SerializedChordLyricsPair {
-  return { type: 'chordLyricsPair', chords, lyrics };
+export function chordLyricsPair(chords: string, lyrics: string, annotation: string = ''): SerializedChordLyricsPair {
+  return {
+    type: 'chordLyricsPair', chords, lyrics, annotation,
+  };
 }
 
 export function comment(commentStr: string): SerializedComment {

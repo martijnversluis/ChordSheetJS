@@ -135,6 +135,10 @@ class ChordProFormatter extends Formatter {
       return `[${chordLyricsPair.chords}]`;
     }
 
+    if (chordLyricsPair.annotation) {
+      return `[*${chordLyricsPair.annotation}]`;
+    }
+
     return '';
   }
 

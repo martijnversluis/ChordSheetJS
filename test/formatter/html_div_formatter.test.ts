@@ -54,7 +54,11 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">D</div>
-              <div class="lyrics">Whisper words of </div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="annotation">strong</div>
+              <div class="lyrics">words of </div>
             </div>
             <div class="column">
               <div class="chord">G</div>
@@ -193,7 +197,11 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">Re</div>
-              <div class="lyrics">Whisper words of </div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="annotation">strong</div>
+              <div class="lyrics">words of </div>
             </div>
             <div class="column">
               <div class="chord">Sol</div>
@@ -508,7 +516,11 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">F</div>
-              <div class="lyrics">Whisper words of </div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            <div class="column">
+              <div class="annotation">strong</div>
+              <div class="lyrics">words of </div>
             </div>
             <div class="column">
               <div class="chord">Bb</div>
@@ -645,7 +657,12 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">Fa</div>
-              <div class="lyrics">Whisper words of </div>
+              <div class="lyrics">Whisper </div>
+            </div>
+            
+            <div class="column">
+              <div class="annotation">strong</div>
+              <div class="lyrics">words of </div>
             </div>
             <div class="column">
               <div class="chord">Sib</div>
