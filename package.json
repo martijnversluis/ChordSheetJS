@@ -33,7 +33,7 @@
     "@types/lodash.get": "^4.4.7",
     "@types/node": "^20.1.2",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
+    "@typescript-eslint/parser": "^7.4.0",
     "browserify": "^17.0.0",
     "detect-newline": "^4.0.1",
     "eslint": "^8.12.0",
