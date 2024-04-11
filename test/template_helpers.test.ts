@@ -119,13 +119,13 @@ describe('template_helpers', () => {
 
   describe('when', () => {
     it('returns the callback result when the condition is truthy', () => {
-      const callback = () => 'foobar!';
+      const callback = () => 'foobar';
 
-      expect(when(true, callback).toString()).toEqual('foobar!');
-      expect(when('string', callback).toString()).toEqual('foobar!');
-      expect(when({}, callback).toString()).toEqual('foobar!');
-      expect(when(25, callback).toString()).toEqual('foobar!');
-      expect(when([], callback).toString()).toEqual('foobar!');
+      expect(when(true, callback).toString()).toEqual('foobar');
+      expect(when('string', callback).toString()).toEqual('foobar');
+      expect(when({}, callback).toString()).toEqual('foobar');
+      expect(when(25, callback).toString()).toEqual('foobar');
+      expect(when([], callback).toString()).toEqual('foobar');
     });
 
     it('returns an empty string when the condition is falsy', () => {
@@ -139,17 +139,50 @@ describe('template_helpers', () => {
     });
 
     it('allows chaining with then', () => {
-      const callback = () => 'foobar!';
+      expect(when(true).then(() => 'foobar').toString()).toEqual('foobar');
+      expect(when(false).then(() => 'foobar').toString()).toEqual('');
+    });
 
-      expect(when(true).then(callback).toString()).toEqual('foobar!');
-      expect(when(false).then(callback).toString()).toEqual('');
+    it('allows chaining with elseWhen', () => {
+      expect(when(true).then(() => 'when').elseWhen(true, () => 'elseWhen').toString()).toEqual('when');
+      expect(when(false).then(() => 'when').elseWhen(true, () => 'elseWhen').toString()).toEqual('elseWhen');
+      expect(when(false).then(() => 'when').elseWhen(false, () => 'elseWhen').toString()).toEqual('');
+    });
+
+    it('allows chaining with elseWhen and else', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(false, () => 'elseWhen')
+          .else(() => 'else')
+          .toString(),
+      ).toEqual('else');
+    });
+
+    it('allows chaining with else then', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(true)
+          .then(() => 'elseThen')
+          .toString(),
+      ).toEqual('elseThen');
+    });
+
+    it('allows chaining with else then else', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(false)
+          .then(() => 'elseThen')
+          .else(() => 'else')
+          .toString(),
+      ).toEqual('else');
     });
 
     it('allows chaining with else', () => {
-      const elseCallback = () => 'else!';
-
-      expect(when(true).else(elseCallback).toString()).toEqual('');
-      expect(when(false).else(elseCallback).toString()).toEqual('else!');
+      expect(when(true).then(() => 'then').else(() => 'else').toString()).toEqual('then');
+      expect(when(false).then(() => 'then').else(() => 'else').toString()).toEqual('else');
     });
   });
 

@@ -206,7 +206,7 @@ describe('Song', () => {
   describe('#mapItems', () => {
     it('changes the symbol song', () => {
       const song = exampleSongSymbol.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 2, 2, 2]);
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
@@ -237,7 +237,7 @@ describe('Song', () => {
 
     it('changes the solfege song', () => {
       const song = exampleSongSolfege.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 2, 2, 2]);
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {

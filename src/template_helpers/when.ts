@@ -1,35 +1,45 @@
-export interface WhenCallback {
-  (): string;
-}
+import WhenClause from './when_clause';
+import WhenCallback from './when_callback';
 
 class When {
   condition: boolean = false;
 
-  thenCallback: WhenCallback | null = null;
+  clauses: WhenClause[] = [];
 
-  elseCallback: WhenCallback | null = null;
-
-  constructor(condition: any, thenCallback: WhenCallback | null = null) {
-    this.condition = !!condition;
-    this.thenCallback = thenCallback;
+  constructor(condition: any, thenCallback?: WhenCallback) {
+    this.add(condition, thenCallback);
   }
 
   then(thenCallback: WhenCallback): When {
-    this.thenCallback = thenCallback;
-    return this;
+    return this.add(this.condition, thenCallback);
   }
 
-  else(elseCallback: WhenCallback): When {
-    this.elseCallback = elseCallback;
+  elseWhen(condition: any, callback?: WhenCallback): When {
+    return this.add(condition, callback);
+  }
+
+  else(callback: WhenCallback): When {
+    return this.add(true, callback);
+  }
+
+  private add(condition: any, callback?: WhenCallback): When {
+    this.condition = !!condition;
+
+    if (callback) {
+      this.clauses.push(new WhenClause(condition, callback));
+    }
+
     return this;
   }
 
   toString(): string {
-    if (this.condition) {
-      return this.thenCallback ? this.thenCallback() : '';
+    const [firstClause, ...rest] = this.clauses;
+
+    if (firstClause) {
+      return firstClause.evaluate(rest);
     }
 
-    return this.elseCallback ? this.elseCallback() : '';
+    throw new Error('Expected at least one .then() clause');
   }
 }
 

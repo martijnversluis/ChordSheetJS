@@ -70,22 +70,6 @@ class ChordsOverWordsFormatter extends Formatter {
       .join('\n');
   }
 
-  formatTitle(title: string): string {
-    if (title) {
-      return `title: ${title}\n`;
-    }
-
-    return '';
-  }
-
-  formatSubTitle(subtitle: string): string {
-    if (subtitle) {
-      return `${subtitle}\n`;
-    }
-
-    return '';
-  }
-
   formatLineTop(line: Line, metadata: Metadata): string | null {
     if (hasRemarkContents(line)) {
       return this.formatLineWithFormatter(line, this.formatItemTop, metadata);
@@ -147,6 +131,10 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatItemBottom(item: Item, metadata: Metadata, line: Line): string {
+    if (typeof item === 'string') {
+      return item;
+    }
+
     if (item instanceof Tag && item.isRenderable()) {
       return item.value || '';
     }

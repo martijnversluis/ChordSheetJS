@@ -55,6 +55,16 @@ export type SerializedComment = {
   comment: string,
 };
 
+export type ContentType = 'tab' | 'abc' | 'ly' | 'grid';
+
+export type SerializedSection = {
+  type: 'section',
+  sectionType: ContentType,
+  content: string[],
+  startTag: SerializedTag,
+  endTag: SerializedTag,
+};
+
 type SerializedLiteral = string;
 
 export interface SerializedTernary extends SerializedTraceInfo {
@@ -67,9 +77,14 @@ export interface SerializedTernary extends SerializedTraceInfo {
 
 export type SerializedComposite = Array<SerializedLiteral | SerializedTernary>;
 
-export type SerializedItem = SerializedChordLyricsPair | SerializedTag | SerializedComment | SerializedTernary;
+export type SerializedItem =
+  SerializedChordLyricsPair |
+  SerializedTag |
+  SerializedComment |
+  SerializedTernary |
+  SerializedLiteral;
 
-type SerializedLine = {
+export type SerializedLine = {
   type: 'line',
   items: SerializedItem[],
 };
@@ -86,7 +101,8 @@ type SerializedComponent =
   SerializedTag |
   SerializedComment |
   SerializedTernary |
-  SerializedLiteral;
+  SerializedLiteral |
+  SerializedSection;
 
 /**
  * Serializes a song into een plain object, and deserializes the serialized object back into a {@link Song}
@@ -187,7 +203,8 @@ class ChordSheetSerializer {
     return this.song;
   }
 
-  parseAstComponent(astComponent: SerializedComponent): null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
+  parseAstComponent(astComponent: SerializedComponent)
+    : null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
     if (!astComponent) {
       return null;
     }
@@ -210,6 +227,9 @@ class ChordSheetSerializer {
         return this.parseComment(astComponent);
       case TERNARY:
         return this.parseTernary(astComponent);
+      case LINE:
+        this.parseLine(astComponent);
+        break;
       default:
         console.warn(`Unhandled AST component "${type}"`, astComponent);
     }
@@ -220,12 +240,16 @@ class ChordSheetSerializer {
   parseChordSheet(astComponent: SerializedSong): void {
     const { lines } = astComponent;
     this.song = new Song();
-    lines.forEach((line) => this.parseLine(line));
+    lines.forEach((line) => this.parseAstComponent(line));
   }
 
   parseLine(astComponent: SerializedLine): void {
     const { items } = astComponent;
     this.song.addLine();
+
+    if (typeof items.forEach !== 'function') {
+      console.log('items:', items);
+    }
 
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;

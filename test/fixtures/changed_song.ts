@@ -343,6 +343,114 @@ export const changedSongSymbol: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_tab',
+          value: 'Tab 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_tab',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_abc',
+          value: 'ABC 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_abc',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_ly',
+          value: 'LY 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_ly',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_bridge',
           value: 'Bridge 1 changed',
         },
@@ -387,13 +495,13 @@ export const changedSongSymbol: SerializedSong = {
     {
       type: 'line',
       items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'GRID LINE',
-          chord: null,
-          annotation: '',
-        },
+        'Grid line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Grid line 2',
       ],
     },
     {
@@ -402,42 +510,6 @@ export const changedSongSymbol: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_grid',
-          value: 'changed',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'start_of_tab',
-          value: 'Tab 1 changed',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'TAB LINE',
-          chord: null,
-          annotation: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'end_of_tab',
           value: 'changed',
         },
       ],
@@ -788,6 +860,114 @@ export const changedSongSolfege: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_tab',
+          value: 'Tab 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_tab',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_abc',
+          value: 'ABC 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_abc',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_ly',
+          value: 'LY 1 changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_ly',
+          value: 'changed',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_bridge',
           value: 'Bridge 1 changed',
         },
@@ -832,13 +1012,13 @@ export const changedSongSolfege: SerializedSong = {
     {
       type: 'line',
       items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'GRID LINE',
-          chord: null,
-          annotation: '',
-        },
+        'Grid line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Grid line 2',
       ],
     },
     {
@@ -847,42 +1027,6 @@ export const changedSongSolfege: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_grid',
-          value: 'changed',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'start_of_tab',
-          value: 'Tab 1 changed',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'TAB LINE',
-          chord: null,
-          annotation: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'end_of_tab',
           value: 'changed',
         },
       ],

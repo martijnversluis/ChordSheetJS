@@ -2,6 +2,11 @@ import lodashGet from 'lodash.get';
 
 import MetadataConfiguration from './metadata_configuration';
 import Key from '../../key';
+import Literal from '../../chord_sheet/chord_pro/literal';
+import { ContentType } from '../../chord_sheet_serializer';
+
+export type Delegate = (_literal: Literal) => string;
+const defaultDelegate: Delegate = (literal: Literal) => literal.string;
 
 export type ConfigurationProperties = Record<string, any> & {
   evaluate?: boolean,
@@ -12,6 +17,7 @@ export type ConfigurationProperties = Record<string, any> & {
   expandChorusDirective?: boolean,
   useUnicodeModifiers?: boolean,
   normalizeChords?: boolean,
+  delegates?: Partial<Record<ContentType, Delegate>>;
 }
 
 export const defaultConfiguration: ConfigurationProperties = {
@@ -21,6 +27,11 @@ export const defaultConfiguration: ConfigurationProperties = {
   expandChorusDirective: false,
   useUnicodeModifiers: false,
   normalizeChords: true,
+  delegates: {
+    abc: defaultDelegate,
+    ly: defaultDelegate,
+    tab: defaultDelegate,
+  },
 };
 
 class Configuration {
@@ -38,6 +49,8 @@ class Configuration {
 
   normalizeChords: boolean;
 
+  delegates: Partial<Record<ContentType, Delegate>>;
+
   constructor(configuration: ConfigurationProperties = defaultConfiguration) {
     const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
     this.evaluate = !!mergedConfig.evaluate;
@@ -46,6 +59,7 @@ class Configuration {
     this.normalizeChords = !!mergedConfig.normalizeChords;
     this.metadata = new MetadataConfiguration(configuration.metadata);
     this.key = configuration.key ? Key.wrap(configuration.key) : null;
+    this.delegates = mergedConfig.delegates || {};
     this.configuration = configuration;
   }
 

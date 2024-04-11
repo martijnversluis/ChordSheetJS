@@ -8,7 +8,7 @@ import {
   fontStyleTag,
   hasTextContents,
   isChordLyricsPair,
-  isComment,
+  isComment, isLiteral,
   isTag,
   lineClasses,
   lineHasContents,
@@ -74,9 +74,7 @@ export default (
                     ${ each(line.items, (item) => `
                       ${ when(isChordLyricsPair(item), () => `
                         <td class="lyrics"${fontStyleTag(line.textFont)}>${ item.lyrics}</td>
-                      `)}
-                      
-                      ${ when(isTag(item), () => `
+                      `).elseWhen(isTag(item), () => `
                         ${ when(isComment(item), () => `
                           <td class="comment"${fontStyleTag(line.textFont)}>${ item.value }</td>
                         `) }
@@ -84,9 +82,9 @@ export default (
                         ${ when(item.hasRenderableLabel(), () => `
                           <td><h3 class="label"${fontStyleTag(line.textFont)}>${ item.value }</h3></td>
                         `) }
-                      `) }
-                      
-                      ${ when(isEvaluatable(item), () => `
+                      `).elseWhen(isLiteral(item), () => `
+                        <td class="literal">${item.string}</td>
+                      `).elseWhen(isEvaluatable(item), () => `
                         <td class="lyrics"${fontStyleTag(line.textFont)}>${ evaluate(item, metadata, configuration) }</td>
                       `) }
                     `)}

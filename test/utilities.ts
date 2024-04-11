@@ -4,8 +4,11 @@ import { LineType } from '../src/chord_sheet/line';
 import Metadata from '../src/chord_sheet/metadata';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import Item from '../src/chord_sheet/item';
+import { ChordType, Modifier } from '../src/constants';
+import Key from '../src/key';
 
 import ChordSheetSerializer, {
+  ContentType,
   SerializedChordLyricsPair,
   SerializedComment,
   SerializedComposite,
@@ -18,17 +21,9 @@ import ChordSheetSerializer, {
 import {
   ChordLyricsPair, Composite, Line, Literal, NONE, Paragraph, Song, Tag, Ternary,
 } from '../src';
-import { ChordType, Modifier } from '../src/constants';
-import Key from '../src/key';
 
 export function heredoc(strings: TemplateStringsArray, ...values: any[]): string {
   return theredoc(strings, ...values);
-}
-
-export function mark(str: string): string {
-  return str
-    .replace(/\n/g, '␊\n')
-    .replace(/\r/g, '␍\r');
 }
 
 export function createSong(lines, metadata: Record<string, string> = {}) {
@@ -93,6 +88,24 @@ export function createSongFromAst(lines: SerializedItem[][]): Song {
 
 export function tag(name: string, value: string = ''): SerializedTag {
   return { type: 'tag', name, value };
+}
+
+function splitContent(content: string | string[]): string[] {
+  return Array.isArray(content) ? content : content.split('\n');
+}
+
+export function section(
+  sectionType: ContentType,
+  tagValue: string,
+  content: string[] | string,
+  startTag: SerializedTag | null = null,
+  endTag: SerializedTag | null = null,
+): SerializedItem[][] {
+  return [
+    [startTag || tag(`start_of_${sectionType}`, tagValue)],
+    ...splitContent(content).map((line) => [line]),
+    [endTag || tag(`end_of_${sectionType}`)],
+  ];
 }
 
 export function chordLyricsPair(chords: string, lyrics: string, annotation: string = ''): SerializedChordLyricsPair {

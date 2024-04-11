@@ -27,14 +27,24 @@ describe('ChordsOverWordsFormatter', () => {
       Em               F              C  G
       Whisper words of wisdom, let it be
       
+      Tab 1
+      Tab line 1
+      Tab line 2
+      
+      ABC 1
+      ABC line 1
+      ABC line 2
+      
+      LY 1
+      LY line 1
+      LY line 2
+      
       Bridge 1
       Bridge line
       
       Grid 1
-      Grid line
-      
-      Tab 1
-      Tab line`;
+      Grid line 1
+      Grid line 2`;
 
     expect(formatter.format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -42,7 +52,7 @@ describe('ChordsOverWordsFormatter', () => {
   it('formats a solfege song to a text chord sheet correctly', () => {
     const formatter = new ChordsOverWordsFormatter();
 
-    const expectedChordSheet = `
+    const expectedChordSheet = heredoc`
 title: Let it be
 subtitle: ChordSheetJS example version
 key: Do
@@ -61,14 +71,24 @@ Breakdown
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
+Tab 1
+Tab line 1
+Tab line 2
+
+ABC 1
+ABC line 1
+ABC line 2
+
+LY 1
+LY line 1
+LY line 2
+
 Bridge 1
 Bridge line
 
 Grid 1
-Grid line
-
-Tab 1
-Tab line`.substring(1);
+Grid line 1
+Grid line 2`;
 
     expect(formatter.format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });

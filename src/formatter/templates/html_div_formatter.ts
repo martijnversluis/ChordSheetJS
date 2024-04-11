@@ -7,7 +7,7 @@ import {
   fontStyleTag,
   isChordLyricsPair,
   isComment,
-  isEvaluatable,
+  isEvaluatable, isLiteral,
   isTag,
   lineClasses,
   lineHasContents,
@@ -62,9 +62,7 @@ export default (
                    `) }
                     <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                   </div>
-                `) }
-                
-                ${ when(isTag(item), () => `
+                `).elseWhen(isTag(item), () => `
                   ${ when(isComment(item), () => `
                     <div class="comment">${ item.value }</div>
                   `) }
@@ -72,9 +70,9 @@ export default (
                   ${ when(item.hasRenderableLabel(), () => `
                     <h3 class="label">${ item.value }</h3>
                   `) }
-                `) }
-                
-                ${ when(isEvaluatable(item), () => `
+                `).elseWhen(isLiteral(item), () => `
+                  <div class="literal">${item.string}</div>
+                `).elseWhen(isEvaluatable(item), () => `
                   <div class="column">
                     <div class="chord"></div>
                     <div class="lyrics"${ fontStyleTag(line.textFont) }>${ evaluate(item, metadata, configuration) }</div>

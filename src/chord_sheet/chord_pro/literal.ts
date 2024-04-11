@@ -3,9 +3,9 @@ import Evaluatable from './evaluatable';
 class Literal extends Evaluatable {
   string: string;
 
-  constructor(expression: string) {
+  constructor(string: string) {
     super();
-    this.string = expression;
+    this.string = string;
   }
 
   evaluate(): string {

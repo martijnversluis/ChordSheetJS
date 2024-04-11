@@ -25,20 +25,30 @@ describe('TextFormatter', () => {
       Em               F              C  G
       Whisper words of wisdom, let it be
       
+      Tab 1
+      Tab line 1
+      Tab line 2
+      
+      ABC 1
+      ABC line 1
+      ABC line 2
+      
+      LY 1
+      LY line 1
+      LY line 2
+      
       Bridge 1
       Bridge line
       
       Grid 1
-      Grid line
-      
-      Tab 1
-      Tab line`;
+      Grid line 1
+      Grid line 2`;
 
     expect(new TextFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   it('formats a solfege song to a text chord sheet correctly', () => {
-    const expectedChordSheet = `
+    const expectedChordSheet = heredoc`
 LET IT BE
 ChordSheetJS example version
 
@@ -54,14 +64,24 @@ Breakdown
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
+Tab 1
+Tab line 1
+Tab line 2
+
+ABC 1
+ABC line 1
+ABC line 2
+
+LY 1
+LY line 1
+LY line 2
+
 Bridge 1
 Bridge line
 
 Grid 1
-Grid line
-
-Tab 1
-Tab line`.substring(1);
+Grid line 1
+Grid line 2`;
 
     expect(new TextFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
@@ -100,27 +120,37 @@ Let it be, let it be, let it be, let it be`;
     const expectedChordSheet = heredoc`
       LET IT BE
       ChordSheetJS example version
-      
+
       Written by: John Lennon,Paul McCartney
-      
+
       Verse 1
              Cm         Eb/Bb      Ab         Eb
       Let it be, let it be, let it be, let it be
       F       strong   Bb C           Bb F/A Gm F
       Whisper words of wisdom, let it be
-      
+
       Breakdown
       Gm               Ab             Eb Bb
       Whisper words of wisdom, let it be
-      
+
+      Tab 1
+      Tab line 1
+      Tab line 2
+
+      ABC 1
+      ABC line 1
+      ABC line 2
+
+      LY 1
+      LY line 1
+      LY line 2
+
       Bridge 1
       Bridge line
-      
+
       Grid 1
-      Grid line
-      
-      Tab 1
-      Tab line`;
+      Grid line 1
+      Grid line 2`;
 
     expect(new TextFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
