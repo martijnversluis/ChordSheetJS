@@ -459,22 +459,8 @@ class Song extends MetadataAccessors {
    * @returns {Song} The changed song
    */
   changeKey(newKey: string | Key): Song {
-    const transpose = this.getTransposeDistance(newKey);
-
-    const updatedSong = this.mapItems((item) => {
-      if (item instanceof Tag && item.name === KEY) {
-        return item.set({ value: newKey.toString() });
-      }
-
-      if (item instanceof ChordLyricsPair) {
-        return item.transpose(transpose, newKey);
-      }
-
-      return item;
-    });
-
-    this.setKey(newKey.toString());
-    return updatedSong;
+    const delta = this.getTransposeDistance(newKey);
+    return this.transpose(delta);
   }
 
   getTransposeDistance(newKey: string | Key): number {
