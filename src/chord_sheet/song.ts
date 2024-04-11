@@ -409,17 +409,14 @@ class Song extends MetadataAccessors {
    * @returns {Song} The transposed song
    */
   transpose(delta: number, { normalizeChordSuffix = false } = {}): Song {
-    const wrappedKey = Key.wrap(this.key);
     let transposedKey: Key | null = null;
     let song = (this as Song);
 
-    if (wrappedKey) {
-      transposedKey = wrappedKey.transpose(delta);
-      song = song.setKey(transposedKey.toString());
-    }
-
     return song.mapItems((item) => {
-      if (item instanceof ChordLyricsPair) {
+      if (item instanceof Tag && item.name === KEY) {
+        transposedKey = Key.wrapOrFail(item.value).transpose(delta);
+        return item.set({ value: transposedKey.toString() });
+      } else if (item instanceof ChordLyricsPair) {
         return (item as ChordLyricsPair).transpose(delta, transposedKey, { normalizeChordSuffix });
       }
 
