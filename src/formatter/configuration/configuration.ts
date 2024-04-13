@@ -2,11 +2,10 @@ import lodashGet from 'lodash.get';
 
 import MetadataConfiguration from './metadata_configuration';
 import Key from '../../key';
-import Literal from '../../chord_sheet/chord_pro/literal';
 import { ContentType } from '../../chord_sheet_serializer';
 
-export type Delegate = (_literal: Literal) => string;
-const defaultDelegate: Delegate = (literal: Literal) => literal.string;
+export type Delegate = (_string: string) => string;
+const defaultDelegate: Delegate = (string: string) => string;
 
 export type ConfigurationProperties = Record<string, any> & {
   evaluate?: boolean,
@@ -31,6 +30,7 @@ export const defaultConfiguration: ConfigurationProperties = {
     abc: defaultDelegate,
     ly: defaultDelegate,
     tab: defaultDelegate,
+    grid: defaultDelegate,
   },
 };
 

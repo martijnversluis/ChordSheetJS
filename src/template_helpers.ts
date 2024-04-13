@@ -35,6 +35,8 @@ export function stripHTML(string: string): string {
   return string.trim().replace(/(<\/[a-z]+>)\s+(<)/g, '$1$2').replace(/(\n)\s+/g, '');
 }
 
+export const newlinesToBreaks = (string: string): string => string.replace(/\n/g, '<br>');
+
 export function each(collection: any[], callback: EachCallback): string {
   return collection.map(callback).join('');
 }

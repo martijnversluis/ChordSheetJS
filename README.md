@@ -798,9 +798,25 @@ else it returns an array of strings.</p>
 **Kind**: global class  
 
 * [Paragraph](#Paragraph)
+    * [.contents](#Paragraph+contents) ⇒ <code>string</code>
+    * [.label](#Paragraph+label) ⇒ <code>string</code> \| <code>null</code>
     * [.type](#Paragraph+type) ⇒ <code>string</code>
+    * [.isLiteral()](#Paragraph+isLiteral) ⇒ <code>boolean</code>
     * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
+<a name="Paragraph+contents"></a>
+
+### paragraph.contents ⇒ <code>string</code>
+<p>Returns the paragraph contents as one string where lines are separated by newlines</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+label"></a>
+
+### paragraph.label ⇒ <code>string</code> \| <code>null</code>
+<p>Returns the label of the paragraph. The label is the value of the first section delimiter tag
+in the first line.</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+type"></a>
 
 ### paragraph.type ⇒ <code>string</code>
@@ -808,6 +824,14 @@ else it returns an array of strings.</p>
 If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+isLiteral"></a>
+
+### paragraph.isLiteral() ⇒ <code>boolean</code>
+<p>Indicates whether the paragraph only contains literals. If true, [contents](contents) can be used to retrieve
+the paragraph contents as one string where lines are separated by newlines.</p>
+
+**Kind**: instance method of [<code>Paragraph</code>](#Paragraph)  
+**See**: [contents](contents)  
 <a name="Paragraph+hasRenderableItems"></a>
 
 ### paragraph.hasRenderableItems() ⇒ <code>boolean</code>

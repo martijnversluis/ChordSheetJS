@@ -91,61 +91,37 @@ describe('HtmlTableFormatter', () => {
         </div>
         
         <div class="paragraph tab">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">Tab 1</h3>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Tab line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Tab line 2</td>
             </tr>
           </table>
         </div>
         
         <div class="paragraph abc">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">ABC 1</h3>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">ABC line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">ABC line 2</td>
             </tr>
           </table>
         </div>
         
         <div class="paragraph ly">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">LY 1</h3>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">LY line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">LY line 2</td>
             </tr>
           </table>
         </div>
@@ -158,35 +134,25 @@ describe('HtmlTableFormatter', () => {
               </td>
             </tr>
           </table>
-          
           <table class="row">
-            <tr>
-              <td class="lyrics">Bridge line</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph grid">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Grid 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Grid line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Grid line 2</td>
-            </tr>
-          </table>
-        </div>
+          <tr>
+            <td class="lyrics">Bridge line</td>
+          </tr>
+        </table>
       </div>
-    `);
+      
+      <div class="paragraph grid">
+        <table class="literal">
+          <tr>
+            <td class="label">Grid 1</td>
+            <td class="contents">
+              Grid line 1<br>
+              Grid line 2
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>`);
 
     expect(new HtmlTableFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -272,100 +238,68 @@ describe('HtmlTableFormatter', () => {
         </div>
         
         <div class="paragraph tab">
+          <table class="literal">
+            <tr>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph abc">
+          <table class="literal">
+            <tr>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph ly">
+          <table class="literal">
+            <tr>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph bridge">
           <table class="row">
             <tr>
               <td>
-                <h3 class="label">Tab 1</h3>
+                <h3 class="label">Bridge 1</h3>
               </td>
             </tr>
           </table>
           <table class="row">
             <tr>
-              <td class="literal">Tab line 1</td>
+              <td class="lyrics">Bridge line</td>
             </tr>
           </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Tab line 2</td>
-              </tr>
-            </table>
-          </div>
-              
-          <div class="paragraph abc">
-            <table class="row">
-              <tr>
-                <td>
-                  <h3 class="label">ABC 1</h3>
-                </td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">ABC line 1</td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">ABC line 2</td>
-              </tr>
-            </table>
-          </div>
-          
-          <div class="paragraph ly">
-            <table class="row">
-              <tr>
-                <td>
-                  <h3 class="label">LY 1</h3>
-                </td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">LY line 1</td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">LY line 2</td>
-              </tr>
-            </table>
-          </div>
-          
-          <div class="paragraph bridge">
-            <table class="row">
-              <tr>
-                <td>
-                  <h3 class="label">Bridge 1</h3>
-                </td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="lyrics">Bridge line</td>
-              </tr>
-            </table>
-          </div>
-          
-          <div class="paragraph grid">
-            <table class="row">
-              <tr>
-                <td>
-                  <h3 class="label">Grid 1</h3>
-                </td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">Grid line 1</td>
-              </tr>
-            </table>
-            <table class="row">
-              <tr>
-                <td class="literal">Grid line 2</td>
-              </tr>
-            </table>
-          </div>
         </div>
+        
+        <div class="paragraph grid">
+          <table class="literal">
+            <tr>
+              <td class="label">Grid 1</td>
+              <td class="contents">
+                Grid line 1<br>
+                Grid line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     `);
 
     expect(new HtmlTableFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
@@ -643,99 +577,66 @@ describe('HtmlTableFormatter', () => {
         </div>
         
         <div class="paragraph tab">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">Tab 1</h3>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Tab line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Tab line 2</td>
             </tr>
           </table>
         </div>
         
         <div class="paragraph abc">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">ABC 1</h3>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">ABC line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">ABC line 2</td>
             </tr>
           </table>
         </div>
         
         <div class="paragraph ly">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">LY 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">LY line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">LY line 2</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph bridge">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Bridge 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Bridge line</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph grid">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Grid 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Grid line 1</td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="literal">Grid line 2</td>
-            </tr>
-          </table>
-        </div>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="paragraph bridge">
+            <table class="row">
+              <tr>
+                <td>
+                  <h3 class="label">Bridge 1</h3>
+                </td>
+              </tr>
+            </table>
+            <table class="row">
+              <tr>
+                <td class="lyrics">Bridge line</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="paragraph grid">
+            <table class="literal">
+              <tr>
+                <td class="label">Grid 1</td>
+                <td class="contents">
+                  Grid line 1<br>
+                  Grid line 2
+                </td>
+              </tr>
+            </table>
+          </div>
       </div>
     `);
 
