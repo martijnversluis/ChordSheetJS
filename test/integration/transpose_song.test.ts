@@ -114,4 +114,34 @@ describe('transposing a song', () => {
 
     expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);
   });
+
+  describe('key change', () => {
+    const chordpro = heredoc`
+      {key: B}
+      [B]Something in the way she [Bmaj7]moves
+      {key: G#}
+      [G#]You're asking m[Cm/G]e will my love [Fm7]grow [G#/D#]`;
+
+    const changedSheet = heredoc`
+      {key: C}
+      [C]Something in the way she [Cmaj7]moves
+      {key: A}
+      [A]You're asking m[C#m/G#]e will my love [F#m7]grow [A/E]`;
+
+    it('normalizes when transposing', () => {
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.transpose(1);
+
+      expect(updatedSong.key).toEqual('C');
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+
+    it('normalizes when setting key', () => {
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.changeKey('C');
+
+      expect(updatedSong.key).toEqual('C');
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+  });
 });
