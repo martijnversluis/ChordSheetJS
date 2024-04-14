@@ -3,7 +3,7 @@ import Tag from './tag';
 import Comment from './comment';
 import Item from './item';
 import Font from './font';
-import { ContentType } from '../chord_sheet_serializer';
+import { ContentType } from '../serialized_types';
 
 import {
   BRIDGE,

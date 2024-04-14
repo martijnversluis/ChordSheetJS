@@ -7,8 +7,9 @@ import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import Item from '../src/chord_sheet/item';
 import { ChordType, Modifier } from '../src/constants';
 import Key from '../src/key';
+import ChordSheetSerializer from '../src/chord_sheet_serializer';
 
-import ChordSheetSerializer, {
+import {
   ContentType,
   SerializedChordLyricsPair,
   SerializedComment,
@@ -17,7 +18,7 @@ import ChordSheetSerializer, {
   SerializedSong,
   SerializedTag,
   SerializedTernary,
-} from '../src/chord_sheet_serializer';
+} from '../src/serialized_types';
 
 import {
   ChordLyricsPair, Composite, Line, Literal, NONE, Paragraph, Song, Tag, Ternary,

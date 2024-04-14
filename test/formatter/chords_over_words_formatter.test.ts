@@ -3,7 +3,7 @@ import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
 import { GRID } from '../../src/constants';
-import { ContentType } from '../../src/chord_sheet_serializer';
+import { ContentType } from '../../src/serialized_types';
 import Configuration from '../../src/formatter/configuration/configuration';
 
 import {

@@ -1,11 +1,12 @@
 import lodashGet from 'lodash.get';
 
+import Key from '../../key';
+import { ContentType } from '../../serialized_types';
+
 import MetadataConfiguration, {
   defaultMetadataConfiguration,
   MetadataConfigurationProperties,
 } from './metadata_configuration';
-import Key from '../../key';
-import { ContentType } from '../../chord_sheet_serializer';
 
 export type Delegate = (_string: string) => string;
 export const defaultDelegate: Delegate = (string: string) => string;

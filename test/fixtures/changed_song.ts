@@ -1,4 +1,4 @@
-import { SerializedSong } from '../../src/chord_sheet_serializer';
+import { SerializedSong } from '../../src/serialized_types';
 
 export const changedSongSymbol: SerializedSong = {
   type: 'chordSheet',
