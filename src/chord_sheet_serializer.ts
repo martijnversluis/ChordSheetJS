@@ -128,17 +128,10 @@ class ChordSheetSerializer {
 
   parseAstComponent(astComponent: SerializedComponent)
     : null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
-    if (!astComponent) {
-      return null;
-    }
+    if (!astComponent) return null;
+    if (typeof astComponent === 'string') return new Literal(astComponent);
 
-    if (typeof astComponent === 'string') {
-      return new Literal(astComponent);
-    }
-
-    const { type } = astComponent;
-
-    switch (type) {
+    switch (astComponent.type) {
       case CHORD_SHEET:
         this.parseChordSheet(astComponent);
         break;
@@ -154,7 +147,7 @@ class ChordSheetSerializer {
         this.parseLine(astComponent);
         break;
       default:
-        console.warn(`Unhandled AST component "${type}"`, astComponent);
+        console.warn(`Unhandled AST component "${astComponent.type}"`, astComponent);
     }
 
     return null;
