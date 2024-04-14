@@ -9,7 +9,16 @@ import Line from './chord_sheet/line';
 import AstType from './chord_sheet/ast_type';
 import Item from './chord_sheet/item';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
-import { ChordType, Modifier } from './constants';
+
+import {
+  SerializedChordLyricsPair,
+  SerializedComment,
+  SerializedComponent,
+  SerializedItem,
+  SerializedLine, SerializedLiteral,
+  SerializedSong,
+  SerializedTag, SerializedTernary,
+} from './serialized_types';
 
 const CHORD_SHEET = 'chordSheet';
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
@@ -17,76 +26,6 @@ const TAG = 'tag';
 const COMMENT = 'comment';
 const TERNARY = 'ternary';
 const LINE = 'line';
-
-type SerializedTraceInfo = {
-  location?: {
-    offset: number | null,
-    line: number | null,
-    column: number | null,
-  },
-};
-
-type SerializedChord = {
-  type: 'chord',
-  base: string,
-  modifier: Modifier | null,
-  suffix: string | null,
-  bassBase: string | null,
-  bassModifier: Modifier | null,
-  chordType: ChordType,
-};
-
-export type SerializedChordLyricsPair = {
-  type: 'chordLyricsPair',
-  chord?: SerializedChord | null,
-  chords: string,
-  lyrics: string | null,
-  annotation?: string | null,
-};
-
-export type SerializedTag = SerializedTraceInfo & {
-  type: 'tag',
-  name: string,
-  value: string,
-};
-
-export type SerializedComment = {
-  type: 'comment',
-  comment: string,
-};
-
-type SerializedLiteral = string;
-
-export interface SerializedTernary extends SerializedTraceInfo {
-  type: 'ternary',
-  variable: string | null,
-  valueTest: string | null,
-  trueExpression: Array<SerializedLiteral | SerializedTernary>,
-  falseExpression: Array<SerializedLiteral | SerializedTernary>,
-}
-
-export type SerializedComposite = Array<SerializedLiteral | SerializedTernary>;
-
-export type SerializedItem = SerializedChordLyricsPair | SerializedTag | SerializedComment | SerializedTernary;
-
-type SerializedLine = {
-  type: 'line',
-  items: SerializedItem[],
-};
-
-export type SerializedSong = {
-  type: 'chordSheet',
-  lines: SerializedLine[],
-};
-
-type SerializedComponent =
-  SerializedLine |
-  SerializedSong |
-  SerializedChordLyricsPair |
-  SerializedTag |
-  SerializedComment |
-  SerializedTernary |
-  SerializedLiteral;
 
 /**
  * Serializes a song into een plain object, and deserializes the serialized object back into a {@link Song}
@@ -187,18 +126,12 @@ class ChordSheetSerializer {
     return this.song;
   }
 
-  parseAstComponent(astComponent: SerializedComponent): null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
-    if (!astComponent) {
-      return null;
-    }
+  parseAstComponent(astComponent: SerializedComponent)
+    : null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
+    if (!astComponent) return null;
+    if (typeof astComponent === 'string') return new Literal(astComponent);
 
-    if (typeof astComponent === 'string') {
-      return new Literal(astComponent);
-    }
-
-    const { type } = astComponent;
-
-    switch (type) {
+    switch (astComponent.type) {
       case CHORD_SHEET:
         this.parseChordSheet(astComponent);
         break;
@@ -210,8 +143,11 @@ class ChordSheetSerializer {
         return this.parseComment(astComponent);
       case TERNARY:
         return this.parseTernary(astComponent);
+      case LINE:
+        this.parseLine(astComponent);
+        break;
       default:
-        console.warn(`Unhandled AST component "${type}"`, astComponent);
+        console.warn(`Unhandled AST component "${astComponent.type}"`, astComponent);
     }
 
     return null;
@@ -220,12 +156,16 @@ class ChordSheetSerializer {
   parseChordSheet(astComponent: SerializedSong): void {
     const { lines } = astComponent;
     this.song = new Song();
-    lines.forEach((line) => this.parseLine(line));
+    lines.forEach((line) => this.parseAstComponent(line));
   }
 
   parseLine(astComponent: SerializedLine): void {
     const { items } = astComponent;
     this.song.addLine();
+
+    if (typeof items.forEach !== 'function') {
+      console.log('items:', items);
+    }
 
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;

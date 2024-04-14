@@ -1,5 +1,7 @@
 import { CHORUS, INDETERMINATE, VERSE } from '../../src';
-import { createLine, createParagraph } from '../utilities';
+import {
+  createLine, createLiteral, createParagraph, createTag,
+} from '../utilities';
 
 describe('Paragraph', () => {
   describe('#type', () => {
@@ -22,6 +24,106 @@ describe('Paragraph', () => {
         ]);
 
         expect(paragraph.type).toEqual(INDETERMINATE);
+      });
+    });
+  });
+
+  describe('#isLiteral', () => {
+    describe('when all content lines are literal', () => {
+      it('returns true', () => {
+        const paragraph = createParagraph([
+          createLine([
+            createTag('start_of_tab'),
+          ]),
+          createLine([
+            createLiteral('Tab line 1'),
+          ]),
+          createLine([
+            createLiteral('Tab line 2'),
+          ]),
+          createLine([
+            createTag('end_of_tab'),
+          ]),
+        ]);
+
+        expect(paragraph.isLiteral()).toBe(true);
+      });
+    });
+
+    describe('when not all lines are literal', () => {
+      it('returns false', () => {
+        const paragraph = createParagraph([
+          createLine([
+            createTag('start_of_tab'),
+          ]),
+          createLine([
+            createLiteral('Tab line 1'),
+          ]),
+          createLine([
+            createTag('comment', 'This is a comment'),
+          ]),
+          createLine([
+            createTag('end_of_tab'),
+          ]),
+        ]);
+
+        expect(paragraph.isLiteral()).toBe(false);
+      });
+    });
+  });
+
+  describe('#contents', () => {
+    it('returns the paragraph contents as a string', () => {
+      const paragraph = createParagraph([
+        createLine([
+          createTag('start_of_tab'),
+        ]),
+        createLine([
+          createLiteral('Tab line 1'),
+        ]),
+        createLine([
+          createLiteral('Tab line 2'),
+        ]),
+        createLine([
+          createTag('end_of_tab'),
+        ]),
+      ]);
+
+      expect(paragraph.contents).toEqual('Tab line 1\nTab line 2');
+    });
+  });
+
+  describe('#label', () => {
+    describe('when the first line has a section delimiter', () => {
+      it('returns the value of the section delimiter', () => {
+        const paragraph = createParagraph([
+          createLine([
+            createTag('start_of_tab', 'Tab section'),
+          ]),
+          createLine([
+            createTag('tab'),
+          ]),
+          createLine([
+            createTag('end_of_tab'),
+          ]),
+        ]);
+
+        expect(paragraph.label).toEqual('Tab section');
+      });
+    });
+
+    describe('when the first line does not have a section delimiter', () => {
+      it('returns null', () => {
+        const paragraph = createParagraph([
+          createLine([
+            createLiteral('Tab line 1'),
+          ]),
+          createLine([
+            createLiteral('Tab line 2'),
+          ]),
+        ]);
+
+        expect(paragraph.label).toBeNull();
       });
     });
   });

@@ -47,7 +47,30 @@ export const TAB = 'tab';
  */
 export const VERSE = 'verse';
 
-export type ParagraphType = 'bridge' | 'chorus' | 'grid' | 'indeterminate' | 'none' | 'tab' | 'verse';
+/**
+ * Used to mark a section as Lilypond notation
+ * @constant
+ * @type {string}
+ */
+export const LILYPOND = 'ly';
+
+/**
+ * Used to mark a section as ABC music notation
+ * @constant
+ * @type {string}
+ */
+export const ABC = 'abc';
+
+export type ParagraphType =
+  'abc' |
+  'bridge' |
+  'chorus' |
+  'grid' |
+  'indeterminate' |
+  'ly' |
+  'none' |
+  'tab' |
+  'verse';
 
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';

@@ -6,11 +6,13 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import Paragraph from './chord_sheet/paragraph';
 import Metadata from './chord_sheet/metadata';
-import Configuration from './formatter/configuration/configuration';
+import Configuration, { defaultDelegate, Delegate } from './formatter/configuration/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import { renderChord } from './helpers';
-import When, { WhenCallback } from './template_helpers/when';
+import When from './template_helpers/when';
+import { Literal } from './index';
+import WhenCallback from './template_helpers/when_callback';
 
 interface EachCallback {
   (_item: any): string;
@@ -25,17 +27,31 @@ export const lineHasContents = (line: Line): boolean => line.items.some((item: I
 
 export const isTag = (item: Item): boolean => item instanceof Tag;
 
+export const isLiteral = (item: Item): boolean => item instanceof Literal;
+
 export const isComment = (item: Tag): boolean => item.name === 'comment';
 
 export function stripHTML(string: string): string {
-  return string.trim().replace(/(<\/[a-z]+>)\s+(<)/g, '$1$2').replace(/(\n)\s+/g, '');
+  return string
+    .trim()
+    .replace(/(<\/[a-z]+>)\s+(<)/g, '$1$2')
+    .replace(/(>)\s+(<\/[a-z]+>)/g, '$1$2')
+    .replace(/(\n)\s+/g, '');
+}
+
+export const newlinesToBreaks = (string: string): string => string.replace(/\n/g, '<br>');
+
+export function renderSection(paragraph: Paragraph, configuration: Configuration): string {
+  const delegate: Delegate = configuration.delegates[paragraph.type] || defaultDelegate;
+
+  return delegate(paragraph.contents);
 }
 
 export function each(collection: any[], callback: EachCallback): string {
   return collection.map(callback).join('');
 }
 
-export function when(condition: any, callback: WhenCallback | null = null): When {
+export function when(condition: any, callback?: WhenCallback): When {
   return new When(condition, callback);
 }
 

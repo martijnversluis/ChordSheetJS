@@ -4,7 +4,11 @@ import {
   Tag, VERSE,
 } from '../../src';
 
-import { createChordLyricsPair, createLine, createTag } from '../utilities';
+import {
+  createChordLyricsPair,
+  createLine,
+  createTag,
+} from '../utilities';
 
 describe('Line', () => {
   describe('#clone', () => {

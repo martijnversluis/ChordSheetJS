@@ -1,10 +1,17 @@
-import { TextFormatter } from '../../src';
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import songWithIntro from '../fixtures/song_with_intro';
 
+import { GRID } from '../../src/constants';
+import { ContentType } from '../../src/serialized_types';
+import Configuration from '../../src/formatter/configuration/configuration';
+
 import {
-  chordLyricsPair, createSongFromAst, heredoc, tag,
+  ABC, LILYPOND, TAB, TextFormatter,
+} from '../../src';
+
+import {
+  chordLyricsPair, createSongFromAst, heredoc, section, tag,
 } from '../utilities';
 
 describe('TextFormatter', () => {
@@ -25,20 +32,30 @@ describe('TextFormatter', () => {
       Em               F              C  G
       Whisper words of wisdom, let it be
       
+      Tab 1
+      Tab line 1
+      Tab line 2
+      
+      ABC 1
+      ABC line 1
+      ABC line 2
+      
+      LY 1
+      LY line 1
+      LY line 2
+      
       Bridge 1
       Bridge line
       
       Grid 1
-      Grid line
-      
-      Tab 1
-      Tab line`;
+      Grid line 1
+      Grid line 2`;
 
     expect(new TextFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   it('formats a solfege song to a text chord sheet correctly', () => {
-    const expectedChordSheet = `
+    const expectedChordSheet = heredoc`
 LET IT BE
 ChordSheetJS example version
 
@@ -54,14 +71,24 @@ Breakdown
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
+Tab 1
+Tab line 1
+Tab line 2
+
+ABC 1
+ABC line 1
+ABC line 2
+
+LY 1
+LY line 1
+LY line 2
+
 Bridge 1
 Bridge line
 
 Grid 1
-Grid line
-
-Tab 1
-Tab line`.substring(1);
+Grid line 1
+Grid line 2`;
 
     expect(new TextFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
@@ -100,27 +127,37 @@ Let it be, let it be, let it be, let it be`;
     const expectedChordSheet = heredoc`
       LET IT BE
       ChordSheetJS example version
-      
+
       Written by: John Lennon,Paul McCartney
-      
+
       Verse 1
              Cm         Eb/Bb      Ab         Eb
       Let it be, let it be, let it be, let it be
       F       strong   Bb C           Bb F/A Gm F
       Whisper words of wisdom, let it be
-      
+
       Breakdown
       Gm               Ab             Eb Bb
       Whisper words of wisdom, let it be
-      
+
+      Tab 1
+      Tab line 1
+      Tab line 2
+
+      ABC 1
+      ABC line 1
+      ABC line 2
+
+      LY 1
+      LY line 1
+      LY line 2
+
       Bridge 1
       Bridge line
-      
+
       Grid 1
-      Grid line
-      
-      Tab 1
-      Tab line`;
+      Grid line 1
+      Grid line 2`;
 
     expect(new TextFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -150,5 +187,47 @@ Let it be, let it be, let it be, let it be`;
 
     const formatted = new TextFormatter({ normalizeChords: false }).format(songWithSus2);
     expect(formatted).toEqual('Asus2\nLet it be');
+  });
+
+  describe('delegates', () => {
+    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+      describe(`for ${type}`, () => {
+        it('uses a configured delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration({
+            delegates: {
+              [type]: (content: string) => content.toUpperCase(),
+            },
+          });
+
+          const expectedOutput = heredoc`
+            ${type} section
+            ${type.toUpperCase()} LINE 1
+            ${type.toUpperCase()} LINE 2
+          `;
+
+          expect(new TextFormatter(configuration).format(song)).toEqual(expectedOutput);
+        });
+
+        it('defaults to the default delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration();
+
+          const expectedOutput = heredoc`
+            ${type} section
+            ${type} line 1
+            ${type} line 2
+          `;
+
+          expect(new TextFormatter({ configuration }).format(song)).toEqual(expectedOutput);
+        });
+      });
+    });
   });
 });

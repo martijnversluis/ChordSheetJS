@@ -1,4 +1,4 @@
-import { SerializedSong } from '../../src/chord_sheet_serializer';
+import { SerializedSong } from '../../src/serialized_types';
 
 export const serializedSongSymbol: SerializedSong = {
   type: 'chordSheet',
@@ -343,6 +343,114 @@ export const serializedSongSymbol: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_tab',
+          value: 'Tab 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_tab',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_abc',
+          value: 'ABC 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_abc',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_ly',
+          value: 'LY 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_ly',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_bridge',
           value: 'Bridge 1',
         },
@@ -387,13 +495,13 @@ export const serializedSongSymbol: SerializedSong = {
     {
       type: 'line',
       items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'Grid line',
-          chord: null,
-          annotation: '',
-        },
+        'Grid line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Grid line 2',
       ],
     },
     {
@@ -402,42 +510,6 @@ export const serializedSongSymbol: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_grid',
-          value: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'start_of_tab',
-          value: 'Tab 1',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'Tab line',
-          chord: null,
-          annotation: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'end_of_tab',
           value: '',
         },
       ],
@@ -788,6 +860,114 @@ export const serializedSongSolfege: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_tab',
+          value: 'Tab 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Tab line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_tab',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_abc',
+          value: 'ABC 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'ABC line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_abc',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_ly',
+          value: 'LY 1',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'LY line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_ly',
+          value: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_bridge',
           value: 'Bridge 1',
         },
@@ -832,13 +1012,13 @@ export const serializedSongSolfege: SerializedSong = {
     {
       type: 'line',
       items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'Grid line',
-          chord: null,
-          annotation: '',
-        },
+        'Grid line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Grid line 2',
       ],
     },
     {
@@ -847,42 +1027,6 @@ export const serializedSongSolfege: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_grid',
-          value: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'start_of_tab',
-          value: 'Tab 1',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'chordLyricsPair',
-          chords: '',
-          lyrics: 'Tab line',
-          chord: null,
-          annotation: '',
-        },
-      ],
-    },
-    {
-      type: 'line',
-      items: [
-        {
-          type: 'tag',
-          name: 'end_of_tab',
           value: '',
         },
       ],

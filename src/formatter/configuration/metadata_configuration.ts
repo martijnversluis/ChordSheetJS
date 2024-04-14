@@ -1,4 +1,4 @@
-interface MetadataConfigurationProperties {
+export interface MetadataConfigurationProperties {
   separator?: string;
 }
 

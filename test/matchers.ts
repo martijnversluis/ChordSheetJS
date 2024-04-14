@@ -1,7 +1,11 @@
 import print from 'print';
 
 import {
-  ChordLyricsPair, Comment, Literal, Tag, Ternary,
+  ChordLyricsPair,
+  Comment,
+  Literal,
+  Tag,
+  Ternary,
 } from '../src';
 
 function typeRepresentation(type, value) {

@@ -1,5 +1,12 @@
 import {
-  ChordProParser, CHORUS, NONE, TAB, Ternary, VERSE,
+  ABC,
+  ChordProParser,
+  CHORUS,
+  LILYPOND,
+  NONE,
+  TAB,
+  Ternary,
+  VERSE,
 } from '../../src';
 
 import '../matchers';
@@ -510,5 +517,71 @@ Let it [Am]be
     expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
     expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
     expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('parses tab sections', () => {
+    const chordSheet = heredoc`
+      {start_of_tab: Intro}
+      Tab line 1
+      Tab line 2
+      {end_of_tab}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(TAB);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_tab', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('Tab line 1');
+    expect(lines[2].items[0]).toBeLiteral('Tab line 2');
+  });
+
+  it('parses ABC sections', () => {
+    const chordSheet = heredoc`
+      {start_of_abc: Intro}
+      ABC line 1
+      ABC line 2
+      {end_of_abc}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(ABC);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_abc', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('ABC line 1');
+    expect(lines[2].items[0]).toBeLiteral('ABC line 2');
+  });
+
+  it('parses LY sections', () => {
+    const chordSheet = heredoc`
+      {start_of_ly: Intro}
+      LY line 1
+      LY line 2
+      {end_of_ly}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(LILYPOND);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('LY line 1');
+    expect(lines[2].items[0]).toBeLiteral('LY line 2');
   });
 });

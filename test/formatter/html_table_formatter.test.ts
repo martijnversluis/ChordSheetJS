@@ -1,11 +1,18 @@
-import { HtmlTableFormatter } from '../../src';
+import {
+  ABC, HtmlTableFormatter, LILYPOND, TAB,
+} from '../../src';
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
+import { ContentType } from '../../src/serialized_types';
 
-import { chordLyricsPair, createSongFromAst, heredoc } from '../utilities';
+import {
+  chordLyricsPair, createSongFromAst, heredoc, html, section,
+} from '../utilities';
+import Configuration from '../../src/formatter/configuration/configuration';
+import { GRID } from '../../src/constants';
 
 describe('HtmlTableFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -24,7 +31,9 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td><h3 class="label">Verse 1</h3></td>
+              <td>
+                <h3 class="label">Verse 1</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -88,6 +97,42 @@ describe('HtmlTableFormatter', () => {
           </table>
         </div>
         
+        <div class="paragraph tab">
+          <table class="literal">
+            <tr>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph abc">
+          <table class="literal">
+            <tr>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph ly">
+          <table class="literal">
+            <tr>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
         <div class="paragraph bridge">
           <table class="row">
             <tr>
@@ -97,43 +142,24 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
           <table class="row">
-            <tr>
-              <td class="lyrics">Bridge line</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph grid">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Grid 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Grid line</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph tab">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Tab 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Tab line</td>
-            </tr>
-          </table>
-        </div>
+          <tr>
+            <td class="lyrics">Bridge line</td>
+          </tr>
+        </table>
       </div>
-    `);
+      
+      <div class="paragraph grid">
+        <table class="literal">
+          <tr>
+            <td class="label">Grid 1</td>
+            <td class="contents">
+              Grid line 1<br>
+              Grid line 2
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>`);
 
     expect(new HtmlTableFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -218,6 +244,42 @@ describe('HtmlTableFormatter', () => {
           </table>
         </div>
         
+        <div class="paragraph tab">
+          <table class="literal">
+            <tr>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph abc">
+          <table class="literal">
+            <tr>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph ly">
+          <table class="literal">
+            <tr>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+        
         <div class="paragraph bridge">
           <table class="row">
             <tr>
@@ -234,31 +296,13 @@ describe('HtmlTableFormatter', () => {
         </div>
         
         <div class="paragraph grid">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">Grid 1</h3>
+              <td class="label">Grid 1</td>
+              <td class="contents">
+                Grid line 1<br>
+                Grid line 2
               </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Grid line</td>
-            </tr>
-          </table>
-        </div>
-        
-        <div class="paragraph tab">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Tab 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Tab line</td>
             </tr>
           </table>
         </div>
@@ -538,49 +582,68 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        <div class="paragraph bridge">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Bridge 1</h3>
-              </td>
-            </tr>
-          </table>
-          
-          <table class="row">
-            <tr>
-              <td class="lyrics">Bridge line</td>
-            </tr>
-          </table>
-        </div>
-        <div class="paragraph grid">
-          <table class="row">
-            <tr>
-              <td>
-                <h3 class="label">Grid 1</h3>
-              </td>
-            </tr>
-          </table>
-          <table class="row">
-            <tr>
-              <td class="lyrics">Grid line</td>
-            </tr>
-          </table>
-        </div>
+        
         <div class="paragraph tab">
-          <table class="row">
+          <table class="literal">
             <tr>
-              <td>
-                <h3 class="label">Tab 1</h3>
+              <td class="label">Tab 1</td>
+              <td class="contents">
+                Tab line 1<br>
+                Tab line 2
               </td>
             </tr>
           </table>
-          <table class="row">
+        </div>
+        
+        <div class="paragraph abc">
+          <table class="literal">
             <tr>
-              <td class="lyrics">Tab line</td>
+              <td class="label">ABC 1</td>
+              <td class="contents">
+                ABC line 1<br>
+                ABC line 2
+              </td>
             </tr>
           </table>
         </div>
+        
+        <div class="paragraph ly">
+          <table class="literal">
+            <tr>
+              <td class="label">LY 1</td>
+              <td class="contents">
+                LY line 1<br>
+                LY line 2</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="paragraph bridge">
+            <table class="row">
+              <tr>
+                <td>
+                  <h3 class="label">Bridge 1</h3>
+                </td>
+              </tr>
+            </table>
+            <table class="row">
+              <tr>
+                <td class="lyrics">Bridge line</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="paragraph grid">
+            <table class="literal">
+              <tr>
+                <td class="label">Grid 1</td>
+                <td class="contents">
+                  Grid line 1<br>
+                  Grid line 2
+                </td>
+              </tr>
+            </table>
+          </div>
       </div>
     `);
 
@@ -654,6 +717,68 @@ describe('HtmlTableFormatter', () => {
       const formatted = new HtmlTableFormatter({ normalizeChords: false }).format(songWithSus2);
 
       expect(formatted).toEqual(expectedHTML);
+    });
+  });
+
+  describe('delegates', () => {
+    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+      describe(`for ${type}`, () => {
+        it('uses a configured delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration({
+            delegates: {
+              [type]: (content: string) => content.toUpperCase(),
+            },
+          });
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <table class="literal">
+                  <tr>
+                    <td class="label">${type} section</td>
+                    <td class="contents">
+                      ${type.toUpperCase()} LINE 1<br>
+                      ${type.toUpperCase()} LINE 2
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlTableFormatter(configuration).format(song)).toEqual(expectedOutput);
+        });
+
+        it('defaults to the default delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration();
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <table class="literal">
+                  <tr>
+                    <td class="label">${type} section</td>
+                    <td class="contents">
+                      ${type} line 1<br>
+                      ${type} line 2
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlTableFormatter({ configuration }).format(song)).toEqual(expectedOutput);
+        });
+      });
     });
   });
 });

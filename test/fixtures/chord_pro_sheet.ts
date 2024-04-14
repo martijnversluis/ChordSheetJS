@@ -23,17 +23,29 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
 [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
 {end_of_chorus}
 
+{start_of_tab: Tab 1}
+Tab line 1
+Tab line 2
+{end_of_tab}
+
+{start_of_abc: ABC 1}
+ABC line 1
+ABC line 2
+{end_of_abc}
+
+{start_of_ly: LY 1}
+LY line 1
+LY line 2
+{end_of_ly}
+
 {start_of_bridge: Bridge 1}
 Bridge line
 {end_of_bridge}
 
 {start_of_grid: Grid 1}
-Grid line
-{end_of_grid}
-
-{start_of_tab: Tab 1}
-Tab line
-{end_of_tab}`;
+Grid line 1
+Grid line 2
+{end_of_grid}`;
 
 export const chordProSheetSolfege = heredoc`
 {title: Let it be}
@@ -58,14 +70,26 @@ Let it [Lam]be, let it [Do/Sol]be, let it [Fa]be, let it [Do]be
 [Lam]Whisper words of [Sib]wisdom, let it [Fa]be [Do]
 {end_of_chorus}
 
+{start_of_tab: Tab 1}
+Tab line 1
+Tab line 2
+{end_of_tab}
+
+{start_of_abc: ABC 1}
+ABC line 1
+ABC line 2
+{end_of_abc}
+
+{start_of_ly: LY 1}
+LY line 1
+LY line 2
+{end_of_ly}
+
 {start_of_bridge: Bridge 1}
 Bridge line
 {end_of_bridge}
 
 {start_of_grid: Grid 1}
-Grid line
-{end_of_grid}
-
-{start_of_tab: Tab 1}
-Tab line
-{end_of_tab}`;
+Grid line 1
+Grid line 2
+{end_of_grid}`;

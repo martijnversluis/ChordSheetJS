@@ -3,6 +3,7 @@ import Tag from './tag';
 import Comment from './comment';
 import Item from './item';
 import Font from './font';
+import { ContentType } from '../serialized_types';
 
 import {
   BRIDGE,
@@ -15,7 +16,7 @@ import {
 
 type MapItemFunc = (_item: Item) => Item | null;
 
-export type LineType = 'bridge' | 'chorus' | 'grid' | 'none' | 'tab' | 'verse';
+export type LineType = 'bridge' | 'chorus' | 'none' | 'tab' | 'verse' | ContentType | 'indeterminate';
 
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag

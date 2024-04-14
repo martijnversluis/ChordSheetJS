@@ -23,7 +23,7 @@ class Formatter {
      * symbols.
      * @param {boolean} [configuration.normalizeChords=true] Whether or not to automatically normalize chords
      */
-  constructor(configuration: ConfigurationProperties | null = null) {
+  constructor(configuration: Partial<ConfigurationProperties> = {}) {
     this.configuration = new Configuration(configuration || {});
   }
 }

@@ -1,5 +1,5 @@
 import {
-  chordLyricsPair, comment, createSongFromAst, tag, ternary,
+  chordLyricsPair, comment, createSongFromAst, section, tag, ternary,
 } from '../utilities';
 
 // This Song object mimics the chord pro sheet in chord_pro_sheet.js
@@ -60,17 +60,17 @@ export const exampleSongSymbol = createSongFromAst([
   ],
   [tag('end_of_chorus')],
   [],
+  ...section('tab', 'Tab 1', 'Tab line 1\nTab line 2'),
+  [],
+  ...section('abc', 'ABC 1', 'ABC line 1\nABC line 2'),
+  [],
+  ...section('ly', 'LY 1', 'LY line 1\nLY line 2'),
+  [],
   [tag('start_of_bridge', 'Bridge 1')],
   [chordLyricsPair('', 'Bridge line')],
   [tag('end_of_bridge')],
   [],
-  [tag('start_of_grid', 'Grid 1')],
-  [chordLyricsPair('', 'Grid line')],
-  [tag('end_of_grid')],
-  [],
-  [tag('start_of_tab', 'Tab 1')],
-  [chordLyricsPair('', 'Tab line')],
-  [tag('end_of_tab')],
+  ...section('grid', 'Grid 1', 'Grid line 1\nGrid line 2'),
 ]);
 
 export const exampleSongSolfege = createSongFromAst([
@@ -130,15 +130,15 @@ export const exampleSongSolfege = createSongFromAst([
   ],
   [tag('end_of_chorus')],
   [],
+  ...section('tab', 'Tab 1', 'Tab line 1\nTab line 2'),
+  [],
+  ...section('abc', 'ABC 1', 'ABC line 1\nABC line 2'),
+  [],
+  ...section('ly', 'LY 1', 'LY line 1\nLY line 2'),
+  [],
   [tag('start_of_bridge', 'Bridge 1')],
   [chordLyricsPair('', 'Bridge line')],
   [tag('end_of_bridge')],
   [],
-  [tag('start_of_grid', 'Grid 1')],
-  [chordLyricsPair('', 'Grid line')],
-  [tag('end_of_grid')],
-  [],
-  [tag('start_of_tab', 'Tab 1')],
-  [chordLyricsPair('', 'Tab line')],
-  [tag('end_of_tab')],
+  ...section('grid', 'Grid 1', 'Grid line 1\nGrid line 2'),
 ]);

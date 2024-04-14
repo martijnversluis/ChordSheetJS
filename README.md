@@ -471,12 +471,16 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dd><p>Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/</p></dd>
 <dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
 <dd><p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p></dd>
+<dt><a href="#END_OF_ABC">END_OF_ABC</a> : <code>string</code></dt>
+<dd><p>End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p></dd>
 <dt><a href="#END_OF_BRIDGE">END_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#END_OF_GRID">END_OF_GRID</a> : <code>string</code></dt>
 <dd><p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
+<dt><a href="#END_OF_LY">END_OF_LY</a> : <code>string</code></dt>
+<dd><p>End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p></dd>
 <dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
@@ -490,12 +494,16 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
 <dt><a href="#SORTTITLE">SORTTITLE</a> : <code>string</code></dt>
 <dd><p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p></dd>
+<dt><a href="#START_OF_ABC">START_OF_ABC</a> : <code>string</code></dt>
+<dd><p>Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p></dd>
 <dt><a href="#START_OF_BRIDGE">START_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#START_OF_GRID">START_OF_GRID</a> : <code>string</code></dt>
 <dd><p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
+<dt><a href="#START_OF_LY">START_OF_LY</a> : <code>string</code></dt>
+<dd><p>Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p></dd>
 <dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
@@ -552,6 +560,10 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 <dd><p>Used to mark a paragraph as tab</p></dd>
 <dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#LILYPOND">LILYPOND</a> : <code>string</code></dt>
+<dd><p>Used to mark a section as Lilypond notation</p></dd>
+<dt><a href="#ABC">ABC</a> : <code>string</code></dt>
+<dd><p>Used to mark a section as ABC music notation</p></dd>
 </dl>
 
 ## Functions
@@ -786,9 +798,25 @@ else it returns an array of strings.</p>
 **Kind**: global class  
 
 * [Paragraph](#Paragraph)
+    * [.contents](#Paragraph+contents) ⇒ <code>string</code>
+    * [.label](#Paragraph+label) ⇒ <code>string</code> \| <code>null</code>
     * [.type](#Paragraph+type) ⇒ <code>string</code>
+    * [.isLiteral()](#Paragraph+isLiteral) ⇒ <code>boolean</code>
     * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
+<a name="Paragraph+contents"></a>
+
+### paragraph.contents ⇒ <code>string</code>
+<p>Returns the paragraph contents as one string where lines are separated by newlines</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+label"></a>
+
+### paragraph.label ⇒ <code>string</code> \| <code>null</code>
+<p>Returns the label of the paragraph. The label is the value of the first section delimiter tag
+in the first line.</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+type"></a>
 
 ### paragraph.type ⇒ <code>string</code>
@@ -796,6 +824,14 @@ else it returns an array of strings.</p>
 If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+isLiteral"></a>
+
+### paragraph.isLiteral() ⇒ <code>boolean</code>
+<p>Indicates whether the paragraph only contains literals. If true, [contents](contents) can be used to retrieve
+the paragraph contents as one string where lines are separated by newlines.</p>
+
+**Kind**: instance method of [<code>Paragraph</code>](#Paragraph)  
+**See**: [contents](contents)  
 <a name="Paragraph+hasRenderableItems"></a>
 
 ### paragraph.hasRenderableItems() ⇒ <code>boolean</code>
@@ -862,7 +898,7 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 <a name="Song+expandedBodyParagraphs"></a>
 
 ### song.expandedBodyParagraphs : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
-<p>The body paragraphs of the song, with any <code>{chorus}</code> tag expanded into the targetted chorus</p>
+<p>The body paragraphs of the song, with any <code>{chorus}</code> tag expanded into the targeted chorus</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+clone"></a>
@@ -1772,6 +1808,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p>
 
 **Kind**: global constant  
+<a name="END_OF_ABC"></a>
+
+## END\_OF\_ABC : <code>string</code>
+<p>End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p>
+
+**Kind**: global constant  
 <a name="END_OF_BRIDGE"></a>
 
 ## END\_OF\_BRIDGE : <code>string</code>
@@ -1788,6 +1830,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 
 ## END\_OF\_GRID : <code>string</code>
 <p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="END_OF_LY"></a>
+
+## END\_OF\_LY : <code>string</code>
+<p>End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p>
 
 **Kind**: global constant  
 <a name="END_OF_TAB"></a>
@@ -1827,6 +1875,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p>
 
 **Kind**: global constant  
+<a name="START_OF_ABC"></a>
+
+## START\_OF\_ABC : <code>string</code>
+<p>Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p>
+
+**Kind**: global constant  
 <a name="START_OF_BRIDGE"></a>
 
 ## START\_OF\_BRIDGE : <code>string</code>
@@ -1843,6 +1897,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 
 ## START\_OF\_GRID : <code>string</code>
 <p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="START_OF_LY"></a>
+
+## START\_OF\_LY : <code>string</code>
+<p>Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p>
 
 **Kind**: global constant  
 <a name="START_OF_TAB"></a>
@@ -2008,6 +2068,18 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p>
 
 ## VERSE : <code>string</code>
 <p>Used to mark a paragraph as verse</p>
+
+**Kind**: global constant  
+<a name="LILYPOND"></a>
+
+## LILYPOND : <code>string</code>
+<p>Used to mark a section as Lilypond notation</p>
+
+**Kind**: global constant  
+<a name="ABC"></a>
+
+## ABC : <code>string</code>
+<p>Used to mark a section as ABC music notation</p>
 
 **Kind**: global constant  
 <a name="scopedCss"></a>
