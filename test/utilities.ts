@@ -1,4 +1,5 @@
 import theredoc from 'theredoc';
+import { stripHTML } from '../src/template_helpers';
 
 import { LineType } from '../src/chord_sheet/line';
 import Metadata from '../src/chord_sheet/metadata';
@@ -24,6 +25,10 @@ import {
 
 export function heredoc(strings: TemplateStringsArray, ...values: any[]): string {
   return theredoc(strings, ...values);
+}
+
+export function html(strings: TemplateStringsArray, ...values: any[]): string {
+  return stripHTML(theredoc(strings, ...values));
 }
 
 export function createSong(lines, metadata: Record<string, string> = {}) {

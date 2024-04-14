@@ -1,11 +1,17 @@
-import { HtmlTableFormatter } from '../../src';
+import {
+  ABC, HtmlTableFormatter, LILYPOND, TAB,
+} from '../../src';
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
-import ChordSheetSerializer from '../../src/chord_sheet_serializer';
+import ChordSheetSerializer, { ContentType } from '../../src/chord_sheet_serializer';
 
-import { chordLyricsPair, createSongFromAst, heredoc } from '../utilities';
+import {
+  chordLyricsPair, createSongFromAst, heredoc, html, section,
+} from '../utilities';
+import Configuration from '../../src/formatter/configuration/configuration';
+import { GRID } from '../../src/constants';
 
 describe('HtmlTableFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -710,6 +716,68 @@ describe('HtmlTableFormatter', () => {
       const formatted = new HtmlTableFormatter({ normalizeChords: false }).format(songWithSus2);
 
       expect(formatted).toEqual(expectedHTML);
+    });
+  });
+
+  describe('delegates', () => {
+    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+      describe(`for ${type}`, () => {
+        it('uses a configured delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration({
+            delegates: {
+              [type]: (content: string) => content.toUpperCase(),
+            },
+          });
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <table class="literal">
+                  <tr>
+                    <td class="label">${type} section</td>
+                    <td class="contents">
+                      ${type.toUpperCase()} LINE 1<br>
+                      ${type.toUpperCase()} LINE 2
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlTableFormatter(configuration).format(song)).toEqual(expectedOutput);
+        });
+
+        it('defaults to the default delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration();
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <table class="literal">
+                  <tr>
+                    <td class="label">${type} section</td>
+                    <td class="contents">
+                      ${type} line 1<br>
+                      ${type} line 2
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlTableFormatter({ configuration }).format(song)).toEqual(expectedOutput);
+        });
+      });
     });
   });
 });

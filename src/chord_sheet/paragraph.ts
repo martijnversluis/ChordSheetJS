@@ -1,5 +1,5 @@
 import { INDETERMINATE } from '../constants';
-import Line from './line';
+import Line, { LineType } from './line';
 import Literal from './chord_pro/literal';
 import Tag from './tag';
 import Item from './item';
@@ -80,7 +80,7 @@ class Paragraph {
    * If not, it returns {@link INDETERMINATE}
    * @returns {string}
    */
-  get type(): 'bridge' | 'chorus' | 'grid' | 'indeterminate' | 'none' | 'tab' | 'verse' {
+  get type(): LineType {
     const types = this.lines.map((line) => line.type);
     const uniqueTypes = [...new Set(types)];
 

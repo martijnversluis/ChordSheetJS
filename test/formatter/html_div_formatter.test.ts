@@ -1,11 +1,19 @@
-import { HtmlDivFormatter } from '../../src';
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
+
 import { scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
-import ChordSheetSerializer from '../../src/chord_sheet_serializer';
+import ChordSheetSerializer, { ContentType } from '../../src/chord_sheet_serializer';
+import { GRID } from '../../src/constants';
+import Configuration from '../../src/formatter/configuration/configuration';
 
-import { chordLyricsPair, createSongFromAst, heredoc } from '../utilities';
+import {
+  ABC, HtmlDivFormatter, LILYPOND, TAB,
+} from '../../src';
+
+import {
+  chordLyricsPair, createSongFromAst, heredoc, html, section,
+} from '../utilities';
 
 describe('HtmlDivFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -883,5 +891,63 @@ describe('HtmlDivFormatter', () => {
     const formatted = new HtmlDivFormatter({ normalizeChords: false }).format(songWithSus2);
 
     expect(formatted).toEqual(expectedHTML);
+  });
+
+  describe('delegates', () => {
+    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+      describe(`for ${type}`, () => {
+        it('uses a configured delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration({
+            delegates: {
+              [type]: (content: string) => content.toUpperCase(),
+            },
+          });
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <div class="row">
+                  <h3 class="label">${type} section</h3>
+                  <div class="literal">
+                    ${type.toUpperCase()} LINE 1<br>
+                    ${type.toUpperCase()} LINE 2
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlDivFormatter(configuration).format(song)).toEqual(expectedOutput);
+        });
+
+        it('defaults to the default delegate', () => {
+          const song = createSongFromAst([
+            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+          ]);
+
+          const configuration = new Configuration();
+
+          const expectedOutput = html`
+            <div class="chord-sheet">
+              <div class="paragraph ${type}">
+                <div class="row">
+                  <h3 class="label">${type} section</h3>
+                  <div class="literal">
+                    ${type} line 1<br>
+                    ${type} line 2
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          expect(new HtmlDivFormatter(configuration).format(song)).toEqual(expectedOutput);
+        });
+      });
+    });
   });
 });

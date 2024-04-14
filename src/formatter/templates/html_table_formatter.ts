@@ -12,7 +12,7 @@ import {
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
-  paragraphClasses,
+  paragraphClasses, renderSection,
   stripHTML,
   when,
 } from '../../template_helpers';
@@ -22,6 +22,7 @@ export default (
     configuration,
     configuration: {
       key,
+      delegates,
     },
     song,
     renderBlankLines = false,
@@ -45,7 +46,7 @@ export default (
             <table class="literal">
               <tr>
                 <td class="label">${ paragraph.label }</td>
-                <td class="contents">${ newlinesToBreaks(paragraph.contents) }</td>
+                <td class="contents">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
               </tr>
             </table>
           `).else(() => `

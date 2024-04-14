@@ -11,7 +11,7 @@ import {
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
-  paragraphClasses,
+  paragraphClasses, renderSection,
   stripHTML,
   when,
 } from '../../template_helpers';
@@ -21,6 +21,7 @@ export default (
     configuration,
     configuration: {
       key,
+      delegates,
     },
     song,
     renderBlankLines = false,
@@ -41,7 +42,7 @@ export default (
         ${ when(paragraph.isLiteral(), () => `
           <div class="row">
             <h3 class="label">${ paragraph.label }</h3>
-            <div class="literal">${ newlinesToBreaks(paragraph.contents) }</div>
+            <div class="literal">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</div>
           </div>
         `).else(() => `
           ${ each(paragraph.lines, (line) => `

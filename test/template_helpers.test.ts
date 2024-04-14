@@ -1,4 +1,5 @@
 import {
+  ABC,
   ChordLyricsPair,
   CHORUS,
   Comment,
@@ -14,6 +15,8 @@ import {
 import Configuration from '../src/formatter/configuration/configuration';
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
+import { newlinesToBreaks, renderSection } from '../src/template_helpers';
+import { createLine, createLiteral, createParagraph } from './utilities';
 
 const {
   isChordLyricsPair,
@@ -325,6 +328,33 @@ describe('template_helpers', () => {
       const font = new Font();
 
       expect(fontStyleTag(font)).toEqual('');
+    });
+  });
+
+  describe('#newlinesToBreaks', () => {
+    it('replaces newlines with break tags', () => {
+      const string = 'hello\nworld\n';
+      const expectedString = 'hello<br>world<br>';
+
+      expect(newlinesToBreaks(string)).toEqual(expectedString);
+    });
+  });
+
+  describe('#renderSection', () => {
+    it('returns the result of the delegate function', () => {
+      const paragraph = createParagraph([
+        createLine([createLiteral('hello world')], ABC),
+      ]);
+
+      const configuration = new Configuration(
+        {
+          delegates: {
+            abc: (string: string) => string.toUpperCase(),
+          },
+        },
+      );
+
+      expect(renderSection(paragraph, configuration)).toEqual('HELLO WORLD');
     });
   });
 });

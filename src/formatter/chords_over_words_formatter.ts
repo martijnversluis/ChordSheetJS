@@ -2,7 +2,7 @@ import Formatter from './formatter';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Tag from '../chord_sheet/tag';
 import { renderChord } from '../helpers';
-import { hasTextContents } from '../template_helpers';
+import { hasTextContents, renderSection } from '../template_helpers';
 import Song from '../chord_sheet/song';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
@@ -52,6 +52,12 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatParagraph(paragraph: Paragraph, metadata: Metadata): string {
+    if (paragraph.isLiteral()) {
+      return [paragraph.label, renderSection(paragraph, this.configuration)]
+        .filter((part) => part)
+        .join('\n');
+    }
+
     return paragraph.lines
       .filter((line) => line.hasRenderableItems())
       .map((line) => this.formatLine(line, metadata))
