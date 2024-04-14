@@ -9,6 +9,7 @@ import Paragraph from '../chord_sheet/paragraph';
 import Metadata from '../chord_sheet/metadata';
 import Line from '../chord_sheet/line';
 import Item from '../chord_sheet/item';
+import { Ternary } from '../index';
 
 /**
  * Formats a song into a plain text chord sheet
@@ -146,14 +147,22 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(item.lyrics || '', this.chordLyricsPairLength(item, line));
+      return this.formatChordLyricsPair(item, line);
     }
 
     if ('evaluate' in item) {
-      return item.evaluate(metadata, this.configuration.get('metadata.separator'));
+      return this.formatEvaluatable(item as Ternary, metadata);
     }
 
     return '';
+  }
+
+  private formatEvaluatable(item: Ternary, metadata: Metadata) {
+    return item.evaluate(metadata, this.configuration.get('metadata.separator'));
+  }
+
+  private formatChordLyricsPair(item: ChordLyricsPair, line: Line) {
+    return padLeft(item.lyrics || '', this.chordLyricsPairLength(item, line));
   }
 }
 
