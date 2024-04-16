@@ -306,9 +306,3 @@ CarriageReturn
 
 Escape
   = "\\"
-
-Pound
-  = "#"
-
-Percent
-  = "%"
