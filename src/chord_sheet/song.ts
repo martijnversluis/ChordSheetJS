@@ -10,45 +10,44 @@ import TraceInfo from './trace_info';
 import FontStack from './font_stack';
 
 import {
-  BRIDGE,
-  CHORUS,
-  GRID,
-  NONE,
-  ParagraphType,
-  TAB,
-  VERSE,
+  ABC,
+  BRIDGE, CHORUS, GRID, LILYPOND, NONE, ParagraphType, TAB, VERSE,
 } from '../constants';
 
 import Tag, {
   CAPO,
+  CHORUS as CHORUS_TAG, END_OF_ABC,
+  END_OF_BRIDGE,
   END_OF_CHORUS,
+  END_OF_GRID, END_OF_LY,
   END_OF_TAB,
   END_OF_VERSE,
   KEY,
-  NEW_KEY,
+  NEW_KEY, START_OF_ABC,
+  START_OF_BRIDGE,
   START_OF_CHORUS,
+  START_OF_GRID, START_OF_LY,
   START_OF_TAB,
   START_OF_VERSE,
   TRANSPOSE,
-  CHORUS as CHORUS_TAG,
-  START_OF_GRID,
-  END_OF_GRID,
-  START_OF_BRIDGE,
-  END_OF_BRIDGE,
 } from './tag';
 
 const START_TAG_TO_SECTION_TYPE = {
+  [START_OF_ABC]: ABC,
   [START_OF_BRIDGE]: BRIDGE,
   [START_OF_CHORUS]: CHORUS,
   [START_OF_GRID]: GRID,
+  [START_OF_LY]: LILYPOND,
   [START_OF_TAB]: TAB,
   [START_OF_VERSE]: VERSE,
 };
 
 const END_TAG_TO_SECTION_TYPE = {
+  [END_OF_ABC]: ABC,
   [END_OF_BRIDGE]: BRIDGE,
   [END_OF_CHORUS]: CHORUS,
   [END_OF_GRID]: GRID,
+  [END_OF_LY]: LILYPOND,
   [END_OF_TAB]: TAB,
   [END_OF_VERSE]: VERSE,
 };
@@ -233,7 +232,7 @@ class Song extends MetadataAccessors {
   }
 
   /**
-   * The body paragraphs of the song, with any `{chorus}` tag expanded into the targetted chorus
+   * The body paragraphs of the song, with any `{chorus}` tag expanded into the targeted chorus
    * @type {Paragraph[]}
    */
   get expandedBodyParagraphs(): Paragraph[] {
@@ -325,7 +324,7 @@ class Song extends MetadataAccessors {
 
   checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
     if (this.sectionType !== sectionType) {
-      this.addWarning(`Unexpected tag {${tag.originalName}, current section is: ${this.sectionType}`, tag);
+      this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }
 
@@ -415,16 +414,15 @@ class Song extends MetadataAccessors {
    * @returns {Song} The transposed song
    */
   transpose(delta: number, { normalizeChordSuffix = false } = {}): Song {
-    const wrappedKey = Key.wrap(this.key);
     let transposedKey: Key | null = null;
-    let song = (this as Song);
-
-    if (wrappedKey) {
-      transposedKey = wrappedKey.transpose(delta);
-      song = song.setKey(transposedKey.toString());
-    }
+    const song = (this as Song);
 
     return song.mapItems((item) => {
+      if (item instanceof Tag && item.name === KEY) {
+        transposedKey = Key.wrapOrFail(item.value).transpose(delta);
+        return item.set({ value: transposedKey.toString() });
+      }
+
       if (item instanceof ChordLyricsPair) {
         return (item as ChordLyricsPair).transpose(delta, transposedKey, { normalizeChordSuffix });
       }
@@ -468,22 +466,8 @@ class Song extends MetadataAccessors {
    * @returns {Song} The changed song
    */
   changeKey(newKey: string | Key): Song {
-    const transpose = this.getTransposeDistance(newKey);
-
-    const updatedSong = this.mapItems((item) => {
-      if (item instanceof Tag && item.name === KEY) {
-        return item.set({ value: newKey.toString() });
-      }
-
-      if (item instanceof ChordLyricsPair) {
-        return item.transpose(transpose, newKey);
-      }
-
-      return item;
-    });
-
-    this.setKey(newKey.toString());
-    return updatedSong;
+    const delta = this.getTransposeDistance(newKey);
+    return this.transpose(delta);
   }
 
   getTransposeDistance(newKey: string | Key): number {
@@ -520,7 +504,7 @@ Or set the song key before changing key:
   private insertDirective(name: string, value: string, { after = null } = {}): Song {
     const insertIndex = this.lines.findIndex((line) => (
       line.items.some((item) => (
-        !(item instanceof Tag) || (after && item instanceof Tag && item.name === after)
+        !(item instanceof Tag) || (after && item.name === after)
       ))
     ));
 

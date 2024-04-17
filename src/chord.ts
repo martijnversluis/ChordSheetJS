@@ -8,6 +8,7 @@ import {
   NUMERAL,
   NUMERIC,
   SYMBOL,
+  SOLFEGE,
 } from './constants';
 
 interface ChordProperties {
@@ -108,6 +109,56 @@ class Chord implements ChordProperties {
    */
   isChordSymbol(): boolean {
     return this.is(SYMBOL);
+  }
+
+  /**
+   * Converts the chord to a chord solfege, using the supplied key as a reference.
+   * For example, a numeric chord `#4` with reference key `Mi` will return the chord symbol `La#`.
+   * When the chord is already a chord solfege, it will return a clone of the object.
+   * @param {Key|string|null} [referenceKey=null] the reference key. The key is required when converting a
+   * numeric or numeral.
+   * @returns {Chord} the chord solfege
+   */
+  toChordSolfege(referenceKey: Key | string | null = null): Chord {
+    if (this.isChordSolfege()) {
+      return this.clone();
+    }
+
+    const keyObj = Key.wrapOrFail(referenceKey);
+
+    let chordSolfegeChord = new Chord({
+      suffix: this.suffix ? normalizeChordSuffix(this.suffix) : null,
+      root: this.root?.toChordSolfege(keyObj) || null,
+      bass: this.bass?.toChordSolfege(keyObj) || null,
+    });
+
+    if (this.root?.isMinor()) {
+      chordSolfegeChord = chordSolfegeChord.makeMinor();
+    }
+
+    chordSolfegeChord = chordSolfegeChord.normalize(referenceKey);
+    return chordSolfegeChord;
+  }
+
+  /**
+   * Converts the chord to a chord solfege string, using the supplied key as a reference.
+   * For example, a numeric chord `#4` with reference key `E` will return the chord solfege `A#`.
+   * When the chord is already a chord solfege, it will return a string version of the chord.
+   * @param {Key|string|null} [referenceKey=null] the reference key. The key is required when converting a
+   * numeric or numeral.
+   * @returns {string} the chord solfege string
+   * @see {toChordSolfege}
+   */
+  toChordSolfegeString(referenceKey: Key | string | null = null): string {
+    return this.toChordSolfege(referenceKey).toString();
+  }
+
+  /**
+   * Determines whether the chord is a chord solfege
+   * @returns {boolean}
+   */
+  isChordSolfege(): boolean {
+    return this.is(SOLFEGE);
   }
 
   /**
@@ -216,6 +267,10 @@ class Chord implements ChordProperties {
 
   /**
    * Normalizes the chord root and bass notes:
+   * - Fab becomes Mi
+   * - Dob becomes Si
+   * - Si# becomes Do
+   * - Mi# becomes Fa
    * - Fb becomes E
    * - Cb becomes B
    * - B# becomes C

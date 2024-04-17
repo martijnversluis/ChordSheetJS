@@ -1,10 +1,116 @@
+{
+  function buildSection(sectionType, startTag, endTag, content) {
+    return [
+      buildLine([startTag]),
+      ...splitSectionContent(content).map((line) => buildLine([line])),
+      buildLine([endTag]),
+    ];
+  }
+
+  function buildTag(name, value, location) {
+    return {
+      type: 'tag',
+      name,
+      value,
+      location: location.start,
+    };
+  }
+
+  function buildLine(items) {
+    return {
+      type: 'line',
+      items,
+    };
+  }
+
+  function splitSectionContent(content) {
+    return content
+      .replace(/\n$/, '')
+      .split('\n');
+  }
+}
+
 ChordSheet
-  = lines:LineWithNewline* trailingLine:Line? {
+  = lines:ComponentWithNewline* trailingLine:Component? {
       return {
         type: 'chordSheet',
-        lines: [...lines, trailingLine],
+        lines: [...lines, trailingLine].flat(),
       };
     }
+
+ComponentWithNewline
+  = component:Component NewLine {
+      return component;
+    }
+
+Component
+  = Section / Line
+
+Section =
+  ABCSection / GridSection/ LYSection / TabSection
+
+TabSection
+  = startTag:TabStartTag NewLine content:$(!TabEndTag SectionCharacter)* endTag:TabEndTag {
+      return buildSection("tab", startTag, endTag, content);
+    }
+
+TabStartTag
+  = "{" _ tagName:("sot" / "start_of_tab") _ tagColonWithValue: TagColonWithValue? _ "}" {
+      return buildTag(tagName, tagColonWithValue, location());
+    }
+
+TabEndTag
+  = "{" _ tagName:("eot" / "end_of_tab") _ "}" {
+      return buildTag(tagName, null, location());
+    }
+
+ABCSection
+  = startTag:ABCStartTag NewLine content:$(!ABCEndTag SectionCharacter)* endTag:ABCEndTag {
+      return buildSection("abc", startTag, endTag, content);
+    }
+
+ABCStartTag
+  = "{" _ tagName:("start_of_abc") _ tagColonWithValue: TagColonWithValue? _ "}" {
+      return buildTag(tagName, tagColonWithValue, location());
+    }
+
+ABCEndTag
+  = "{" _ tagName:("end_of_abc") _ "}" {
+      return buildTag(tagName, null, location());
+    }
+
+LYSection
+  = startTag:LYStartTag NewLine content:$(!LYEndTag SectionCharacter)* endTag:LYEndTag {
+      return buildSection("ly", startTag, endTag, content);
+    }
+
+LYStartTag
+  = "{" _ tagName:("start_of_ly") _ tagColonWithValue: TagColonWithValue? _ "}" {
+      return buildTag(tagName, tagColonWithValue, location());
+    }
+
+LYEndTag
+  = "{" _ name:("end_of_ly") _ "}" {
+      return buildTag(name, null, location());
+    }
+
+GridSection
+  = startTag:GridStartTag NewLine content:$(!GridEndTag SectionCharacter)* endTag:GridEndTag {
+      return buildSection("grid", startTag, endTag, content);
+    }
+
+GridStartTag
+  = "{" _ tagName:("sog" / "start_of_grid") _ tagColonWithValue: TagColonWithValue? _ "}" {
+      return buildTag(tagName, tagColonWithValue, location());
+    }
+
+GridEndTag
+  = "{" _ tagName:("eog" / "end_of_grid") _ "}" {
+      return buildTag(tagName, null, location());
+    }
+
+SectionCharacter
+  = .
 
 LineWithNewline
   = line: Line NewLine {
@@ -13,19 +119,18 @@ LineWithNewline
 
 Line
   = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
-      return {
-        type: 'line',
-        items: [
+      return buildLine([
           lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
           ...tokens,
           chords ? { type: 'chordLyricsPair', chords, lyrics: '' } : null,
           comment ? { type: 'comment', comment } : null,
         ].filter(x => x),
-      };
+      );
     }
 
 Token
   = Tag
+  / AnnotationLyricsPair
   / ChordLyricsPair
   / MetaTernary
   / lyrics:Lyrics {
@@ -37,8 +142,17 @@ Comment
       return comment;
     }
 
+AnnotationLyricsPair
+  = annotation:Annotation lyrics:$(Lyrics*) space:$(Space*) {
+      return {
+        type: 'chordLyricsPair',
+        annotation: annotation || '',
+        lyrics: lyrics + (space || ''),
+      };
+    }
+
 ChordLyricsPair
-  = chords: Chord lyrics:$(LyricsChar*) space:$(Space*) {
+  = chords:Chord lyrics:$(LyricsChar*) space:$(Space*) {
       return {
         type: 'chordLyricsPair',
         chords: chords || '',
@@ -53,6 +167,11 @@ Lyrics
 
 LyricsCharOrSpace
   = (LyricsChar / Space)
+
+Annotation
+  = !Escape "[*" annotation:ChordChar+ "]" {
+      return annotation.map(c => c.char || c).join('');
+    }
 
 Chord
   = !Escape "[" chords:ChordChar* "]" {

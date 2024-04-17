@@ -1,6 +1,6 @@
 import { NUMERIC, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('toString', () => {
@@ -38,6 +38,18 @@ describe('Key', () => {
       const key = buildKey('A', SYMBOL, 'b', true);
 
       expect(key.toString()).toEqual('Abm');
+    });
+
+    it('converts a major chord solfege key to a string', () => {
+      const key = buildKey('La', SOLFEGE, 'b');
+
+      expect(key.toString()).toEqual('Lab');
+    });
+
+    it('converts a minor chord solfege key to a string', () => {
+      const key = buildKey('La', SOLFEGE, 'b', true);
+
+      expect(key.toString()).toEqual('Labm');
     });
   });
 });

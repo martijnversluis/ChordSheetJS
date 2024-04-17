@@ -1,5 +1,10 @@
 import { buildKey } from '../utilities';
-import { NUMERAL, NUMERIC, SYMBOL } from '../../src/constants';
+import {
+  NUMERAL,
+  NUMERIC,
+  SOLFEGE,
+  SYMBOL,
+} from '../../src/constants';
 
 describe('Key', () => {
   describe('transpose', () => {
@@ -19,6 +24,26 @@ describe('Key', () => {
       describe('when delta = 0', () => {
         it('Does not change the key', () => {
           expect(buildKey('B', SYMBOL, '#').transpose(0).toString()).toEqual('B#');
+        });
+      });
+    });
+
+    describe('chord solfege key', () => {
+      describe('when delta > 0', () => {
+        it('transposes up', () => {
+          expect(buildKey('Re', SOLFEGE, 'b').transpose(5).toString()).toEqual('Solb');
+        });
+      });
+
+      describe('when delta < 0', () => {
+        it('Does not change the key', () => {
+          expect(buildKey('La', SOLFEGE, '#').transpose(-4).toString()).toEqual('Fa#');
+        });
+      });
+
+      describe('when delta = 0', () => {
+        it('Does not change the key', () => {
+          expect(buildKey('Si', SOLFEGE, '#').transpose(0).toString()).toEqual('Si#');
         });
       });
     });

@@ -1,5 +1,5 @@
 Chord
-  = chord:(Numeral / Numeric / ChordSymbol) {
+  = chord:(Numeral / Numeric / ChordSolfege / ChordSymbol) {
       return { type: "chord", ...chord, column: location().start.column };
     }
 
@@ -22,6 +22,22 @@ ChordSymbolBass
       return { bassBase: root, bassModifier: modifier };
     }
 
+ChordSolfege
+  = root:ChordSolfegeRoot modifier:ChordModifier? suffix:$(ChordSuffix) bass:ChordSolfegeBass? {
+  	  return { base: root, modifier, suffix, ...bass, chordType: "solfege" };
+    }
+  / bass:ChordSolfegeBass {
+      return { base: null, modifier: null, suffix: null, ...bass, chordType: "solfege" };
+    }
+
+ChordSolfegeRoot
+  = "Do"i / "Re"i / "Mi"i / "Fa"i / "Sol"i / "La"i / "Si"i
+
+ChordSolfegeBass
+  = "/" root:ChordSolfegeRoot modifier:ChordModifier? {
+      return { bassBase: root, bassModifier: modifier };
+    }
+
 Numeral
   = modifier:ChordModifier? root:NumeralRoot suffix:$(ChordSuffix) bass:NumeralBass? {
       return { base: root, modifier, suffix, ...bass, chordType: "numeral" };
@@ -31,7 +47,7 @@ Numeral
     }
 
 NumeralRoot
-  = "III" / "iii" / "VII" / "vii" / "II" / "ii" / "IV" / "iv" / "VI" / "vi" / "I" / "i" / "V" / "v"
+  = "III"i / "VII"i / "II"i / "IV"i / "VI"i / "I"i / "V"i
 
 NumeralBass
   = "/" modifier:ChordModifier? root:NumeralRoot {

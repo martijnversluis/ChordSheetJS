@@ -47,11 +47,35 @@ export const TAB = 'tab';
  */
 export const VERSE = 'verse';
 
-export type ParagraphType = 'bridge' | 'chorus' | 'grid' | 'indeterminate' | 'none' | 'tab' | 'verse';
+/**
+ * Used to mark a section as Lilypond notation
+ * @constant
+ * @type {string}
+ */
+export const LILYPOND = 'ly';
+
+/**
+ * Used to mark a section as ABC music notation
+ * @constant
+ * @type {string}
+ */
+export const ABC = 'abc';
+
+export type ParagraphType =
+  'abc' |
+  'bridge' |
+  'chorus' |
+  'grid' |
+  'indeterminate' |
+  'ly' |
+  'none' |
+  'tab' |
+  'verse';
 
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';
 export const NUMERAL = 'numeral';
+export const SOLFEGE = 'solfege';
 
 export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
@@ -62,7 +86,7 @@ export const NO_MODIFIER = 'NM';
 export type NoModifier = 'NM';
 export type ModifierMaybe = Modifier | NoModifier;
 
-export type ChordType = 'symbol' | 'numeric' | 'numeral';
+export type ChordType = 'symbol' | 'solfege' | 'numeric' | 'numeral';
 
 export const MINOR = 'm';
 export const MAJOR = 'M';

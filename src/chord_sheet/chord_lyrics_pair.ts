@@ -9,12 +9,15 @@ class ChordLyricsPair {
 
   lyrics: string | null;
 
+  annotation: string | null;
+
   /**
    * Initialises a ChordLyricsPair
    * @param {string} chords The chords
-   * @param {string} lyrics The lyrics
+   * @param {string | null} lyrics The lyrics
+   * @param {string | null} annotation The annotation
    */
-  constructor(chords = '', lyrics: string | null = null) {
+  constructor(chords = '', lyrics: string | null = null, annotation: string | null = null) {
     /**
      * The chords
      * @member
@@ -28,6 +31,13 @@ class ChordLyricsPair {
      * @type {string}
      */
     this.lyrics = lyrics || '';
+
+    /**
+     * The annotation
+     * @member
+     * @type {string}
+     */
+    this.annotation = annotation || '';
   }
 
   /**
@@ -43,22 +53,27 @@ class ChordLyricsPair {
    * @returns {ChordLyricsPair}
    */
   clone(): ChordLyricsPair {
-    return new ChordLyricsPair(this.chords, this.lyrics);
+    return new ChordLyricsPair(this.chords, this.lyrics, this.annotation);
   }
 
   toString(): string {
     return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
   }
 
-  set({ chords, lyrics }: { chords?: string, lyrics?: string }): ChordLyricsPair {
+  set({ chords, lyrics, annotation }: { chords?: string, lyrics?: string, annotation?: string }): ChordLyricsPair {
     return new ChordLyricsPair(
       chords || this.chords,
       lyrics || this.lyrics,
+      annotation || this.annotation,
     );
   }
 
   setLyrics(lyrics: string): ChordLyricsPair {
     return this.set({ lyrics });
+  }
+
+  setAnnotation(annotation: string): ChordLyricsPair {
+    return this.set({ annotation });
   }
 
   transpose(

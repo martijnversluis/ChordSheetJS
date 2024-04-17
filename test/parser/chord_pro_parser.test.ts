@@ -1,23 +1,26 @@
 import {
+  ABC,
   ChordProParser,
   CHORUS,
+  LILYPOND,
   NONE,
-  VERSE,
   TAB,
   Ternary,
+  VERSE,
 } from '../../src';
 
 import '../matchers';
+import { heredoc } from '../utilities';
 
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {
-    const chordSheet = `
-{title: Let it be}
-{subtitle: ChordSheetJS example version}
-{Chorus}
-
-Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
-[C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`.substring(1);
+    const chordSheet = heredoc`
+      {title: Let it be}
+      {subtitle: ChordSheetJS example version}
+      {Chorus}
+      
+      Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
+      [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`;
 
     const song = new ChordProParser().parse(chordSheet);
     const { lines } = song;
@@ -83,9 +86,9 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
   });
 
   it('parses meta data', () => {
-    const chordSheet = `
-{title: Let it be}
-{subtitle: ChordSheetJS example version}`.substring(1);
+    const chordSheet = heredoc`
+      {title: Let it be}
+      {subtitle: ChordSheetJS example version}`;
 
     const song = new ChordProParser().parse(chordSheet);
 
@@ -139,11 +142,11 @@ Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
   });
 
   it('groups lines by paragraph', () => {
-    const chordSheetWithParagraphs = `
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
-[C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
-
-[Am]Whisper words of [Bb]wisdom, let it [F]be [C]`.substring(1);
+    const chordSheetWithParagraphs = heredoc`
+      Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+      [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
+      
+      [Am]Whisper words of [Bb]wisdom, let it [F]be [C]`;
 
     const parser = new ChordProParser();
     const song = parser.parse(chordSheetWithParagraphs);
@@ -182,14 +185,14 @@ Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
   });
 
   it('adds the type to lines', () => {
-    const markedChordSheet = `
-{start_of_verse}
-Let it [Am]be
-{end_of_verse}
-[C]Whisper words of [F]wis[G]dom
-{start_of_chorus}
-Let it [F]be [C]
-{end_of_chorus}`.substring(1);
+    const markedChordSheet = heredoc`
+      {start_of_verse}
+      Let it [Am]be
+      {end_of_verse}
+      [C]Whisper words of [F]wis[G]dom
+      {start_of_chorus}
+      Let it [F]be [C]
+      {end_of_chorus}`;
 
     const parser = new ChordProParser();
     const song = parser.parse(markedChordSheet);
@@ -274,6 +277,13 @@ This part is [G]key
     const chordSheet = '{title: my \\{title\\}}';
     const song = new ChordProParser().parse(chordSheet);
     expect(song.title).toEqual('my {title}');
+  });
+
+  it('parses annotation', () => {
+    const chordSheet = '[*Full band!]Let it be';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeChordLyricsPair('', 'Let it be', 'Full band!');
   });
 
   it('parses simple ternaries', () => {
@@ -426,20 +436,20 @@ Let it [Am]be
   });
 
   it('parses start_of_tab', () => {
-    const markedChordSheet = `
-{start_of_tab: Intro}
-D                       G             A7
-e|---2-----0--2-----2--0------------0----------------------0----|
-B|---3--3--------3--------3--0--3--(0)--3--0--2--0--2--3--(2)---|
-G|---2-----------------------0-------------0--------------------|
-D|---0-----------------------0-------------2--------------------|
-A|---------------------------2-------------0--------------------|
-E|---------------------------3----------------------------------|
-{end_of_tab}
-
-{start_of_verse}
-[D]Here comes the sun [G]Here comes [E7]the sun
-{end_of_verse}`.substring(1);
+    const markedChordSheet = heredoc`
+      {start_of_tab: Intro}
+      D                       G             A7
+      e|---2-----0--2-----2--0------------0----------------------0----|
+      B|---3--3--------3--------3--0--3--(0)--3--0--2--0--2--3--(2)---|
+      G|---2-----------------------0-------------0--------------------|
+      D|---0-----------------------0-------------2--------------------|
+      A|---------------------------2-------------0--------------------|
+      E|---------------------------3----------------------------------|
+      {end_of_tab}
+      
+      {start_of_verse}
+      [D]Here comes the sun [G]Here comes [E7]the sun
+      {end_of_verse}`;
 
     const parser = new ChordProParser();
     const song = parser.parse(markedChordSheet);
@@ -507,5 +517,71 @@ E|---------------------------3----------------------------------|
     expect(line1Items[1]).toBeChordLyricsPair('F', 'be, ');
     expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
     expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
+  });
+
+  it('parses tab sections', () => {
+    const chordSheet = heredoc`
+      {start_of_tab: Intro}
+      Tab line 1
+      Tab line 2
+      {end_of_tab}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(TAB);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_tab', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('Tab line 1');
+    expect(lines[2].items[0]).toBeLiteral('Tab line 2');
+  });
+
+  it('parses ABC sections', () => {
+    const chordSheet = heredoc`
+      {start_of_abc: Intro}
+      ABC line 1
+      ABC line 2
+      {end_of_abc}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(ABC);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_abc', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('ABC line 1');
+    expect(lines[2].items[0]).toBeLiteral('ABC line 2');
+  });
+
+  it('parses LY sections', () => {
+    const chordSheet = heredoc`
+      {start_of_ly: Intro}
+      LY line 1
+      LY line 2
+      {end_of_ly}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(LILYPOND);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('LY line 1');
+    expect(lines[2].items[0]).toBeLiteral('LY line 2');
   });
 });

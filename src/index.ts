@@ -54,10 +54,13 @@ export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser
 export { default as templateHelpers } from './template_helpers';
 
 export {
+  ABC,
   CHORUS,
   INDETERMINATE,
+  LILYPOND,
   NONE,
   NUMERIC,
+  SOLFEGE,
   SYMBOL,
   TAB,
   VERSE,

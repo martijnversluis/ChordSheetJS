@@ -9,21 +9,28 @@ on:
       - master
 
 jobs:
-  build:
+  build-ubuntu:
     runs-on: ubuntu-latest
     continue-on-error: true
     strategy:
       matrix:
         node-version: [ 14.x, 16.x, 18.x, 20.x ]
-    name: Node ${{ matrix.node }} sample
+    name: Ubuntu NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
-      - run: yarn lint
-      - run: yarn test
-      - run: yarn build
-      - run: yarn readme
+      - run: yarn ci
+  build-windows:
+    continue-on-error: true
+    runs-on: windows-latest
+    name: Windows NodeJS 20.x sample
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - run: yarn ci

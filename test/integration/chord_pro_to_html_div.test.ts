@@ -1,17 +1,18 @@
 import { ChordProParser, HtmlDivFormatter } from '../../src';
 import { stripHTML } from '../../src/template_helpers';
+import { heredoc } from '../utilities';
 
 describe('chordpro to HTML with DIVs', () => {
   it('correctly parses and formats meta expressions', () => {
-    const chordSheet = `
-{title: A}
-{artist: B}
-%{title}
-%{artist|%{}}
-%{artist=X|artist is X|artist is not X}
-%{c|c is set|c is unset}
-%{artist|artist is %{}|artist is unset}
-%{title|title is set and c is %{c|set|unset}|title is unset}`.substring(1);
+    const chordSheet = heredoc`
+      {title: A}
+      {artist: B}
+      %{title}
+      %{artist|%{}}
+      %{artist=X|artist is X|artist is not X}
+      %{c|c is set|c is unset}
+      %{artist|artist is %{}|artist is unset}
+      %{title|title is set and c is %{c|set|unset}|title is unset}`;
 
     const expectedChordSheet = stripHTML(`
       <h1>A</h1>
@@ -71,29 +72,29 @@ describe('chordpro to HTML with DIVs', () => {
   });
 
   it('renders style attributes for chord/text font, size and color', () => {
-    const chordProSheet = `
-{chordfont: "Times New Roman"}
-{chordfont: sans-serif}
-{chordsize: 12}
-{chordsize: 200%}
-{chordsize: 125%}
-{chordcolour: red}
-{chordcolour: blue}
-{chordcolour: green}
-[Em]30px green sans-serif
-{chordcolour}
-{chordsize}
-[Am]24px blue sans-serif
-{chordsize}
-{chordcolour}
-{chordfont}
-{textcolour: green}
-[Am][Dm]12px red "Times New Roman"
-{textcolour}
-{chordsize}
-{chordcolour}
-{chordfont}
-[Gm]No styles`.substring(1);
+    const chordProSheet = heredoc`
+      {chordfont: "Times New Roman"}
+      {chordfont: sans-serif}
+      {chordsize: 12}
+      {chordsize: 200%}
+      {chordsize: 125%}
+      {chordcolour: red}
+      {chordcolour: blue}
+      {chordcolour: green}
+      [Em]30px green sans-serif
+      {chordcolour}
+      {chordsize}
+      [Am]24px blue sans-serif
+      {chordsize}
+      {chordcolour}
+      {chordfont}
+      {textcolour: green}
+      [Am][Dm]12px red "Times New Roman"
+      {textcolour}
+      {chordsize}
+      {chordcolour}
+      {chordfont}
+      [Gm]No styles`;
 
     const expectedChordSheet = stripHTML(`
       <div class="chord-sheet">
@@ -152,18 +153,18 @@ describe('chordpro to HTML with DIVs', () => {
   });
 
   it('correctly renders section directives', () => {
-    const chordSheet = `
-{start_of_verse: Verse 1}
-Let it [Am]Be
-{end_of_verse}
-
-{start_of_chorus: Chorus 2}
-[C]Whisper words of 
-{end_of_chorus}
-
-{start_of_bridge: Bridge 3}
-[G]wisdom, let it 
-{end_of_bridge}`.substring(1);
+    const chordSheet = heredoc`
+      {start_of_verse: Verse 1}
+      Let it [Am]Be
+      {end_of_verse}
+      
+      {start_of_chorus: Chorus 2}
+      [C]Whisper words of 
+      {end_of_chorus}
+      
+      {start_of_bridge: Bridge 3}
+      [G]wisdom, let it 
+      {end_of_bridge}`;
 
     const expectedHTML = stripHTML(`
       <div class="chord-sheet">
@@ -222,24 +223,24 @@ Let it [Am]Be
   });
 
   it('can expand {chorus} directives when expandChorusDirective=true', () => {
-    const chordSheet = `
-{start_of_chorus: Chorus 1:}
-[C]Whisper words of 
-{end_of_chorus}
-
-{start_of_verse: Verse 1:}
-Let it [Am]be
-{end_of_verse}
-
-{chorus: Repeat chorus 1:}
-
-{start_of_chorus: Chorus 2:}
-[G]wisdom, let it
-{end_of_chorus}
-
-{chorus: Repeat chorus 2:}
-
-{chorus: Repeat chorus 2 again:}`.substring(1);
+    const chordSheet = heredoc`
+      {start_of_chorus: Chorus 1:}
+      [C]Whisper words of 
+      {end_of_chorus}
+      
+      {start_of_verse: Verse 1:}
+      Let it [Am]be
+      {end_of_verse}
+      
+      {chorus: Repeat chorus 1:}
+      
+      {start_of_chorus: Chorus 2:}
+      [G]wisdom, let it
+      {end_of_chorus}
+      
+      {chorus: Repeat chorus 2:}
+      
+      {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = stripHTML(`
       <div class="chord-sheet">
@@ -343,24 +344,24 @@ Let it [Am]be
   });
 
   it('does not expand {chorus} directives when expandChorusDirective=false', () => {
-    const chordSheet = `
-{start_of_chorus: Chorus 1:}
-[C]Whisper words of 
-{end_of_chorus}
-
-{start_of_verse: Verse 1:}
-Let it [Am]be
-{end_of_verse}
-
-{chorus: Repeat chorus 1:}
-
-{start_of_chorus: Chorus 2:}
-[G]wisdom, let it
-{end_of_chorus}
-
-{chorus: Repeat chorus 2:}
-
-{chorus: Repeat chorus 2 again:}`.substring(1);
+    const chordSheet = heredoc`
+      {start_of_chorus: Chorus 1:}
+      [C]Whisper words of 
+      {end_of_chorus}
+      
+      {start_of_verse: Verse 1:}
+      Let it [Am]be
+      {end_of_verse}
+      
+      {chorus: Repeat chorus 1:}
+      
+      {start_of_chorus: Chorus 2:}
+      [G]wisdom, let it
+      {end_of_chorus}
+      
+      {chorus: Repeat chorus 2:}
+      
+      {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = stripHTML(`
       <div class="chord-sheet">
@@ -434,11 +435,11 @@ Let it [Am]be
   });
 
   it('can change chord type', () => {
-    const chordSheet = `
-{key: C}
-{chord_style: symbol}
-Let it [1]be, let it [1/5]be,
-let it [4]be, let it [1]be`.substring(1);
+    const chordSheet = heredoc`
+      {key: C}
+      {chord_style: symbol}
+      Let it [1]be, let it [1/5]be,
+      let it [4]be, let it [1]be`;
 
     const expectedOutput = stripHTML(`
       <div class="chord-sheet">

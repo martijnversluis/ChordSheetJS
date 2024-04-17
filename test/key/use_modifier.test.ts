@@ -1,6 +1,6 @@
 import { buildKey } from '../utilities';
 import { NUMERIC, SYMBOL } from '../../src';
-import { NUMERAL } from '../../src/constants';
+import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('useModifier', () => {
@@ -30,6 +30,36 @@ describe('Key', () => {
 
           const switchedKey = key.useModifier('#');
           expect(switchedKey.toString()).toEqual('F#');
+        });
+      });
+    });
+
+    describe('chord solfege', () => {
+      describe('for a key without modifier', () => {
+        it('does not change the key', () => {
+          const key = buildKey('Fa', SOLFEGE);
+
+          const switchedKey = key.useModifier('b');
+
+          expect(switchedKey.toString()).toEqual('Fa');
+        });
+      });
+
+      describe('for #', () => {
+        it('changes to b', () => {
+          const key = buildKey('Sol', SOLFEGE, '#');
+
+          const switchedKey = key.useModifier('b');
+          expect(switchedKey.toString()).toEqual('Lab');
+        });
+      });
+
+      describe('for b', () => {
+        it('changes to #', () => {
+          const key = buildKey('Sol', SOLFEGE, 'b');
+
+          const switchedKey = key.useModifier('#');
+          expect(switchedKey.toString()).toEqual('Fa#');
         });
       });
     });

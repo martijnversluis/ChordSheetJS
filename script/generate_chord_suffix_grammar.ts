@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const fs = require('fs');
+import fs from 'fs';
+import { EOL } from 'os';
 
 const suffixMappingFile = 'src/normalize_mappings/suffix-mapping.txt';
 const chordSuffixGrammarFile = 'src/parser/chord_suffix_grammar.pegjs';
@@ -7,33 +8,33 @@ const chordSuffixGrammarFile = 'src/parser/chord_suffix_grammar.pegjs';
 console.warn('\x1b[34m', '👷 Building suffix normalize mapping from suffix-mapping.txt');
 const data = fs.readFileSync(suffixMappingFile);
 
-const suffixes = data
+const suffixes: string[] = data
   .toString()
-  .split('\n')
-  .filter(s => s.trim().length > 0)
+  .split(EOL)
+  .filter((s) => s.trim().length > 0)
   .flatMap((line) => line.split(/,\s*/))
   .sort((a, b) => b.length - a.length)
   .map((suffix) => `"${suffix}"`);
 
-let groups = [];
+const groups: string[][] = [];
 
 // make a copy to avoid mutating original array
-let copy = [...suffixes];
+const copy = [...suffixes];
 
 while (copy.length > 0) {
-  let chunk = copy.splice(0, 100);
+  const chunk = copy.splice(0, 100) as string[];
   groups.push(chunk);
 }
 
-const groupsGrammar = groups.map((suffixes, i) => (
-  `ChordSuffix${i}\n  = ${suffixes.join('\n  / ')}\n`
+const groupsGrammar = groups.map((groupSuffixes, i) => (
+  `ChordSuffix${i}\n  = ${groupSuffixes.join('\n  / ')}\n`
 ));
 
 const chordSuffixGrammar = `
 ChordSuffix
   = (${groupsGrammar.map((_grammar, i) => `ChordSuffix${i}`).join(' / ')})?
 
-${groupsGrammar.join('\n\n')}
+${groupsGrammar.join('\n')}
 `;
 
 fs.writeFileSync(chordSuffixGrammarFile, chordSuffixGrammar, 'utf-8');
