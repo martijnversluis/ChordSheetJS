@@ -12,6 +12,10 @@ export const hasChordContents = (line: Line): boolean => (
   line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
 );
 
+export const hasRemarkContents = (line: Line): boolean => (
+  line.items.some((item) => (item instanceof ChordLyricsPair) && (item.chords || item.annotation))
+);
+
 export const isEvaluatable = (item: Item): boolean => ('evaluate' in item) && (typeof item.evaluate === 'function');
 
 export const padLeft = (string: string, length: number): string => {

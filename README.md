@@ -457,6 +457,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dl>
 <dt><a href="#ALBUM">ALBUM</a> : <code>string</code></dt>
 <dd><p>Album meta directive. See https://www.chordpro.org/chordpro/directives-album/</p></dd>
+<dt><a href="#ARRANGER">ARRANGER</a> : <code>string</code></dt>
+<dd><p>Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/</p></dd>
 <dt><a href="#ARTIST">ARTIST</a> : <code>string</code></dt>
 <dd><p>Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/</p></dd>
 <dt><a href="#CAPO">CAPO</a> : <code>string</code></dt>
@@ -469,12 +471,16 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dd><p>Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/</p></dd>
 <dt><a href="#DURATION">DURATION</a> : <code>string</code></dt>
 <dd><p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p></dd>
+<dt><a href="#END_OF_ABC">END_OF_ABC</a> : <code>string</code></dt>
+<dd><p>End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p></dd>
 <dt><a href="#END_OF_BRIDGE">END_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#END_OF_CHORUS">END_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#END_OF_GRID">END_OF_GRID</a> : <code>string</code></dt>
 <dd><p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
+<dt><a href="#END_OF_LY">END_OF_LY</a> : <code>string</code></dt>
+<dd><p>End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p></dd>
 <dt><a href="#END_OF_TAB">END_OF_TAB</a> : <code>string</code></dt>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
@@ -486,12 +492,18 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#LYRICIST">LYRICIST</a> : <code>string</code></dt>
 <dd><p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p></dd>
+<dt><a href="#SORTTITLE">SORTTITLE</a> : <code>string</code></dt>
+<dd><p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p></dd>
+<dt><a href="#START_OF_ABC">START_OF_ABC</a> : <code>string</code></dt>
+<dd><p>Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p></dd>
 <dt><a href="#START_OF_BRIDGE">START_OF_BRIDGE</a> : <code>string</code></dt>
 <dd><p>Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/</p></dd>
 <dt><a href="#START_OF_CHORUS">START_OF_CHORUS</a> : <code>string</code></dt>
 <dd><p>Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#START_OF_GRID">START_OF_GRID</a> : <code>string</code></dt>
 <dd><p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p></dd>
+<dt><a href="#START_OF_LY">START_OF_LY</a> : <code>string</code></dt>
+<dd><p>Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p></dd>
 <dt><a href="#START_OF_TAB">START_OF_TAB</a> : <code>string</code></dt>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
@@ -533,7 +545,7 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 See https://www.chordpro.org/chordpro/directives-env_chorus/</p></dd>
 <dt><a href="#CHORD_STYLE">CHORD_STYLE</a> : <code>string</code></dt>
 <dd><p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
-Possible values are 'symbol', 'numeral' and 'number'</p></dd>
+Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 <dt><a href="#BRIDGE">BRIDGE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as bridge</p></dd>
 <dt><a href="#CHORUS">CHORUS</a> : <code>string</code></dt>
@@ -548,6 +560,10 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
 <dd><p>Used to mark a paragraph as tab</p></dd>
 <dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#LILYPOND">LILYPOND</a> : <code>string</code></dt>
+<dd><p>Used to mark a section as Lilypond notation</p></dd>
+<dt><a href="#ABC">ABC</a> : <code>string</code></dt>
+<dd><p>Used to mark a section as ABC music notation</p></dd>
 </dl>
 
 ## Functions
@@ -571,22 +587,24 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
 **Kind**: global class  
 
 * [ChordLyricsPair](#ChordLyricsPair)
-    * [new ChordLyricsPair(chords, lyrics)](#new_ChordLyricsPair_new)
+    * [new ChordLyricsPair(chords, lyrics, annotation)](#new_ChordLyricsPair_new)
     * [.chords](#ChordLyricsPair+chords) : <code>string</code>
     * [.lyrics](#ChordLyricsPair+lyrics) : <code>string</code>
+    * [.annotation](#ChordLyricsPair+annotation) : <code>string</code>
     * [.isRenderable()](#ChordLyricsPair+isRenderable) ⇒ <code>boolean</code>
     * [.clone()](#ChordLyricsPair+clone) ⇒ [<code>ChordLyricsPair</code>](#ChordLyricsPair)
 
 <a name="new_ChordLyricsPair_new"></a>
 
-### new ChordLyricsPair(chords, lyrics)
+### new ChordLyricsPair(chords, lyrics, annotation)
 <p>Initialises a ChordLyricsPair</p>
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | chords | <code>string</code> |  | <p>The chords</p> |
-| lyrics | <code>string</code> | <code>null</code> | <p>The lyrics</p> |
+| lyrics | <code>string</code> \| <code>null</code> | <code>null</code> | <p>The lyrics</p> |
+| annotation | <code>string</code> \| <code>null</code> | <code>null</code> | <p>The annotation</p> |
 
 <a name="ChordLyricsPair+chords"></a>
 
@@ -598,6 +616,12 @@ Possible values are 'symbol', 'numeral' and 'number'</p></dd>
 
 ### chordLyricsPair.lyrics : <code>string</code>
 <p>The lyrics</p>
+
+**Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
+<a name="ChordLyricsPair+annotation"></a>
+
+### chordLyricsPair.annotation : <code>string</code>
+<p>The annotation</p>
 
 **Kind**: instance property of [<code>ChordLyricsPair</code>](#ChordLyricsPair)  
 <a name="ChordLyricsPair+isRenderable"></a>
@@ -774,9 +798,25 @@ else it returns an array of strings.</p>
 **Kind**: global class  
 
 * [Paragraph](#Paragraph)
+    * [.contents](#Paragraph+contents) ⇒ <code>string</code>
+    * [.label](#Paragraph+label) ⇒ <code>string</code> \| <code>null</code>
     * [.type](#Paragraph+type) ⇒ <code>string</code>
+    * [.isLiteral()](#Paragraph+isLiteral) ⇒ <code>boolean</code>
     * [.hasRenderableItems()](#Paragraph+hasRenderableItems) ⇒ <code>boolean</code>
 
+<a name="Paragraph+contents"></a>
+
+### paragraph.contents ⇒ <code>string</code>
+<p>Returns the paragraph contents as one string where lines are separated by newlines</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+label"></a>
+
+### paragraph.label ⇒ <code>string</code> \| <code>null</code>
+<p>Returns the label of the paragraph. The label is the value of the first section delimiter tag
+in the first line.</p>
+
+**Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
 <a name="Paragraph+type"></a>
 
 ### paragraph.type ⇒ <code>string</code>
@@ -784,6 +824,14 @@ else it returns an array of strings.</p>
 If not, it returns [INDETERMINATE](#INDETERMINATE)</p>
 
 **Kind**: instance property of [<code>Paragraph</code>](#Paragraph)  
+<a name="Paragraph+isLiteral"></a>
+
+### paragraph.isLiteral() ⇒ <code>boolean</code>
+<p>Indicates whether the paragraph only contains literals. If true, [contents](contents) can be used to retrieve
+the paragraph contents as one string where lines are separated by newlines.</p>
+
+**Kind**: instance method of [<code>Paragraph</code>](#Paragraph)  
+**See**: [contents](contents)  
 <a name="Paragraph+hasRenderableItems"></a>
 
 ### paragraph.hasRenderableItems() ⇒ <code>boolean</code>
@@ -850,7 +898,7 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 <a name="Song+expandedBodyParagraphs"></a>
 
 ### song.expandedBodyParagraphs : [<code>Array.&lt;Paragraph&gt;</code>](#Paragraph)
-<p>The body paragraphs of the song, with any <code>{chorus}</code> tag expanded into the targetted chorus</p>
+<p>The body paragraphs of the song, with any <code>{chorus}</code> tag expanded into the targeted chorus</p>
 
 **Kind**: instance property of [<code>Song</code>](#Song)  
 <a name="Song+clone"></a>
@@ -1405,6 +1453,9 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p>
         * [.toChordSymbol([referenceKey])](#Chord+toChordSymbol) ⇒ [<code>Chord</code>](#Chord)
         * [.toChordSymbolString([referenceKey])](#Chord+toChordSymbolString) ⇒ <code>string</code>
         * [.isChordSymbol()](#Chord+isChordSymbol) ⇒ <code>boolean</code>
+        * [.toChordSolfege([referenceKey])](#Chord+toChordSolfege) ⇒ [<code>Chord</code>](#Chord)
+        * [.toChordSolfegeString([referenceKey])](#Chord+toChordSolfegeString) ⇒ <code>string</code>
+        * [.isChordSolfege()](#Chord+isChordSolfege) ⇒ <code>boolean</code>
         * [.toNumeric([referenceKey])](#Chord+toNumeric) ⇒ [<code>Chord</code>](#Chord)
         * [.toNumeral([referenceKey])](#Chord+toNumeral) ⇒ [<code>Chord</code>](#Chord)
         * [.toNumeralString([referenceKey])](#Chord+toNumeralString) ⇒ <code>string</code>
@@ -1459,6 +1510,41 @@ When the chord is already a chord symbol, it will return a string version of the
 
 ### chord.isChordSymbol() ⇒ <code>boolean</code>
 <p>Determines whether the chord is a chord symbol</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+<a name="Chord+toChordSolfege"></a>
+
+### chord.toChordSolfege([referenceKey]) ⇒ [<code>Chord</code>](#Chord)
+<p>Converts the chord to a chord solfege, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>Mi</code> will return the chord symbol <code>La#</code>.
+When the chord is already a chord solfege, it will return a clone of the object.</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: [<code>Chord</code>](#Chord) - <p>the chord solfege</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [referenceKey] | [<code>Key</code>](#Key) \| <code>string</code> \| <code>null</code> | <code></code> | <p>the reference key. The key is required when converting a numeric or numeral.</p> |
+
+<a name="Chord+toChordSolfegeString"></a>
+
+### chord.toChordSolfegeString([referenceKey]) ⇒ <code>string</code>
+<p>Converts the chord to a chord solfege string, using the supplied key as a reference.
+For example, a numeric chord <code>#4</code> with reference key <code>E</code> will return the chord solfege <code>A#</code>.
+When the chord is already a chord solfege, it will return a string version of the chord.</p>
+
+**Kind**: instance method of [<code>Chord</code>](#Chord)  
+**Returns**: <code>string</code> - <p>the chord solfege string</p>  
+**See**: {toChordSolfege}  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [referenceKey] | [<code>Key</code>](#Key) \| <code>string</code> \| <code>null</code> | <code></code> | <p>the reference key. The key is required when converting a numeric or numeral.</p> |
+
+<a name="Chord+isChordSolfege"></a>
+
+### chord.isChordSolfege() ⇒ <code>boolean</code>
+<p>Determines whether the chord is a chord solfege</p>
 
 **Kind**: instance method of [<code>Chord</code>](#Chord)  
 <a name="Chord+toNumeric"></a>
@@ -1545,6 +1631,10 @@ For example, a chord symbol A# with reference key E will return the numeric chor
 ### chord.normalize([key], [options]) ⇒ [<code>Chord</code>](#Chord)
 <p>Normalizes the chord root and bass notes:</p>
 <ul>
+<li>Fab becomes Mi</li>
+<li>Dob becomes Si</li>
+<li>Si# becomes Do</li>
+<li>Mi# becomes Fa</li>
 <li>Fb becomes E</li>
 <li>Cb becomes B</li>
 <li>B# becomes C</li>
@@ -1676,6 +1766,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>Album meta directive. See https://www.chordpro.org/chordpro/directives-album/</p>
 
 **Kind**: global constant  
+<a name="ARRANGER"></a>
+
+## ARRANGER : <code>string</code>
+<p>Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/</p>
+
+**Kind**: global constant  
 <a name="ARTIST"></a>
 
 ## ARTIST : <code>string</code>
@@ -1712,6 +1808,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 <p>Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/</p>
 
 **Kind**: global constant  
+<a name="END_OF_ABC"></a>
+
+## END\_OF\_ABC : <code>string</code>
+<p>End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p>
+
+**Kind**: global constant  
 <a name="END_OF_BRIDGE"></a>
 
 ## END\_OF\_BRIDGE : <code>string</code>
@@ -1728,6 +1830,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 
 ## END\_OF\_GRID : <code>string</code>
 <p>End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="END_OF_LY"></a>
+
+## END\_OF\_LY : <code>string</code>
+<p>End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p>
 
 **Kind**: global constant  
 <a name="END_OF_TAB"></a>
@@ -1761,6 +1869,18 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 <p>Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/</p>
 
 **Kind**: global constant  
+<a name="SORTTITLE"></a>
+
+## SORTTITLE : <code>string</code>
+<p>Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/</p>
+
+**Kind**: global constant  
+<a name="START_OF_ABC"></a>
+
+## START\_OF\_ABC : <code>string</code>
+<p>Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/</p>
+
+**Kind**: global constant  
 <a name="START_OF_BRIDGE"></a>
 
 ## START\_OF\_BRIDGE : <code>string</code>
@@ -1777,6 +1897,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 
 ## START\_OF\_GRID : <code>string</code>
 <p>Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/</p>
+
+**Kind**: global constant  
+<a name="START_OF_LY"></a>
+
+## START\_OF\_LY : <code>string</code>
+<p>Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/</p>
 
 **Kind**: global constant  
 <a name="START_OF_TAB"></a>
@@ -1898,7 +2024,7 @@ See https://www.chordpro.org/chordpro/directives-env_chorus/</p>
 
 ## CHORD\_STYLE : <code>string</code>
 <p>Chord type directive. Determines the type of chords used in the rendered chord sheet.
-Possible values are 'symbol', 'numeral' and 'number'</p>
+Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p>
 
 **Kind**: global constant  
 **See**: https://github.com/bettermusic/ChordSheetJS/issues/352  
@@ -1942,6 +2068,18 @@ Possible values are 'symbol', 'numeral' and 'number'</p>
 
 ## VERSE : <code>string</code>
 <p>Used to mark a paragraph as verse</p>
+
+**Kind**: global constant  
+<a name="LILYPOND"></a>
+
+## LILYPOND : <code>string</code>
+<p>Used to mark a section as Lilypond notation</p>
+
+**Kind**: global constant  
+<a name="ABC"></a>
+
+## ABC : <code>string</code>
+<p>Used to mark a section as ABC music notation</p>
 
 **Kind**: global constant  
 <a name="scopedCss"></a>

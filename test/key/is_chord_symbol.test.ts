@@ -1,4 +1,4 @@
-import { NUMERIC, SYMBOL } from '../../src';
+import { NUMERIC, SOLFEGE, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
 
 describe('Key', () => {
@@ -14,6 +14,14 @@ describe('Key', () => {
     describe('for a numeric key', () => {
       it('returns false', () => {
         const key = buildKey(5, NUMERIC, '#');
+
+        expect(key.isChordSymbol()).toBe(false);
+      });
+    });
+
+    describe('for a solfege key', () => {
+      it('returns false', () => {
+        const key = buildKey('La', SOLFEGE, '#');
 
         expect(key.isChordSymbol()).toBe(false);
       });

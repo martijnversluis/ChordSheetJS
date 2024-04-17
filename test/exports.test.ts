@@ -26,6 +26,7 @@ import ChordSheetJS, {
   INDETERMINATE,
   NONE,
   NUMERIC,
+  SOLFEGE,
   SYMBOL,
   TAB,
   VERSE,
@@ -79,6 +80,7 @@ describe('exports', () => {
     expect(INDETERMINATE).toBeDefined();
     expect(NONE).toBeDefined();
     expect(NUMERIC).toBeDefined();
+    expect(SOLFEGE).toBeDefined();
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();

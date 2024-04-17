@@ -1,19 +1,22 @@
 import {
-  CHORUS,
+  ABC,
   ChordLyricsPair,
+  CHORUS,
   Comment,
   Line,
   Metadata,
   NONE,
   Paragraph,
   Tag,
-  Ternary,
   templateHelpers,
+  Ternary,
 } from '../src';
 
 import Configuration from '../src/formatter/configuration/configuration';
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
+import { newlinesToBreaks, renderSection } from '../src/template_helpers';
+import { createLine, createLiteral, createParagraph } from './utilities';
 
 const {
   isChordLyricsPair,
@@ -119,23 +122,70 @@ describe('template_helpers', () => {
 
   describe('when', () => {
     it('returns the callback result when the condition is truthy', () => {
-      const callback = () => 'foobar!';
+      const callback = () => 'foobar';
 
-      expect(when(true, callback)).toEqual('foobar!');
-      expect(when('string', callback)).toEqual('foobar!');
-      expect(when({}, callback)).toEqual('foobar!');
-      expect(when(25, callback)).toEqual('foobar!');
-      expect(when([], callback)).toEqual('foobar!');
+      expect(when(true, callback).toString()).toEqual('foobar');
+      expect(when('string', callback).toString()).toEqual('foobar');
+      expect(when({}, callback).toString()).toEqual('foobar');
+      expect(when(25, callback).toString()).toEqual('foobar');
+      expect(when([], callback).toString()).toEqual('foobar');
     });
 
     it('returns an empty string when the condition is falsy', () => {
       const callback = () => 'foobar!';
 
-      expect(when(false, callback)).toEqual('');
-      expect(when(null, callback)).toEqual('');
-      expect(when(undefined, callback)).toEqual('');
-      expect(when('', callback)).toEqual('');
-      expect(when(0, callback)).toEqual('');
+      expect(when(false, callback).toString()).toEqual('');
+      expect(when(null, callback).toString()).toEqual('');
+      expect(when(undefined, callback).toString()).toEqual('');
+      expect(when('', callback).toString()).toEqual('');
+      expect(when(0, callback).toString()).toEqual('');
+    });
+
+    it('allows chaining with then', () => {
+      expect(when(true).then(() => 'foobar').toString()).toEqual('foobar');
+      expect(when(false).then(() => 'foobar').toString()).toEqual('');
+    });
+
+    it('allows chaining with elseWhen', () => {
+      expect(when(true).then(() => 'when').elseWhen(true, () => 'elseWhen').toString()).toEqual('when');
+      expect(when(false).then(() => 'when').elseWhen(true, () => 'elseWhen').toString()).toEqual('elseWhen');
+      expect(when(false).then(() => 'when').elseWhen(false, () => 'elseWhen').toString()).toEqual('');
+    });
+
+    it('allows chaining with elseWhen and else', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(false, () => 'elseWhen')
+          .else(() => 'else')
+          .toString(),
+      ).toEqual('else');
+    });
+
+    it('allows chaining with else then', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(true)
+          .then(() => 'elseThen')
+          .toString(),
+      ).toEqual('elseThen');
+    });
+
+    it('allows chaining with else then else', () => {
+      expect(
+        when(false)
+          .then(() => 'when')
+          .elseWhen(false)
+          .then(() => 'elseThen')
+          .else(() => 'else')
+          .toString(),
+      ).toEqual('else');
+    });
+
+    it('allows chaining with else', () => {
+      expect(when(true).then(() => 'then').else(() => 'else').toString()).toEqual('then');
+      expect(when(false).then(() => 'then').else(() => 'else').toString()).toEqual('else');
     });
   });
 
@@ -278,6 +328,33 @@ describe('template_helpers', () => {
       const font = new Font();
 
       expect(fontStyleTag(font)).toEqual('');
+    });
+  });
+
+  describe('#newlinesToBreaks', () => {
+    it('replaces newlines with break tags', () => {
+      const string = 'hello\nworld\n';
+      const expectedString = 'hello<br>world<br>';
+
+      expect(newlinesToBreaks(string)).toEqual(expectedString);
+    });
+  });
+
+  describe('#renderSection', () => {
+    it('returns the result of the delegate function', () => {
+      const paragraph = createParagraph([
+        createLine([createLiteral('hello world')], ABC),
+      ]);
+
+      const configuration = new Configuration(
+        {
+          delegates: {
+            abc: (string: string) => string.toUpperCase(),
+          },
+        },
+      );
+
+      expect(renderSection(paragraph, configuration)).toEqual('HELLO WORLD');
     });
   });
 });

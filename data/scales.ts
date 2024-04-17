@@ -8,14 +8,30 @@ import {
   NUMERAL,
   NUMERIC,
   SHARP,
+  SOLFEGE,
   SYMBOL,
 } from '../src/constants';
 
+const AmericanScale = {
+  [NO_MODIFIER]: ['C',  null, 'D',  null, 'E',  'F',  null, 'G',  null, 'A',  null, 'B' ],
+  [SHARP]:       ['B#', 'C#', null, 'D#', null, 'E#', 'F#', null, 'G#', null, 'A#', null],
+  [FLAT]:        [null, 'Db', null, 'Eb', 'Fb', null, 'Gb', null, 'Ab', null, 'Bb', 'Cb'],
+};
+
+const SolfegeScale = {
+  [NO_MODIFIER]: ['Do',  null, 'Re',  null, 'Mi',  'Fa',  null, 'Sol',  null, 'La',  null, 'Si' ],
+  [SHARP]:       ['Si#', 'Do#', null, 'Re#', null, 'Mi#', 'Fa#', null, 'Sol#', null, 'La#', null],
+  [FLAT]:        [null, 'Reb', null, 'Mib', 'Fab', null, 'Solb', null, 'Lab', null, 'Sib', 'Dob'],
+};
+
 const SCALES = {
   [SYMBOL]: {
-    [NO_MODIFIER]: ['C',  null, 'D',  null, 'E',  'F',  null, 'G',  null, 'A',  null, 'B' ],
-    [SHARP]:       ['B#', 'C#', null, 'D#', null, 'E#', 'F#', null, 'G#', null, 'A#', null],
-    [FLAT]:        [null, 'Db', null, 'Eb', 'Fb', null, 'Gb', null, 'Ab', null, 'Bb', 'Cb'],
+    [MINOR]: AmericanScale,
+    [MAJOR]: AmericanScale,
+  },
+  [SOLFEGE]: {
+    [MINOR]: SolfegeScale,
+    [MAJOR]: SolfegeScale,
   },
   [NUMERIC]: {
     [MINOR]: {
@@ -42,9 +58,5 @@ const SCALES = {
     },
   },
 };
-
-const symbolScales = SCALES[SYMBOL];
-SCALES[SYMBOL][MAJOR] = symbolScales;
-SCALES[SYMBOL][MINOR] = symbolScales;
 
 export default SCALES;

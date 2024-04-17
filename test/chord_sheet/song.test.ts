@@ -1,9 +1,9 @@
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
 import { createSong } from '../utilities';
 
-import exampleSong from '../fixtures/song';
-import serializedSong from '../fixtures/serialized_song';
-import serializedChangedSong from '../fixtures/changed_song';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
+import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
+import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
 import Song from '../../src/chord_sheet/song';
 
 const createLineStub = ({ renderable }) => (
@@ -102,9 +102,16 @@ describe('Song', () => {
   });
 
   describe('#clone', () => {
-    it('returns a clone of the song', () => {
-      const serializedExampleSong = new ChordSheetSerializer().serialize(exampleSong);
-      const clone = exampleSong.clone();
+    it('returns a clone of the symbol song', () => {
+      const serializedExampleSong = new ChordSheetSerializer().serialize(exampleSongSymbol);
+      const clone = exampleSongSymbol.clone();
+      const serializedClone = new ChordSheetSerializer().serialize(clone);
+      expect(serializedClone).toEqual(serializedExampleSong);
+    });
+
+    it('returns a clone of the solfege song', () => {
+      const serializedExampleSong = new ChordSheetSerializer().serialize(exampleSongSolfege);
+      const clone = exampleSongSolfege.clone();
       const serializedClone = new ChordSheetSerializer().serialize(clone);
       expect(serializedClone).toEqual(serializedExampleSong);
     });
@@ -123,8 +130,8 @@ describe('Song', () => {
   });
 
   describe('#mapLines', () => {
-    it('changes the song', () => {
-      const song = exampleSong.clone();
+    it('changes the symbol song', () => {
+      const song = exampleSongSymbol.clone();
 
       [0, 1, 3, 2].forEach((expectedLineCount, index) => {
         expect(song.paragraphs[index].lines).toHaveLength(expectedLineCount);
@@ -133,7 +140,10 @@ describe('Song', () => {
       const changedSong = song.mapLines((line) => (
         line.mapItems((item) => {
           if (item instanceof ChordLyricsPair) {
-            return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
+            return item
+              .transpose(2, 'D')
+              .setLyrics((item.lyrics || '').toUpperCase())
+              .setAnnotation((item.annotation || '').toUpperCase());
           }
 
           if (item instanceof Tag) {
@@ -144,10 +154,46 @@ describe('Song', () => {
         })
       ));
 
-      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(serializedChangedSong);
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(changedSongSymbol);
       expect(changedSong.title).toEqual('Let it be changed');
       expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
       expect(changedSong.key).toEqual('C changed');
+      expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
+      expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
+
+      [0, 1, 3, 3].forEach((expectedLineCount, index) => {
+        expect(changedSong.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
+    });
+
+    it('changes the solfege song', () => {
+      const song = exampleSongSolfege.clone();
+
+      [0, 1, 3, 2].forEach((expectedLineCount, index) => {
+        expect(song.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
+
+      const changedSong = song.mapLines((line) => (
+        line.mapItems((item) => {
+          if (item instanceof ChordLyricsPair) {
+            return item
+              .transpose(2, 'Re')
+              .setLyrics((item.lyrics || '').toUpperCase())
+              .setAnnotation((item.annotation || '').toUpperCase());
+          }
+
+          if (item instanceof Tag) {
+            return item.set({ value: `${item.value} changed` });
+          }
+
+          return item;
+        })
+      ));
+
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(changedSongSolfege);
+      expect(changedSong.title).toEqual('Let it be changed');
+      expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
+      expect(changedSong.key).toEqual('Do changed');
       expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
       expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
 
@@ -158,13 +204,16 @@ describe('Song', () => {
   });
 
   describe('#mapItems', () => {
-    it('changes the song', () => {
-      const song = exampleSong.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 2, 2, 2]);
+    it('changes the symbol song', () => {
+      const song = exampleSongSymbol.clone();
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
-          return item.transpose(2, 'D').setLyrics((item.lyrics || '').toUpperCase());
+          return item
+            .transpose(2, 'D')
+            .setLyrics((item.lyrics || '').toUpperCase())
+            .setAnnotation((item.annotation || '').toUpperCase());
         }
 
         if (item instanceof Tag) {
@@ -174,7 +223,7 @@ describe('Song', () => {
         return item;
       });
 
-      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(serializedChangedSong);
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(changedSongSymbol);
       expect(changedSong.title).toEqual('Let it be changed');
       expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
       expect(changedSong.key).toEqual('C changed');
@@ -185,13 +234,52 @@ describe('Song', () => {
         expect(changedSong.paragraphs[index].lines).toHaveLength(expectedLineCount);
       });
     });
+
+    it('changes the solfege song', () => {
+      const song = exampleSongSolfege.clone();
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
+
+      const changedSong = song.mapItems((item) => {
+        if (item instanceof ChordLyricsPair) {
+          return item
+            .transpose(2, 'Re')
+            .setLyrics((item.lyrics || '').toUpperCase())
+            .setAnnotation((item.annotation || '').toUpperCase());
+        }
+
+        if (item instanceof Tag) {
+          return item.set({ value: `${item.value} changed` });
+        }
+
+        return item;
+      });
+
+      expect(new ChordSheetSerializer().serialize(changedSong)).toEqual(changedSongSolfege);
+      expect(changedSong.title).toEqual('Let it be changed');
+      expect(changedSong.subtitle).toEqual('ChordSheetJS example version changed');
+      expect(changedSong.key).toEqual('Do changed');
+      expect(changedSong.composer).toEqual(['John Lennon changed', 'Paul McCartney changed']);
+      expect(changedSong.paragraphs.length).toEqual(song.paragraphs.length);
+
+      [0, 1, 3, 3].forEach((expectedLineCount, index) => {
+        expect(changedSong.paragraphs[index].lines).toHaveLength(expectedLineCount);
+      });
+    });
   });
 
-  it('can be serialized', () => {
-    expect(new ChordSheetSerializer().serialize(exampleSong)).toEqual(serializedSong);
+  it('symbol can be serialized', () => {
+    expect(new ChordSheetSerializer().serialize(exampleSongSymbol)).toEqual(serializedSongSymbol);
   });
 
-  it('can be deserialized', () => {
-    expect(new ChordSheetSerializer().deserialize(serializedSong)).toEqual(exampleSong);
+  it('symbol can be deserialized', () => {
+    expect(new ChordSheetSerializer().deserialize(serializedSongSymbol)).toEqual(exampleSongSymbol);
+  });
+
+  it('solfege can be serialized', () => {
+    expect(new ChordSheetSerializer().serialize(exampleSongSolfege)).toEqual(serializedSongSolfege);
+  });
+
+  it('solfege can be deserialized', () => {
+    expect(new ChordSheetSerializer().deserialize(serializedSongSolfege)).toEqual(exampleSongSolfege);
   });
 });

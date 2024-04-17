@@ -8,6 +8,12 @@ import TraceInfo from './trace_info';
 export const ALBUM = 'album';
 
 /**
+ * Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/
+ * @type {string}
+ */
+export const ARRANGER = 'arranger';
+
+/**
  * Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
  * @type {string}
  */
@@ -44,6 +50,12 @@ export const COPYRIGHT = 'copyright';
 export const DURATION = 'duration';
 
 /**
+ * End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/
+ * @type {string}
+ */
+export const END_OF_ABC = 'end_of_abc';
+
+/**
  * End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
  * @type {string}
  */
@@ -60,6 +72,12 @@ export const END_OF_CHORUS = 'end_of_chorus';
  * @type {string}
  */
 export const END_OF_GRID = 'end_of_grid';
+
+/**
+ * End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/
+ * @type {string}
+ */
+export const END_OF_LY = 'end_of_ly';
 
 /**
  * End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
@@ -93,6 +111,18 @@ export const _KEY = '_key';
 export const LYRICIST = 'lyricist';
 
 /**
+ * Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/
+ * @type {string}
+ */
+export const SORTTITLE = 'sorttitle';
+
+/**
+ * Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/
+ * @type {string}
+ */
+export const START_OF_ABC = 'start_of_abc';
+
+/**
  * Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
  * @type {string}
  */
@@ -109,6 +139,12 @@ export const START_OF_CHORUS = 'start_of_chorus';
  * @type {string}
  */
 export const START_OF_GRID = 'start_of_grid';
+
+/**
+ * Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/
+ * @type {string}
+ */
+export const START_OF_LY = 'start_of_ly';
 
 /**
  * Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
@@ -227,13 +263,13 @@ export const CHORUS = 'chorus';
 
 /**
  * Chord type directive. Determines the type of chords used in the rendered chord sheet.
- * Possible values are 'symbol', 'numeral' and 'number'
+ * Possible values are 'solfege', 'symbol', 'numeral' and 'number'
  * @see https://github.com/bettermusic/ChordSheetJS/issues/352
  * @type {string}
  */
 export const CHORD_STYLE = 'chord_style';
 
-export type ChordType = 'symbol' | 'numeral' | 'number' | null;
+export type ChordType = 'symbol' | 'numeral' | 'number' | 'solfege' | null;
 
 const CHORDFONT_SHORT = 'cf';
 const CHORDSIZE_SHORT = 'cs';
@@ -258,6 +294,7 @@ const RENDERABLE_TAGS = [COMMENT];
 
 export const META_TAGS = [
   ALBUM,
+  ARRANGER,
   ARTIST,
   CAPO,
   CHORD_STYLE,
@@ -266,22 +303,27 @@ export const META_TAGS = [
   DURATION,
   KEY,
   LYRICIST,
+  SORTTITLE,
+  SUBTITLE,
   TEMPO,
   TIME,
   TITLE,
-  SUBTITLE,
   YEAR,
 ];
 
 export const READ_ONLY_TAGS = [_KEY];
 
 const SECTION_DELIMITERS = [
+  START_OF_ABC,
+  END_OF_ABC,
   START_OF_BRIDGE,
   END_OF_BRIDGE,
   START_OF_CHORUS,
   END_OF_CHORUS,
   START_OF_GRID,
   END_OF_GRID,
+  START_OF_LY,
+  END_OF_LY,
   START_OF_TAB,
   END_OF_TAB,
   START_OF_VERSE,
@@ -299,9 +341,11 @@ const INLINE_FONT_TAGS = [
 
 const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   CHORUS,
+  START_OF_ABC,
   START_OF_BRIDGE,
   START_OF_CHORUS,
   START_OF_GRID,
+  START_OF_LY,
   START_OF_TAB,
   START_OF_VERSE,
 ];

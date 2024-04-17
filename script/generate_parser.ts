@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const peggy = require('peggy');
-const tspegjs = require('ts-pegjs');
-const fs = require('fs');
+import peggy from 'peggy';
+import tspegjs from 'ts-pegjs';
+import fs from 'fs';
 
 const parserName = process.argv[2];
 const grammarFile = `./src/parser/${parserName}_grammar.pegjs`;
@@ -16,7 +16,7 @@ const chordGrammar = fs.readFileSync(chordGrammarFile);
 const chordSuffixGrammar = fs.readFileSync(chordSuffixGrammarFile);
 
 const customHeader = fs.readFileSync(headerFile);
-const input = [`{{${customHeader}}}`, parserGrammar, chordGrammar, chordSuffixGrammar].join("\n\n");
+const input = [`{{${customHeader}}}`, parserGrammar, chordGrammar, chordSuffixGrammar].join('\n\n');
 
 const source = peggy.generate(input, {
   plugins: [tspegjs],

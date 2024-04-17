@@ -3,11 +3,13 @@ import {
   NUMERAL,
   NUMERIC,
   ROMAN_NUMERALS,
+  SOLFEGE,
   SYMBOL,
 } from './constants';
 
 const A = 'A'.charCodeAt(0);
 const G = 'G'.charCodeAt(0);
+const solfegeNotes = ['Do', 'Re', 'Mi', 'Fa', 'Sol', 'La', 'Si'];
 
 const TRANSPOSE_DISTANCE_MAJOR: Record<number, number> = {
   1: 0,
@@ -84,6 +86,10 @@ class Note implements NoteProperties {
 
   static parse(note: string | number): Note {
     const noteString = note.toString();
+
+    if (/^Do|Re|Mi|Fa|Sol|La|Si$/i.test(noteString)) {
+      return new Note({ note: noteString.charAt(0).toUpperCase() + noteString.slice(1).toLowerCase(), type: SOLFEGE });
+    }
 
     if (/^[A-Ga-g]$/.test(noteString)) {
       return new Note({ note: noteString.toUpperCase(), type: SYMBOL });
@@ -170,6 +176,10 @@ class Note implements NoteProperties {
     return this.is(SYMBOL);
   }
 
+  isChordSolfege(): boolean {
+    return this.is(SOLFEGE);
+  }
+
   isNumeral(): boolean {
     return this.is(NUMERAL);
   }
@@ -193,6 +203,13 @@ class Note implements NoteProperties {
   }
 
   change(delta: number): Note {
+    if (this.isChordSolfege()) {
+      const solfegeNote = this._note as string;
+      const currentIndex = solfegeNotes.indexOf(solfegeNote);
+
+      return this.set({ note: solfegeNotes[(currentIndex + delta) % 7] });
+    }
+
     if (this.isChordSymbol()) {
       let charCode;
       charCode = keyToCharCode(this._note as string);

@@ -1,9 +1,13 @@
 import { ChordProFormatter } from '../../src';
-import song from '../fixtures/song';
-import chordProSheet from '../fixtures/chord_pro_sheet';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
+import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
 
 describe('ChordProFormatter', () => {
-  it('formats a song to a html chord sheet correctly', () => {
-    expect(new ChordProFormatter().format(song)).toEqual(chordProSheet);
+  it('formats a symbol song to a html chord sheet correctly', () => {
+    expect(new ChordProFormatter().format(exampleSongSymbol)).toEqual(chordProSheetSymbol);
+  });
+
+  it('formats a solfege song to a html chord sheet correctly', () => {
+    expect(new ChordProFormatter().format(exampleSongSolfege)).toEqual(chordProSheetSolfege);
   });
 });

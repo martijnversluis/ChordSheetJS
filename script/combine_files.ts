@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
 
-const fs = require('fs');
+import fs from 'fs';
 
 const fileAPath = process.argv[2];
 const fileBPath = process.argv[3];
