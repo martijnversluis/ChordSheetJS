@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars, no-undef, @typescript-eslint/no-unused-vars */
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
-import { ContentType } from '../src/chord_sheet_serializer';
+import { ContentType } from '../src/serialized_types';
 
 declare global {
   namespace jest {
@@ -18,6 +18,8 @@ declare global {
       toBeComment(_contents: string): CustomMatcherResult;
 
       toBeTag(_name: string, _value?: string): CustomMatcherResult;
+
+      toBeSoftLineBreak(): CustomMatcherResult;
     }
   }
 }

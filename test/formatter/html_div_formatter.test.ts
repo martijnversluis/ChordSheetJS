@@ -45,7 +45,11 @@ describe('HtmlDivFormatter', () => {
             </div>
             <div class="column">
               <div class="chord">Am</div>
-              <div class="lyrics">be, let it </div>
+              <div class="lyrics">be, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it </div>
             </div>
             <div class="column">
               <div class="chord">C/G</div>
@@ -539,7 +543,11 @@ describe('HtmlDivFormatter', () => {
             </div>
             <div class="column">
               <div class="chord">Cm</div>
-              <div class="lyrics">be, let it </div>
+              <div class="lyrics">be, </div>
+            </div>
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">let it </div>
             </div>
             <div class="column">
               <div class="chord">Eb/Bb</div>

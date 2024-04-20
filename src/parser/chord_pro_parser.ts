@@ -4,6 +4,10 @@ import ParserWarning from './parser_warning';
 import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 
+export type ChordProParserOptions = ParseOptions & {
+  softLineBreaks?: boolean;
+};
+
 /**
  * Parses a ChordPro chord sheet
  */
@@ -24,7 +28,7 @@ class ChordProParser {
    * @param {string} chordSheet the ChordPro chord sheet
    * @returns {Song} The parsed song
    */
-  parse(chordSheet: string, options?: ParseOptions): Song {
+  parse(chordSheet: string, options?: ChordProParserOptions): Song {
     const ast = parse(normalizeLineEndings(chordSheet), options);
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
