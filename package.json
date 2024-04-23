@@ -36,6 +36,7 @@
     "@typescript-eslint/parser": "^5.18.0",
     "detect-newline": "^4.0.1",
     "esbuild": "^0.20.2",
+    "codemirror": "^6.0.1",
     "eslint": "^8.12.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -87,9 +88,11 @@
     "pretest": "yarn build:code-generate",
     "prepare": "husky install",
     "postinstall": "husky install",
+    "dev:pdf": "parcel test/formatter/pdf/index.html --port=3000",
     "ci": "yarn install && yarn lint && yarn test && yarn build && yarn readme"
   },
   "dependencies": {
+    "jspdf": "^2.5.1",
     "lodash.get": "^4.4.2"
   }
 }

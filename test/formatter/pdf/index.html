@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chordsheet Editor</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <!-- CodeMirror JS and any necessary modes/plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/json/json.min.js"></script>
+    <style>
+        #editors { height: 98vh; width: 49%;  float: left;}
+        #pdfViewer { height: 98vh; width: 49%; float: right; }
+    </style>
+</head>
+<body style="height: 100%;">
+    <div id="editors">
+        <div id="editor"></div>
+        <div id="configEditor"></div>
+    </div>
+    <div id="pdfViewer"></div>
+    <script type="module" src="./pdf-dev.js"></script>
+</body>
+</html>

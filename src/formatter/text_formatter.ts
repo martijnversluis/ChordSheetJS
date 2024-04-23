@@ -16,13 +16,17 @@ import Item from '../chord_sheet/item';
 class TextFormatter extends Formatter {
   song: Song = new Song();
 
+  metadata: Metadata = new Metadata();
+
   /**
    * Formats a song into a plain text chord sheet
    * @param {Song} song The song to be formatted
+   * @param {Metadata} metadata Optional override of metadata used for formatting
    * @returns {string} the chord sheet
    */
-  format(song: Song): string {
+  format(song: Song, metadata?: Metadata): string {
     this.song = song;
+    this.metadata = metadata || song.metadata;
 
     return [
       this.formatHeader(),
@@ -42,11 +46,11 @@ class TextFormatter extends Formatter {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, expandedBodyParagraphs, metadata } = this.song;
+    const { bodyParagraphs, expandedBodyParagraphs } = this.song;
     const { expandChorusDirective } = this.configuration;
 
     return (expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs)
-      .map((paragraph: Paragraph) => this.formatParagraph(paragraph, metadata))
+      .map((paragraph: Paragraph) => this.formatParagraph(paragraph, this.metadata))
       .join('\n\n');
   }
 

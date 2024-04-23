@@ -1278,7 +1278,7 @@ PDF conversion.</p>
 **Kind**: global class  
 <a name="TextFormatter+format"></a>
 
-### textFormatter.format(song) ⇒ <code>string</code>
+### textFormatter.format(song, metadata) ⇒ <code>string</code>
 <p>Formats a song into a plain text chord sheet</p>
 
 **Kind**: instance method of [<code>TextFormatter</code>](#TextFormatter)  
@@ -1287,6 +1287,7 @@ PDF conversion.</p>
 | Param | Type | Description |
 | --- | --- | --- |
 | song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+| metadata | [<code>Metadata</code>](#Metadata) | <p>Optional override of metadata used for formatting</p> |
 
 <a name="ChordProParser"></a>
 
