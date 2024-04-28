@@ -86,7 +86,6 @@
     "postpublish": "pinst --enable",
     "pretest": "yarn build:code-generate",
     "prepare": "husky install",
-    "postinstall": "husky install",
     "ci": "yarn install && yarn lint && yarn test && yarn build && yarn readme"
   },
   "dependencies": {
