@@ -132,7 +132,7 @@ class Metadata extends MetadataAccessors {
       return value[0];
     }
 
-    return value as string;
+    return value ?? '';
   }
 
   parseArrayKey(prop: string): [string, number] | null {

@@ -33,7 +33,7 @@ describe('setting the key of an existing song', () => {
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 
-  it('removes the key directive when passing null', () => {
+  it('uses an empty string for the key directive when passing null', () => {
     const chordpro = heredoc`
       {key: C}
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
@@ -44,7 +44,7 @@ describe('setting the key of an existing song', () => {
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey(null);
 
-    expect(updatedSong.key).toEqual(undefined);
+    expect(updatedSong.key).toEqual('');
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 });
