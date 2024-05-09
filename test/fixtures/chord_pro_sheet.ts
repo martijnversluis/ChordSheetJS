@@ -12,7 +12,7 @@ export const chordProSheetSymbol = heredoc`
 Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
 
 {start_of_verse: Verse 1}
-Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+Let it [Am]be, \\ let it [C/G]be, let it [F]be, let it [C]be
 {transpose: 2}
 [C]Whisper [*strong]words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
 {end_of_verse}

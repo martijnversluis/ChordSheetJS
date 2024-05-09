@@ -59,12 +59,17 @@ export interface SerializedTernary extends SerializedTraceInfo {
 
 export type SerializedComposite = Array<SerializedLiteral | SerializedTernary>;
 
+export type SerializedSoftLineBreak = {
+  type: 'softLineBreak',
+};
+
 export type SerializedItem =
   SerializedChordLyricsPair |
-  SerializedTag |
   SerializedComment |
-  SerializedTernary |
-  SerializedLiteral;
+  SerializedLiteral |
+  SerializedSoftLineBreak |
+  SerializedTag |
+  SerializedTernary;
 
 export type SerializedLine = {
   type: 'line',
@@ -84,4 +89,5 @@ export type SerializedComponent =
   SerializedComment |
   SerializedTernary |
   SerializedLiteral |
-  SerializedSection;
+  SerializedSection |
+  SerializedSoftLineBreak;

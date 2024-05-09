@@ -19,13 +19,15 @@ import {
   SerializedSong,
   SerializedTag, SerializedTernary,
 } from './serialized_types';
+import SoftLineBreak from './chord_sheet/soft_line_break';
 
-const CHORD_SHEET = 'chordSheet';
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
-const TAG = 'tag';
+const CHORD_SHEET = 'chordSheet';
 const COMMENT = 'comment';
-const TERNARY = 'ternary';
 const LINE = 'line';
+const SOFT_LINE_BREAK = 'softLineBreak';
+const TAG = 'tag';
+const TERNARY = 'ternary';
 
 /**
  * Serializes a song into een plain object, and deserializes the serialized object back into a {@link Song}
@@ -71,6 +73,10 @@ class ChordSheetSerializer {
 
     if (item instanceof Comment) {
       return this.serializeComment(item);
+    }
+
+    if (item instanceof SoftLineBreak) {
+      return { type: SOFT_LINE_BREAK };
     }
 
     throw new Error(`Don't know how to serialize ${item.constructor.name}`);
@@ -127,7 +133,7 @@ class ChordSheetSerializer {
   }
 
   parseAstComponent(astComponent: SerializedComponent)
-    : null | ChordLyricsPair | Tag | Comment | Ternary | Literal {
+    : null | ChordLyricsPair | Tag | Comment | Ternary | Literal | SoftLineBreak {
     if (!astComponent) return null;
     if (typeof astComponent === 'string') return new Literal(astComponent);
 
@@ -137,10 +143,12 @@ class ChordSheetSerializer {
         break;
       case CHORD_LYRICS_PAIR:
         return this.parseChordLyricsPair(astComponent);
-      case TAG:
-        return this.parseTag(astComponent);
       case COMMENT:
         return this.parseComment(astComponent);
+      case SOFT_LINE_BREAK:
+        return new SoftLineBreak();
+      case TAG:
+        return this.parseTag(astComponent);
       case TERNARY:
         return this.parseTernary(astComponent);
       case LINE:

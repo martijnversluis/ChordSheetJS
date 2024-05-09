@@ -438,8 +438,6 @@ Whisper words of wisdom, let it be
 <p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p></dd>
 <dt><a href="#ParserWarning">ParserWarning</a></dt>
 <dd><p>Represents a parser warning, currently only used by ChordProParser.</p></dd>
-<dt><a href="#PegBasedParser">PegBasedParser</a></dt>
-<dd><p>Parses a chords over words sheet</p></dd>
 <dt><a href="#UltimateGuitarParser">UltimateGuitarParser</a></dt>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
 Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
@@ -1295,9 +1293,20 @@ PDF conversion.</p>
 <p>Parses a ChordPro chord sheet</p>
 
 **Kind**: global class  
+
+* [ChordProParser](#ChordProParser)
+    * [.warnings](#ChordProParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+    * [.parse(chordSheet)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordProParser+warnings"></a>
+
+### chordProParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+<p>All warnings raised during parsing the chord sheet</p>
+
+**Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
 <a name="ChordProParser+parse"></a>
 
-### chordProParser.parse(chordProChordSheet) ⇒ [<code>Song</code>](#Song)
+### chordProParser.parse(chordSheet) ⇒ [<code>Song</code>](#Song)
 <p>Parses a ChordPro chord sheet into a song</p>
 
 **Kind**: instance method of [<code>ChordProParser</code>](#ChordProParser)  
@@ -1305,7 +1314,7 @@ PDF conversion.</p>
 
 | Param | Type | Description |
 | --- | --- | --- |
-| chordProChordSheet | <code>string</code> | <p>the ChordPro chord sheet</p> |
+| chordSheet | <code>string</code> | <p>the ChordPro chord sheet</p> |
 
 <a name="ChordSheetParser"></a>
 
@@ -1386,17 +1395,30 @@ Whisper words of wisdom, let it be
 <p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p>
 
 **Kind**: global class  
+
+* [ChordsOverWordsParser](#ChordsOverWordsParser)
+    * [.warnings](#ChordsOverWordsParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+    * [.parse(chordSheet, options)](#ChordsOverWordsParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordsOverWordsParser+warnings"></a>
+
+### chordsOverWordsParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+<p>All warnings raised during parsing the chord sheet</p>
+
+**Kind**: instance property of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
 <a name="ChordsOverWordsParser+parse"></a>
 
-### chordsOverWordsParser.parse(chordsOverWordsSheet) ⇒ [<code>Song</code>](#Song)
+### chordsOverWordsParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
 <p>Parses a chords over words sheet into a song</p>
 
 **Kind**: instance method of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
 **Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+**See**: https://peggyjs.org/documentation.html#using-the-parser  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| chordsOverWordsSheet | <code>string</code> | <p>the chords over words sheet</p> |
+| chordSheet | <code>string</code> | <p>the chords over words sheet</p> |
+| options | <code>ParseOptions</code> | <p>Parser options.</p> |
 
 <a name="ParserWarning"></a>
 
@@ -1411,18 +1433,6 @@ Whisper words of wisdom, let it be
 
 **Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
 **Returns**: <code>string</code> - <p>The string warning</p>  
-<a name="PegBasedParser"></a>
-
-## PegBasedParser
-<p>Parses a chords over words sheet</p>
-
-**Kind**: global class  
-<a name="PegBasedParser+warnings"></a>
-
-### pegBasedParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-<p>All warnings raised during parsing the chord sheet</p>
-
-**Kind**: instance property of [<code>PegBasedParser</code>](#PegBasedParser)  
 <a name="UltimateGuitarParser"></a>
 
 ## UltimateGuitarParser

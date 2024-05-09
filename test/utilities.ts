@@ -14,7 +14,7 @@ import {
   SerializedChordLyricsPair,
   SerializedComment,
   SerializedComposite,
-  SerializedItem,
+  SerializedItem, SerializedSoftLineBreak,
   SerializedSong,
   SerializedTag,
   SerializedTernary,
@@ -144,6 +144,10 @@ export function ternary(
     trueExpression: trueExpression || [],
     falseExpression: falseExpression || [],
   };
+}
+
+export function softLineBreak(): SerializedSoftLineBreak {
+  return { type: 'softLineBreak' };
 }
 
 type TestCaseProps = {

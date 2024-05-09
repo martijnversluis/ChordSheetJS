@@ -149,7 +149,17 @@ export const changedSongSymbol: SerializedSong = {
         {
           type: 'chordLyricsPair',
           chords: 'Bm',
-          lyrics: 'BE, LET IT ',
+          lyrics: 'BE, ',
+          chord: null,
+          annotation: '',
+        },
+        {
+          type: 'softLineBreak',
+        },
+        {
+          type: 'chordLyricsPair',
+          chords: '',
+          lyrics: 'LET IT ',
           chord: null,
           annotation: '',
         },

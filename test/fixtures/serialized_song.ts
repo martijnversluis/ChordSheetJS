@@ -149,7 +149,17 @@ export const serializedSongSymbol: SerializedSong = {
         {
           type: 'chordLyricsPair',
           chords: 'Am',
-          lyrics: 'be, let it ',
+          lyrics: 'be, ',
+          chord: null,
+          annotation: '',
+        },
+        {
+          type: 'softLineBreak',
+        },
+        {
+          type: 'chordLyricsPair',
+          chords: '',
+          lyrics: 'let it ',
           chord: null,
           annotation: '',
         },
