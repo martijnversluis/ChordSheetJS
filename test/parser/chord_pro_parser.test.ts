@@ -584,4 +584,34 @@ Let it [Am]be
     expect(lines[1].items[0]).toBeLiteral('LY line 1');
     expect(lines[2].items[0]).toBeLiteral('LY line 2');
   });
+
+  it('parses soft line breaks when enabled', () => {
+    const chordSheet = heredoc`
+      [Am]Let it be,\\ let it [C/G]be
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet, { softLineBreaks: true });
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('Am', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be,');
+    expect(items[2]).toBeSoftLineBreak();
+    expect(items[3]).toBeChordLyricsPair('', 'let it ');
+    expect(items[4]).toBeChordLyricsPair('C/G', 'be');
+  });
+
+  it('does not parse soft line breaks when disabled', () => {
+    const chordSheet = heredoc`
+      [Am]Let it be,\\ let it [C/G]be
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('Am', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be, let it ');
+    expect(items[2]).toBeChordLyricsPair('C/G', 'be');
+  });
 });

@@ -9,6 +9,7 @@ import Metadata from '../chord_sheet/metadata';
 import Item from '../chord_sheet/item';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
 import Comment from '../chord_sheet/comment';
+import SoftLineBreak from '../chord_sheet/soft_line_break';
 
 /**
  * Formats a song into a ChordPro chord sheet
@@ -44,6 +45,10 @@ class ChordProFormatter extends Formatter {
 
     if (item instanceof Comment) {
       return this.formatComment(item);
+    }
+
+    if (item instanceof SoftLineBreak) {
+      return '\\ ';
     }
 
     if ('evaluate' in item) {

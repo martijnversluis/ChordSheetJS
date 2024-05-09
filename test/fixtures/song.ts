@@ -1,5 +1,5 @@
 import {
-  chordLyricsPair, comment, createSongFromAst, section, tag, ternary,
+  chordLyricsPair, comment, createSongFromAst, section, softLineBreak, tag, ternary,
 } from '../utilities';
 
 // This Song object mimics the chord pro sheet in chord_pro_sheet.js
@@ -31,7 +31,9 @@ export const exampleSongSymbol = createSongFromAst([
   [tag('start_of_verse', 'Verse 1')],
   [
     chordLyricsPair('', 'Let it '),
-    chordLyricsPair('Am', 'be, let it '),
+    chordLyricsPair('Am', 'be, '),
+    softLineBreak(),
+    chordLyricsPair('', 'let it '),
     chordLyricsPair('C/G', 'be, let it '),
     chordLyricsPair('F', 'be, let it '),
     chordLyricsPair('C', 'be'),
