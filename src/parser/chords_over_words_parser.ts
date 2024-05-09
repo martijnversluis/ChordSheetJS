@@ -1,6 +1,9 @@
-import PegBasedParser from './peg_based_parser';
 import { parse } from './chords_over_words_peg_parser';
 import Song from '../chord_sheet/song';
+import ParserWarning from './parser_warning';
+import { ParseOptions } from './chord_pro_peg_parser';
+import { normalizeLineEndings } from '../utilities';
+import ChordSheetSerializer from '../chord_sheet_serializer';
 
 /**
  * Parses a chords over words sheet into a song
@@ -40,14 +43,29 @@ import Song from '../chord_sheet/song';
  *
  * `ChordsOverWordsParser` is the better version of `ChordSheetParser`, which is deprecated.
  */
-class ChordsOverWordsParser extends PegBasedParser {
+class ChordsOverWordsParser {
+  song?: Song;
+
+  /**
+   * All warnings raised during parsing the chord sheet
+   * @member
+   * @type {ParserWarning[]}
+   */
+  get warnings(): ParserWarning[] {
+    return this.song?.warnings || [];
+  }
+
   /**
    * Parses a chords over words sheet into a song
-   * @param {string} chordsOverWordsSheet the chords over words sheet
+   * @param {string} chordSheet the chords over words sheet
+   * @param {ParseOptions} options Parser options.
+   * @see https://peggyjs.org/documentation.html#using-the-parser
    * @returns {Song} The parsed song
    */
-  parse(chordsOverWordsSheet: string): Song {
-    return this.parseWithParser(`${chordsOverWordsSheet}`, parse);
+  parse(chordSheet: string, options?: ParseOptions): Song {
+    const ast = parse(normalizeLineEndings(chordSheet), options);
+    this.song = new ChordSheetSerializer().deserialize(ast);
+    return this.song;
   }
 }
 

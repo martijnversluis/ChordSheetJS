@@ -121,7 +121,7 @@ Line
   = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
       return buildLine([
           lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
-          ...tokens,
+          ...tokens.flat(),
           chords ? { type: 'chordLyricsPair', chords, lyrics: '' } : null,
           comment ? { type: 'comment', comment } : null,
         ].filter(x => x),
@@ -134,7 +134,15 @@ Token
   / ChordLyricsPair
   / MetaTernary
   / lyrics:Lyrics {
-      return { type: 'chordLyricsPair', chords: '', lyrics };
+      return lyrics.split('\xa0').flatMap((lyric, index) => ([
+          index == 0 ? null : { type: 'softLineBreak' },
+          {
+            type: 'chordLyricsPair',
+            chords: '',
+            lyrics: lyric,
+          },
+        ].filter(x => x)
+      ));
     }
 
 Comment
@@ -250,6 +258,7 @@ WordChar
       / "}"  { return { type: 'char', char: '\x7d' }; }
       / "%"  { return { type: 'char', char: '%'    }; }
       / "#"  { return { type: 'char', char: '#'    }; }
+      / " "  { return { type: 'char', char: (options?.softLineBreaks ? '\xa0' : ' ') }; }
     ) {
       return sequence;
     }
@@ -306,9 +315,3 @@ CarriageReturn
 
 Escape
   = "\\"
-
-Pound
-  = "#"
-
-Percent
-  = "%"

@@ -4,6 +4,7 @@ import {
   ChordLyricsPair,
   Comment,
   Literal,
+  SoftLineBreak,
   Tag,
   Ternary,
 } from '../src';
@@ -152,12 +153,17 @@ function toBeNote(received, { note, type, minor = false }) {
   );
 }
 
+function toBeSoftLineBreak(received) {
+  return toBeClassInstanceWithProperties(received, SoftLineBreak, {});
+}
+
 expect.extend({
   toBeChordLyricsPair,
-  toBeTag,
   toBeComment,
-  toBeTernary,
-  toBeLiteral,
   toBeKey,
+  toBeLiteral,
   toBeNote,
+  toBeSoftLineBreak,
+  toBeTag,
+  toBeTernary,
 });

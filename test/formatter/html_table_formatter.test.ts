@@ -40,13 +40,15 @@ describe('HtmlTableFormatter', () => {
             <tr>
               <td class="chord"></td>
               <td class="chord">Am</td>
+              <td class="chord"></td>
               <td class="chord">C/G</td>
               <td class="chord">F</td>
               <td class="chord">C</td>
             </tr>
             <tr>
               <td class="lyrics">Let it </td>
-              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, </td>
+              <td class="lyrics">let it </td>
               <td class="lyrics">be, let it </td>
               <td class="lyrics">be, let it </td>
               <td class="lyrics">be</td>
@@ -526,13 +528,15 @@ describe('HtmlTableFormatter', () => {
             <tr>
               <td class="chord"></td>
               <td class="chord">Cm</td>
+              <td class="chord"></td>
               <td class="chord">Eb/Bb</td>
               <td class="chord">Ab</td>
               <td class="chord">Eb</td>
             </tr>
             <tr>
               <td class="lyrics">Let it </td>
-              <td class="lyrics">be, let it </td>
+              <td class="lyrics">be, </td>
+              <td class="lyrics">let it </td>
               <td class="lyrics">be, let it </td>
               <td class="lyrics">be, let it </td>
               <td class="lyrics">be</td>

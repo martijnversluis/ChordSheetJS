@@ -13,6 +13,7 @@ import Line from './chord_sheet/line';
 import Literal from './chord_sheet/chord_pro/literal';
 import Metadata from './chord_sheet/metadata';
 import Paragraph from './chord_sheet/paragraph';
+import SoftLineBreak from './chord_sheet/soft_line_break';
 import Song from './chord_sheet/song';
 import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
@@ -46,6 +47,7 @@ export { default as Line } from './chord_sheet/line';
 export { default as Literal } from './chord_sheet/chord_pro/literal';
 export { default as Metadata } from './chord_sheet/metadata';
 export { default as Paragraph } from './chord_sheet/paragraph';
+export { default as SoftLineBreak } from './chord_sheet/soft_line_break';
 export { default as Song } from './chord_sheet/song';
 export { default as Tag } from './chord_sheet/tag';
 export { default as Ternary } from './chord_sheet/chord_pro/ternary';
@@ -86,6 +88,7 @@ export default {
   Metadata,
   NONE,
   Paragraph,
+  SoftLineBreak,
   Song,
   TAB,
   Tag,
