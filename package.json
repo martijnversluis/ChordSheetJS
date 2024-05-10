@@ -21,7 +21,7 @@
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
   "devDependencies": {
     "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.4",
+    "@babel/core": "^7.24.5",
     "@babel/helper-get-function-arity": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
