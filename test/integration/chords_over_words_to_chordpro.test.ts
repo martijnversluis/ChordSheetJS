@@ -27,8 +27,8 @@ describe('chords over words to chordpro', () => {
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
       [C]Whisper words of [G]wisdom, let it [F]be[C/E][Dm][C]
       
-      Let it [Bbm7]be, let it [DbM7/Ab]be, let it [Gbsus2]be, let it [Db]be
-      [GbM7]Whisper words of [Absus]wisdom, let it [Gb]be[Db/F][Ebm][Db]`;
+      Let it [Bbm7]be, let it [Dbma7/Ab]be, let it [Gb2]be, let it [Db]be
+      [Gbma7]Whisper words of [Absus]wisdom, let it [Gb]be[Db/F][Ebm][Db]`;
 
     const song = new ChordsOverWordsParser().parse(chordOverWords);
     const actualChordPro = new ChordProFormatter().format(song);

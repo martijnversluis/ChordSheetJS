@@ -11,6 +11,7 @@ import {
 } from '../../src';
 
 import {
+  chordLyricsPair,
   createSongFromAst, heredoc, section,
 } from '../utilities';
 
@@ -112,6 +113,20 @@ Grid line 2`;
       Let it be, let it be, let it be, let it be`;
 
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
+  });
+
+  it('allows to disable normalizing chords', () => {
+    const formatter = new ChordsOverWordsFormatter({ normalizeChords: false });
+
+    const song = createSongFromAst([
+      [chordLyricsPair('Dsus4', 'Let it be')],
+    ]);
+
+    const expectedChordSheet = heredoc`
+      Dsus4
+      Let it be`;
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
   describe('delegates', () => {

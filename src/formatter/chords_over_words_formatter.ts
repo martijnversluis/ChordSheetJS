@@ -86,13 +86,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   chordLyricsPairLength(chordLyricsPair: ChordLyricsPair, line: Line): number {
-    const content = chordLyricsPair.annotation || renderChord(
-      chordLyricsPair.chords,
-      line,
-      this.song,
-      { renderKey: this.configuration.key },
-    );
-
+    const content = chordLyricsPair.annotation || this.renderChord(chordLyricsPair, line);
     const { lyrics } = chordLyricsPair;
     const contentLength = (content || '').length;
     const lyricsLength = (lyrics || '').length;
@@ -110,12 +104,23 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      const content = item.annotation
-        || renderChord(item.chords, line, this.song, { renderKey: this.configuration.key });
+      const content = item.annotation || this.renderChord(item, line);
       return padLeft(content, this.chordLyricsPairLength(item, line));
     }
 
     return '';
+  }
+
+  renderChord(item: ChordLyricsPair, line: Line) {
+    return renderChord(
+      item.chords,
+      line,
+      this.song,
+      {
+        renderKey: this.configuration.key,
+        normalizeChords: this.configuration.normalizeChords,
+      },
+    );
   }
 
   formatLineBottom(line, metadata) {

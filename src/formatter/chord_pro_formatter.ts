@@ -10,6 +10,7 @@ import Item from '../chord_sheet/item';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
 import Comment from '../chord_sheet/comment';
 import SoftLineBreak from '../chord_sheet/soft_line_break';
+import Chord from '../chord';
 
 /**
  * Formats a song into a ChordPro chord sheet
@@ -137,7 +138,14 @@ class ChordProFormatter extends Formatter {
 
   formatChordLyricsPairChords(chordLyricsPair: ChordLyricsPair): string {
     if (chordLyricsPair.chords) {
-      return `[${chordLyricsPair.chords}]`;
+      const renderedChord = Chord.parse(chordLyricsPair.chords);
+
+      if (!renderedChord) {
+        return `[${chordLyricsPair.chords}]`;
+      }
+
+      const normalizedChord = this.configuration.normalizeChords ? renderedChord.normalize() : renderedChord;
+      return `[${normalizedChord}]`;
     }
 
     if (chordLyricsPair.annotation) {
