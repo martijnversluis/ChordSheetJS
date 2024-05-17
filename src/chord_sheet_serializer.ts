@@ -134,7 +134,6 @@ class ChordSheetSerializer {
 
   parseAstComponent(astComponent: SerializedComponent)
     : null | ChordLyricsPair | Tag | Comment | Ternary | Literal | SoftLineBreak {
-    if (!astComponent) return null;
     if (typeof astComponent === 'string') return new Literal(astComponent);
 
     switch (astComponent.type) {
