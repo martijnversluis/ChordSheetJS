@@ -19,6 +19,9 @@
     "url": "https://github.com/martijnversluis/ChordSheetJS/issues"
   },
   "homepage": "https://github.com/martijnversluis/ChordSheetJS",
+  "engines": {
+    "node": ">=16"
+  },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
