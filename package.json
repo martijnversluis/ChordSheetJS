@@ -85,7 +85,7 @@
     "lint:fix": "yarn prelint && yarn eslint:fix .",
     "clean": "rm -rf node_modules && rm -rf lib",
     "readme": "node_modules/.bin/jsdoc2md -f src/**/*.ts -f src/*.ts --configure ./jsdoc2md.json --template doc/README.hbs > README.md",
-    "prepublishOnly": "pinst --disable && yarn install && yarn test && yarn build",
+    "prepublish": "pinst --disable && yarn install && yarn test && yarn build",
     "postpublish": "pinst --enable",
     "pretest": "yarn build:code-generate",
     "prepare": "husky install",
