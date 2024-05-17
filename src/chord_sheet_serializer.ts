@@ -170,10 +170,6 @@ class ChordSheetSerializer {
     const { items } = astComponent;
     this.song.addLine();
 
-    if (typeof items.forEach !== 'function') {
-      console.log('items:', items);
-    }
-
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;
       this.song.addItem(parsedItem);
