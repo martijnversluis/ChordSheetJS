@@ -26,21 +26,27 @@ jobs:
   build-windows:
     continue-on-error: true
     runs-on: windows-latest
-    name: Windows NodeJS 20.x sample
+    strategy:
+      matrix:
+        node-version: [ 22.x ]
+    name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 20.x
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
+          node-version: ${{ matrix.node-version }}
       - run: yarn ci
   verify-install:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 22.x ]
     name: Verify NodeJS installation
     steps:
-      - name: Use Node.js 20.x
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: 20.x
+          node-version: ${{ matrix.node-version }}
       - name: Verify install
         run: npm install "https://github.com/martijnversluis/ChordSheetJS/tree/$GITHUB_SHA"
