@@ -93,5 +93,6 @@
   },
   "dependencies": {
     "lodash.get": "^4.4.2"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
