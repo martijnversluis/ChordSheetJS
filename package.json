@@ -75,7 +75,7 @@
     "build": "yarn build:code-generate && yarn build:sources && yarn build:bundle && yarn build:check-types",
     "dev": "parcel watch --no-cache",
     "jest": "jest",
-    "test": "yarn lint && yarn jest",
+    "test": "yarn pretest && yarn lint && yarn jest",
     "jest:watch": "jest --watch",
     "jest:debug": "bin/open_inspector && node --nolazy --inspect-brk ./node_modules/jest/bin/jest.js --runInBand --colors --verbose",
     "eslint": "node_modules/.bin/eslint -c .eslintrc.js --ext .ts",
