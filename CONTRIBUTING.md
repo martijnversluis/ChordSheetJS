@@ -40,6 +40,13 @@ Fork, then clone the repo:
 
     git clone git@github.com:your-username/ChordSheetJS.git
 
+ChordSheetJS uses Yarn 4. For that to work, Corepack need to be enabled:
+
+    corepack enable
+
+⚠️ NB: In my experience this only guaranteed to work when using Node's Yarn.
+   Yarn installed by an external package manager (like Homebrew) will/might not work.
+
 Install the required node modules:
 
     yarn install
