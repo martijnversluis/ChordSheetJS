@@ -19,7 +19,7 @@ const enharmonics: Record<string, Record<string, string>> = {
     'Bb': 'A#',
   },
   'Db': {
-    'B': 'Cb',
+    'Cb': 'B',
     'F#': 'Gb',
     'G#': 'Ab',
     'A#': 'Bb',
