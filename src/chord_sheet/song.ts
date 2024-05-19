@@ -355,11 +355,11 @@ class Song extends MetadataAccessors {
     this.metadata.add(name, value);
   }
 
-  getMetadata(name: string): string | string[] | undefined {
+  getMetadata(name: string): string | string[] | null {
     return this.metadata.getMetadata(name);
   }
 
-  getSingleMetadata(name: string): string {
+  getSingleMetadata(name: string): string | null {
     return this.metadata.getSingleMetadata(name);
   }
 

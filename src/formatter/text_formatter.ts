@@ -75,7 +75,7 @@ class TextFormatter extends Formatter {
       .join('\n');
   }
 
-  formatTitle(title: string): string {
+  formatTitle(title: string | null): string {
     if (title) {
       return `${title.toUpperCase()}\n`;
     }
@@ -83,7 +83,7 @@ class TextFormatter extends Formatter {
     return '';
   }
 
-  formatSubTitle(subtitle: string): string {
+  formatSubTitle(subtitle: string | null): string {
     if (subtitle) {
       return `${subtitle}\n`;
     }

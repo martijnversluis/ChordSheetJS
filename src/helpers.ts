@@ -14,9 +14,9 @@ export function transposeDistance(transposeKey: string, songKey: string): number
 }
 
 function chordTransposeDistance(
-  capo: number,
+  capo: number | null,
   transposeKey: string | null,
-  songKey: string,
+  songKey: string | null,
   renderKey: Key | null | undefined,
 ) {
   let transpose = -1 * (capo || 0);
@@ -71,7 +71,8 @@ export function renderChord(
 ): string {
   const chord = Chord.parse(chordString);
   const songKey = song.key;
-  const capo = parseInt(song.metadata.getSingle(CAPO), 10);
+  const capoString = song.metadata.getSingle(CAPO);
+  const capo = capoString ? parseInt(capoString, 10) : null;
   const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
   if (!chord) {

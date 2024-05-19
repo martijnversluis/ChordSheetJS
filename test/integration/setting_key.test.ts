@@ -44,7 +44,7 @@ describe('setting the key of an existing song', () => {
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.setKey(null);
 
-    expect(updatedSong.key).toEqual(undefined);
+    expect(updatedSong.key).toBeNull();
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 });
