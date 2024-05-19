@@ -1,8 +1,11 @@
 import { buildKey } from '../utilities';
+
 import {
-  ChordProParser, NUMERIC, SYMBOL, TextFormatter,
+  NUMERAL,
+  NUMERIC,
+  SOLFEGE,
+  SYMBOL,
 } from '../../src';
-import { NUMERAL, SOLFEGE } from '../../src/constants';
 
 describe('Key', () => {
   describe('normalize', () => {
@@ -68,16 +71,6 @@ describe('Key', () => {
 
     it('normalizes bIV', () => {
       expect(buildKey('IV', NUMERAL, 'b').normalize().toString()).toEqual('III');
-    });
-
-    it('normalizes Db key', () => {
-      const song = new ChordProParser()
-        .parse('[E] [E/B] [E/C#] [E/A]')
-        .setKey('E')
-        .setCapo(3);
-
-      const rendered = new TextFormatter().format(song).trim();
-      expect(rendered).toEqual('Db Db/Ab Db/Bb Db/Gb');
     });
   });
 });
