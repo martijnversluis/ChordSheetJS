@@ -62,7 +62,7 @@ describe('Metadata', () => {
     describe('when a single value does not exist', () => {
       it('returns undefined', () => {
         const metadata = new Metadata({});
-        expect(metadata.get('author')).toBeUndefined();
+        expect(metadata.get('author')).toBeNull();
       });
     });
 
@@ -81,19 +81,19 @@ describe('Metadata', () => {
 
       it('returns undefined when when key or capo is undefined', () => {
         const metadata = new Metadata({ key: 'Bb' });
-        expect(metadata.get('_key')).toBe(undefined);
+        expect(metadata.get('_key')).toBeNull();
       });
 
       it('is readonly on initialisation', () => {
         const metadata = new Metadata({ _key: 'E' });
-        expect(metadata.get('_key')).toBe(undefined);
+        expect(metadata.get('_key')).toBeNull();
       });
 
       it('is readonly', () => {
         const emptyMetadata = new Metadata();
         const metadata = new Metadata();
         metadata.add('_key', 'G');
-        expect(metadata.get('_key')).toBe(undefined);
+        expect(metadata.get('_key')).toBeNull();
         expect(metadata).toEqual(emptyMetadata);
       });
     });
