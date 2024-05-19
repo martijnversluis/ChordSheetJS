@@ -1,7 +1,7 @@
 {
   "name": "chordsheetjs",
   "author": "Martijn Versluis",
-  "version": "9.0.6",
+  "version": "9.0.7",
   "description": "A JavaScript library for parsing and formatting chord sheets",
   "source": "src/index.ts",
   "main": "lib/index.js",
