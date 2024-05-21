@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export function chopFirstWord(string: string) {
   const result = /(\s+)(\S+)/.exec(string);
   const secondWordPosition = result ? (result.index + result[1].length) : null;

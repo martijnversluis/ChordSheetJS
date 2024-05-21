@@ -59,7 +59,7 @@ class Line {
    */
   chordFont: Font = new Font();
 
-  constructor({ type, items }: { type: LineType, items: Item[]} = { type: NONE, items: [] }) {
+  constructor({ type, items }: { type: LineType, items: Item[] } = { type: NONE, items: [] }) {
     this.type = type;
     this.items = items;
   }
