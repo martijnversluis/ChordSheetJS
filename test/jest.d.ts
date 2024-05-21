@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-undef, @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import { ContentType } from '../src/serialized_types';
 

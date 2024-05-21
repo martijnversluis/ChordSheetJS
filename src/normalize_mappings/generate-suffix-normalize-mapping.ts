@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import fs from 'fs';
 import { EOL } from 'os';
 

@@ -51,63 +51,63 @@ const keyToGradeMapping = `
 
   export const KEY_TO_GRADE: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<string, number>>>> = {
     ${
-      Object.entries(KEY_TYPES).map(([keyTypeName, keyTypeValue]) => `
+  Object.entries(KEY_TYPES).map(([keyTypeName, keyTypeValue]) => `
         [${keyTypeName}]: {
           ${
-            Object.entries(MODES).map(([modeName, modeValue]) => `
+  Object.entries(MODES).map(([modeName, modeValue]) => `
               [${modeName}]: {
                 ${
-                  Object.entries(MODIFIERS).map(([modifierName, modifierValue]) => `
+  Object.entries(MODIFIERS).map(([modifierName, modifierValue]) => `
                     [${modifierName}]: {
                       ${
-                        SCALES[keyTypeValue][modeValue][modifierValue].map((keyString, grade) => {
-                          if (keyString === null) {
-                            return null;
-                          }
+  SCALES[keyTypeValue][modeValue][modifierValue].map((keyString, grade) => {
+    if (keyString === null) {
+      return null;
+    }
 
-                          const keyWithoutModifier = keyString.replace(/#|b/g, '');
-                          return `${keyWithoutModifier}: ${grade}`;
-                        }).filter((v) => v).join(',\n')
-                      }
+    const keyWithoutModifier = keyString.replace(/#|b/g, '');
+    return `${keyWithoutModifier}: ${grade}`;
+  }).filter((v) => v).join(',\n')
+}
                     },
                   `).join('\n')
-                }
+}
               },
             `).join('\n')
-          }
+}
         },
       `).join('\n')
-    }
+}
   };
   
   export const GRADE_TO_KEY: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<number, string>>>> = {
     ${
-      Object.entries(KEY_TYPES).map(([keyTypeName, keyTypeValue]) => `
+  Object.entries(KEY_TYPES).map(([keyTypeName, keyTypeValue]) => `
         [${keyTypeName}]: {
           ${
-            Object.entries(MODES).map(([modeName, modeValue]) => `
+  Object.entries(MODES).map(([modeName, modeValue]) => `
               [${modeName}]: {
                 ${
-                  Object.entries(MODIFIERS).map(([modifierName, modifierValue]) => `
+  Object.entries(MODIFIERS).map(([modifierName, modifierValue]) => `
                     [${modifierName}]: {
                       ${
-                        SCALES[keyTypeValue][modeValue][modifierValue].map((keyString, grade) => {
-                          if (keyString === null) {
-                            return null;
-                          }
+  SCALES[keyTypeValue][modeValue][modifierValue].map((keyString, grade) => {
+    if (keyString === null) {
+      return null;
+    }
 
-                          return `${grade}: '${keyString}',`;
-                        }).filter((v) => v).join('\n')
-                      }
+    return `${grade}: '${keyString}',`;
+  }).filter((v) => v).join('\n')
+}
                     },
                   `).join('\n')
-                }
+}
               },
             `).join('\n')
-          }
+}
         },
       `).join('\n')
-    }
+}
   };
 `;
 
