@@ -902,6 +902,27 @@ describe('HtmlDivFormatter', () => {
     expect(formatted).toEqual(expectedHTML);
   });
 
+  it('does not render empty section labels', () => {
+    const song = createSongFromAst([
+      ...section('tab', '', 'Line 1\nLine 2'),
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph tab">
+          <div class="row">
+            <div class="literal">
+              Line 1<br>
+              Line 2
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
+  });
+
   describe('delegates', () => {
     [ABC, GRID, LILYPOND, TAB].forEach((type) => {
       describe(`for ${type}`, () => {
