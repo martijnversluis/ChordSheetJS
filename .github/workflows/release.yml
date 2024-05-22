@@ -18,6 +18,6 @@ jobs:
       - name: Test
         run: cat lib/bundle.js
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: lib/bundle.js
