@@ -3338,6 +3338,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@peggyjs/from-mem@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@peggyjs/from-mem@npm:1.2.1"
+  dependencies:
+    semver: "npm:7.6.0"
+  checksum: 10c0/ef9e488e057ddb75c5778e6881ebbb0179fba0c5db972ee3aa754505a547499a46da79cf454fec86139432d23fef46b6244d28986691dede56248561527d4f4e
+  languageName: node
+  linkType: hard
+
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
@@ -4632,7 +4641,7 @@ __metadata:
     lodash.get: "npm:^4.4.2"
     parcel: "npm:^2.4.1"
     parcel-transformer-hbs: "npm:^1.0.4"
-    peggy: "npm:^2.0.1"
+    peggy: "npm:^4.0.2"
     pinst: "npm:^3.0.0"
     print: "npm:^1.2.0"
     shx: "npm:^0.3.4"
@@ -4802,6 +4811,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^12.0.0":
+  version: 12.1.0
+  resolution: "commander@npm:12.1.0"
+  checksum: 10c0/6e1996680c083b3b897bfc1cfe1c58dfbcd9842fd43e1aaf8a795fbc237f65efcc860a3ef457b318e73f29a4f4a28f6403c3d653d021d960e4632dd45bde54a9
+  languageName: node
+  linkType: hard
+
 "commander@npm:^4.0.1":
   version: 4.1.1
   resolution: "commander@npm:4.1.1"
@@ -4813,13 +4829,6 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 10c0/8d690ff13b0356df7e0ebbe6c59b4712f754f4b724d4f473d3cc5b3fdcf978e3a5dc3078717858a2ceb50b0f84d0660a7f22a96cdc50fb877d0c9bb31593d23a
-  languageName: node
-  linkType: hard
-
-"commander@npm:^9.3.0":
-  version: 9.5.0
-  resolution: "commander@npm:9.5.0"
-  checksum: 10c0/5f7784fbda2aaec39e89eb46f06a999e00224b3763dc65976e05929ec486e174fe9aac2655f03ba6a5e83875bd173be5283dc19309b7c65954701c02025b3c1d
   languageName: node
   linkType: hard
 
@@ -8956,15 +8965,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"peggy@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "peggy@npm:2.0.1"
+"peggy@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "peggy@npm:4.0.2"
   dependencies:
-    commander: "npm:^9.3.0"
+    "@peggyjs/from-mem": "npm:1.2.1"
+    commander: "npm:^12.0.0"
     source-map-generator: "npm:0.8.0"
   bin:
     peggy: bin/peggy.js
-  checksum: 10c0/b149d9936e930fe3e3196329c79711bb526f8ab5445661cdd3e730847606ca09dc7763c33b23e8ffbe4717c1f1dbd964f394eea98928fa345c99f2ebbdaa1af1
+  checksum: 10c0/7b08616255f03d24af6f716363f880ac680523421038eab7be508fc8a5a01c464a7022f5709cb5dd063297d0adba638fdc396c6571e0fec282583055e6b1ce59
   languageName: node
   linkType: hard
 
@@ -9535,6 +9545,17 @@ __metadata:
   dependencies:
     xmlchars: "npm:^2.2.0"
   checksum: 10c0/b7476c41dbe1c3a89907d2546fecfba234de5e66743ef914cde2603f47b19bed09732ab51b528ad0f98b958369d8be72b6f5af5c9cfad69972a73d061f0b3952
+  languageName: node
+  linkType: hard
+
+"semver@npm:7.6.0":
+  version: 7.6.0
+  resolution: "semver@npm:7.6.0"
+  dependencies:
+    lru-cache: "npm:^6.0.0"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/fbfe717094ace0aa8d6332d7ef5ce727259815bd8d8815700853f4faf23aacbd7192522f0dc5af6df52ef4fa85a355ebd2f5d39f554bd028200d6cf481ab9b53
   languageName: node
   linkType: hard
 
