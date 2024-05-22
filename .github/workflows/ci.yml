@@ -17,7 +17,7 @@ jobs:
         node-version: [ 16.x, 18.x, 20.x, 22.x ]
     name: Ubuntu NodeJS ${{ matrix.node-version }} sample
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -36,7 +36,7 @@ jobs:
         node-version: [ 22.x ]
     name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -54,7 +54,7 @@ jobs:
         node-version: [ 22.x ]
     name: Verify README.md
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
