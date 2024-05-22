@@ -1,6 +1,6 @@
-import {hasChordContents, isEvaluatable} from '../../utilities';
-import {renderChord} from '../../helpers';
-import {HtmlTemplateArgs} from '../html_formatter';
+import {hasChordContents, isEvaluatable, isPresent} from '../../utilities';
+import { renderChord } from '../../helpers';
+import { HtmlTemplateArgs } from '../html_formatter';
 
 import {
   each,
@@ -22,7 +22,6 @@ export default (
     configuration,
     configuration: {
       key,
-      delegates,
     },
     song,
     renderBlankLines = false,
@@ -45,7 +44,9 @@ export default (
           ${ when(paragraph.isLiteral(), () => `
             <table class="literal">
               <tr>
-                <td class="label">${ paragraph.label }</td>
+                ${ when(isPresent(paragraph.label), () => `
+                  <td class="label">${ paragraph.label }</td>
+                `) }
                 <td class="contents">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
               </tr>
             </table>

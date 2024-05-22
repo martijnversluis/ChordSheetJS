@@ -1,5 +1,5 @@
-import {HtmlTemplateArgs} from "../html_formatter";
-import {renderChord} from '../../helpers';
+import { HtmlTemplateArgs } from "../html_formatter";
+import { renderChord } from '../../helpers';
 
 import {
   each,
@@ -7,7 +7,7 @@ import {
   fontStyleTag,
   isChordLyricsPair,
   isComment,
-  isEvaluatable, isLiteral,
+  isEvaluatable,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -15,13 +15,13 @@ import {
   stripHTML,
   when,
 } from '../../template_helpers';
+import {isPresent} from "../../utilities";
 
 export default (
   {
     configuration,
     configuration: {
       key,
-      delegates,
     },
     song,
     renderBlankLines = false,
@@ -41,7 +41,9 @@ export default (
       <div class="${ paragraphClasses(paragraph) }">
         ${ when(paragraph.isLiteral(), () => `
           <div class="row">
-            <h3 class="label">${ paragraph.label }</h3>
+            ${ when(isPresent(paragraph.label), () => `
+              <h3 class="label">${ paragraph.label }</h3>
+            `) }
             <div class="literal">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</div>
           </div>
         `).else(() => `
