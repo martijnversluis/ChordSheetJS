@@ -2,6 +2,7 @@ import chordsheetjs from '../src';
 
 describe('default export', () => {
   [
+    'Chord',
     'ChordProParser',
     'ChordSheetParser',
     'UltimateGuitarParser',
