@@ -1,3 +1,4 @@
+import Chord from './chord';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import ChordProFormatter from './formatter/chord_pro_formatter';
 import ChordProParser from './parser/chord_pro_parser';
@@ -71,6 +72,7 @@ export {
 
 export default {
   CHORUS,
+  Chord,
   ChordLyricsPair,
   ChordProFormatter,
   ChordProParser,
