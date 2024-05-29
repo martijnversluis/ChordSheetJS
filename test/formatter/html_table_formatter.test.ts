@@ -654,6 +654,57 @@ describe('HtmlTableFormatter', () => {
     expect(new HtmlTableFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
+  it('correctly renders blank lines', () => {
+    const song = createSongFromAst([
+      [chordLyricsPair('C', 'Whisper words of wisdom')],
+      [],
+      [],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="chord">C</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of wisdom</td>
+            </tr>
+          </table>
+        </div>
+        <div class="paragraph"></div>
+        <div class="paragraph"></div>
+      </div>
+    `;
+
+    const output = new HtmlTableFormatter().format(song);
+    expect(output).toEqual(expectedOutput);
+  });
+
+  it('does not render empty section labels', () => {
+    const song = createSongFromAst([
+      ...section('tab', '', 'Line 1\nLine 2'),
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph tab">
+          <table class="literal">
+            <tr>
+              <td class="contents">
+                Line 1<br>
+                Line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlTableFormatter().format(song)).toEqual(expectedOutput);
+  });
+
   describe('with option useUnicodeModifiers:true', () => {
     it('replaces # with unicode sharp', () => {
       const songWithSharps = createSongFromAst([

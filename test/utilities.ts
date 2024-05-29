@@ -154,7 +154,7 @@ type TestCaseProps = {
   [key: string]: any;
   outcome: any;
   index: string;
-}
+};
 
 export function eachTestCase(table: string, callback: (_testCase: TestCaseProps) => void): void {
   const lines = table.trim().split('\n');

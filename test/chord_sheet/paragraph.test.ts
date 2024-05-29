@@ -70,6 +70,14 @@ describe('Paragraph', () => {
         expect(paragraph.isLiteral()).toBe(false);
       });
     });
+
+    describe('when the paragraph is empty', () => {
+      it('returns false', () => {
+        const paragraph = createParagraph([]);
+
+        expect(paragraph.isLiteral()).toBe(false);
+      });
+    });
   });
 
   describe('#contents', () => {

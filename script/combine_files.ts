@@ -1,5 +1,3 @@
-#!/usr/bin/env ts-node
-
 import fs from 'fs';
 
 const fileAPath = process.argv[2];

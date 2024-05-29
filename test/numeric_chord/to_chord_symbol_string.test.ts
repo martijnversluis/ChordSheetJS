@@ -121,7 +121,7 @@ const majorExamples = {
     '5': 'Ab',
     'b6': 'A',
     '6': 'Bb',
-    'b7': 'Cb',
+    'b7': 'B',
     '7': 'C',
   },
 

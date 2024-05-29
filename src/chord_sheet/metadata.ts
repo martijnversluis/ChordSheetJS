@@ -75,11 +75,11 @@ class Metadata extends MetadataAccessors {
     }
   }
 
-  getMetadata(name: string): string | string[] | undefined {
+  getMetadata(name: string): string | string[] | null {
     return this.get(name);
   }
 
-  getSingleMetadata(name: string): string {
+  getSingleMetadata(name: string): string | null {
     return this.getSingle(name);
   }
 
@@ -106,7 +106,7 @@ class Metadata extends MetadataAccessors {
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
    * else it returns an array of strings.
    */
-  get(prop: string): string | string[] | undefined {
+  get(prop: string): string | string[] | null {
     if (prop === _KEY) {
       return this.calculateKeyFromCapo();
     }
@@ -125,14 +125,14 @@ class Metadata extends MetadataAccessors {
    * @param {string} prop the property name
    * @returns {String} The metadata value
    */
-  getSingle(prop: string): string {
+  getSingle(prop: string): string | null {
     const value = this.get(prop);
 
     if (Array.isArray(value)) {
       return value[0];
     }
 
-    return value as string;
+    return value;
   }
 
   parseArrayKey(prop: string): [string, number] | null {
@@ -147,11 +147,11 @@ class Metadata extends MetadataAccessors {
     return [key, index];
   }
 
-  getArrayItem(prop: string): string | undefined {
+  getArrayItem(prop: string): string | null {
     const parsedKey = this.parseArrayKey(prop);
 
     if (parsedKey === null) {
-      return undefined;
+      return null;
     }
 
     const [key, index] = parsedKey;
@@ -175,9 +175,9 @@ class Metadata extends MetadataAccessors {
     return new Metadata(this.metadata);
   }
 
-  calculateKeyFromCapo(): string | undefined {
-    const capoString: string = this.getSingle(CAPO);
-    const keyString: string = this.getSingle(KEY);
+  calculateKeyFromCapo(): string | null {
+    const capoString = this.getSingle(CAPO);
+    const keyString = this.getSingle(KEY);
 
     if (capoString && keyString) {
       const key: Key | null = Key.parse(keyString);
@@ -190,7 +190,7 @@ class Metadata extends MetadataAccessors {
       return key.transpose(capo).normalize().toString();
     }
 
-    return undefined;
+    return null;
   }
 
   private assign(metadata: Record<string, string | string[]>): void {

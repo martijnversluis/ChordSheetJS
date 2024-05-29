@@ -134,7 +134,6 @@ class ChordSheetSerializer {
 
   parseAstComponent(astComponent: SerializedComponent)
     : null | ChordLyricsPair | Tag | Comment | Ternary | Literal | SoftLineBreak {
-    if (!astComponent) return null;
     if (typeof astComponent === 'string') return new Literal(astComponent);
 
     switch (astComponent.type) {
@@ -170,10 +169,6 @@ class ChordSheetSerializer {
   parseLine(astComponent: SerializedLine): void {
     const { items } = astComponent;
     this.song.addLine();
-
-    if (typeof items.forEach !== 'function') {
-      console.log('items:', items);
-    }
 
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;

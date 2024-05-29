@@ -15,5 +15,8 @@
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
     "strict": true
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
   }
 }

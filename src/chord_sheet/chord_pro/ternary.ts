@@ -10,7 +10,7 @@ export type TernaryProperties = TraceInfo & {
   valueTest?: string | null;
   trueExpression?: Evaluatable[];
   falseExpression?: Evaluatable[];
-}
+};
 
 class Ternary extends Evaluatable {
   variable: string | null;

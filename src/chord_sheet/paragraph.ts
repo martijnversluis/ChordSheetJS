@@ -26,19 +26,23 @@ class Paragraph {
    * @returns {boolean}
    */
   isLiteral() {
-    return this
-      .lines
-      .every((line) => line.items.every((item) => {
-        if (item instanceof Literal) {
-          return true;
-        }
+    const { lines } = this;
 
-        if (item instanceof Tag && (item as Tag).isSectionDelimiter()) {
-          return true;
-        }
+    if (lines.length === 0) {
+      return false;
+    }
 
-        return false;
-      }));
+    return lines.every((line) => line.items.every((item) => {
+      if (item instanceof Literal) {
+        return true;
+      }
+
+      if (item instanceof Tag && (item as Tag).isSectionDelimiter()) {
+        return true;
+      }
+
+      return false;
+    }));
   }
 
   /**

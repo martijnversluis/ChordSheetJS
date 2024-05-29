@@ -563,6 +563,29 @@ Let it [Am]be
     expect(lines[2].items[0]).toBeLiteral('ABC line 2');
   });
 
+  it('allows trailing spaces in ABC sections', () => {
+    const chordSheet = heredoc`
+      {start_of_abc: Intro}
+      e3 B| g>B f>B| ef| eB F>B| E4:|
+
+      {end_of_abc}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs, bodyParagraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(ABC);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeTag('start_of_abc', 'Intro');
+    expect(lines[1].items[0]).toBeLiteral('e3 B| g>B f>B| ef| eB F>B| E4:|');
+    expect(lines[2].items[0]).toBeLiteral('');
+    expect(bodyParagraphs).toHaveLength(1);
+  });
+
   it('parses LY sections', () => {
     const chordSheet = heredoc`
       {start_of_ly: Intro}

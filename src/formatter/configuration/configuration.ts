@@ -19,7 +19,7 @@ export type ConfigurationProperties = Record<string, any> & {
   useUnicodeModifiers: boolean,
   normalizeChords: boolean,
   delegates: Partial<Record<ContentType, Delegate>>;
-}
+};
 
 export const defaultConfiguration: ConfigurationProperties = {
   evaluate: false,
