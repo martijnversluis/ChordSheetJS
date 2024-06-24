@@ -62,7 +62,7 @@
     "tsc": "^2.0.4",
     "tsx": "^4.10.5",
     "typescript": "^4.6.3",
-    "typescript-eslint": "^7.10.0"
+    "typescript-eslint": "^7.13.1"
   },
   "scripts": {
     "build:suffix-normalize": "shx rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && tsx src/normalize_mappings/generate-suffix-normalize-mapping.ts",
