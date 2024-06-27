@@ -3264,12 +3264,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@peggyjs/from-mem@npm:1.2.1":
-  version: 1.2.1
-  resolution: "@peggyjs/from-mem@npm:1.2.1"
+"@peggyjs/from-mem@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@peggyjs/from-mem@npm:1.3.0"
   dependencies:
     semver: "npm:7.6.0"
-  checksum: 10c0/ef9e488e057ddb75c5778e6881ebbb0179fba0c5db972ee3aa754505a547499a46da79cf454fec86139432d23fef46b6244d28986691dede56248561527d4f4e
+  checksum: 10c0/062c184c1e2946a72b98ea8f8d52d2ac3f905331252167399167a7c578363f8b850d78423fbc3683f30eaf65918996d52c6c53791298705a4cee643011cc0d1f
   languageName: node
   linkType: hard
 
@@ -4861,7 +4861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^12.0.0":
+"commander@npm:^12.1.0":
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10c0/6e1996680c083b3b897bfc1cfe1c58dfbcd9842fd43e1aaf8a795fbc237f65efcc860a3ef457b318e73f29a4f4a28f6403c3d653d021d960e4632dd45bde54a9
@@ -8936,15 +8936,15 @@ __metadata:
   linkType: hard
 
 "peggy@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "peggy@npm:4.0.2"
+  version: 4.0.3
+  resolution: "peggy@npm:4.0.3"
   dependencies:
-    "@peggyjs/from-mem": "npm:1.2.1"
-    commander: "npm:^12.0.0"
+    "@peggyjs/from-mem": "npm:1.3.0"
+    commander: "npm:^12.1.0"
     source-map-generator: "npm:0.8.0"
   bin:
     peggy: bin/peggy.js
-  checksum: 10c0/7b08616255f03d24af6f716363f880ac680523421038eab7be508fc8a5a01c464a7022f5709cb5dd063297d0adba638fdc396c6571e0fec282583055e6b1ce59
+  checksum: 10c0/798982b58b405f86eedb4d8556ef13785b9c4d46d5a55b4d30366fa974d5647bfd4a8a37800fd8fcbfae35b1bcc2a412af999ac1919e766b82939f0148a488ca
   languageName: node
   linkType: hard
 
