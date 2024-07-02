@@ -4,9 +4,14 @@ import { isChordLyricsPair, isComment, lineHasContents } from '../template_helpe
 import Song from '../chord_sheet/song';
 import ChordProParser from '../parser/chord_pro_parser';
 import TextFormatter from './text_formatter';
+import Paragraph from '../chord_sheet/paragraph';
+import Line from '../chord_sheet/line';
+import { ChordLyricsPair, Tag } from '../index';
+import Item from '../chord_sheet/item';
 
 type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation';
 type LayoutSection = 'header' | 'footer';
+type Alignment = 'left' | 'center' | 'right';
 
 interface FontConfiguration {
   name: string;
@@ -16,7 +21,7 @@ interface FontConfiguration {
 }
 
 interface Position {
-  x: 'left',
+  x: Alignment,
   y: number,
 }
 
@@ -293,21 +298,16 @@ class PdfFormatter extends Formatter {
   }
 
   // Helper method to calculate x position based on alignment
-  calculateX(alignment, width = 0) {
-    let x;
+  calculateX(alignment: Alignment, width: number = 0): number {
     switch (alignment) {
       case 'center':
-        x = (this.doc.internal.pageSize.getWidth() / 2) - (width / 2);
-        break;
+        return (this.doc.internal.pageSize.getWidth() / 2) - (width / 2);
       case 'right':
-        x = this.doc.internal.pageSize.getWidth() - this.pdfConfiguration.marginright - width;
-        break;
+        return this.doc.internal.pageSize.getWidth() - this.pdfConfiguration.marginright - width;
       case 'left':
       default:
-        x = this.pdfConfiguration.marginleft;
-        break;
+        return this.pdfConfiguration.marginleft;
     }
-    return x;
   }
 
   formatParagraphs() {
@@ -322,7 +322,7 @@ class PdfFormatter extends Formatter {
     });
   }
 
-  formatParagraph(paragraph, columnHeight) {
+  formatParagraph(paragraph: Paragraph, columnHeight: number) {
     paragraph.lines.forEach((line) => {
       if (lineHasContents(line)) {
         if (this.y + this.pdfConfiguration.lineHeight > columnHeight) {
@@ -334,7 +334,7 @@ class PdfFormatter extends Formatter {
     });
   }
 
-  formatLine(line) {
+  formatLine(line: Line) {
     let { x } = this;
     let lineY = this.y;
     let maxChordHeight = this.getMaxChordHeight(line);
@@ -343,20 +343,22 @@ class PdfFormatter extends Formatter {
 
     line.items.forEach((item, index, items) => {
       if (isChordLyricsPair(item)) {
+        const chordLyricsPair = item as ChordLyricsPair;
+
         let chordWidth = 0;
         let lyricWidth = 0;
 
         // Calculate widths for chords and lyrics
-        if (item.chords) {
-          const style = this.pdfConfiguration.fonts.chord;
+        if (chordLyricsPair.chords) {
+          const style = this.getFontConfiguration('chord');
           this.setFontStyle(style);
-          chordWidth = this.getTextDimensions(item.chords).w;
+          chordWidth = this.getTextDimensions(chordLyricsPair.chords).w;
         }
 
-        if (item.lyrics && item.lyrics.trim() !== '') {
-          const style = this.pdfConfiguration.fonts.text;
+        if (chordLyricsPair.lyrics && chordLyricsPair.lyrics.trim() !== '') {
+          const style = this.getFontConfiguration('text');
           this.setFontStyle(style);
-          lyricWidth = this.getTextDimensions(item.lyrics).w;
+          lyricWidth = this.getTextDimensions(chordLyricsPair.lyrics).w;
         }
 
         // Check if the chord-lyric pair will fit in the current column
@@ -376,18 +378,18 @@ class PdfFormatter extends Formatter {
           maxChordHeight = this.getMaxChordHeight({ items: items.slice(index) });
         }
         // Render and position chords
-        if (item.chords) {
-          const chordBaseline = lineY + maxChordHeight - this.getTextDimensions(item.chords).h;
-          const style = this.pdfConfiguration.fonts.chord;
+        if (chordLyricsPair.chords) {
+          const chordBaseline = lineY + maxChordHeight - this.getTextDimensions(chordLyricsPair.chords).h;
+          const style = this.getFontConfiguration('chord');
           this.setFontStyle(style);
-          this.doc.text(item.chords, x, chordBaseline);
+          this.doc.text(chordLyricsPair.chords, x, chordBaseline);
         }
         // Render and position lyrics
-        if (item.lyrics && item.lyrics.trim() !== '') {
+        if (chordLyricsPair.lyrics && chordLyricsPair.lyrics.trim() !== '') {
           const lyricsY = lineY + maxChordHeight + this.pdfConfiguration.chordLyricSpacing;
-          const style = this.pdfConfiguration.fonts.text;
+          const style = this.getFontConfiguration('text');
           this.setFontStyle(style);
-          this.doc.text(item.lyrics, x, lyricsY);
+          this.doc.text(chordLyricsPair.lyrics, x, lyricsY);
         }
 
         // Update x for the next chord-lyric pair
@@ -395,7 +397,7 @@ class PdfFormatter extends Formatter {
         x += chordWidth > lyricWidth ? chordWidth + (numberOfSpacesToAdd || 0) * spaceWidth : lyricWidth;
       }
       if (isComment(item)) {
-        this.formatComment(item.value);
+        this.formatComment((item as Tag).value);
       }
     });
 
@@ -403,8 +405,8 @@ class PdfFormatter extends Formatter {
     this.y = lineY + maxChordHeight + this.pdfConfiguration.chordLyricSpacing + this.pdfConfiguration.linePadding;
   }
 
-  formatComment(commentText) {
-    const style = this.pdfConfiguration.fonts.comment;
+  formatComment(commentText: string) {
+    const style = this.getFontConfiguration('comment');
     this.setFontStyle(style);
     const textY = this.y;
 
@@ -422,43 +424,58 @@ class PdfFormatter extends Formatter {
   }
 
   // Utility functions
-  spacer(size) {
+  spacer(size: number) {
     this.y += size;
   }
 
-  getFontConfiguration(objectType) {
+  getFontConfiguration(objectType: string): FontConfiguration {
     return this.pdfConfiguration.fonts[objectType];
   }
 
-  getMaxChordHeight(line) {
-    let maxHeight = 0;
-    line.items.forEach((item) => {
-      if (isChordLyricsPair(item) && item.chords) {
-        const style = this.pdfConfiguration.fonts.chord;
+  getMaxChordHeight({ items }: { items: Item[] }): number {
+    return items
+      .map((item: Item): number => {
+        if (!isChordLyricsPair(item)) {
+          return 0;
+        }
+
+        const chordLyricsPair = item as ChordLyricsPair;
+        const style = this.getFontConfiguration('chord');
         this.setFontStyle(style);
-        const dimensions = this.getTextDimensions(item.chords);
-        maxHeight = Math.max(maxHeight, dimensions.h);
-      }
-    });
-    return maxHeight;
+        return this.getTextDimensions(chordLyricsPair.chords).h;
+      })
+      .reduce((maxHeight, currentHeight) => Math.max(maxHeight, currentHeight), 0);
   }
 
-  getTextDimensions(text) {
+  getTextDimensions(text: string) {
     return this.doc.getTextDimensions(text);
   }
 
   // Sets the font style based on the configuration
-  setFontStyle(styleConfig) {
+  setFontStyle(styleConfig: FontConfiguration) {
     this.doc.setFont(styleConfig.name, styleConfig.style);
     this.doc.setFontSize(styleConfig.size);
-    this.doc.setTextColor(styleConfig.color);
+    this.setTextColor(styleConfig.color);
   }
 
-  recordFormattingTime() {
+  setTextColor(color: string | number) {
+    switch (typeof color) {
+      case 'string':
+        this.doc.setTextColor(color);
+        break;
+      case 'number':
+        this.doc.setTextColor(color);
+        break;
+      default:
+        break;
+    }
+  }
+
+  recordFormattingTime(): void {
     const endTime = performance.now();
     const timeTaken = ((endTime - this.startTime) / 1000).toFixed(5);
 
-    const style = this.pdfConfiguration.fonts.text;
+    const style = this.getFontConfiguration('text');
     this.setFontStyle(style);
     this.doc.setTextColor(100);
 
@@ -496,7 +513,7 @@ class PdfFormatter extends Formatter {
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
   }
 
-  getSpaceWidth() {
+  getSpaceWidth(): number {
     return this.doc.getTextDimensions(' ').w;
   }
 }
