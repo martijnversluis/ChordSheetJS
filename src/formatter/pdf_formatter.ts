@@ -1,13 +1,12 @@
 import JsPDF, { ImageCompression } from 'jspdf';
 import Formatter from './formatter';
-import { isChordLyricsPair, isComment, lineHasContents } from '../template_helpers';
+import { isChordLyricsPair, isComment, isTag, lineHasContents } from '../template_helpers';
 import Song from '../chord_sheet/song';
 import ChordProParser from '../parser/chord_pro_parser';
 import TextFormatter from './text_formatter';
 import Paragraph from '../chord_sheet/paragraph';
 import Line from '../chord_sheet/line';
-import { ChordLyricsPair, Tag } from '../index';
-import Item from '../chord_sheet/item';
+import { ChordLyricsPair, Comment, SoftLineBreak, Tag } from '../index';
 
 type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation';
 type LayoutSection = 'header' | 'footer';
@@ -67,6 +66,12 @@ type LayoutItem = {
   content: LayoutContentItem[],
 };
 
+type MeasuredItem = {
+  item: ChordLyricsPair | Comment | SoftLineBreak,
+  width: number,
+  chordHeight?: number,
+};
+
 type PDFConfiguration = {
   fonts: Record<FontSection, FontConfiguration>,
   margintop: number,
@@ -81,6 +86,89 @@ type PDFConfiguration = {
   columnWidth: number,
   columnSpacing: number,
   layout: Record<LayoutSection, LayoutItem>,
+};
+
+const defaultConfiguration: PDFConfiguration = {
+  // Font settings for various elements
+  fonts: {
+    title: {
+      name: 'helvetica', style: 'bold', size: 24, color: 'black',
+    },
+    subtitle: {
+      name: 'helvetica', style: 'normal', size: 10, color: 100,
+    },
+    metadata: {
+      name: 'helvetica', style: 'normal', size: 10, color: 100,
+    },
+    text: {
+      name: 'helvetica', style: 'normal', size: 10, color: 'black',
+    },
+    chord: {
+      name: 'helvetica', style: 'bold', size: 10, color: 'black',
+    },
+    comment: {
+      name: 'helvetica', style: 'bold', size: 10, color: 'black',
+    },
+    annotation: {
+      name: 'helvetica', style: 'normal', size: 10, color: 'black',
+    },
+  },
+  // Layout settings
+  margintop: 25,
+  marginbottom: 10,
+  marginleft: 25,
+  marginright: 25,
+  lineHeight: 5,
+  chordLyricSpacing: 0,
+  linePadding: 8,
+  numberOfSpacesToAdd: 2,
+  columnCount: 2,
+  columnWidth: 0,
+  columnSpacing: 25,
+  layout: {
+    header: {
+      height: 60,
+      content: [
+        {
+          type: 'text',
+          template: '%{title}',
+          style: {
+            name: 'helvetica', style: 'bold', size: 24, color: 'black',
+          },
+          position: { x: 'left', y: 15 },
+        },
+        {
+          type: 'text',
+          template: 'Key of %{key} - BPM %{tempo} - Time %{time}',
+          style: {
+            name: 'helvetica', style: 'normal', size: 12, color: 100,
+          },
+          position: { x: 'left', y: 28 },
+        },
+        {
+          type: 'text',
+          template: 'By %{artist} %{subtitle}',
+          style: {
+            name: 'helvetica', style: 'normal', size: 10, color: 100,
+          },
+          position: { x: 'left', y: 38 },
+        },
+      ],
+    },
+    footer: {
+      height: 30,
+      content: [
+        {
+          type: 'text',
+          value: '©2024 My Music Publishing',
+          style: {
+            name: 'helvetica', style: 'normal', size: 10, color: 'black',
+          },
+          position: { x: 'left', y: 0 },
+        },
+      ],
+    },
+  },
 };
 
 class PdfFormatter extends Formatter {
@@ -98,96 +186,13 @@ class PdfFormatter extends Formatter {
 
   columnWidth: number = 0;
 
-  pdfConfiguration: PDFConfiguration = this.defaultPdfConfiguration;
+  pdfConfiguration: PDFConfiguration = defaultConfiguration;
+
+  fontConfiguration: FontConfiguration = defaultConfiguration.fonts.text;
 
   // Configuration settings for the PDF document
-  get defaultPdfConfiguration(): PDFConfiguration {
-    return {
-      // Font settings for various elements
-      fonts: {
-        title: {
-          name: 'helvetica', style: 'bold', size: 24, color: 'black',
-        },
-        subtitle: {
-          name: 'helvetica', style: 'normal', size: 10, color: 100,
-        },
-        metadata: {
-          name: 'helvetica', style: 'normal', size: 10, color: 100,
-        },
-        text: {
-          name: 'helvetica', style: 'normal', size: 10, color: 'black',
-        },
-        chord: {
-          name: 'helvetica', style: 'bold', size: 10, color: 'black',
-        },
-        comment: {
-          name: 'helvetica', style: 'bold', size: 10, color: 'black',
-        },
-        annotation: {
-          name: 'helvetica', style: 'normal', size: 10, color: 'black',
-        },
-      },
-      // Layout settings
-      margintop: 25,
-      marginbottom: 10,
-      marginleft: 25,
-      marginright: 25,
-      lineHeight: 5,
-      chordLyricSpacing: 0,
-      linePadding: 8,
-      numberOfSpacesToAdd: 2,
-      columnCount: 2,
-      columnWidth: 0,
-      columnSpacing: 25,
-      layout: {
-        header: {
-          height: 60,
-          content: [
-            {
-              type: 'text',
-              template: '%{title}',
-              style: {
-                name: 'helvetica', style: 'bold', size: 24, color: 'black',
-              },
-              position: { x: 'left', y: 15 },
-            },
-            {
-              type: 'text',
-              template: 'Key of %{key} - BPM %{tempo} - Time %{time}',
-              style: {
-                name: 'helvetica', style: 'normal', size: 12, color: 100,
-              },
-              position: { x: 'left', y: 28 },
-            },
-            {
-              type: 'text',
-              template: 'By %{artist} %{subtitle}',
-              style: {
-                name: 'helvetica', style: 'normal', size: 10, color: 100,
-              },
-              position: { x: 'left', y: 38 },
-            },
-          ],
-        },
-        footer: {
-          height: 30,
-          content: [
-            {
-              type: 'text',
-              value: '©2024 My Music Publishing',
-              style: {
-                name: 'helvetica', style: 'normal', size: 10, color: 'black',
-              },
-              position: { x: 'left', y: 0 },
-            },
-          ],
-        },
-      },
-    };
-  }
-
   // Main function to format and save the song as a PDF
-  format(song: Song, configuration: PDFConfiguration = this.defaultPdfConfiguration): void {
+  format(song: Song, configuration: PDFConfiguration = defaultConfiguration): void {
     this.startTime = performance.now();
     this.song = song;
     this.pdfConfiguration = configuration;
@@ -240,15 +245,23 @@ class PdfFormatter extends Formatter {
 
     layoutConfig.content.forEach((contentItem) => {
       if (contentItem.type === 'text') {
-        this.renderText(contentItem, sectionY);
+        this.renderTextItem(contentItem, sectionY);
       } else if (contentItem.type === 'image') {
         this.renderImage(contentItem, sectionY);
       }
     });
   }
 
+  withFontConfiguration(fontConfiguration: FontConfiguration | null, callback: () => any): any {
+    const previousFontConfiguration = this.fontConfiguration;
+    if (fontConfiguration) this.setFontStyle(fontConfiguration);
+    const returnValue = callback();
+    this.setFontStyle(previousFontConfiguration);
+    return returnValue;
+  }
+
   // Renders individual text items
-  renderText(textItem: LayoutContentItemWithText, sectionY: number) {
+  renderTextItem(textItem: LayoutContentItemWithText, sectionY: number) {
     const {
       value,
       template,
@@ -323,9 +336,11 @@ class PdfFormatter extends Formatter {
   }
 
   formatParagraph(paragraph: Paragraph, columnHeight: number) {
+    const { lineHeight } = this.pdfConfiguration;
+
     paragraph.lines.forEach((line) => {
       if (lineHasContents(line)) {
-        if (this.y + this.pdfConfiguration.lineHeight > columnHeight) {
+        if (this.y + lineHeight > columnHeight) {
           this.moveToNextColumn(columnHeight);
         }
         this.formatLine(line);
@@ -335,77 +350,119 @@ class PdfFormatter extends Formatter {
   }
 
   formatLine(line: Line) {
-    let { x } = this;
-    let lineY = this.y;
-    let maxChordHeight = this.getMaxChordHeight(line);
-    const spaceWidth = this.getSpaceWidth();
-    const { columnWidth } = this;
+    const chordFont = this.getFontConfiguration('chord');
+    const lyricsFont: FontConfiguration = this.getFontConfiguration('text');
+    const commentFont: FontConfiguration = this.getFontConfiguration('comment');
 
-    line.items.forEach((item, index, items) => {
+    const renderedLine = line.items.map((item) => {
       if (isChordLyricsPair(item)) {
         const chordLyricsPair = item as ChordLyricsPair;
+        const { chords, lyrics } = chordLyricsPair;
+        const chordWidth = this.getTextDimensions(chords, chordFont).w;
+        const lyricWidth = this.getTextDimensions(lyrics, lyricsFont).w;
+        const pairWidth = Math.max(chordWidth, lyricWidth);
 
-        let chordWidth = 0;
-        let lyricWidth = 0;
+        return {
+          item: chordLyricsPair,
+          width: pairWidth,
+          chordHeight: this.getTextDimensions(chords, chordFont).h,
+        };
+      } else if (isTag(item) && isComment(item as Tag)) {
+        const comment = item as Comment;
+        const commentWidth = this.getTextDimensions(comment.content, commentFont).w;
 
-        // Calculate widths for chords and lyrics
-        if (chordLyricsPair.chords) {
-          const style = this.getFontConfiguration('chord');
-          this.setFontStyle(style);
-          chordWidth = this.getTextDimensions(chordLyricsPair.chords).w;
-        }
-
-        if (chordLyricsPair.lyrics && chordLyricsPair.lyrics.trim() !== '') {
-          const style = this.getFontConfiguration('text');
-          this.setFontStyle(style);
-          lyricWidth = this.getTextDimensions(chordLyricsPair.lyrics).w;
-        }
-
-        // Check if the chord-lyric pair will fit in the current column
-        if (x + Math.max(chordWidth, lyricWidth) > this.x + columnWidth) {
-          const {
-            chordLyricSpacing,
-            linePadding,
-            lineHeight,
-          } = this.pdfConfiguration;
-
-          // Move to the next line if it doesn't fit
-          lineY += maxChordHeight + chordLyricSpacing + linePadding + lineHeight;
-          this.y = lineY; // Update this.y to the new line position
-          x = this.x; // Reset x to the start of the column
-
-          // Recalculate max chord height for new line
-          maxChordHeight = this.getMaxChordHeight({ items: items.slice(index) });
-        }
-        // Render and position chords
-        if (chordLyricsPair.chords) {
-          const chordBaseline = lineY + maxChordHeight - this.getTextDimensions(chordLyricsPair.chords).h;
-          const style = this.getFontConfiguration('chord');
-          this.setFontStyle(style);
-          this.doc.text(chordLyricsPair.chords, x, chordBaseline);
-        }
-        // Render and position lyrics
-        if (chordLyricsPair.lyrics && chordLyricsPair.lyrics.trim() !== '') {
-          const lyricsY = lineY + maxChordHeight + this.pdfConfiguration.chordLyricSpacing;
-          const style = this.getFontConfiguration('text');
-          this.setFontStyle(style);
-          this.doc.text(chordLyricsPair.lyrics, x, lyricsY);
-        }
-
-        // Update x for the next chord-lyric pair
-        const { numberOfSpacesToAdd } = this.pdfConfiguration;
-        x += chordWidth > lyricWidth ? chordWidth + (numberOfSpacesToAdd || 0) * spaceWidth : lyricWidth;
-      }
-      if (isComment(item)) {
-        this.formatComment((item as Tag).value);
+        return {
+          item: comment,
+          width: commentWidth,
+        };
+      } else {
+        return { item, width: 0 };
       }
     });
 
-    // Update y for the next line, considering the possibility of line breaks within the current line
-    this.y = lineY + maxChordHeight + this.pdfConfiguration.chordLyricSpacing + this.pdfConfiguration.linePadding;
+    this.renderLineItems(renderedLine);
   }
 
-  formatComment(commentText: string) {
+  renderLineItems(items: MeasuredItem[]) {
+    const chordFont = this.getFontConfiguration('chord');
+    const lyricsFont: FontConfiguration = this.getFontConfiguration('text');
+    const spaceWidth = this.getSpaceWidth();
+    const maxChordHeight = items.reduce((maxHeight, { chordHeight }) => Math.max(maxHeight, chordHeight || 0), 0);
+    const [first, ...rest] = items;
+    const { chordLyricSpacing, numberOfSpacesToAdd } = this.pdfConfiguration;
+
+    if (!first) {
+      this.carriageReturn();
+      this.lineFeed(maxChordHeight);
+      return;
+    }
+
+    const { item, width } = first;
+
+    if (item instanceof ChordLyricsPair) {
+      const { chords, lyrics } = item as ChordLyricsPair;
+
+      if (this.x + width > this.maxX) {
+        this.lineFeed(maxChordHeight);
+        this.carriageReturn();
+      }
+
+      if (chords) {
+        const chordBaseline = this.y + maxChordHeight - this.getTextDimensions(chords, chordFont).h;
+        this.renderText(chords, this.x, chordBaseline, chordFont);
+      }
+
+      if (lyrics && lyrics.trim() !== '') {
+        const lyricsY = this.y + maxChordHeight + chordLyricSpacing;
+        this.renderText(lyrics, this.x, lyricsY, lyricsFont);
+      }
+
+      this.x += width + (numberOfSpacesToAdd || 0) * spaceWidth;
+    } else if (item instanceof Comment) {
+      this.formatComment((item as Comment).content);
+    } else if (item instanceof SoftLineBreak) {
+      const totalRemainingWidth = rest.reduce((totalWidth, { width: itemWidth }) => totalWidth + itemWidth, 0);
+
+      if (this.x + totalRemainingWidth > this.columnWidth) {
+        this.lineFeed(maxChordHeight);
+        this.carriageReturn();
+      }
+    }
+
+    this.renderLineItems(rest);
+  }
+
+  private lineFeed(maxChordHeight: number) {
+    const {
+      chordLyricSpacing,
+      linePadding,
+      lineHeight,
+    } = this.pdfConfiguration;
+
+    this.y += maxChordHeight + chordLyricSpacing + linePadding + lineHeight;
+  }
+
+  private carriageReturn() {
+    const { columnSpacing, marginleft } = this.pdfConfiguration;
+
+    if (this.currentColumn === 1) {
+      this.x = marginleft;
+    } else {
+      this.x = (this.currentColumn - 1) * this.columnWidth + columnSpacing + marginleft;
+    }
+  }
+
+  get maxX() {
+    const { columnWidth, currentColumn } = this;
+    const { columnSpacing } = this.pdfConfiguration;
+    return (currentColumn * columnWidth ) + ((currentColumn - 1) * columnSpacing);
+  }
+
+  renderText(text: string, x: number, y: number, style: FontConfiguration | null = null): void {
+    this.withFontConfiguration(style, () => this.doc.text(text, x, y));
+  }
+
+  formatComment(commentText: string): void {
     const style = this.getFontConfiguration('comment');
     this.setFontStyle(style);
     const textY = this.y;
@@ -432,23 +489,12 @@ class PdfFormatter extends Formatter {
     return this.pdfConfiguration.fonts[objectType];
   }
 
-  getMaxChordHeight({ items }: { items: Item[] }): number {
-    return items
-      .map((item: Item): number => {
-        if (!isChordLyricsPair(item)) {
-          return 0;
-        }
+  getTextDimensions(text: string | null, styleConfig: FontConfiguration | null = null): { w: number, h: number } {
+    if (!text || text.length === 0) {
+      return { w: 0, h: 0 };
+    }
 
-        const chordLyricsPair = item as ChordLyricsPair;
-        const style = this.getFontConfiguration('chord');
-        this.setFontStyle(style);
-        return this.getTextDimensions(chordLyricsPair.chords).h;
-      })
-      .reduce((maxHeight, currentHeight) => Math.max(maxHeight, currentHeight), 0);
-  }
-
-  getTextDimensions(text: string) {
-    return this.doc.getTextDimensions(text);
+    return this.withFontConfiguration(styleConfig, () => this.doc.getTextDimensions(text));
   }
 
   // Sets the font style based on the configuration
@@ -491,9 +537,7 @@ class PdfFormatter extends Formatter {
     this.currentColumn += 1;
 
     const {
-      columnSpacing,
       columnCount,
-      marginleft,
       layout: {
         header,
         footer,
@@ -503,18 +547,16 @@ class PdfFormatter extends Formatter {
     if (this.currentColumn > columnCount) {
       this.doc.addPage();
       this.currentColumn = 1;
-      this.x = this.pdfConfiguration.marginleft;
       this.renderLayout(header, 'header');
       this.renderLayout(footer, 'footer');
-    } else {
-      this.x = (this.currentColumn - 1) * this.columnWidth + columnSpacing + marginleft;
     }
 
+    this.carriageReturn();
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
   }
 
   getSpaceWidth(): number {
-    return this.doc.getTextDimensions(' ').w;
+    return this.getTextDimensions(' ').w;
   }
 }
 
