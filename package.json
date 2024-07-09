@@ -39,7 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.10.0",
     "detect-newline": "^4.0.1",
-    "esbuild": "^0.21.2",
+    "esbuild": "^0.23.0",
     "eslint": "^9.3.0",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-import": "^2.26.0",
