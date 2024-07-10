@@ -201,6 +201,7 @@ class PdfFormatter extends Formatter {
     this.renderLayout(this.pdfConfiguration.layout.footer, 'footer');
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     this.x = this.pdfConfiguration.marginleft;
+    this.currentColumn = 1;
     this.formatParagraphs();
     this.recordFormattingTime();
   }
@@ -220,7 +221,12 @@ class PdfFormatter extends Formatter {
 
   // Document setup configurations
   setupDoc(): JsPDF {
-    const doc = new JsPDF('portrait', 'px');
+    const doc = new JsPDF({
+      orientation: 'p',
+      unit: 'px',
+      format: 'letter',
+      compress: true,
+    });
     doc.setLineWidth(0);
     doc.setDrawColor(0, 0, 0, 0);
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -368,8 +374,8 @@ class PdfFormatter extends Formatter {
           chordHeight: this.getTextDimensions(chords, chordFont).h,
         };
       } else if (isTag(item) && isComment(item as Tag)) {
-        const comment = item as Comment;
-        const commentWidth = this.getTextDimensions(comment.content, commentFont).w;
+        const comment = item as Tag;
+        const commentWidth = this.getTextDimensions(comment.value, commentFont).w;
 
         return {
           item: comment,
@@ -418,8 +424,8 @@ class PdfFormatter extends Formatter {
       }
 
       this.x += width + (numberOfSpacesToAdd || 0) * spaceWidth;
-    } else if (item instanceof Comment) {
-      this.formatComment((item as Comment).content);
+    } else if (item instanceof Tag) {
+      this.formatComment((item as Tag).value);
     } else if (item instanceof SoftLineBreak) {
       const totalRemainingWidth = rest.reduce((totalWidth, { width: itemWidth }) => totalWidth + itemWidth, 0);
 

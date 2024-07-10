@@ -240,7 +240,7 @@ const renderPDFInBrowser = async (pdfBlob) => {
 
 // Function to update the PDF based on the editor content
 const updatePDF = async (chordProText) => {
-  const song = new ChordProParser().parse(chordProText);
+  const song = new ChordProParser().parse(chordProText, {softLineBreaks:true});
   const formatter = new PdfFormatter();
   formatter.format(song, JSON.parse((configEditor.getValue())));
   const pdfBlob = await formatter.generatePDF();
