@@ -195,6 +195,7 @@ class PdfFormatter extends Formatter {
   format(song: Song, configuration: PDFConfiguration = defaultConfiguration): void {
     this.startTime = performance.now();
     this.song = song;
+    console.log(song.lines);
     this.pdfConfiguration = configuration;
     this.doc = this.setupDoc();
     this.renderLayout(this.pdfConfiguration.layout.header, 'header');
@@ -338,6 +339,7 @@ class PdfFormatter extends Formatter {
 
     bodyParagraphs.forEach((paragraph) => {
       this.formatParagraph(paragraph, columnHeight);
+      this.y += this.pdfConfiguration.lineHeight;
     });
   }
 
@@ -350,7 +352,6 @@ class PdfFormatter extends Formatter {
           this.moveToNextColumn(columnHeight);
         }
         this.formatLine(line);
-        this.y += this.pdfConfiguration.lineHeight;
       }
     });
   }
@@ -366,7 +367,10 @@ class PdfFormatter extends Formatter {
         const { chords, lyrics } = chordLyricsPair;
         const chordWidth = this.getTextDimensions(chords, chordFont).w;
         const lyricWidth = this.getTextDimensions(lyrics, lyricsFont).w;
-        const pairWidth = Math.max(chordWidth, lyricWidth);
+
+        const pairWidth = (chordWidth > lyricWidth)
+          ? this.getTextDimensions(`${chords}${this.spaces}`, chordFont).w
+          : lyricWidth;
 
         return {
           item: chordLyricsPair,
@@ -389,17 +393,26 @@ class PdfFormatter extends Formatter {
     this.renderLineItems(renderedLine);
   }
 
+  get spaces() {
+    let str = '';
+
+    for (let i = 0; i < this.pdfConfiguration.numberOfSpacesToAdd; i++) {
+      str += ' ';
+    }
+
+    return str;
+  }
+
   renderLineItems(items: MeasuredItem[]) {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont: FontConfiguration = this.getFontConfiguration('text');
-    const spaceWidth = this.getSpaceWidth();
     const maxChordHeight = items.reduce((maxHeight, { chordHeight }) => Math.max(maxHeight, chordHeight || 0), 0);
     const [first, ...rest] = items;
-    const { chordLyricSpacing, numberOfSpacesToAdd } = this.pdfConfiguration;
+    const { chordLyricSpacing } = this.pdfConfiguration;
 
     if (!first) {
       this.carriageReturn();
-      this.lineFeed(maxChordHeight);
+      this.lineFeed(Math.max(maxChordHeight, this.pdfConfiguration.lineHeight));
       return;
     }
 
@@ -423,7 +436,7 @@ class PdfFormatter extends Formatter {
         this.renderText(lyrics, this.x, lyricsY, lyricsFont);
       }
 
-      this.x += width + (numberOfSpacesToAdd || 0) * spaceWidth;
+      this.x += width;
     } else if (item instanceof Tag) {
       this.formatComment((item as Tag).value);
     } else if (item instanceof SoftLineBreak) {
@@ -460,8 +473,8 @@ class PdfFormatter extends Formatter {
 
   get maxX() {
     const { columnWidth, currentColumn } = this;
-    const { columnSpacing } = this.pdfConfiguration;
-    return (currentColumn * columnWidth ) + ((currentColumn - 1) * columnSpacing);
+    const { columnSpacing, marginleft } = this.pdfConfiguration;
+    return (currentColumn * columnWidth ) + ((currentColumn - 1) * columnSpacing) + marginleft;
   }
 
   renderText(text: string, x: number, y: number, style: FontConfiguration | null = null): void {
@@ -470,23 +483,13 @@ class PdfFormatter extends Formatter {
 
   formatComment(commentText: string): void {
     const style = this.getFontConfiguration('comment');
-    this.setFontStyle(style);
-    const textY = this.y;
-
-    // Print comment text
-    this.doc.text(commentText, this.x, textY);
-
-    // Underline the comment
-    const textWidth = this.getTextDimensions(commentText).w;
+    this.withFontConfiguration(style, () => this.doc.text(commentText, this.x, this.y));
+    const { w: textWidth } = this.getTextDimensions(commentText, style);
     this.doc.setDrawColor(0);
     this.doc.setLineWidth(0.5);
-    this.doc.line(this.x, textY + 1, this.x + textWidth, textY + 1);
-
-    // Update y for next element
-    this.y += this.getTextDimensions(commentText).h;
+    this.doc.line(this.x, this.y + 1, this.x + textWidth, this.y + 1);
   }
 
-  // Utility functions
   spacer(size: number) {
     this.y += size;
   }
