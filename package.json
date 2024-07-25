@@ -37,7 +37,7 @@
     "@types/lodash.get": "^4.4.7",
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.10.0",
+    "@typescript-eslint/parser": "^7.17.0",
     "codemirror": "^6.0.1",
     "detect-newline": "^4.0.1",
     "esbuild": "^0.23.0",
