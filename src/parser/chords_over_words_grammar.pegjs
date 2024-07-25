@@ -27,47 +27,6 @@ ChordSheetLine
   / &(ChordsLine !WordChar) line:ChordsLine { return line; }
   / line:LyricsLine { return line; }
 
-ChordLyricsLines
-  = chordsLine:ChordsLine NewLine lyrics:NonEmptyLyrics {
-      const chords = chordsLine.items;
-
-      const chordLyricsPairs = chords.map((chord, i) => {
-        const nextChord = chords[i + 1];
-        const start = chord.column - 1;
-        const end = nextChord ? nextChord.column - 1 : lyrics.length;
-        const pairLyrics = lyrics.substring(start, end);
-
-        const [firstWord, rest] = chopFirstWord(pairLyrics);
-
-        const chordData = (chord.type === "chord") ? { chord } : { chords: chord.value };
-
-        if (rest) {
-          return [
-            { type: "chordLyricsPair", ...chordData, lyrics: `${firstWord} ` },
-            { type: "chordLyricsPair", chords: "", lyrics: rest },
-          ];
-        }
-
-        return { type: "chordLyricsPair", ...chordData, lyrics: firstWord };
-      }).flat();
-
-      const firstChord = chords[0];
-
-      if (firstChord && firstChord.column > 1) {
-      	const firstChordPosition = firstChord.column;
-
-        if (firstChordPosition > 0) {
-          chordLyricsPairs.unshift({
-            type: "chordLyricsPair",
-            chords: "",
-            lyrics: lyrics.substring(0, firstChordPosition - 1),
-          });
-        }
-      }
-
-      return { type: "line", items: chordLyricsPairs };
-    }
-
 SingleChordsLine
   = chordsLine:ChordsLine & (NewLine ChordsLine) {
       return chordsLine;

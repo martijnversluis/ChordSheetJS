@@ -5,6 +5,15 @@ function combineChordSheetLines(newLine: string | null, lines, trailingLine): an
   return [...emptyLines, ...lines, trailingLine];
 }
 
+function applySoftLineBreaks(line) {
+  return line
+    .split(/\\\s+/)
+    .flatMap((lyric, index) => ([
+      index === 0 ? null : { type: 'softLineBreak' },
+      lyric.length === 0 ? null : { type: 'chordLyricsPair', chords: '', lyrics: lyric },
+    ]));
+}
+
 function constructChordLyricsPairs(chords, lyrics) {
   return chords.map((chord, i) => {
     const nextChord = chords[i + 1];
@@ -17,8 +26,8 @@ function constructChordLyricsPairs(chords, lyrics) {
     if (rest) {
       return [
         { type: 'chordLyricsPair', ...chordData, lyrics: `${firstWord} ` },
-        { type: 'chordLyricsPair', chords: '', lyrics: rest },
-      ];
+        ...applySoftLineBreaks(rest),
+      ].filter(x => x);
     }
 
     return { type: 'chordLyricsPair', ...chordData, lyrics: firstWord };
