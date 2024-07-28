@@ -569,4 +569,29 @@ describe('ChordsOverWordsParser', () => {
     expect(line1Items[2]).toBeChordLyricsPair('', 'let it ');
     expect(line1Items[3]).toBeChordLyricsPair('C', 'be');
   });
+
+  describe('with option softLineBreaks=true', () => {
+    it('parses soft line breaks', () => {
+      const chordOverWords = heredoc`
+               Am         C/G          F          C
+        Let it be, let it be, let it \\ be, let it be
+      `;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords, { softLineBreaks: true });
+      const { lines } = song;
+
+      const lineItems = lines[0].items;
+
+      expect(lineItems[0]).toBeChordLyricsPair('', 'Let it ');
+      expect(lineItems[1]).toBeChordLyricsPair('Am', 'be, ');
+      expect(lineItems[2]).toBeChordLyricsPair('', 'let it ');
+      expect(lineItems[3]).toBeChordLyricsPair('C/G', 'be, ');
+      expect(lineItems[4]).toBeChordLyricsPair('', 'let it ');
+      expect(lineItems[5]).toBeSoftLineBreak();
+      expect(lineItems[6]).toBeChordLyricsPair('F', 'be, ');
+      expect(lineItems[7]).toBeChordLyricsPair('', 'let it ');
+      expect(lineItems[8]).toBeChordLyricsPair('C', 'be');
+    });
+  });
 });
