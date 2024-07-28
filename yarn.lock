@@ -1500,7 +1500,7 @@ __metadata:
     husky: "npm:^9.0.11"
     jest: "npm:^27.0.1"
     jsdoc-babel: "npm:^0.5.0"
-    jsdoc-to-markdown: "npm:^8.0.0"
+    jsdoc-to-markdown: "npm:^8.0.3"
     jspdf: "npm:^2.5.1"
     lodash.get: "npm:^4.4.2"
     parcel: "npm:^2.4.1"
@@ -5354,23 +5354,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmd@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "dmd@npm:6.2.0"
+"dmd@npm:^6.2.3":
+  version: 6.2.3
+  resolution: "dmd@npm:6.2.3"
   dependencies:
     array-back: "npm:^6.2.2"
     cache-point: "npm:^2.0.0"
     common-sequence: "npm:^2.0.2"
     file-set: "npm:^4.0.2"
-    handlebars: "npm:^4.7.7"
-    marked: "npm:^4.2.3"
+    handlebars: "npm:^4.7.8"
+    marked: "npm:^4.3.0"
     object-get: "npm:^2.1.1"
     reduce-flatten: "npm:^3.0.1"
     reduce-unique: "npm:^2.0.1"
     reduce-without: "npm:^1.0.1"
     test-value: "npm:^3.0.0"
     walk-back: "npm:^5.1.0"
-  checksum: 10c0/add2e1a055e6840c70beb9404e26892bc503bf533eb32dc68981b7015e0e0f85def8e922ec8b55f2e4cfe8b860b91c6dd84e499695232a2a4157c19fc0744676
+  checksum: 10c0/826d511063fb861f3c426fdb31a7d3ed6973d49cdf2ca696b2bff970322a6403fbb4ad2c99381b56997debac80ee33f7a2c244f0ffaa5079bd19334e2f7d5646
   languageName: node
   linkType: hard
 
@@ -6551,7 +6551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.7":
+"handlebars@npm:^4.7.7, handlebars@npm:^4.7.8":
   version: 4.7.8
   resolution: "handlebars@npm:4.7.8"
   dependencies:
@@ -7726,20 +7726,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdoc-api@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "jsdoc-api@npm:8.0.0"
+"jsdoc-api@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "jsdoc-api@npm:8.1.1"
   dependencies:
     array-back: "npm:^6.2.2"
     cache-point: "npm:^2.0.0"
     collect-all: "npm:^1.0.4"
     file-set: "npm:^4.0.2"
     fs-then-native: "npm:^2.0.0"
-    jsdoc: "npm:^4.0.0"
+    jsdoc: "npm:^4.0.3"
     object-to-spawn-args: "npm:^2.0.1"
     temp-path: "npm:^1.0.0"
     walk-back: "npm:^5.1.0"
-  checksum: 10c0/a9101f06eec5bb2eb93a3f685771aae923e71aaa1654bb416d1ed8e63218a65b9dff5cd42e3f959005ac5f1d1ce56f7faf8c93e10031eb2bec5f275548fe06ce
+  checksum: 10c0/501dd94b62adccc2168195641123bd5c79d00359e0f38d37370485e36afc45bcfeba7eeaeb62d9450aa1a9a6df4dffa15ded55b3a77f351f2e4d09ab0225e108
   languageName: node
   linkType: hard
 
@@ -7775,24 +7775,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdoc-to-markdown@npm:^8.0.0":
-  version: 8.0.1
-  resolution: "jsdoc-to-markdown@npm:8.0.1"
+"jsdoc-to-markdown@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "jsdoc-to-markdown@npm:8.0.3"
   dependencies:
     array-back: "npm:^6.2.2"
     command-line-tool: "npm:^0.8.0"
     config-master: "npm:^3.1.0"
-    dmd: "npm:^6.2.0"
-    jsdoc-api: "npm:^8.0.0"
+    dmd: "npm:^6.2.3"
+    jsdoc-api: "npm:^8.1.1"
     jsdoc-parse: "npm:^6.2.1"
     walk-back: "npm:^5.1.0"
   bin:
     jsdoc2md: bin/cli.js
-  checksum: 10c0/a6fa05ba9846dc99eac54273010736c24c3d5b8bd73240345cf410b0b57e6aba6cf953c37e1d48a2fc3e8dce75152ec3be241569466ff47817cf14b45700325a
+  checksum: 10c0/f47b1d0b019c09a4b0f02c07728ffc330bdf67af332b2d3439e0cad3f12fbd3ff56a117a6128a6107ecae84421f3a557eed8aaff8f6ccc6ba0211498c0423ad8
   languageName: node
   linkType: hard
 
-"jsdoc@npm:^4.0.0":
+"jsdoc@npm:^4.0.3":
   version: 4.0.3
   resolution: "jsdoc@npm:4.0.3"
   dependencies:
@@ -8321,7 +8321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^4.0.10, marked@npm:^4.2.3":
+"marked@npm:^4.0.10, marked@npm:^4.3.0":
   version: 4.3.0
   resolution: "marked@npm:4.3.0"
   bin:
