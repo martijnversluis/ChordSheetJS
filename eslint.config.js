@@ -11,6 +11,7 @@ const compat = new FlatCompat({
 module.exports = tseslint.config(
   {
     ignores: [
+      'dist/**',
       'lib/**',
       'node_modules/**',
       'src/formatter/templates/*.ts',
