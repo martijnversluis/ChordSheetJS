@@ -26,6 +26,10 @@ class ChordProParser {
   /**
    * Parses a ChordPro chord sheet into a song
    * @param {string} chordSheet the ChordPro chord sheet
+   * @param {ChordProParserOptions} options Parser options.
+   * @param {ChordProParserOptions.softLineBreaks} options.softLineBreaks=false If true, a backslash
+   * followed by * a space is treated as a soft line break
+   * @see https://peggyjs.org/documentation.html#using-the-parser
    * @returns {Song} The parsed song
    */
   parse(chordSheet: string, options?: ChordProParserOptions): Song {

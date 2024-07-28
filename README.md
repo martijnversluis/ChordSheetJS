@@ -1296,7 +1296,7 @@ PDF conversion.</p>
 
 * [ChordProParser](#ChordProParser)
     * [.warnings](#ChordProParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-    * [.parse(chordSheet)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
+    * [.parse(chordSheet, options)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
 
 <a name="ChordProParser+warnings"></a>
 
@@ -1306,15 +1306,18 @@ PDF conversion.</p>
 **Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
 <a name="ChordProParser+parse"></a>
 
-### chordProParser.parse(chordSheet) ⇒ [<code>Song</code>](#Song)
+### chordProParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
 <p>Parses a ChordPro chord sheet into a song</p>
 
 **Kind**: instance method of [<code>ChordProParser</code>](#ChordProParser)  
 **Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+**See**: https://peggyjs.org/documentation.html#using-the-parser  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| chordSheet | <code>string</code> | <p>the ChordPro chord sheet</p> |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>the ChordPro chord sheet</p> |
+| options | <code>ChordProParserOptions</code> |  | <p>Parser options.</p> |
+| options.softLineBreaks | <code>ChordProParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by * a space is treated as a soft line break</p> |
 
 <a name="ChordSheetParser"></a>
 
@@ -1415,10 +1418,11 @@ Whisper words of wisdom, let it be
 **Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
 **See**: https://peggyjs.org/documentation.html#using-the-parser  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| chordSheet | <code>string</code> | <p>the chords over words sheet</p> |
-| options | <code>ParseOptions</code> | <p>Parser options.</p> |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>the chords over words sheet</p> |
+| options | <code>ChordsOverWordsParserOptions</code> |  | <p>Parser options.</p> |
+| options.softLineBreaks | <code>ChordsOverWordsParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by a space is treated as a soft line break</p> |
 
 <a name="ParserWarning"></a>
 

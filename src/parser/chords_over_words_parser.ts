@@ -1,9 +1,12 @@
-import { parse } from './chords_over_words_peg_parser';
 import Song from '../chord_sheet/song';
 import ParserWarning from './parser_warning';
-import { ParseOptions } from './chord_pro_peg_parser';
+import { parse, ParseOptions } from './chords_over_words_peg_parser';
 import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
+
+export type ChordsOverWordsParserOptions = ParseOptions & {
+  softLineBreaks?: boolean;
+};
 
 /**
  * Parses a chords over words sheet into a song
@@ -58,11 +61,13 @@ class ChordsOverWordsParser {
   /**
    * Parses a chords over words sheet into a song
    * @param {string} chordSheet the chords over words sheet
-   * @param {ParseOptions} options Parser options.
+   * @param {ChordsOverWordsParserOptions} options Parser options.
+   * @param {ChordsOverWordsParserOptions.softLineBreaks} options.softLineBreaks=false If true, a backslash
+   * followed by a space is treated as a soft line break
    * @see https://peggyjs.org/documentation.html#using-the-parser
    * @returns {Song} The parsed song
    */
-  parse(chordSheet: string, options?: ParseOptions): Song {
+  parse(chordSheet: string, options?: ChordsOverWordsParserOptions): Song {
     const ast = parse(normalizeLineEndings(chordSheet), options);
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
