@@ -4213,7 +4213,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:7.17.0, @typescript-eslint/parser@npm:^7.10.0":
+"@typescript-eslint/parser@npm:7.17.0":
   version: 7.17.0
   resolution: "@typescript-eslint/parser@npm:7.17.0"
   dependencies:
@@ -4228,6 +4228,24 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/0cf6922412517b4c005609b035119ddd2798e1b6e74e1bccd487aa53119d27067cfd89311f00b8e96b2b044a0fb7373418a16552be86079879158b260c397418
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/parser@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@typescript-eslint/parser@npm:8.0.0"
+  dependencies:
+    "@typescript-eslint/scope-manager": "npm:8.0.0"
+    "@typescript-eslint/types": "npm:8.0.0"
+    "@typescript-eslint/typescript-estree": "npm:8.0.0"
+    "@typescript-eslint/visitor-keys": "npm:8.0.0"
+    debug: "npm:^4.3.4"
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/7b462bc975c8e0c0d9fbc4955186d61b73aad9d5b9392e8fa68ad4b7c631582edc05176fcbfbebee603695421225e8c5f5ee28812fa47e3060fc7854b84497d5
   languageName: node
   linkType: hard
 
@@ -4248,6 +4266,16 @@ __metadata:
     "@typescript-eslint/types": "npm:7.17.0"
     "@typescript-eslint/visitor-keys": "npm:7.17.0"
   checksum: 10c0/e1a693e19dc855fe6d04b46c6c205019bfc937eda5f8b255393f8267ebddd282165568336e37b04aab544b155a807784b9c4a92129dfc7c1eef5a9e9fe052685
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/scope-manager@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@typescript-eslint/scope-manager@npm:8.0.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:8.0.0"
+    "@typescript-eslint/visitor-keys": "npm:8.0.0"
+  checksum: 10c0/d8397055f046be54302b603a59d358c74292f72af3d12ca1e652316a785400d3e2fd20d79e3e316e3278ff7f1c1ffb271f9f6a7a265b88041c5a4e8332f550a0
   languageName: node
   linkType: hard
 
@@ -4279,6 +4307,13 @@ __metadata:
   version: 7.17.0
   resolution: "@typescript-eslint/types@npm:7.17.0"
   checksum: 10c0/8f734294d432b37c534f17eb2befdfe43b76874d09118d6adf7e308e5a586e9e11b7021abe4f6692a6e6226de58a15b3cfe1300939556ce1c908d9af627b7400
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/types@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@typescript-eslint/types@npm:8.0.0"
+  checksum: 10c0/c15efce96e4b80c2bef7ea4fa7f046609816ae8bc3a4e31d9d671e237520f6b96595e1330a891ec7042bc7b09fc16d265bad49fd878d5fb8be4b59b8a752e5b5
   languageName: node
   linkType: hard
 
@@ -4317,6 +4352,25 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/10967823ce00c9f8cd4a8b56bed3524c098e38cc0e27aaa49ffd8fad4e671c00226bf0330ba858948750b88dc55527ebeb62c74be8a30bac18a106d6c033ab59
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/typescript-estree@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@typescript-eslint/typescript-estree@npm:8.0.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:8.0.0"
+    "@typescript-eslint/visitor-keys": "npm:8.0.0"
+    debug: "npm:^4.3.4"
+    globby: "npm:^11.1.0"
+    is-glob: "npm:^4.0.3"
+    minimatch: "npm:^9.0.4"
+    semver: "npm:^7.6.0"
+    ts-api-utils: "npm:^1.3.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/a82f3eb2a66a4b2715d09f8f9547c1f0c27ea60c1d10d0777c8ce998b760dbb8ef14466fc2056220b8a236c2d2dc3ee99f482502f5c268bd40909b272bb47eb4
   languageName: node
   linkType: hard
 
@@ -4365,6 +4419,16 @@ __metadata:
     "@typescript-eslint/types": "npm:7.17.0"
     eslint-visitor-keys: "npm:^3.4.3"
   checksum: 10c0/fa6b339d51fc3710288bb2ffaa46d639551d77965cc42c36f96c4f43aed663ff12972e8a28652a280f6ce20b7a92dc2aea14b2b4049012799be2fc2d3cbb2c60
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@typescript-eslint/visitor-keys@npm:8.0.0"
+  dependencies:
+    "@typescript-eslint/types": "npm:8.0.0"
+    eslint-visitor-keys: "npm:^3.4.3"
+  checksum: 10c0/8c59a2e971370c2b9a5727541c72d6b64fd0448ab03dd8b4274a26bddea5e1b4c560dd7856e1f48577cd333f7bbbed7a0f1849d39e2d1b48a748a3668c1a3723
   languageName: node
   linkType: hard
 
@@ -5199,7 +5263,7 @@ __metadata:
     "@types/lodash.get": "npm:^4.4.7"
     "@types/node": "npm:^22.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^7.9.0"
-    "@typescript-eslint/parser": "npm:^7.10.0"
+    "@typescript-eslint/parser": "npm:^8.0.0"
     detect-newline: "npm:^4.0.1"
     esbuild: "npm:^0.23.0"
     eslint: "npm:^9.3.0"
