@@ -28,7 +28,10 @@ module.exports = tseslint.config(
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: true,
+        projectService: {
+          allowDefaultProject: ['./*.js', 'eslint.config.js'],
+          defaultProject: './tsconfig.json',
+        },
       },
     },
     plugins: {
