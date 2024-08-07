@@ -1,4 +1,4 @@
-import { parse } from './parser/chord_peg_parser';
+import { parse } from './parser/chord/peg_parser';
 import Key from './key';
 import { isMinor, normalizeChordSuffix } from './utilities';
 import ChordParsingError from './chord_parsing_error';

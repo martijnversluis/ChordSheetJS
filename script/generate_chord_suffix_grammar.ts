@@ -3,7 +3,7 @@ import fs from 'fs';
 import { EOL } from 'os';
 
 const suffixMappingFile = 'src/normalize_mappings/suffix-mapping.txt';
-const chordSuffixGrammarFile = 'src/parser/chord_suffix_grammar.pegjs';
+const chordSuffixGrammarFile = 'src/parser/chord/suffix_grammar.pegjs';
 
 console.warn('\x1b[34m', '👷 Building suffix normalize mapping from suffix-mapping.txt');
 const data = fs.readFileSync(suffixMappingFile);

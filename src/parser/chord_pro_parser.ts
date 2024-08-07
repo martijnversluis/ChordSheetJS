@@ -1,4 +1,4 @@
-import { parse, ParseOptions } from './chord_pro_peg_parser';
+import { parse, ParseOptions } from './chord_pro/peg_parser';
 import Song from '../chord_sheet/song';
 import ParserWarning from './parser_warning';
 import { normalizeLineEndings } from '../utilities';

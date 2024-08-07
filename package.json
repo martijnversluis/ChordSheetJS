@@ -66,9 +66,9 @@
   "scripts": {
     "build:suffix-normalize": "shx rm -rf src/normalize_mappings/suffix-normalize-mapping.ts && tsx src/normalize_mappings/generate-suffix-normalize-mapping.ts",
     "build:chord-suffix-grammar": "yarn tsx script/generate_chord_suffix_grammar.ts",
-    "build:pegjs:chordpro": "peggy --plugin ts-pegjs -o src/parser/chord_pro_peg_parser.ts src/parser/chord_pro_grammar.pegjs",
+    "build:pegjs:chordpro": "peggy --plugin ts-pegjs -o src/parser/chord_pro/peg_parser.ts src/parser/chord_pro/grammar.pegjs",
     "build:pegjs:chords-over-words": "tsx script/generate_parser.ts chords_over_words",
-    "build:pegjs:chord": "tsx script/combine_files.ts src/parser/chord_grammar.pegjs src/parser/chord_suffix_grammar.pegjs src/parser/chord_combined_grammer.pegjs && peggy --plugin ts-pegjs -o src/parser/chord_peg_parser.ts src/parser/chord_combined_grammer.pegjs",
+    "build:pegjs:chord": "tsx script/combine_files.ts src/parser/chord/base_grammar.pegjs src/parser/chord/suffix_grammar.pegjs src/parser/chord/combined_grammer.pegjs && peggy --plugin ts-pegjs -o src/parser/chord/peg_parser.ts src/parser/chord/combined_grammer.pegjs",
     "build:pegjs": "yarn build:pegjs:chord && yarn build:pegjs:chordpro && yarn build:pegjs:chords-over-words",
     "build:scales": "tsx script/generate_scales.ts && yarn linter:fix src/scales.ts",
     "build:code-generate": "yarn build:suffix-normalize && yarn build:chord-suffix-grammar && yarn build:pegjs && yarn build:scales",
