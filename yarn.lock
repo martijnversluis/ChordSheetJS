@@ -1649,7 +1649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.16.7":
+"@babel/preset-typescript@npm:^7.24.7":
   version: 7.24.7
   resolution: "@babel/preset-typescript@npm:7.24.7"
   dependencies:
@@ -1783,7 +1783,7 @@ __metadata:
     "@babel/plugin-proposal-class-properties": "npm:^7.16.7"
     "@babel/plugin-proposal-object-rest-spread": "npm:^7.17.3"
     "@babel/preset-env": "npm:^7.25.2"
-    "@babel/preset-typescript": "npm:^7.16.7"
+    "@babel/preset-typescript": "npm:^7.24.7"
     "@eslint/js": "npm:^9.8.0"
     "@parcel/packager-ts": "npm:2.12.0"
     "@parcel/transformer-typescript-types": "npm:2.12.0"
@@ -1814,7 +1814,7 @@ __metadata:
     theredoc: "npm:^1.0.0"
     ts-jest: "npm:^29.2.3"
     ts-node: "npm:^10.9.2"
-    ts-pegjs: "npm:^3.0.0"
+    ts-pegjs: "npm:^4.2.1"
     tsc: "npm:^2.0.4"
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.5.4"
@@ -3884,6 +3884,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ts-morph/common@npm:~0.19.0":
+  version: 0.19.0
+  resolution: "@ts-morph/common@npm:0.19.0"
+  dependencies:
+    fast-glob: "npm:^3.2.12"
+    minimatch: "npm:^7.4.3"
+    mkdirp: "npm:^2.1.6"
+    path-browserify: "npm:^1.0.1"
+  checksum: 10c0/e25fd46158d72be238ab1dda74e7ee284085895b12b9ab279f37d50f1cd71b2be95a56f3efa19d5f52986534e9f34ae4a294467cd1637b27cf4fb82bd7318bb7
+  languageName: node
+  linkType: hard
+
 "@tsconfig/node10@npm:^1.0.7":
   version: 1.0.11
   resolution: "@tsconfig/node10@npm:1.0.11"
@@ -5231,6 +5243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"code-block-writer@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "code-block-writer@npm:12.0.0"
+  checksum: 10c0/ced73cdc466bff968bba9e8e32340d88420d25a229b9269f7425a10a7c2c9a12ca702dcb601b2462b96472d354f021cf66e552179fcbe30c8f7ecd0173c5fa07
+  languageName: node
+  linkType: hard
+
 "codemirror@npm:^6.0.1":
   version: 6.0.1
   resolution: "codemirror@npm:6.0.1"
@@ -6472,7 +6491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.9":
+"fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -8673,6 +8692,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^7.4.3":
+  version: 7.4.6
+  resolution: "minimatch@npm:7.4.6"
+  dependencies:
+    brace-expansion: "npm:^2.0.1"
+  checksum: 10c0/e587bf3d90542555a3d58aca94c549b72d58b0a66545dd00eef808d0d66e5d9a163d3084da7f874e83ca8cc47e91c670e6c6f6593a3e7bb27fcc0e6512e87c67
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^9.0.4":
   version: 9.0.4
   resolution: "minimatch@npm:9.0.4"
@@ -8793,6 +8821,15 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 10c0/46ea0f3ffa8bc6a5bc0c7081ffc3907777f0ed6516888d40a518c5111f8366d97d2678911ad1a6882bf592fa9de6c784fea32e1687bb94e1f4944170af48a5cf
+  languageName: node
+  linkType: hard
+
+"mkdirp@npm:^2.1.6":
+  version: 2.1.6
+  resolution: "mkdirp@npm:2.1.6"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 10c0/96f551c651dd8f5f9435d53df1a7b9bfc553be769ee6da5192c37c1f303a376ef1c6996f96913d4a8d357060451d4526a346031d1919f92c58806a5fa3cd8dfe
   languageName: node
   linkType: hard
 
@@ -9240,6 +9277,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: 10c0/8b8c3fd5c66bd340272180590ae4ff139769e9ab79522e2eb82e3d571a89b8117c04147f65ad066dccfb42fcad902e5b7d794b3d35e0fd840491a8ddbedf8c66
+  languageName: node
+  linkType: hard
+
 "path-exists@npm:^4.0.0":
   version: 4.0.0
   resolution: "path-exists@npm:4.0.0"
@@ -9406,6 +9450,15 @@ __metadata:
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
   checksum: 10c0/b00d617431e7886c520a6f498a2e14c75ec58f6d93ba48c3b639cf241b54232d90daa05d83a9e9b9fef6baa63cb7e1e4602c2372fea5bc169668401eb127d0cd
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.8.8":
+  version: 2.8.8
+  resolution: "prettier@npm:2.8.8"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 10c0/463ea8f9a0946cd5b828d8cf27bd8b567345cf02f56562d5ecde198b91f47a76b7ac9eae0facd247ace70e927143af6135e8cf411986b8cb8478784a4d6d724a
   languageName: node
   linkType: hard
 
@@ -10504,6 +10557,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-morph@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "ts-morph@npm:18.0.0"
+  dependencies:
+    "@ts-morph/common": "npm:~0.19.0"
+    code-block-writer: "npm:^12.0.0"
+  checksum: 10c0/6ea3259bf46a786eb446f75586aaa3a23715529889069e28e7bbd57e85e21585097559ec5b94e1b99cd6e6e9097d644d71e4a1e3274499f46b1cafd6a009b534
+  languageName: node
+  linkType: hard
+
 "ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
@@ -10542,14 +10605,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-pegjs@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "ts-pegjs@npm:3.1.0"
+"ts-pegjs@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "ts-pegjs@npm:4.2.1"
+  dependencies:
+    prettier: "npm:^2.8.8"
+    ts-morph: "npm:^18.0.0"
   peerDependencies:
-    peggy: ^2.0.1
+    peggy: ^3.0.2
   bin:
-    tspegjs: src/cli.js
-  checksum: 10c0/c0fe63a2f3d926eda64fbba6950eace16461ac7caf2732fc41ba88e971749f46fbd170147b0c159d64bd99abbeecf62cfc8b01b998691bbe3b38a839f7855179
+    tspegjs: dist/cli.mjs
+  checksum: 10c0/bf09ff2a2393e63476c97371d9946950926b1ea89f320a6823128b849a6e57bb296be36213cdf96d40e7d403f4a2d2d666f089e94147d34b4d69ec9d03f4e729
   languageName: node
   linkType: hard
 

@@ -450,6 +450,13 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <p>The only function considered public API is <code>Key.distance</code></p></dd>
 </dl>
 
+## Members
+
+<dl>
+<dt><a href="#FontSize">FontSize</a> : <code>number</code></dt>
+<dd><p>The font size</p></dd>
+</dl>
+
 ## Constants
 
 <dl>
@@ -1775,6 +1782,29 @@ Can be deserialized using [deserialize](deserialize)</p>
 | oneKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the key</p> |
 | otherKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the other key</p> |
 
+<a name="FontSize"></a>
+
+## FontSize : <code>number</code>
+<p>The font size</p>
+
+**Kind**: global variable  
+<a name="FontSize+toString"></a>
+
+### fontSize.toString() ⇒ <code>string</code>
+<p>Stringifies the font size by concatenating size and unit</p>
+
+**Kind**: instance method of [<code>FontSize</code>](#FontSize)  
+**Returns**: <code>string</code> - <p>The font size</p>  
+**Example**  
+```js
+// Returns "30px"
+new FontSize(30, 'px').toString()
+```
+**Example**  
+```js
+// Returns "120%"
+new FontSize(120, '%').toString()
+```
 <a name="ALBUM"></a>
 
 ## ALBUM : <code>string</code>

@@ -4,14 +4,32 @@
     "excludePattern": ".+\\.(test|spec).ts"
   },
   "plugins": [
-    "plugins/markdown",
-    "node_modules/jsdoc-babel"
+    "node_modules/jsdoc-babel",
+    "plugins/markdown"
   ],
   "babel": {
     "extensions": ["ts", "tsx"],
     "ignore": ["**/*.(test|spec).ts"],
     "babelrc": false,
-    "presets": [["@babel/preset-env", { "targets": { "node": true } }], "@babel/preset-typescript"],
-    "plugins": ["@babel/transform-class-properties", "@babel/transform-object-rest-spread"]
+    "presets": [
+      [
+        "@babel/preset-typescript",
+        {
+          "allowDeclareFields": true
+        }
+      ],
+      [
+        "@babel/preset-env",
+        {
+          "targets": { "node": true }
+        }
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-typescript",
+      "@babel/plugin-transform-class-properties",
+      "@babel/transform-object-rest-spread",
+      "@babel/plugin-transform-private-methods"
+    ]
   }
 }
