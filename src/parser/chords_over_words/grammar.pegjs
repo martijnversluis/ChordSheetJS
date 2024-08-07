@@ -11,9 +11,7 @@ ChordSheet
 
 ChordSheetContents
   = newLine:NewLine? lines:ChordSheetLineWithNewLine* trailingLine:ChordSheetLine? {
-    const allLines = combineChordSheetLines(newLine, lines, trailingLine);
-    const arrangedLines = arrangeChordSheetLines(allLines);
-    return arrangedLines;
+    return helpers.composeChordSheetContents(newLine, lines, trailingLine);
   }
 
 ChordSheetLineWithNewLine
