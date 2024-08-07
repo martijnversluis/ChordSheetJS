@@ -37,20 +37,25 @@ module.exports = tseslint.config(
       import: importPlugin,
     },
     rules: {
-      'max-len': [2, 120, 2],
-      'no-underscore-dangle': 'off',
-      'class-methods-use-this': 'off',
-      'no-console': ['error', { allow: ['log', 'warn', 'error'] }],
-      'no-trailing-spaces': 'error',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
-      'quote-props': ['error', 'consistent-as-needed'],
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/naming-convention': [
+        'error',
+        {
+          selector: 'variable',
+          format: [
+            'camelCase',
+            'PascalCase',
+            'UPPER_CASE',
+          ],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'forbid',
+        },
+      ],
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-loop-func': 'off',
-      'import/no-extraneous-dependencies': 'off',
-      'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'class-methods-use-this': 'off',
       'import/extensions': [
         'error',
         {
@@ -60,6 +65,20 @@ module.exports = tseslint.config(
           tsx: 'never',
         },
       ],
+      'max-len': [2, 120, 2],
+      'no-console': ['error', { allow: ['log', 'warn', 'error'] }],
+      'no-trailing-spaces': 'error',
+      'no-underscore-dangle': 'off',
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      'import/no-extraneous-dependencies': 'off',
+      'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
+      'quote-props': ['error', 'consistent-as-needed'],
     },
   },
 );

@@ -13,14 +13,11 @@ const grammarFile = `${parserFolder}/grammar.pegjs`;
 const outputFile = `${parserFolder}/peg_parser.ts`;
 const chordGrammarFile = './src/parser/chord/base_grammar.pegjs';
 const chordSuffixGrammarFile = './src/parser/chord/suffix_grammar.pegjs';
-const headerFile = `${parserFolder}/header.ts`;
 
 const parserGrammar = fs.readFileSync(grammarFile, 'utf8');
 const chordGrammar = skipChordGrammar ? '' : fs.readFileSync(chordGrammarFile);
 const chordSuffixGrammar = fs.readFileSync(chordSuffixGrammarFile);
-
-const customHeader = fs.readFileSync(headerFile);
-const input = [`{{${customHeader}}}`, parserGrammar, chordGrammar, chordSuffixGrammar].join('\n\n');
+const input = [parserGrammar, chordGrammar, chordSuffixGrammar].join('\n\n');
 
 const source = peggy.generate(input, {
   plugins: [tspegjs],
@@ -29,4 +26,4 @@ const source = peggy.generate(input, {
   format: 'commonjs',
 });
 
-fs.writeFileSync(outputFile, `import { chopFirstWord } from '../parser_helpers';\n\n${source}`);
+fs.writeFileSync(outputFile, `import * as helpers from './helpers';\n\n${source}`);

@@ -19,62 +19,62 @@ Section =
 
 TabSection
   = startTag:TabStartTag NewLine content:$(!TabEndTag SectionCharacter)* endTag:TabEndTag {
-      return buildSection("tab", startTag, endTag, content);
+      return helpers.buildSection(startTag, endTag, content);
     }
 
 TabStartTag
   = "{" _ tagName:("sot" / "start_of_tab") _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return buildTag(tagName, tagColonWithValue, location());
+      return helpers.buildTag(tagName, tagColonWithValue, location());
     }
 
 TabEndTag
   = "{" _ tagName:("eot" / "end_of_tab") _ "}" {
-      return buildTag(tagName, null, location());
+      return helpers.buildTag(tagName, null, location());
     }
 
 ABCSection
   = startTag:ABCStartTag NewLine content:$(!ABCEndTag SectionCharacter)* endTag:ABCEndTag {
-      return buildSection("abc", startTag, endTag, content);
+      return helpers.buildSection(startTag, endTag, content);
     }
 
 ABCStartTag
   = "{" _ tagName:("start_of_abc") _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return buildTag(tagName, tagColonWithValue, location());
+      return helpers.buildTag(tagName, tagColonWithValue, location());
     }
 
 ABCEndTag
   = "{" _ tagName:("end_of_abc") _ "}" {
-      return buildTag(tagName, null, location());
+      return helpers.buildTag(tagName, null, location());
     }
 
 LYSection
   = startTag:LYStartTag NewLine content:$(!LYEndTag SectionCharacter)* endTag:LYEndTag {
-      return buildSection("ly", startTag, endTag, content);
+      return helpers.buildSection(startTag, endTag, content);
     }
 
 LYStartTag
   = "{" _ tagName:("start_of_ly") _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return buildTag(tagName, tagColonWithValue, location());
+      return helpers.buildTag(tagName, tagColonWithValue, location());
     }
 
 LYEndTag
   = "{" _ name:("end_of_ly") _ "}" {
-      return buildTag(name, null, location());
+      return helpers.buildTag(name, null, location());
     }
 
 GridSection
   = startTag:GridStartTag NewLine content:$(!GridEndTag SectionCharacter)* endTag:GridEndTag {
-      return buildSection("grid", startTag, endTag, content);
+      return helpers.buildSection(startTag, endTag, content);
     }
 
 GridStartTag
   = "{" _ tagName:("sog" / "start_of_grid") _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return buildTag(tagName, tagColonWithValue, location());
+      return helpers.buildTag(tagName, tagColonWithValue, location());
     }
 
 GridEndTag
   = "{" _ tagName:("eog" / "end_of_grid") _ "}" {
-      return buildTag(tagName, null, location());
+      return helpers.buildTag(tagName, null, location());
     }
 
 SectionCharacter
@@ -87,7 +87,7 @@ LineWithNewline
 
 Line
   = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
-      return buildLine([
+      return helpers.buildLine([
           lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
           ...tokens.flat(),
           chords ? { type: 'chordLyricsPair', chords, lyrics: '' } : null,
