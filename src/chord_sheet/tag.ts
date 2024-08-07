@@ -312,21 +312,24 @@ export const META_TAGS = [
 
 export const READ_ONLY_TAGS = [_KEY];
 
-const SECTION_DELIMITERS = [
-  START_OF_ABC,
+const SECTION_END_TAGS = [
   END_OF_ABC,
-  START_OF_BRIDGE,
   END_OF_BRIDGE,
-  START_OF_CHORUS,
   END_OF_CHORUS,
-  START_OF_GRID,
   END_OF_GRID,
-  START_OF_LY,
   END_OF_LY,
-  START_OF_TAB,
   END_OF_TAB,
-  START_OF_VERSE,
   END_OF_VERSE,
+];
+
+export const SECTION_START_TAGS = [
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_TAB,
+  START_OF_VERSE,
 ];
 
 const INLINE_FONT_TAGS = [
@@ -457,7 +460,15 @@ class Tag extends AstComponent {
   }
 
   isSectionDelimiter(): boolean {
-    return SECTION_DELIMITERS.includes(this.name);
+    return this.isSectionStart() || this.isSectionEnd();
+  }
+
+  isSectionStart(): boolean {
+    return SECTION_START_TAGS.includes(this.name);
+  }
+
+  isSectionEnd(): boolean {
+    return SECTION_END_TAGS.includes(this.name);
   }
 
   isInlineFontTag(): boolean {
