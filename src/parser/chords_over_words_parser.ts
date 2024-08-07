@@ -1,6 +1,6 @@
 import Song from '../chord_sheet/song';
 import ParserWarning from './parser_warning';
-import { parse, ParseOptions } from './chords_over_words_peg_parser';
+import { parse, ParseOptions } from './chords_over_words/peg_parser';
 import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 

@@ -14,7 +14,7 @@ module.exports = tseslint.config(
       'lib/**',
       'node_modules/**',
       'src/formatter/templates/*.ts',
-      'src/parser/*_peg_parser.ts',
+      'src/parser/*/peg_parser.ts',
       'src/normalize_mappings/suffix-normalize-mapping.ts',
       'src/normalize_mappings/enharmonic-normalize.ts',
     ],
