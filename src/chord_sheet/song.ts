@@ -248,7 +248,11 @@ class Song extends MetadataAccessors {
     const paragraphs = [currentParagraph];
 
     lines.forEach((line) => {
-      if (line.isEmpty()) {
+      if (line.isSectionEnd()) {
+        currentParagraph.addLine(line);
+        currentParagraph = new Paragraph();
+        paragraphs.push(currentParagraph);
+      } else if (line.isEmpty()) {
         currentParagraph = new Paragraph();
         paragraphs.push(currentParagraph);
       } else if (line.hasRenderableItems()) {

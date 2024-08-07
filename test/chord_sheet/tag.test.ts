@@ -1,4 +1,19 @@
 import { Tag } from '../../src';
+import {
+  END_OF_ABC,
+  END_OF_BRIDGE,
+  END_OF_CHORUS,
+  END_OF_GRID,
+  END_OF_LY,
+  END_OF_TAB,
+  END_OF_VERSE,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_TAB, START_OF_VERSE,
+} from '../../src/chord_sheet/tag';
 
 describe('Tag', () => {
   const expectedAliases = {
@@ -120,6 +135,62 @@ describe('Tag', () => {
 
       expect(tag.name).toEqual('foo');
       expect(tag.value).toEqual('bar ber');
+    });
+  });
+
+  const sectionEndTags = [
+    END_OF_ABC,
+    END_OF_BRIDGE,
+    END_OF_CHORUS,
+    END_OF_GRID,
+    END_OF_LY,
+    END_OF_TAB,
+    END_OF_VERSE,
+  ];
+
+  const sectionStartTags = [
+    START_OF_ABC,
+    START_OF_BRIDGE,
+    START_OF_CHORUS,
+    START_OF_GRID,
+    START_OF_LY,
+    START_OF_TAB,
+    START_OF_VERSE,
+  ];
+
+  describe('#isSectionDelimiter', () => {
+    [...sectionStartTags, ...sectionEndTags].forEach((tag) => {
+      it(`returns true for ${tag}`, () => {
+        expect(new Tag(tag, 'value').isSectionDelimiter()).toBe(true);
+      });
+    });
+
+    it('returns false for other tags', () => {
+      expect(new Tag('foo', 'value').isSectionDelimiter()).toBe(false);
+    });
+  });
+
+  describe('#isSectionEnd', () => {
+    sectionEndTags.forEach((tag) => {
+      it(`returns true for ${tag}`, () => {
+        expect(new Tag(tag, 'value').isSectionEnd()).toBe(true);
+      });
+    });
+
+    it('returns false for other tags', () => {
+      expect(new Tag('foo', 'value').isSectionEnd()).toBe(false);
+    });
+  });
+
+  describe('#isSectionStart', () => {
+    sectionStartTags.forEach((tag) => {
+      it(`returns true for ${tag}`, () => {
+        expect(new Tag(tag, 'value').isSectionStart()).toBe(true);
+      });
+    });
+
+    it('returns false for other tags', () => {
+      expect(new Tag('foo', 'value').isSectionStart()).toBe(false);
     });
   });
 });

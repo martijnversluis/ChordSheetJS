@@ -128,4 +128,90 @@ describe('Line', () => {
       });
     });
   });
+
+  describe('#isSectionEnd', () => {
+    describe('when the line is a section end', () => {
+      it('returns true', () => {
+        const line = createLine([
+          createTag('end_of_chorus'),
+        ]);
+
+        expect(line.isSectionEnd()).toBe(true);
+      });
+    });
+
+    describe('when the line is not a section end', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('start_of_chorus'),
+        ]);
+
+        expect(line.isSectionEnd()).toBe(false);
+      });
+    });
+
+    describe('when the line is no section delimiter', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('foo'),
+        ]);
+
+        expect(line.isSectionEnd()).toBe(false);
+      });
+    });
+
+    describe('when the line contains multiple items', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('end_of_chorus'),
+          createTag('start_of_chorus'),
+        ]);
+
+        expect(line.isSectionEnd()).toBe(false);
+      });
+    });
+  });
+
+  describe('#isSectionStart', () => {
+    describe('when the line is a section start', () => {
+      it('returns true', () => {
+        const line = createLine([
+          createTag('start_of_chorus'),
+        ]);
+
+        expect(line.isSectionStart()).toBe(true);
+      });
+    });
+
+    describe('when the line is not a section start', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('end_of_chorus'),
+        ]);
+
+        expect(line.isSectionStart()).toBe(false);
+      });
+    });
+
+    describe('when the line is no section delimiter', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('foo'),
+        ]);
+
+        expect(line.isSectionStart()).toBe(false);
+      });
+    });
+
+    describe('when the line contains multiple items', () => {
+      it('returns false', () => {
+        const line = createLine([
+          createTag('end_of_chorus'),
+          createTag('start_of_chorus'),
+        ]);
+
+        expect(line.isSectionStart()).toBe(false);
+      });
+    });
+  });
 });
