@@ -28,7 +28,7 @@
     "@babel/helper-get-function-arity": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
-    "@babel/preset-env": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
     "@babel/preset-typescript": "^7.24.7",
     "@eslint/js": "^9.8.0",
     "@parcel/packager-ts": "2.12.0",
