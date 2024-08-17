@@ -99,18 +99,10 @@ Line
 Token
   = Tag
   / AnnotationLyricsPair
-  / ChordLyricsPair
+  / chordLyricsPair:ChordLyricsPair
   / MetaTernary
   / lyrics:Lyrics {
-      return lyrics.split('\xa0').flatMap((lyric, index) => ([
-          index == 0 ? null : { type: 'softLineBreak' },
-          {
-            type: 'chordLyricsPair',
-            chords: '',
-            lyrics: lyric,
-          },
-        ].filter(x => x)
-      ));
+      return helpers.applySoftLineBreaks(lyrics);
     }
 
 Comment
@@ -128,16 +120,13 @@ AnnotationLyricsPair
     }
 
 ChordLyricsPair
-  = chords:Chord lyrics:$(LyricsChar*) space:$(Space*) {
-      return {
-        type: 'chordLyricsPair',
-        chords: chords || '',
-        lyrics: lyrics + (space || ''),
-      };
+  = chords:Chord lyrics:LyricsChar* space:$(Space*) {
+      const mergedLyrics = lyrics.map(c => c.char || c).join('') + (space || '');
+      return helpers.breakChordLyricsPairOnSoftLineBreak(chords || '', mergedLyrics);
     }
 
 Lyrics
-  = lyrics: LyricsCharOrSpace+ {
+  = lyrics:LyricsCharOrSpace+ {
       return lyrics.map(c => c.char || c).join('');
     }
 
