@@ -7,6 +7,9 @@ import fs from 'fs';
 const parserName = process.argv[2];
 const args = process.argv.slice(3);
 const skipChordGrammar = args.includes('--skip-chord-grammar');
+const enableTracing = process.env.NODE_ENV === 'test';
+
+console.warn('\x1b[34m', `👷 Building ${parserName} parser with${enableTracing ? '' : 'out'} tracing`);
 
 const parserFolder = `./src/parser/${parserName}`;
 const grammarFile = `${parserFolder}/grammar.pegjs`;
@@ -24,6 +27,9 @@ const source = peggy.generate(input, {
   grammarSource: grammarFile,
   output: 'source',
   format: 'commonjs',
+  trace: enableTracing,
 });
 
 fs.writeFileSync(outputFile, `import * as helpers from './helpers';\n\n${source}`);
+
+console.warn('\x1b[32m', `✨ Successfully built ${parserName} parser at ${outputFile}`);

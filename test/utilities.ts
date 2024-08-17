@@ -1,3 +1,4 @@
+import Tracer from 'pegjs-backtrace';
 import theredoc from 'theredoc';
 import { stripHTML } from '../src/template_helpers';
 
@@ -219,3 +220,15 @@ export function buildKey(
 
   return resolvedKey;
 }
+
+export function trace(input: string, callback: (tracer: Tracer) => any): any {
+  const tracer = new Tracer(input);
+
+  try {
+    return callback(tracer);
+  } finally {
+    console.log(tracer.getParseTreeString());
+  }
+}
+
+export * as Tracer from 'pegjs-backtrace';

@@ -5082,6 +5082,7 @@ __metadata:
     parcel: "npm:^2.4.1"
     parcel-transformer-hbs: "npm:^1.0.4"
     peggy: "npm:^4.0.2"
+    pegjs-backtrace: "npm:^0.2.1"
     pinst: "npm:^3.0.0"
     print: "npm:^1.2.0"
     shx: "npm:^0.3.4"
@@ -9453,6 +9454,13 @@ __metadata:
   bin:
     peggy: bin/peggy.js
   checksum: 10c0/798982b58b405f86eedb4d8556ef13785b9c4d46d5a55b4d30366fa974d5647bfd4a8a37800fd8fcbfae35b1bcc2a412af999ac1919e766b82939f0148a488ca
+  languageName: node
+  linkType: hard
+
+"pegjs-backtrace@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "pegjs-backtrace@npm:0.2.1"
+  checksum: 10c0/11486299772eab0fff32ddca51f04ab842e3dd2e6ba9764226247ff975387adbeca8bae6df4c263ecea72995c8ccd41fbbec51fec2f327e885d3be772c90d6e2
   languageName: node
   linkType: hard
 
