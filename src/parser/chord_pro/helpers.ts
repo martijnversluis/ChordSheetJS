@@ -1,6 +1,8 @@
 import {
+  SerializedChordLyricsPair,
   SerializedItem,
   SerializedLine,
+  SerializedSoftLineBreak,
   SerializedTag,
 } from '../../serialized_types';
 
@@ -34,4 +36,56 @@ export function buildTag(name: string, value: string | null, location: FileRange
     value: value || '',
     location: location.start,
   };
+}
+
+export function stringSplitReplace(
+  string: string,
+  search: string,
+  replaceMatch: (subString: string) => any,
+  replaceRest: (subString: string) => any = (subString) => subString,
+): any[] {
+  const regExp = new RegExp(search, 'g');
+  const occurrences = Array.from(string.matchAll(regExp));
+  const result: string[] = [];
+  let index = 0;
+
+  occurrences.forEach((match) => {
+    const before = string.slice(index, match.index);
+    if (before !== '') result.push(replaceRest(before));
+    result.push(replaceMatch(match[0]));
+    index = match.index + match[0].length;
+  });
+
+  const rest = string.slice(index);
+  if (rest !== '') result.push(replaceRest(rest));
+
+  return result;
+}
+
+export function applySoftLineBreaks(lyrics: string): SerializedChordLyricsPair[] {
+  return stringSplitReplace(
+    lyrics,
+    '\xa0',
+    () => ({ type: 'softLineBreak' }),
+    (lyric) => ({ type: 'chordLyricsPair', chords: '', lyrics: lyric }),
+  ) as SerializedChordLyricsPair[];
+}
+
+export function breakChordLyricsPairOnSoftLineBreak(
+  chords: string,
+  lyrics: string,
+): Array<SerializedChordLyricsPair | SerializedSoftLineBreak> {
+  const pairs =  applySoftLineBreaks(lyrics || '');
+  let [first, ...rest] = pairs as Array<SerializedChordLyricsPair | SerializedSoftLineBreak>;
+  let addedLeadingChord: SerializedChordLyricsPair | null = null;
+
+  if (chords !== '') {
+    if (!first  || first.type === 'softLineBreak') {
+      addedLeadingChord = { type: 'chordLyricsPair', chords, lyrics: '' };
+    } else {
+      first = { ...first, chords };
+    }
+  }
+
+  return [addedLeadingChord, first || null, ...rest].filter((item) => item !== null);
 }

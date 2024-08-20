@@ -624,6 +624,18 @@ Let it [Am]be
     expect(items[4]).toBeChordLyricsPair('C/G', 'be');
   });
 
+  it('supports soft line breaks directly following a bracket', () => {
+    const chordSheet = String.raw`[A]\ [B]bar`;
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet, { softLineBreaks: true });
+
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('A', '');
+    expect(items[1]).toBeSoftLineBreak();
+    expect(items[2]).toBeChordLyricsPair('B', 'bar');
+  });
+
   it('does not parse soft line breaks when disabled', () => {
     const chordSheet = heredoc`
       [Am]Let it be,\\ let it [C/G]be

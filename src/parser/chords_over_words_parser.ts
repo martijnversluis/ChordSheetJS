@@ -3,6 +3,7 @@ import ParserWarning from './parser_warning';
 import { parse, ParseOptions } from './chords_over_words/peg_parser';
 import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
+import NullTracer from './null_tracer';
 
 export type ChordsOverWordsParserOptions = ParseOptions & {
   softLineBreaks?: boolean;
@@ -68,7 +69,11 @@ class ChordsOverWordsParser {
    * @returns {Song} The parsed song
    */
   parse(chordSheet: string, options?: ChordsOverWordsParserOptions): Song {
-    const ast = parse(normalizeLineEndings(chordSheet), options);
+    const ast = parse(
+      normalizeLineEndings(chordSheet),
+      { tracer: new NullTracer(), ...options },
+    );
+
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }
