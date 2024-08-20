@@ -12,13 +12,13 @@ import {
   SYMBOL,
 } from '../src/constants';
 
-const AmericanScale = {
+const americanScale = {
   [NO_MODIFIER]: ['C',  null, 'D',  null, 'E',  'F',  null, 'G',  null, 'A',  null, 'B' ],
   [SHARP]:       ['B#', 'C#', null, 'D#', null, 'E#', 'F#', null, 'G#', null, 'A#', null],
   [FLAT]:        [null, 'Db', null, 'Eb', 'Fb', null, 'Gb', null, 'Ab', null, 'Bb', 'Cb'],
 };
 
-const SolfegeScale = {
+const solfegeScale = {
   [NO_MODIFIER]: ['Do',  null, 'Re',  null, 'Mi',  'Fa',  null, 'Sol',  null, 'La',  null, 'Si' ],
   [SHARP]:       ['Si#', 'Do#', null, 'Re#', null, 'Mi#', 'Fa#', null, 'Sol#', null, 'La#', null],
   [FLAT]:        [null, 'Reb', null, 'Mib', 'Fab', null, 'Solb', null, 'Lab', null, 'Sib', 'Dob'],
@@ -26,12 +26,12 @@ const SolfegeScale = {
 
 const SCALES = {
   [SYMBOL]: {
-    [MINOR]: AmericanScale,
-    [MAJOR]: AmericanScale,
+    [MINOR]: americanScale,
+    [MAJOR]: americanScale,
   },
   [SOLFEGE]: {
-    [MINOR]: SolfegeScale,
-    [MAJOR]: SolfegeScale,
+    [MINOR]: solfegeScale,
+    [MAJOR]: solfegeScale,
   },
   [NUMERIC]: {
     [MINOR]: {

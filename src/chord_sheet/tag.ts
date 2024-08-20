@@ -102,7 +102,6 @@ export const KEY = 'key';
  * See https://www.chordpro.org/chordpro/directives-key/
  * @type {string}
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _KEY = '_key';
 
 /**

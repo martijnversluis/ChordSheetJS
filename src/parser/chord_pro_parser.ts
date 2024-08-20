@@ -1,9 +1,10 @@
-import { parse, ParseOptions } from './chord_pro_peg_parser';
+import { parse, ParseOptions } from './chord_pro/peg_parser';
 import Song from '../chord_sheet/song';
 import ParserWarning from './parser_warning';
 import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 import { SerializedSong } from '../serialized_types';
+import NullTracer from './null_tracer';
 
 export type ChordProParserOptions = ParseOptions & {
   softLineBreaks?: boolean;
@@ -34,7 +35,11 @@ class ChordProParser {
    * @returns {Song} The parsed song
    */
   parse(chordSheet: string, options?: ChordProParserOptions): Song {
-    const ast = parse(normalizeLineEndings(chordSheet), options) as SerializedSong;
+    const ast = parse(
+      normalizeLineEndings(chordSheet),
+      { tracer: new NullTracer(), ...options },
+    ) as SerializedSong;
+
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }
