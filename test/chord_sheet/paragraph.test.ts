@@ -135,4 +135,26 @@ describe('Paragraph', () => {
       });
     });
   });
+
+  describe('#isEmpty', () => {
+    describe('when the paragraph is empty', () => {
+      it('returns true', () => {
+        const paragraph = createParagraph([]);
+
+        expect(paragraph.isEmpty()).toBe(true);
+      });
+    });
+
+    describe('when the paragraph is not empty', () => {
+      it('returns false', () => {
+        const paragraph = createParagraph([
+          createLine([
+            createLiteral('Tab line 1'),
+          ]),
+        ]);
+
+        expect(paragraph.isEmpty()).toBe(false);
+      });
+    });
+  });
 });
