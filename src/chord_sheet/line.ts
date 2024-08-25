@@ -219,6 +219,28 @@ class Line {
       },
     );
   }
+
+  get _tag(): Tag | null {
+    if (this.items.length !== 1) {
+      return null;
+    }
+
+    const item = this.items[0];
+
+    if (!(item instanceof Tag)) {
+      return null;
+    }
+
+    return item;
+  }
+
+  isSectionStart(): boolean {
+    return this._tag?.isSectionStart() || false;
+  }
+
+  isSectionEnd(): boolean {
+    return this._tag?.isSectionEnd() || false;
+  }
 }
 
 export default Line;

@@ -113,7 +113,7 @@ function toBeChordLyricsPair(received, chords, lyrics, annotation = '') {
   return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics, annotation });
 }
 
-function toBeTag(received, name, value) {
+function toBeTag(received, name, value = '') {
   return toBeClassInstanceWithProperties(received, Tag, { name, value });
 }
 

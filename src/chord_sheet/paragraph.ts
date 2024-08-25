@@ -28,7 +28,7 @@ class Paragraph {
   isLiteral() {
     const { lines } = this;
 
-    if (lines.length === 0) {
+    if (this.isEmpty()) {
       return false;
     }
 
@@ -102,6 +102,10 @@ class Paragraph {
    */
   hasRenderableItems(): boolean {
     return this.lines.some((line) => line.hasRenderableItems());
+  }
+
+  isEmpty(): boolean {
+    return this.lines.length === 0;
   }
 }
 

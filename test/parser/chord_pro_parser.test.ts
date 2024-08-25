@@ -525,20 +525,23 @@ Let it [Am]be
       Tab line 1
       Tab line 2
       {end_of_tab}
+      {c:Verse}
     `;
 
     const parser = new ChordProParser();
     const song = parser.parse(chordSheet);
     const { paragraphs } = song;
-    const paragraph = paragraphs[0];
+    const [paragraph, secondParagraph] = paragraphs;
     const { lines } = paragraph;
 
-    expect(paragraphs).toHaveLength(1);
+    expect(paragraphs).toHaveLength(2);
     expect(paragraph.type).toEqual(TAB);
     expect(lines).toHaveLength(3);
     expect(lines[0].items[0]).toBeTag('start_of_tab', 'Intro');
     expect(lines[1].items[0]).toBeLiteral('Tab line 1');
     expect(lines[2].items[0]).toBeLiteral('Tab line 2');
+
+    expect(secondParagraph.lines[0].items[0]).toBeTag('comment', 'Verse');
   });
 
   it('parses ABC sections', () => {

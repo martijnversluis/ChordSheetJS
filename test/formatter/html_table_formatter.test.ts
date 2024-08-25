@@ -661,6 +661,8 @@ describe('HtmlTableFormatter', () => {
       [],
     ]);
 
+    expect(song.bodyParagraphs).toHaveLength(3);
+
     const expectedOutput = html`
       <div class="chord-sheet">
         <div class="paragraph">
