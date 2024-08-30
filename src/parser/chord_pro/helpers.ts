@@ -7,6 +7,7 @@ import {
 } from '../../serialized_types';
 
 import { FileRange } from './peg_parser';
+import { stringSplitReplace } from '../../helpers';
 
 function splitSectionContent(content: string): string[] {
   return content
@@ -36,30 +37,6 @@ export function buildTag(name: string, value: string | null, location: FileRange
     value: value || '',
     location: location.start,
   };
-}
-
-export function stringSplitReplace(
-  string: string,
-  search: string,
-  replaceMatch: (subString: string) => any,
-  replaceRest: (subString: string) => any = (subString) => subString,
-): any[] {
-  const regExp = new RegExp(search, 'g');
-  const occurrences = Array.from(string.matchAll(regExp));
-  const result: string[] = [];
-  let index = 0;
-
-  occurrences.forEach((match) => {
-    const before = string.slice(index, match.index);
-    if (before !== '') result.push(replaceRest(before));
-    result.push(replaceMatch(match[0]));
-    index = match.index + match[0].length;
-  });
-
-  const rest = string.slice(index);
-  if (rest !== '') result.push(replaceRest(rest));
-
-  return result;
 }
 
 export function applySoftLineBreaks(lyrics: string): SerializedChordLyricsPair[] {

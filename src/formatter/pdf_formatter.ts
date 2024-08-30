@@ -7,6 +7,8 @@ import TextFormatter from './text_formatter';
 import Paragraph from '../chord_sheet/paragraph';
 import Line from '../chord_sheet/line';
 import { ChordLyricsPair, Comment, SoftLineBreak, Tag } from '../index';
+import Item from '../chord_sheet/item';
+import { stringSplitReplace } from '../helpers';
 
 type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation';
 type LayoutSection = 'header' | 'footer';
@@ -67,7 +69,7 @@ type LayoutItem = {
 };
 
 type MeasuredItem = {
-  item: ChordLyricsPair | Comment | SoftLineBreak,
+  item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item,
   width: number,
   chordHeight?: number,
 };
@@ -361,36 +363,88 @@ class PdfFormatter extends Formatter {
     const lyricsFont: FontConfiguration = this.getFontConfiguration('text');
     const commentFont: FontConfiguration = this.getFontConfiguration('comment');
 
-    const renderedLine = line.items.map((item) => {
+    const measuredItems: MeasuredItem[] = line.items.flatMap((item: Item): MeasuredItem[] => {
       if (isChordLyricsPair(item)) {
-        const chordLyricsPair = item as ChordLyricsPair;
-        const { chords, lyrics } = chordLyricsPair;
-        const chordWidth = this.getTextDimensions(chords, chordFont).w;
-        const lyricWidth = this.getTextDimensions(lyrics, lyricsFont).w;
+        const items: Array<ChordLyricsPair | SoftLineBreak> =
+          this.addSoftLineBreaksToChordLyricsPair(item as ChordLyricsPair);
 
-        const pairWidth = (chordWidth > lyricWidth)
-          ? this.getTextDimensions(`${chords}${this.spaces}`, chordFont).w
-          : lyricWidth;
-
-        return {
-          item: chordLyricsPair,
-          width: pairWidth,
-          chordHeight: this.getTextDimensions(chords, chordFont).h,
-        };
+        return items.flatMap((i): MeasuredItem[] => (
+          this.measureItem(i, chordFont, lyricsFont, commentFont)
+        ));
       } else if (isTag(item) && isComment(item as Tag)) {
-        const comment = item as Tag;
-        const commentWidth = this.getTextDimensions(comment.value, commentFont).w;
-
-        return {
-          item: comment,
-          width: commentWidth,
-        };
+        return this.measureTag(item as Tag, commentFont);
       } else {
-        return { item, width: 0 };
+        return [{ item, width: 0 }];
       }
     });
 
-    this.renderLineItems(renderedLine);
+    this.renderLineItems(measuredItems);
+  }
+
+  measureItem(
+    item: ChordLyricsPair | SoftLineBreak,
+    chordFont: FontConfiguration,
+    lyricFont: FontConfiguration,
+    commentFont: FontConfiguration,
+  ): MeasuredItem[] {
+    if (item instanceof ChordLyricsPair) {
+      return this.measureChordLyricsPair(item, chordFont, lyricFont);
+    }
+
+    if (item instanceof Tag && isComment(item)) {
+      return this.measureTag(item, commentFont);
+    }
+
+    return [];
+  }
+
+  addSoftLineBreaksToChordLyricsPair(chordLyricsPair: ChordLyricsPair): Array<ChordLyricsPair | SoftLineBreak> {
+    const { annotation, chords, lyrics } = chordLyricsPair;
+
+    const items: Array<ChordLyricsPair | SoftLineBreak> = stringSplitReplace(
+      lyrics || '',
+      /,\s*/,
+      (content) => [new SoftLineBreak(), new ChordLyricsPair('', content)],
+      (lyric) => new ChordLyricsPair('', lyric),
+    ).flat();
+
+    let [first, ...rest] = items;
+    let addedLeadingPair: ChordLyricsPair | null = null;
+
+    if (chords !== '' || annotation !== '') {
+      if (!first || first instanceof SoftLineBreak) {
+        addedLeadingPair = new ChordLyricsPair(chords, lyrics, annotation);
+      } else {
+        first = new ChordLyricsPair(chords, first.lyrics, annotation);
+      }
+    }
+
+    return [addedLeadingPair, first, ...rest].filter((item) => item !== null);
+  }
+
+  measureChordLyricsPair(
+    item: ChordLyricsPair,
+    chordFont: FontConfiguration,
+    lyricsFont: FontConfiguration,
+  ): MeasuredItem[] {
+    const { chords, lyrics } = item;
+    const chordWidth = this.getTextDimensions(chords, chordFont).w;
+    const lyricWidth = this.getTextDimensions(lyrics, lyricsFont).w;
+
+    const pairWidth = (chordWidth > lyricWidth)
+      ? this.getTextDimensions(`${chords}${this.spaces}`, chordFont).w
+      : lyricWidth;
+
+    return [{
+      item,
+      width: pairWidth,
+      chordHeight: this.getTextDimensions(chords, chordFont).h,
+    }];
+  }
+
+  measureTag(item: Tag, font: FontConfiguration): MeasuredItem[] {
+    const tagWidth = this.getTextDimensions(item.value, font).w;
+    return [{ item, width: tagWidth }];
   }
 
   get spaces() {
