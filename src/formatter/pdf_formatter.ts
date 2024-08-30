@@ -476,7 +476,7 @@ class PdfFormatter extends Formatter {
       const { chords, lyrics } = item as ChordLyricsPair;
 
       if (this.x + width > this.maxX) {
-        this.lineFeed(maxChordHeight);
+        this.lineFeed(Math.max(maxChordHeight, this.pdfConfiguration.lineHeight));
         this.carriageReturn();
       }
 
