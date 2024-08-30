@@ -474,10 +474,12 @@ class PdfFormatter extends Formatter {
 
     if (item instanceof ChordLyricsPair) {
       const { chords, lyrics } = item as ChordLyricsPair;
+      let capitalizeFirstWord = false;
 
       if (this.x + width > this.maxX) {
         this.lineFeed(Math.max(maxChordHeight, this.pdfConfiguration.lineHeight));
         this.carriageReturn();
+        capitalizeFirstWord = true;
       }
 
       if (chords) {
@@ -487,7 +489,8 @@ class PdfFormatter extends Formatter {
 
       if (lyrics && lyrics.trim() !== '') {
         const lyricsY = this.y + maxChordHeight + chordLyricSpacing;
-        this.renderText(lyrics, this.x, lyricsY, lyricsFont);
+        const lyricsText = capitalizeFirstWord ? this.capitalize(lyrics) : lyrics;
+        this.renderText(lyricsText, this.x, lyricsY, lyricsFont);
       }
 
       this.x += width;
@@ -503,6 +506,10 @@ class PdfFormatter extends Formatter {
     }
 
     this.renderLineItems(rest);
+  }
+
+  capitalize(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   private lineFeed(maxChordHeight: number) {
