@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import { ContentType } from '../src/serialized_types';
+import StubbedPdfDoc, { RenderedItem, RenderedLine, RenderedText } from './formatter/stubbed_pdf_doc';
 
 declare global {
   namespace jest {
@@ -20,6 +21,12 @@ declare global {
       toBeTag(_name: string, _value?: string): CustomMatcherResult;
 
       toBeSoftLineBreak(): CustomMatcherResult;
+
+      toHaveLine(expected: Partial<RenderedLine>): CustomMatcherResult;
+
+      toHaveRenderedItem(expected: Partial<RenderedItem>): CustomMatcherResult;
+
+      toHaveText(expected: Partial<RenderedText>): CustomMatcherResult;
     }
   }
 }

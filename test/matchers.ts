@@ -8,6 +8,7 @@ import {
   Tag,
   Ternary,
 } from '../src';
+import StubbedPdfDoc, { RenderedItem, RenderedLine, RenderedText } from './formatter/stubbed_pdf_doc';
 
 function typeRepresentation(type, value) {
   if (type === 'object') {
@@ -157,6 +158,29 @@ function toBeSoftLineBreak(received) {
   return toBeClassInstanceWithProperties(received, SoftLineBreak, {});
 }
 
+function toHaveRenderedItem(
+  equals: Function,
+  itemType: string,
+  received: StubbedPdfDoc,
+  expected: Partial<RenderedItem>,
+) {
+  const objectWithType = { type: itemType, ...expected };
+  const expectedArray = expect.arrayContaining([expect.objectContaining(objectWithType)]);
+  const pass = equals(received.renderedItems, expectedArray);
+
+  if (pass) {
+    return {
+      message: () => `expected ${received} not to have ${itemType} ${print(expected)}`,
+      pass: true,
+    };
+  }
+
+  return {
+    message: () => `expected ${received} to have ${itemType} ${print(expected)}`,
+    pass: false,
+  };
+}
+
 expect.extend({
   toBeChordLyricsPair,
   toBeComment,
@@ -166,4 +190,10 @@ expect.extend({
   toBeSoftLineBreak,
   toBeTag,
   toBeTernary,
+  toHaveText(received: StubbedPdfDoc, expected: Partial<RenderedText>) {
+    return toHaveRenderedItem(this.equals, 'text', received, expected);
+  },
+  toHaveLine(received: StubbedPdfDoc, expected: Partial<RenderedLine>) {
+    return toHaveRenderedItem(this.equals, 'line', received, expected);
+  },
 });

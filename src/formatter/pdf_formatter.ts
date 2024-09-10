@@ -1,4 +1,4 @@
-import JsPDF, { ImageCompression } from 'jspdf';
+import JsPDF, { jsPDFOptions } from 'jspdf';
 import Formatter from './formatter';
 import { isChordLyricsPair, isComment, isTag, lineHasContents } from '../template_helpers';
 import Song from '../chord_sheet/song';
@@ -6,172 +6,21 @@ import ChordProParser from '../parser/chord_pro_parser';
 import TextFormatter from './text_formatter';
 import Paragraph from '../chord_sheet/paragraph';
 import Line from '../chord_sheet/line';
-import { ChordLyricsPair, Comment, SoftLineBreak, Tag } from '../index';
+import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import Item from '../chord_sheet/item';
 import { stringSplitReplace } from '../helpers';
+import jsPDF from 'jspdf';
+import defaultConfiguration from './pdf_formatter/default_configuration';
 
-type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation';
-type LayoutSection = 'header' | 'footer';
-type Alignment = 'left' | 'center' | 'right';
-
-interface FontConfiguration {
-  name: string;
-  style: string;
-  size: number;
-  color: string | number;
-}
-
-interface Position {
-  x: Alignment,
-  y: number,
-}
-
-interface Dimension {
-  width: number,
-  height: number,
-}
-
-interface ILayoutContentItem {
-  type: string,
-  position: Position,
-}
-
-interface LayoutContentItemWithText extends ILayoutContentItem {
-  type: 'text',
-  style: FontConfiguration,
-  value?: string,
-  template?: string,
-}
-
-interface LayoutContentItemWithValue extends LayoutContentItemWithText {
-  value: string,
-}
-
-interface LayoutContentItemWithTemplate extends LayoutContentItemWithText {
-  template: string,
-}
-
-interface LayoutContentItemWithImage extends ILayoutContentItem {
-  type: 'image',
-  src: string,
-  position: Position,
-  compression: ImageCompression,
-  size: Dimension,
-  alias?: string,
-  rotation?: number,
-}
-
-type LayoutContentItem = LayoutContentItemWithValue | LayoutContentItemWithTemplate | LayoutContentItemWithImage;
-
-type LayoutItem = {
-  height: number,
-  content: LayoutContentItem[],
-};
-
-type MeasuredItem = {
-  item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item,
-  width: number,
-  chordHeight?: number,
-};
-
-type PDFConfiguration = {
-  fonts: Record<FontSection, FontConfiguration>,
-  margintop: number,
-  marginbottom: number,
-  marginleft: number,
-  marginright: number,
-  lineHeight: number,
-  chordLyricSpacing: number,
-  linePadding: number,
-  numberOfSpacesToAdd: number,
-  columnCount: number,
-  columnWidth: number,
-  columnSpacing: number,
-  layout: Record<LayoutSection, LayoutItem>,
-};
-
-const defaultConfiguration: PDFConfiguration = {
-  // Font settings for various elements
-  fonts: {
-    title: {
-      name: 'helvetica', style: 'bold', size: 24, color: 'black',
-    },
-    subtitle: {
-      name: 'helvetica', style: 'normal', size: 10, color: 100,
-    },
-    metadata: {
-      name: 'helvetica', style: 'normal', size: 10, color: 100,
-    },
-    text: {
-      name: 'helvetica', style: 'normal', size: 10, color: 'black',
-    },
-    chord: {
-      name: 'helvetica', style: 'bold', size: 10, color: 'black',
-    },
-    comment: {
-      name: 'helvetica', style: 'bold', size: 10, color: 'black',
-    },
-    annotation: {
-      name: 'helvetica', style: 'normal', size: 10, color: 'black',
-    },
-  },
-  // Layout settings
-  margintop: 25,
-  marginbottom: 10,
-  marginleft: 25,
-  marginright: 25,
-  lineHeight: 5,
-  chordLyricSpacing: 0,
-  linePadding: 8,
-  numberOfSpacesToAdd: 2,
-  columnCount: 2,
-  columnWidth: 0,
-  columnSpacing: 25,
-  layout: {
-    header: {
-      height: 60,
-      content: [
-        {
-          type: 'text',
-          template: '%{title}',
-          style: {
-            name: 'helvetica', style: 'bold', size: 24, color: 'black',
-          },
-          position: { x: 'left', y: 15 },
-        },
-        {
-          type: 'text',
-          template: 'Key of %{key} - BPM %{tempo} - Time %{time}',
-          style: {
-            name: 'helvetica', style: 'normal', size: 12, color: 100,
-          },
-          position: { x: 'left', y: 28 },
-        },
-        {
-          type: 'text',
-          template: 'By %{artist} %{subtitle}',
-          style: {
-            name: 'helvetica', style: 'normal', size: 10, color: 100,
-          },
-          position: { x: 'left', y: 38 },
-        },
-      ],
-    },
-    footer: {
-      height: 30,
-      content: [
-        {
-          type: 'text',
-          value: '©2024 My Music Publishing',
-          style: {
-            name: 'helvetica', style: 'normal', size: 10, color: 'black',
-          },
-          position: { x: 'left', y: 0 },
-        },
-      ],
-    },
-  },
-};
+import {
+  Alignment,
+  FontConfiguration, LayoutContentItemWithImage, LayoutContentItemWithText,
+  LayoutItem,
+  LayoutSection, MeasuredItem,
+  PDFConfiguration,
+  PdfConstructor,
+  PdfDoc,
+} from './pdf_formatter/types';
 
 class PdfFormatter extends Formatter {
   song: Song = new Song();
@@ -180,7 +29,7 @@ class PdfFormatter extends Formatter {
 
   x: number = 0;
 
-  doc: JsPDF = new JsPDF();
+  doc: any = new JsPDF();
 
   startTime: number = 0;
 
@@ -194,12 +43,15 @@ class PdfFormatter extends Formatter {
 
   // Configuration settings for the PDF document
   // Main function to format and save the song as a PDF
-  format(song: Song, configuration: PDFConfiguration = defaultConfiguration): void {
+  format(
+    song: Song,
+    configuration: PDFConfiguration = defaultConfiguration,
+    docConstructor: PdfConstructor = jsPDF,
+  ): void {
     this.startTime = performance.now();
     this.song = song;
-    console.log(song.lines);
     this.pdfConfiguration = configuration;
-    this.doc = this.setupDoc();
+    this.doc = this.setupDoc(docConstructor);
     this.renderLayout(this.pdfConfiguration.layout.header, 'header');
     this.renderLayout(this.pdfConfiguration.layout.footer, 'footer');
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
@@ -223,16 +75,20 @@ class PdfFormatter extends Formatter {
   }
 
   // Document setup configurations
-  setupDoc(): JsPDF {
-    const doc = new JsPDF({
+  setupDoc(docConstructor: PdfConstructor): PdfDoc {
+    const constructorOptions: jsPDFOptions = {
       orientation: 'p',
       unit: 'px',
       format: 'letter',
       compress: true,
-    });
+    };
+
+    const doc = new docConstructor(constructorOptions);
     doc.setLineWidth(0);
     doc.setDrawColor(0, 0, 0, 0);
+
     const pageWidth = doc.internal.pageSize.getWidth();
+    console.log('page width:', pageWidth);
 
     const {
       marginleft,
