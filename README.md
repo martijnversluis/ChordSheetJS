@@ -364,6 +364,8 @@ subject to breaking changes between major versions.
 ## Classes
 
 <dl>
+<dt><a href="#ChordSheetSerializer">ChordSheetSerializer</a></dt>
+<dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p></dd>
 <dt><a href="#ChordLyricsPair">ChordLyricsPair</a></dt>
 <dd><p>Represents a chord with the corresponding (partial) lyrics</p></dd>
 <dt><a href="#Comment">Comment</a></dt>
@@ -381,6 +383,8 @@ metadata.get('author')   // =&gt; 'John'</p>
 <dd><p>Represents a song in a chord sheet. Currently a chord sheet can only have one song.</p></dd>
 <dt><a href="#Tag">Tag</a></dt>
 <dd><p>Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/</p></dd>
+<dt><a href="#Chord">Chord</a></dt>
+<dd><p>Represents a Chord, consisting of a root, suffix (quality) and bass</p></dd>
 <dt><a href="#ChordProFormatter">ChordProFormatter</a></dt>
 <dd><p>Formats a song into a ChordPro chord sheet</p></dd>
 <dt><a href="#ChordsOverWordsFormatter">ChordsOverWordsFormatter</a></dt>
@@ -396,6 +400,9 @@ metadata.get('author')   // =&gt; 'John'</p>
 PDF conversion.</p></dd>
 <dt><a href="#TextFormatter">TextFormatter</a></dt>
 <dd><p>Formats a song into a plain text chord sheet</p></dd>
+<dt><a href="#Key">Key</a></dt>
+<dd><p>Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).</p>
+<p>The only function considered public API is <code>Key.distance</code></p></dd>
 <dt><a href="#ChordProParser">ChordProParser</a></dt>
 <dd><p>Parses a ChordPro chord sheet</p></dd>
 <dt><del><a href="#ChordSheetParser">ChordSheetParser</a></del></dt>
@@ -441,13 +448,6 @@ Whisper words of wisdom, let it be
 <dt><a href="#UltimateGuitarParser">UltimateGuitarParser</a></dt>
 <dd><p>Parses an Ultimate Guitar chord sheet with metadata
 Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
-<dt><a href="#Chord">Chord</a></dt>
-<dd><p>Represents a Chord, consisting of a root, suffix (quality) and bass</p></dd>
-<dt><a href="#ChordSheetSerializer">ChordSheetSerializer</a></dt>
-<dd><p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p></dd>
-<dt><a href="#Key">Key</a></dt>
-<dd><p>Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).</p>
-<p>The only function considered public API is <code>Key.distance</code></p></dd>
 </dl>
 
 ## Constants
@@ -576,6 +576,37 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 <dt><a href="#getKeys">getKeys(key)</a> ⇒ <code>Array.&lt;string&gt;</code></dt>
 <dd><p>Returns applicable keys to transpose to from the provided key</p></dd>
 </dl>
+
+<a name="ChordSheetSerializer"></a>
+
+## ChordSheetSerializer
+<p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p>
+
+**Kind**: global class  
+
+* [ChordSheetSerializer](#ChordSheetSerializer)
+    * [.serialize()](#ChordSheetSerializer+serialize) ⇒
+    * [.deserialize(serializedSong)](#ChordSheetSerializer+deserialize) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordSheetSerializer+serialize"></a>
+
+### chordSheetSerializer.serialize() ⇒
+<p>Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
+Can be deserialized using [deserialize](deserialize)</p>
+
+**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
+**Returns**: <p>object A plain JS object containing all chord sheet data</p>  
+<a name="ChordSheetSerializer+deserialize"></a>
+
+### chordSheetSerializer.deserialize(serializedSong) ⇒ [<code>Song</code>](#Song)
+<p>Deserializes a song that has been serialized using [serialize](serialize)</p>
+
+**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
+**Returns**: [<code>Song</code>](#Song) - <p>The deserialized song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| serializedSong | <code>object</code> | <p>The serialized song</p> |
 
 <a name="ChordLyricsPair"></a>
 
@@ -1142,318 +1173,6 @@ https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chord
 
 **Kind**: instance method of [<code>Tag</code>](#Tag)  
 **Returns**: [<code>Tag</code>](#Tag) - <p>The cloned tag</p>  
-<a name="ChordProFormatter"></a>
-
-## ChordProFormatter
-<p>Formats a song into a ChordPro chord sheet</p>
-
-**Kind**: global class  
-<a name="ChordProFormatter+format"></a>
-
-### chordProFormatter.format(song) ⇒ <code>string</code>
-<p>Formats a song into a ChordPro chord sheet.</p>
-
-**Kind**: instance method of [<code>ChordProFormatter</code>](#ChordProFormatter)  
-**Returns**: <code>string</code> - <p>The ChordPro string</p>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
-
-<a name="ChordsOverWordsFormatter"></a>
-
-## ChordsOverWordsFormatter
-<p>Formats a song into a plain text chord sheet</p>
-
-**Kind**: global class  
-<a name="ChordsOverWordsFormatter+format"></a>
-
-### chordsOverWordsFormatter.format(song) ⇒ <code>string</code>
-<p>Formats a song into a plain text chord sheet</p>
-
-**Kind**: instance method of [<code>ChordsOverWordsFormatter</code>](#ChordsOverWordsFormatter)  
-**Returns**: <code>string</code> - <p>the chord sheet</p>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
-
-<a name="Formatter"></a>
-
-## Formatter
-<p>Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object</p>
-
-**Kind**: global class  
-<a name="new_Formatter_new"></a>
-
-### new Formatter([configuration])
-<p>Instantiate</p>
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [configuration] | <code>Object</code> | <code>{}</code> | <p>options</p> |
-| [configuration.evaluate] | <code>boolean</code> | <code>false</code> | <p>Whether or not to evaluate meta expressions. For more info about meta expressions, see: https://bit.ly/2SC9c2u</p> |
-| [configuration.metadata] | <code>object</code> | <code>{}</code> |  |
-| [configuration.metadata.separator] | <code>string</code> | <code>&quot;\&quot;, \&quot;&quot;</code> | <p>The separator to be used when rendering a metadata value that has multiple values. See: https://bit.ly/2SC9c2u</p> |
-| [configuration.key] | [<code>Key</code>](#Key) \| <code>string</code> | <code></code> | <p>The key to use for rendering. The chord sheet will be transposed from the song's original key (as indicated by the <code>{key}</code> directive) to the specified key. Note that transposing will only work if the original song key is set.</p> |
-| [configuration.expandChorusDirective] | <code>boolean</code> | <code>false</code> | <p>Whether or not to expand <code>{chorus}</code> directives by rendering the last defined chorus inline after the directive.</p> |
-| [configuration.useUnicodeModifiers] | <code>boolean</code> | <code>false</code> | <p>Whether or not to use unicode flat and sharp symbols.</p> |
-| [configuration.normalizeChords] | <code>boolean</code> | <code>true</code> | <p>Whether or not to automatically normalize chords</p> |
-
-<a name="HtmlDivFormatter"></a>
-
-## HtmlDivFormatter
-<p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p>
-
-**Kind**: global class  
-<a name="HtmlFormatter"></a>
-
-## HtmlFormatter
-<p>Acts as a base class for HTML formatters</p>
-
-**Kind**: global class  
-
-* [HtmlFormatter](#HtmlFormatter)
-    * [.cssObject](#HtmlFormatter+cssObject) ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
-    * [.format(song)](#HtmlFormatter+format) ⇒ <code>string</code>
-    * [.cssString(scope)](#HtmlFormatter+cssString) ⇒ <code>string</code>
-
-<a name="HtmlFormatter+cssObject"></a>
-
-### htmlFormatter.cssObject ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
-<p>Basic CSS, in object style à la useStyles, to use with the HTML output
-For a CSS string see [cssString](cssString)</p>
-<p>Example:</p>
-<pre><code>'.paragraph': {
-  marginBottom: '1em'
-}
-</code></pre>
-
-**Kind**: instance property of [<code>HtmlFormatter</code>](#HtmlFormatter)  
-**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - <p>the CSS object</p>  
-<a name="HtmlFormatter+format"></a>
-
-### htmlFormatter.format(song) ⇒ <code>string</code>
-<p>Formats a song into HTML.</p>
-
-**Kind**: instance method of [<code>HtmlFormatter</code>](#HtmlFormatter)  
-**Returns**: <code>string</code> - <p>The HTML string</p>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
-
-<a name="HtmlFormatter+cssString"></a>
-
-### htmlFormatter.cssString(scope) ⇒ <code>string</code>
-<p>Generates basic CSS, optionally scoped within the provided selector, to use with the HTML output</p>
-<p>For example, execute cssString('.chordSheetViewer') will result in CSS like:</p>
-<pre><code>.chordSheetViewer .paragraph {
-  margin-bottom: 1em;
-}
-</code></pre>
-
-**Kind**: instance method of [<code>HtmlFormatter</code>](#HtmlFormatter)  
-**Returns**: <code>string</code> - <p>the CSS string</p>  
-
-| Param | Description |
-| --- | --- |
-| scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
-
-<a name="HtmlTableFormatter"></a>
-
-## HtmlTableFormatter
-<p>Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
-PDF conversion.</p>
-
-**Kind**: global class  
-<a name="TextFormatter"></a>
-
-## TextFormatter
-<p>Formats a song into a plain text chord sheet</p>
-
-**Kind**: global class  
-<a name="TextFormatter+format"></a>
-
-### textFormatter.format(song) ⇒ <code>string</code>
-<p>Formats a song into a plain text chord sheet</p>
-
-**Kind**: instance method of [<code>TextFormatter</code>](#TextFormatter)  
-**Returns**: <code>string</code> - <p>the chord sheet</p>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
-
-<a name="ChordProParser"></a>
-
-## ChordProParser
-<p>Parses a ChordPro chord sheet</p>
-
-**Kind**: global class  
-
-* [ChordProParser](#ChordProParser)
-    * [.warnings](#ChordProParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-    * [.parse(chordSheet, options)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
-
-<a name="ChordProParser+warnings"></a>
-
-### chordProParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-<p>All warnings raised during parsing the chord sheet</p>
-
-**Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
-<a name="ChordProParser+parse"></a>
-
-### chordProParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
-<p>Parses a ChordPro chord sheet into a song</p>
-
-**Kind**: instance method of [<code>ChordProParser</code>](#ChordProParser)  
-**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
-**See**: https://peggyjs.org/documentation.html#using-the-parser  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| chordSheet | <code>string</code> |  | <p>the ChordPro chord sheet</p> |
-| options | <code>ChordProParserOptions</code> |  | <p>Parser options.</p> |
-| options.softLineBreaks | <code>ChordProParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by * a space is treated as a soft line break</p> |
-
-<a name="ChordSheetParser"></a>
-
-## ~~ChordSheetParser~~
-***Deprecated***
-
-<p>Parses a normal chord sheet</p>
-<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
-<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
-support for many variations. Besides that, some chordpro feature have been ported back
-to ChordsOverWordsParser, which adds some interesting functionality.</p>
-
-**Kind**: global class  
-
-* ~~[ChordSheetParser](#ChordSheetParser)~~
-    * [new ChordSheetParser([options])](#new_ChordSheetParser_new)
-    * [.parse(chordSheet, [options])](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
-
-<a name="new_ChordSheetParser_new"></a>
-
-### new ChordSheetParser([options])
-<p>Instantiate a chord sheet parser
-ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
-| [options.preserveWhitespace] | <code>boolean</code> | <code>true</code> | <p>whether to preserve trailing whitespace for chords</p> |
-
-<a name="ChordSheetParser+parse"></a>
-
-### chordSheetParser.parse(chordSheet, [options]) ⇒ [<code>Song</code>](#Song)
-<p>Parses a chord sheet into a song</p>
-
-**Kind**: instance method of [<code>ChordSheetParser</code>](#ChordSheetParser)  
-**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| chordSheet | <code>string</code> |  | <p>The ChordPro chord sheet</p> |
-| [options] | <code>Object</code> | <code>{}</code> | <p>Optional parser options</p> |
-| [options.song] | [<code>Song</code>](#Song) | <code></code> | <p>The [Song](#Song) to store the song data in</p> |
-
-<a name="ChordsOverWordsParser"></a>
-
-## ChordsOverWordsParser
-<p>Parses a chords over words sheet into a song</p>
-<p>It support &quot;regular&quot; chord sheets:</p>
-<pre><code>       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-C                G              F  C/E Dm C
-Whisper words of wisdom, let it be
-</code></pre>
-<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
-<pre><code>{title: Let it be}
-{key: C}
-Chorus 1:
-       Am
-Let it be
-</code></pre>
-<p>For convenience, you can leave out the brackets:</p>
-<pre><code>title: Let it be
-Chorus 1:
-       Am
-Let it be
-</code></pre>
-<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
-<pre><code>title: Let it be
-key: C
----
-Chorus 1:
-       Am         C/G        F          C
-Let it be, let it be, let it be, let it be
-C                G              F  C/E Dm C
-Whisper words of wisdom, let it be
-</code></pre>
-<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p>
-
-**Kind**: global class  
-
-* [ChordsOverWordsParser](#ChordsOverWordsParser)
-    * [.warnings](#ChordsOverWordsParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-    * [.parse(chordSheet, options)](#ChordsOverWordsParser+parse) ⇒ [<code>Song</code>](#Song)
-
-<a name="ChordsOverWordsParser+warnings"></a>
-
-### chordsOverWordsParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
-<p>All warnings raised during parsing the chord sheet</p>
-
-**Kind**: instance property of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
-<a name="ChordsOverWordsParser+parse"></a>
-
-### chordsOverWordsParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
-<p>Parses a chords over words sheet into a song</p>
-
-**Kind**: instance method of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
-**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
-**See**: https://peggyjs.org/documentation.html#using-the-parser  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| chordSheet | <code>string</code> |  | <p>the chords over words sheet</p> |
-| options | <code>ChordsOverWordsParserOptions</code> |  | <p>Parser options.</p> |
-| options.softLineBreaks | <code>ChordsOverWordsParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by a space is treated as a soft line break</p> |
-
-<a name="ParserWarning"></a>
-
-## ParserWarning
-<p>Represents a parser warning, currently only used by ChordProParser.</p>
-
-**Kind**: global class  
-<a name="ParserWarning+toString"></a>
-
-### parserWarning.toString() ⇒ <code>string</code>
-<p>Returns a stringified version of the warning</p>
-
-**Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
-**Returns**: <code>string</code> - <p>The string warning</p>  
-<a name="UltimateGuitarParser"></a>
-
-## UltimateGuitarParser
-<p>Parses an Ultimate Guitar chord sheet with metadata
-Inherits from [ChordSheetParser](#ChordSheetParser)</p>
-
-**Kind**: global class  
-<a name="new_UltimateGuitarParser_new"></a>
-
-### new UltimateGuitarParser([options])
-<p>Instantiate a chord sheet parser</p>
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
-| [options.preserveWhitespace] | <code>boolean</code> | <code>true</code> | <p>whether to preserve trailing whitespace for chords</p> |
-
 <a name="Chord"></a>
 
 ## Chord
@@ -1723,36 +1442,149 @@ Any leading or trailing whitespace is removed first, so a chord like <code> \n  
 | --- | --- |
 | chordString | <p>the chord string, eg <code>Esus4/G#</code> or <code>1sus4/#3</code>.</p> |
 
-<a name="ChordSheetSerializer"></a>
+<a name="ChordProFormatter"></a>
 
-## ChordSheetSerializer
-<p>Serializes a song into een plain object, and deserializes the serialized object back into a [Song](#Song)</p>
+## ChordProFormatter
+<p>Formats a song into a ChordPro chord sheet</p>
 
 **Kind**: global class  
+<a name="ChordProFormatter+format"></a>
 
-* [ChordSheetSerializer](#ChordSheetSerializer)
-    * [.serialize()](#ChordSheetSerializer+serialize) ⇒
-    * [.deserialize(serializedSong)](#ChordSheetSerializer+deserialize) ⇒ [<code>Song</code>](#Song)
+### chordProFormatter.format(song) ⇒ <code>string</code>
+<p>Formats a song into a ChordPro chord sheet.</p>
 
-<a name="ChordSheetSerializer+serialize"></a>
-
-### chordSheetSerializer.serialize() ⇒
-<p>Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
-Can be deserialized using [deserialize](deserialize)</p>
-
-**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
-**Returns**: <p>object A plain JS object containing all chord sheet data</p>  
-<a name="ChordSheetSerializer+deserialize"></a>
-
-### chordSheetSerializer.deserialize(serializedSong) ⇒ [<code>Song</code>](#Song)
-<p>Deserializes a song that has been serialized using [serialize](serialize)</p>
-
-**Kind**: instance method of [<code>ChordSheetSerializer</code>](#ChordSheetSerializer)  
-**Returns**: [<code>Song</code>](#Song) - <p>The deserialized song</p>  
+**Kind**: instance method of [<code>ChordProFormatter</code>](#ChordProFormatter)  
+**Returns**: <code>string</code> - <p>The ChordPro string</p>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| serializedSong | <code>object</code> | <p>The serialized song</p> |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+
+<a name="ChordsOverWordsFormatter"></a>
+
+## ChordsOverWordsFormatter
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: global class  
+<a name="ChordsOverWordsFormatter+format"></a>
+
+### chordsOverWordsFormatter.format(song) ⇒ <code>string</code>
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: instance method of [<code>ChordsOverWordsFormatter</code>](#ChordsOverWordsFormatter)  
+**Returns**: <code>string</code> - <p>the chord sheet</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+
+<a name="Formatter"></a>
+
+## Formatter
+<p>Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object</p>
+
+**Kind**: global class  
+<a name="new_Formatter_new"></a>
+
+### new Formatter([configuration])
+<p>Instantiate</p>
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [configuration] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [configuration.evaluate] | <code>boolean</code> | <code>false</code> | <p>Whether or not to evaluate meta expressions. For more info about meta expressions, see: https://bit.ly/2SC9c2u</p> |
+| [configuration.metadata] | <code>object</code> | <code>{}</code> |  |
+| [configuration.metadata.separator] | <code>string</code> | <code>&quot;\&quot;, \&quot;&quot;</code> | <p>The separator to be used when rendering a metadata value that has multiple values. See: https://bit.ly/2SC9c2u</p> |
+| [configuration.key] | [<code>Key</code>](#Key) \| <code>string</code> | <code></code> | <p>The key to use for rendering. The chord sheet will be transposed from the song's original key (as indicated by the <code>{key}</code> directive) to the specified key. Note that transposing will only work if the original song key is set.</p> |
+| [configuration.expandChorusDirective] | <code>boolean</code> | <code>false</code> | <p>Whether or not to expand <code>{chorus}</code> directives by rendering the last defined chorus inline after the directive.</p> |
+| [configuration.useUnicodeModifiers] | <code>boolean</code> | <code>false</code> | <p>Whether or not to use unicode flat and sharp symbols.</p> |
+| [configuration.normalizeChords] | <code>boolean</code> | <code>true</code> | <p>Whether or not to automatically normalize chords</p> |
+
+<a name="HtmlDivFormatter"></a>
+
+## HtmlDivFormatter
+<p>Formats a song into HTML. It uses DIVs to align lyrics with chords, which makes it useful for responsive web pages.</p>
+
+**Kind**: global class  
+<a name="HtmlFormatter"></a>
+
+## HtmlFormatter
+<p>Acts as a base class for HTML formatters</p>
+
+**Kind**: global class  
+
+* [HtmlFormatter](#HtmlFormatter)
+    * [.cssObject](#HtmlFormatter+cssObject) ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
+    * [.format(song)](#HtmlFormatter+format) ⇒ <code>string</code>
+    * [.cssString(scope)](#HtmlFormatter+cssString) ⇒ <code>string</code>
+
+<a name="HtmlFormatter+cssObject"></a>
+
+### htmlFormatter.cssObject ⇒ <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code>
+<p>Basic CSS, in object style à la useStyles, to use with the HTML output
+For a CSS string see [cssString](cssString)</p>
+<p>Example:</p>
+<pre><code>'.paragraph': {
+  marginBottom: '1em'
+}
+</code></pre>
+
+**Kind**: instance property of [<code>HtmlFormatter</code>](#HtmlFormatter)  
+**Returns**: <code>Object.&lt;string, Object.&lt;string, string&gt;&gt;</code> - <p>the CSS object</p>  
+<a name="HtmlFormatter+format"></a>
+
+### htmlFormatter.format(song) ⇒ <code>string</code>
+<p>Formats a song into HTML.</p>
+
+**Kind**: instance method of [<code>HtmlFormatter</code>](#HtmlFormatter)  
+**Returns**: <code>string</code> - <p>The HTML string</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
+
+<a name="HtmlFormatter+cssString"></a>
+
+### htmlFormatter.cssString(scope) ⇒ <code>string</code>
+<p>Generates basic CSS, optionally scoped within the provided selector, to use with the HTML output</p>
+<p>For example, execute cssString('.chordSheetViewer') will result in CSS like:</p>
+<pre><code>.chordSheetViewer .paragraph {
+  margin-bottom: 1em;
+}
+</code></pre>
+
+**Kind**: instance method of [<code>HtmlFormatter</code>](#HtmlFormatter)  
+**Returns**: <code>string</code> - <p>the CSS string</p>  
+
+| Param | Description |
+| --- | --- |
+| scope | <p>the CSS scope to use, for example <code>.chordSheetViewer</code></p> |
+
+<a name="HtmlTableFormatter"></a>
+
+## HtmlTableFormatter
+<p>Formats a song into HTML. It uses TABLEs to align lyrics with chords, which makes the HTML for things like
+PDF conversion.</p>
+
+**Kind**: global class  
+<a name="TextFormatter"></a>
+
+## TextFormatter
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: global class  
+<a name="TextFormatter+format"></a>
+
+### textFormatter.format(song) ⇒ <code>string</code>
+<p>Formats a song into a plain text chord sheet</p>
+
+**Kind**: instance method of [<code>TextFormatter</code>](#TextFormatter)  
+**Returns**: <code>string</code> - <p>the chord sheet</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| song | [<code>Song</code>](#Song) | <p>The song to be formatted</p> |
 
 <a name="Key"></a>
 
@@ -1773,6 +1605,174 @@ Can be deserialized using [deserialize](deserialize)</p>
 | --- | --- | --- |
 | oneKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the key</p> |
 | otherKey | [<code>Key</code>](#Key) \| <code>string</code> | <p>the other key</p> |
+
+<a name="ChordProParser"></a>
+
+## ChordProParser
+<p>Parses a ChordPro chord sheet</p>
+
+**Kind**: global class  
+
+* [ChordProParser](#ChordProParser)
+    * [.warnings](#ChordProParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+    * [.parse(chordSheet, options)](#ChordProParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordProParser+warnings"></a>
+
+### chordProParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+<p>All warnings raised during parsing the chord sheet</p>
+
+**Kind**: instance property of [<code>ChordProParser</code>](#ChordProParser)  
+<a name="ChordProParser+parse"></a>
+
+### chordProParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
+<p>Parses a ChordPro chord sheet into a song</p>
+
+**Kind**: instance method of [<code>ChordProParser</code>](#ChordProParser)  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+**See**: https://peggyjs.org/documentation.html#using-the-parser  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>the ChordPro chord sheet</p> |
+| options | <code>ChordProParserOptions</code> |  | <p>Parser options.</p> |
+| options.softLineBreaks | <code>ChordProParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by * a space is treated as a soft line break</p> |
+
+<a name="ChordSheetParser"></a>
+
+## ~~ChordSheetParser~~
+***Deprecated***
+
+<p>Parses a normal chord sheet</p>
+<p>ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+<p>ChordsOverWordsParser aims to support any kind of chord, whereas ChordSheetParser lacks
+support for many variations. Besides that, some chordpro feature have been ported back
+to ChordsOverWordsParser, which adds some interesting functionality.</p>
+
+**Kind**: global class  
+
+* ~~[ChordSheetParser](#ChordSheetParser)~~
+    * [new ChordSheetParser([options])](#new_ChordSheetParser_new)
+    * [.parse(chordSheet, [options])](#ChordSheetParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="new_ChordSheetParser_new"></a>
+
+### new ChordSheetParser([options])
+<p>Instantiate a chord sheet parser
+ChordSheetParser is deprecated, please use ChordsOverWordsParser.</p>
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.preserveWhitespace] | <code>boolean</code> | <code>true</code> | <p>whether to preserve trailing whitespace for chords</p> |
+
+<a name="ChordSheetParser+parse"></a>
+
+### chordSheetParser.parse(chordSheet, [options]) ⇒ [<code>Song</code>](#Song)
+<p>Parses a chord sheet into a song</p>
+
+**Kind**: instance method of [<code>ChordSheetParser</code>](#ChordSheetParser)  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>The ChordPro chord sheet</p> |
+| [options] | <code>Object</code> | <code>{}</code> | <p>Optional parser options</p> |
+| [options.song] | [<code>Song</code>](#Song) | <code></code> | <p>The [Song](#Song) to store the song data in</p> |
+
+<a name="ChordsOverWordsParser"></a>
+
+## ChordsOverWordsParser
+<p>Parses a chords over words sheet into a song</p>
+<p>It support &quot;regular&quot; chord sheets:</p>
+<pre><code>       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p>Additionally, some chordpro features have been &quot;ported back&quot;. For example, you can use chordpro directives:</p>
+<pre><code>{title: Let it be}
+{key: C}
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>For convenience, you can leave out the brackets:</p>
+<pre><code>title: Let it be
+Chorus 1:
+       Am
+Let it be
+</code></pre>
+<p>You can even use a markdown style frontmatter separator to separate the header from the song:</p>
+<pre><code>title: Let it be
+key: C
+---
+Chorus 1:
+       Am         C/G        F          C
+Let it be, let it be, let it be, let it be
+C                G              F  C/E Dm C
+Whisper words of wisdom, let it be
+</code></pre>
+<p><code>ChordsOverWordsParser</code> is the better version of <code>ChordSheetParser</code>, which is deprecated.</p>
+
+**Kind**: global class  
+
+* [ChordsOverWordsParser](#ChordsOverWordsParser)
+    * [.warnings](#ChordsOverWordsParser+warnings) : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+    * [.parse(chordSheet, options)](#ChordsOverWordsParser+parse) ⇒ [<code>Song</code>](#Song)
+
+<a name="ChordsOverWordsParser+warnings"></a>
+
+### chordsOverWordsParser.warnings : [<code>Array.&lt;ParserWarning&gt;</code>](#ParserWarning)
+<p>All warnings raised during parsing the chord sheet</p>
+
+**Kind**: instance property of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
+<a name="ChordsOverWordsParser+parse"></a>
+
+### chordsOverWordsParser.parse(chordSheet, options) ⇒ [<code>Song</code>](#Song)
+<p>Parses a chords over words sheet into a song</p>
+
+**Kind**: instance method of [<code>ChordsOverWordsParser</code>](#ChordsOverWordsParser)  
+**Returns**: [<code>Song</code>](#Song) - <p>The parsed song</p>  
+**See**: https://peggyjs.org/documentation.html#using-the-parser  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| chordSheet | <code>string</code> |  | <p>the chords over words sheet</p> |
+| options | <code>ChordsOverWordsParserOptions</code> |  | <p>Parser options.</p> |
+| options.softLineBreaks | <code>ChordsOverWordsParserOptions.softLineBreaks</code> | <code>false</code> | <p>If true, a backslash followed by a space is treated as a soft line break</p> |
+
+<a name="ParserWarning"></a>
+
+## ParserWarning
+<p>Represents a parser warning, currently only used by ChordProParser.</p>
+
+**Kind**: global class  
+<a name="ParserWarning+toString"></a>
+
+### parserWarning.toString() ⇒ <code>string</code>
+<p>Returns a stringified version of the warning</p>
+
+**Kind**: instance method of [<code>ParserWarning</code>](#ParserWarning)  
+**Returns**: <code>string</code> - <p>The string warning</p>  
+<a name="UltimateGuitarParser"></a>
+
+## UltimateGuitarParser
+<p>Parses an Ultimate Guitar chord sheet with metadata
+Inherits from [ChordSheetParser](#ChordSheetParser)</p>
+
+**Kind**: global class  
+<a name="new_UltimateGuitarParser_new"></a>
+
+### new UltimateGuitarParser([options])
+<p>Instantiate a chord sheet parser</p>
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | <code>Object</code> | <code>{}</code> | <p>options</p> |
+| [options.preserveWhitespace] | <code>boolean</code> | <code>true</code> | <p>whether to preserve trailing whitespace for chords</p> |
 
 <a name="ALBUM"></a>
 
