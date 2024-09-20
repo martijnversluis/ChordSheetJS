@@ -37,7 +37,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.12",
     "@types/lodash.get": "^4.4.7",
-    "@types/node": "^22.1.0",
+    "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^8.2.0",
     "codemirror": "^6.0.1",
