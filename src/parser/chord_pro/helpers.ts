@@ -75,8 +75,10 @@ export function breakChordLyricsPairOnSoftLineBreak(
   chords: string,
   lyrics: string,
 ): Array<SerializedChordLyricsPair | SerializedSoftLineBreak> {
-  const pairs =  applySoftLineBreaks(lyrics || '');
-  let [first, ...rest] = pairs as Array<SerializedChordLyricsPair | SerializedSoftLineBreak>;
+  const pairs =
+    applySoftLineBreaks(lyrics || '') as Array<SerializedChordLyricsPair | SerializedSoftLineBreak>;
+  const [_first, ...rest] = pairs;
+  let first = pairs[0];
   let addedLeadingChord: SerializedChordLyricsPair | null = null;
 
   if (chords !== '') {
