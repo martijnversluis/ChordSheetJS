@@ -58,7 +58,7 @@ async function run() {
     const editorNode = textarea.nextSibling;
     if (!editorNode) return;
 
-    // @ts-ignore
+    // @ts-expect-error There is no way to validate that the CodeMirror object is present
     const editor = editorNode.CodeMirror;
     editor.setValue(grammar);
   }, parserSource);

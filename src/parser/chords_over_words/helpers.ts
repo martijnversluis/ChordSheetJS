@@ -59,7 +59,7 @@ type ChordProperties = Omit<Chord, 'type'>;
 
 function chordProperties(chord: Chord): ChordProperties {
   // Disable no-unused-vars until destructuredObjectIgnorePattern is available
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type: _type, ...properties } = chord;
   return properties;
 }
