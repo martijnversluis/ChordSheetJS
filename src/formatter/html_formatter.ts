@@ -4,12 +4,12 @@ import Song from '../chord_sheet/song';
 import { scopeCss } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
 
-export type HtmlTemplateArgs = {
+export interface HtmlTemplateArgs {
   configuration: Configuration;
   song: Song;
   renderBlankLines?: boolean;
   bodyParagraphs: Paragraph[],
-};
+}
 
 export type Template = (_args: HtmlTemplateArgs) => string;
 export type CSS = Record<string, Record<string, string>>;

@@ -52,13 +52,9 @@ const END_TAG_TO_SECTION_TYPE = {
   [END_OF_VERSE]: VERSE,
 };
 
-interface MapItemsCallback {
-  (_item: Item): Item | null;
-}
+type MapItemsCallback = (_item: Item) => Item | null;
 
-interface MapLinesCallback {
-  (_line: Line): Line | null;
-}
+type MapLinesCallback = (_line: Line) => Line | null;
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -139,7 +135,7 @@ class Song extends MetadataAccessors {
     return this._bodyParagraphs;
   }
 
-  selectRenderableItems(items: Array<Line | Paragraph>): Array<Line | Paragraph> {
+  selectRenderableItems(items: (Line | Paragraph)[]): (Line | Paragraph)[] {
     const copy = [...items];
 
     while (copy.length && !copy[0].hasRenderableItems()) {

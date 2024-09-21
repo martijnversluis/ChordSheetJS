@@ -657,7 +657,7 @@ class Key implements KeyProperties {
     return this.clone();
   }
 
-  private set(attributes: KeyProperties, overwrite: boolean = true): Key {
+  private set(attributes: KeyProperties, overwrite = true): Key {
     return new Key({
       ...(overwrite ? {} : attributes),
       grade: this.grade,

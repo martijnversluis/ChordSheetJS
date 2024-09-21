@@ -65,7 +65,7 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name: string, value: string = '') {
+export function createTag(name: string, value = '') {
   return new Tag(name, value);
 }
 
@@ -93,7 +93,7 @@ export function createSongFromAst(lines: SerializedItem[][]): Song {
   return new ChordSheetSerializer().deserialize(serializedSong);
 }
 
-export function tag(name: string, value: string = ''): SerializedTag {
+export function tag(name: string, value = ''): SerializedTag {
   return { type: 'tag', name, value };
 }
 
@@ -115,7 +115,7 @@ export function section(
   ];
 }
 
-export function chordLyricsPair(chords: string, lyrics: string, annotation: string = ''): SerializedChordLyricsPair {
+export function chordLyricsPair(chords: string, lyrics: string, annotation = ''): SerializedChordLyricsPair {
   return {
     type: 'chordLyricsPair', chords, lyrics, annotation,
   };
@@ -151,11 +151,11 @@ export function softLineBreak(): SerializedSoftLineBreak {
   return { type: 'softLineBreak' };
 }
 
-type TestCaseProps = {
+interface TestCaseProps {
   [key: string]: any;
   outcome: any;
   index: string;
-};
+}
 
 export function eachTestCase(table: string, callback: (_testCase: TestCaseProps) => void): void {
   const lines = table.trim().split('\n');
@@ -205,7 +205,7 @@ export function buildKey(
   keyString: string | number,
   keyType: ChordType,
   modifier?: Modifier | null,
-  minor: boolean = false,
+  minor = false,
 ) {
   const resolvedKey = Key.resolve({
     key: keyString,

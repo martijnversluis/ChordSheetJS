@@ -15,24 +15,24 @@ type NewLine = CarriageReturn | LineFeed | CarriageReturnLineFeed;
 type Lyrics = string;
 type Chord = { column: number, value: string } & SerializedChord;
 
-type RhythmSymbol = {
+interface RhythmSymbol {
   type: 'symbol',
   value: '/' | '|' | '-' | 'x',
   column: number,
-};
+}
 
 type DirectionLine = SerializedLine;
 type InlineMetadata = SerializedLine;
 
-type ChordsLine = {
+interface ChordsLine {
   type: 'chordsLine',
-  items: Array<Chord | RhythmSymbol>
-};
+  items: (Chord | RhythmSymbol)[]
+}
 
-type LyricsLine = {
+interface LyricsLine {
   type: 'lyricsLine',
   content: Lyrics,
-};
+}
 
 type ChordSheetLine = DirectionLine | InlineMetadata | ChordsLine | LyricsLine;
 
@@ -46,7 +46,7 @@ function combineChordSheetLines(
   return [...emptyLines, ...lines, trailingLine].filter(x => x !== null);
 }
 
-function applySoftLineBreaks(line: string): Array<SerializedSoftLineBreak | SerializedChordLyricsPair | null> {
+function applySoftLineBreaks(line: string): (SerializedSoftLineBreak | SerializedChordLyricsPair | null)[] {
   return line
     .split(/\\\s+/)
     .flatMap((lyric, index) => ([
@@ -67,7 +67,7 @@ function chordProperties(chord: Chord): ChordProperties {
 function constructChordLyricsPairs(
   chords: Chord[],
   lyrics: string,
-): Array<SerializedChordLyricsPair | SerializedSoftLineBreak> {
+): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] {
   return chords.map((chord, i) => {
     const nextChord = chords[i + 1];
     const start = chord.column - 1;
