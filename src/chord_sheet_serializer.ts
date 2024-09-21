@@ -222,7 +222,7 @@ class ChordSheetSerializer {
     });
   }
 
-  parseExpression(expression: Array<SerializedLiteral | SerializedTernary>): Array<AstType | null> {
+  parseExpression(expression: (SerializedLiteral | SerializedTernary)[]): (AstType | null)[] {
     return (expression || [])
       .map((part) => this.parseAstComponent(part))
       .filter((part) => part !== null);

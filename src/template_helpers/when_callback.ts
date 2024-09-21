@@ -1,5 +1,3 @@
-interface WhenCallback {
-  (): string;
-}
+type WhenCallback = () => string;
 
 export default WhenCallback;

@@ -14,9 +14,7 @@ import When from './template_helpers/when';
 import { Literal } from './index';
 import WhenCallback from './template_helpers/when_callback';
 
-interface EachCallback {
-  (_item: any): string;
-}
+type EachCallback = (_item: any) => string;
 
 export { hasChordContents, isEvaluatable } from './utilities';
 export { renderChord } from './helpers';

@@ -1,14 +1,14 @@
 import { ChordType, Modifier } from './constants';
 
-export type SerializedTraceInfo = {
+export interface SerializedTraceInfo {
   location?: {
     offset: number | null,
     line: number | null,
     column: number | null,
   },
-};
+}
 
-export type SerializedChord = {
+export interface SerializedChord {
   type: 'chord',
   base: string,
   modifier: Modifier | null,
@@ -16,15 +16,15 @@ export type SerializedChord = {
   bassBase: string | null,
   bassModifier: Modifier | null,
   chordType: ChordType,
-};
+}
 
-export type SerializedChordLyricsPair = {
+export interface SerializedChordLyricsPair {
   type: 'chordLyricsPair',
   chord?: SerializedChord | null,
   chords: string,
   lyrics: string | null,
   annotation?: string | null,
-};
+}
 
 export type SerializedTag = SerializedTraceInfo & {
   type: 'tag',
@@ -32,20 +32,20 @@ export type SerializedTag = SerializedTraceInfo & {
   value: string,
 };
 
-export type SerializedComment = {
+export interface SerializedComment {
   type: 'comment',
   comment: string,
-};
+}
 
 export type ContentType = 'tab' | 'abc' | 'ly' | 'grid';
 
-export type SerializedSection = {
+export interface SerializedSection {
   type: 'section',
   sectionType: ContentType,
   content: string[],
   startTag: SerializedTag,
   endTag: SerializedTag,
-};
+}
 
 export type SerializedLiteral = string;
 
@@ -53,15 +53,15 @@ export interface SerializedTernary extends SerializedTraceInfo {
   type: 'ternary',
   variable: string | null,
   valueTest: string | null,
-  trueExpression: Array<SerializedLiteral | SerializedTernary>,
-  falseExpression: Array<SerializedLiteral | SerializedTernary>,
+  trueExpression: (SerializedLiteral | SerializedTernary)[],
+  falseExpression: (SerializedLiteral | SerializedTernary)[],
 }
 
-export type SerializedComposite = Array<SerializedLiteral | SerializedTernary>;
+export type SerializedComposite = (SerializedLiteral | SerializedTernary)[];
 
-export type SerializedSoftLineBreak = {
+export interface SerializedSoftLineBreak {
   type: 'softLineBreak',
-};
+}
 
 export type SerializedItem =
   SerializedChordLyricsPair |
@@ -71,15 +71,15 @@ export type SerializedItem =
   SerializedTag |
   SerializedTernary;
 
-export type SerializedLine = {
+export interface SerializedLine {
   type: 'line',
   items: SerializedItem[],
-};
+}
 
-export type SerializedSong = {
+export interface SerializedSong {
   type: 'chordSheet',
   lines: SerializedLine[],
-};
+}
 
 export type SerializedComponent =
   SerializedLine |

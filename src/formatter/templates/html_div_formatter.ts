@@ -1,4 +1,4 @@
-import { HtmlTemplateArgs } from "../html_formatter";
+import { HtmlTemplateArgs } from '../html_formatter';
 import { renderChord } from '../../helpers';
 
 import {
@@ -15,7 +15,7 @@ import {
   stripHTML,
   when,
 } from '../../template_helpers';
-import {isPresent} from "../../utilities";
+import {isPresent} from '../../utilities';
 
 export default (
   {
