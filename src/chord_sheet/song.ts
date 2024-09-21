@@ -11,7 +11,7 @@ import FontStack from './font_stack';
 
 import {
   ABC,
-  BRIDGE, CHORUS, GRID, LILYPOND, NONE, ParagraphType, TAB, VERSE,
+  BRIDGE, CHORUS, GRID, LILYPOND, Modifier, NONE, ParagraphType, TAB, VERSE,
 } from '../constants';
 
 import Tag, {
@@ -422,7 +422,7 @@ class Song extends MetadataAccessors {
       }
 
       if (item instanceof ChordLyricsPair) {
-        return (item as ChordLyricsPair).transpose(delta, transposedKey, { normalizeChordSuffix });
+        return item.transpose(delta, transposedKey, { normalizeChordSuffix });
       }
 
       return item;
@@ -466,6 +466,21 @@ class Song extends MetadataAccessors {
   changeKey(newKey: string | Key): Song {
     const delta = this.getTransposeDistance(newKey);
     return this.transpose(delta);
+  }
+
+  /**
+   * Returns a copy of the song with all chords changed to the specified modifier.
+   * @param {Modifier} modifier the new modifier
+   * @returns {Song} the changed song
+   */
+  useModifier(modifier: Modifier) {
+    return this.mapItems((item) => {
+      if (item instanceof ChordLyricsPair) {
+        return (item as ChordLyricsPair).useModifier(modifier);
+      }
+
+      return item;
+    });
   }
 
   getTransposeDistance(newKey: string | Key): number {

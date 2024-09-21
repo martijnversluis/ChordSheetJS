@@ -15,7 +15,7 @@ import {
   stripHTML,
   when,
 } from '../../template_helpers';
-import {isPresent} from '../../utilities';
+import { isPresent } from '../../utilities';
 
 export default (
   {

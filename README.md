@@ -888,6 +888,7 @@ the paragraph contents as one string where lines are separated by newlines.</p>
     * [.transposeUp([options])](#Song+transposeUp) ⇒ [<code>Song</code>](#Song)
     * [.transposeDown([options])](#Song+transposeDown) ⇒ [<code>Song</code>](#Song)
     * [.changeKey(newKey)](#Song+changeKey) ⇒ [<code>Song</code>](#Song)
+    * [.useModifier(modifier)](#Song+useModifier) ⇒ [<code>Song</code>](#Song)
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
@@ -1040,6 +1041,18 @@ if you want to skip the &quot;header lines&quot;: the lines that only contain me
 | Param | Type | Description |
 | --- | --- | --- |
 | newKey | <code>string</code> | <p>The new key.</p> |
+
+<a name="Song+useModifier"></a>
+
+### song.useModifier(modifier) ⇒ [<code>Song</code>](#Song)
+<p>Returns a copy of the song with all chords changed to the specified modifier.</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: [<code>Song</code>](#Song) - <p>the changed song</p>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| modifier | <code>Modifier</code> | <p>the new modifier</p> |
 
 <a name="Song+changeMetadata"></a>
 

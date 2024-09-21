@@ -21,6 +21,7 @@ export default tseslint.config(
           destructuredArrayIgnorePattern: '^_',
         },
       ],
+      'object-curly-spacing': ['error', 'always'],
     }
   },
   {
