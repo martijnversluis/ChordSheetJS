@@ -1,4 +1,4 @@
-import { ChordProFormatter, ChordProParser } from '../../src';
+import { ChordProFormatter, ChordProParser, TextFormatter } from '../../src';
 import { heredoc } from '../utilities';
 
 describe('changing the key of an existing song (symbol chords)', () => {
@@ -39,6 +39,15 @@ describe('changing the key of an existing song (symbol chords)', () => {
     const updatedSong = song.setKey('C').changeKey('D');
 
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+  });
+
+  it('respects the accidental of the target key', () => {
+    const chordProTestSong = '{key: E}\n\n[E]Let it be';
+    const song = new ChordProParser().parse(chordProTestSong);
+    const transposedSong = song.changeKey('Bb');
+    const output = new TextFormatter().format(transposedSong);
+
+    expect(output).toEqual('Bb\nLet it be');
   });
 });
 

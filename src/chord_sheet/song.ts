@@ -464,8 +464,16 @@ class Song extends MetadataAccessors {
    * @returns {Song} The changed song
    */
   changeKey(newKey: string | Key): Song {
-    const delta = this.getTransposeDistance(newKey);
-    return this.transpose(delta);
+    const currentKey = this.requireCurrentKey();
+    const targetKey = Key.wrapOrFail(newKey);
+    const delta = currentKey.distanceTo(targetKey);
+    const transposedSong = this.transpose(delta);
+
+    if (targetKey.modifier) {
+      return transposedSong.useModifier(targetKey.modifier);
+    }
+
+    return transposedSong;
   }
 
   /**
@@ -483,7 +491,7 @@ class Song extends MetadataAccessors {
     });
   }
 
-  getTransposeDistance(newKey: string | Key): number {
+  requireCurrentKey(): Key {
     const wrappedKey = Key.wrap(this.key);
 
     if (!wrappedKey) {
@@ -497,7 +505,7 @@ Or set the song key before changing key:
   \`song.setKey('C');\``.substring(1));
     }
 
-    return wrappedKey.distanceTo(newKey);
+    return wrappedKey;
   }
 
   /**
