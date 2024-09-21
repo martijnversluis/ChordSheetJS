@@ -264,7 +264,8 @@ class PdfFormatter extends Formatter {
       (lyric) => new ChordLyricsPair('', lyric),
     ).flat();
 
-    let [first, ...rest] = items;
+    const [_first, ...rest] = items;
+    let first = items[0];
     let addedLeadingPair: ChordLyricsPair | null = null;
 
     if (chords !== '' || annotation !== '') {

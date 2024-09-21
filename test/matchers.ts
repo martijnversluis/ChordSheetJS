@@ -159,7 +159,7 @@ function toBeSoftLineBreak(received) {
 }
 
 function toHaveRenderedItem(
-  equals: Function,
+  equals: (a: any, b: any) => boolean,
   itemType: string,
   received: StubbedPdfDoc,
   expected: Partial<RenderedItem>,
