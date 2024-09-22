@@ -43,7 +43,7 @@ function combineChordSheetLines(
 ): ChordSheetLine[] {
   const hasEmptyLine = newLine && newLine.length > 0;
   const emptyLines = (hasEmptyLine ? [{ type: 'line', items: [] }] : []) as ChordSheetLine[];
-  return [...emptyLines, ...lines, trailingLine].filter(x => x !== null);
+  return [...emptyLines, ...lines, trailingLine].filter((x) => x !== null);
 }
 
 function applySoftLineBreaks(line: string): (SerializedSoftLineBreak | SerializedChordLyricsPair | null)[] {
@@ -80,7 +80,7 @@ function constructChordLyricsPairs(
       return [
         { ...chordData, type: 'chordLyricsPair', lyrics: `${firstWord} ` } as SerializedChordLyricsPair,
         ...applySoftLineBreaks(rest),
-      ].filter(x => x !== null);
+      ].filter((x) => x !== null);
     }
 
     return { ...chordData, type: 'chordLyricsPair', lyrics: firstWord } as SerializedChordLyricsPair;
@@ -125,7 +125,9 @@ function lyricsStringToLine(lyrics: string): SerializedLine {
 function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol): SerializedChordLyricsPair {
   switch (item.type) {
     case 'chord':
-      return { type: 'chordLyricsPair', chord: item, chords: '', lyrics: null };
+      return {
+        type: 'chordLyricsPair', chord: item, chords: '', lyrics: null,
+      };
     case 'symbol':
       return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
     default:

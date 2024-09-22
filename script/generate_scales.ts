@@ -109,6 +109,6 @@ const keyToGradeMapping = `
       `).join('\n')
 }
   };
-`;
+`.substring(1);
 
 fs.writeFileSync('src/scales.ts', keyToGradeMapping);

@@ -54,18 +54,22 @@ ${scopedSelector} {
     .join('\n\n');
 }
 
+export function warn(message: string): void {
+  const proc = globalThis.process;
+  if (typeof proc === 'object' && typeof proc.emitWarning === 'function') {
+    proc.emitWarning(message);
+  } else {
+    // eslint-disable-next-line no-console
+    console.warn(message);
+  }
+}
+
 export function deprecate(message: string): void {
   try {
     throw new Error(`DEPRECATION: ${message}`);
   } catch (e) {
     const error = (e as Error);
-    const proc = globalThis.process;
-
-    if (typeof proc === 'object' && typeof proc.emitWarning === 'function') {
-      proc.emitWarning(`${message}\n${error.stack}`);
-    } else {
-      console.warn(`${message}\n${error.stack}`);
-    }
+    warn(`${message}\n${error.stack}`);
   }
 }
 
@@ -78,10 +82,10 @@ export function isMinor(key: string | number, keyType: ChordType, suffix: any): 
     case NUMERAL:
       return typeof key === 'string' && key.toLowerCase() === key;
     default:
-      return typeof suffix === 'string'
-        && suffix[0] === 'm'
-        && suffix.substring(0, 2).toLowerCase() !== 'ma'
-        && suffix.substring(0, 3).toLowerCase() !== 'maj';
+      return typeof suffix === 'string' &&
+        suffix[0] === 'm' &&
+        suffix.substring(0, 2).toLowerCase() !== 'ma' &&
+        suffix.substring(0, 3).toLowerCase() !== 'maj';
   }
 }
 
@@ -97,10 +101,10 @@ class GradeSet {
   }
 
   determineGrade(modifier: ModifierMaybe | null, preferredModifier: Modifier | null, grade: number) {
-    return this.getGradeForModifier(modifier, grade)
-      || this.getGradeForModifier(NO_MODIFIER, grade)
-      || this.getGradeForModifier(preferredModifier, grade)
-      || this.getGradeForModifier(SHARP, grade);
+    return this.getGradeForModifier(modifier, grade) ||
+      this.getGradeForModifier(NO_MODIFIER, grade) ||
+      this.getGradeForModifier(preferredModifier, grade) ||
+      this.getGradeForModifier(SHARP, grade);
   }
 
   getGradeForModifier(modifier: ModifierMaybe | null, grade: number) {

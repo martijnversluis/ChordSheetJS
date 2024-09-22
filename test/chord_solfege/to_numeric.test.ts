@@ -13,7 +13,7 @@ describe('Chord', () => {
         expect(Chord.parse('Resus/Fa#')?.toNumeric('Lab').toString()).toEqual('b5sus/b7');
       });
 
-      xit('supports a minor chord', () => {
+      it.skip('supports a minor chord', () => {
         expect(Chord.parse('Solm')?.toNumeric('Sib')?.toString()).toEqual('6');
       });
     });

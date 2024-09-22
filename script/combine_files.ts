@@ -1,4 +1,5 @@
 import fs from 'fs';
+import process from 'process';
 
 const fileAPath = process.argv[2];
 const fileBPath = process.argv[3];

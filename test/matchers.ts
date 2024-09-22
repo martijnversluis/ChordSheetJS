@@ -57,8 +57,8 @@ function getObjectType(object) {
 
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
-  const pass = (!klass || received instanceof klass)
-    && propertyNames.every((name) => valuesEqual(properties[name], received[name]));
+  const pass = (!klass || received instanceof klass) &&
+    propertyNames.every((name) => valuesEqual(properties[name], received[name]));
   const stringifiedProperties = propertyNames.map((name) => `${name}=${properties[name]}`);
 
   if (pass) {
@@ -157,6 +157,7 @@ function toBeSoftLineBreak(received) {
   return toBeClassInstanceWithProperties(received, SoftLineBreak, {});
 }
 
+// eslint-disable-next-line no-undef
 expect.extend({
   toBeChordLyricsPair,
   toBeComment,

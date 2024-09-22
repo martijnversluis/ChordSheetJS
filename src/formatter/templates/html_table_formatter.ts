@@ -34,8 +34,8 @@ export default (
     bodyParagraphs,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
-  ${ when(title, () => `<h1>${ title}</h1>`) }
-  ${ when(subtitle, () => `<h2>${ subtitle}</h2>`) }
+  ${ when(title, () => `<h1>${ title }</h1>`) }
+  ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }
 
   ${ when(bodyLines.length > 0, () => `
     <div class="chord-sheet">
@@ -53,15 +53,15 @@ export default (
           `).else(() => `
             ${ each(paragraph.lines, (line) => `
               ${ when(renderBlankLines || lineHasContents(line), () => `
-                <table class="${ lineClasses(line)}">
+                <table class="${ lineClasses(line) }">
                   ${ when(hasChordContents(line), () => `
                     <tr>
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
                           ${ when(item.annotation).then(() => `
-                            <td class="annotation"${fontStyleTag(line.chordFont)}>${item.annotation}</td>
+                            <td class="annotation"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
                           `).else(() => `
-                            <td class="chord"${fontStyleTag(line.chordFont)}>${
+                            <td class="chord"${ fontStyleTag(line.chordFont) }>${
                               renderChord(
                                 item.chords,
                                 line,
@@ -77,25 +77,27 @@ export default (
                         `) }
                       `) }
                     </tr>
-                  `)}
+                  `) }
                   
                   ${ when(hasTextContents(line), () => `
                     <tr>
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
-                          <td class="lyrics"${fontStyleTag(line.textFont)}>${ item.lyrics}</td>
+                          <td class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</td>
                         `).elseWhen(isTag(item), () => `
                           ${ when(isComment(item), () => `
-                            <td class="comment"${fontStyleTag(line.textFont)}>${ item.value }</td>
+                            <td class="comment"${ fontStyleTag(line.textFont) }>${ item.value }</td>
                           `) }
                           
                           ${ when(item.hasRenderableLabel(), () => `
-                            <td><h3 class="label"${fontStyleTag(line.textFont)}>${ item.value }</h3></td>
+                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.value }</h3></td>
                           `) }
                         `).elseWhen(isLiteral(item), () => `
-                          <td class="literal">${item.string}</td>
+                          <td class="literal">${ item.string }</td>
                         `).elseWhen(isEvaluatable(item), () => `
-                          <td class="lyrics"${fontStyleTag(line.textFont)}>${ evaluate(item, metadata, configuration) }</td>
+                          <td class="lyrics"${ fontStyleTag(line.textFont) }>
+                            ${ evaluate(item, metadata, configuration) }
+                          </td>
                         `) }
                       `) }
                     </tr>
@@ -107,5 +109,5 @@ export default (
         </div>
       `) }
     </div>
-  `)}
+  `) }
 `);

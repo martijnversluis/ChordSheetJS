@@ -154,7 +154,7 @@ describe('ChordsOverWordsParser', () => {
     expect((lines[6].items)[0]).toBeChordLyricsPair('', 'Mother Mary comes to me');
   });
 
-  it('supports a chords only section with rhythm symbols ', () => {
+  it('supports a chords only section with rhythm symbols', () => {
     const chordOverWords = heredoc`
       title: Rattle
       Intro (5x)
@@ -225,7 +225,7 @@ describe('ChordsOverWordsParser', () => {
     expect(line2Pairs[13]).toBeChordLyricsPair('|', '');
   });
 
-  it('supports mixed chords only line & chords over words ', () => {
+  it('supports mixed chords only line & chords over words', () => {
     const chordOverWords = heredoc`
       title: Rattle
       Intro (5x)
@@ -487,7 +487,7 @@ describe('ChordsOverWordsParser', () => {
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });
 
-    it('handles a lyrics line that starts with a "I" which can be a numeral chord ', () => {
+    it('handles a lyrics line that starts with a "I" which can be a numeral chord', () => {
       const chordOverWords = heredoc`
         Verse 1
           Dm7                   Bb                F2
