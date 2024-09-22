@@ -11,7 +11,7 @@ import FontStack from './font_stack';
 
 import {
   ABC,
-  BRIDGE, CHORUS, GRID, LILYPOND, NONE, ParagraphType, TAB, VERSE,
+  BRIDGE, CHORUS, GRID, LILYPOND, Modifier, NONE, ParagraphType, TAB, VERSE,
 } from '../constants';
 
 import Tag, {
@@ -422,7 +422,7 @@ class Song extends MetadataAccessors {
       }
 
       if (item instanceof ChordLyricsPair) {
-        return (item as ChordLyricsPair).transpose(delta, transposedKey, { normalizeChordSuffix });
+        return item.transpose(delta, transposedKey, { normalizeChordSuffix });
       }
 
       return item;
@@ -464,11 +464,34 @@ class Song extends MetadataAccessors {
    * @returns {Song} The changed song
    */
   changeKey(newKey: string | Key): Song {
-    const delta = this.getTransposeDistance(newKey);
-    return this.transpose(delta);
+    const currentKey = this.requireCurrentKey();
+    const targetKey = Key.wrapOrFail(newKey);
+    const delta = currentKey.distanceTo(targetKey);
+    const transposedSong = this.transpose(delta);
+
+    if (targetKey.modifier) {
+      return transposedSong.useModifier(targetKey.modifier);
+    }
+
+    return transposedSong;
   }
 
-  getTransposeDistance(newKey: string | Key): number {
+  /**
+   * Returns a copy of the song with all chords changed to the specified modifier.
+   * @param {Modifier} modifier the new modifier
+   * @returns {Song} the changed song
+   */
+  useModifier(modifier: Modifier) {
+    return this.mapItems((item) => {
+      if (item instanceof ChordLyricsPair) {
+        return (item as ChordLyricsPair).useModifier(modifier);
+      }
+
+      return item;
+    });
+  }
+
+  requireCurrentKey(): Key {
     const wrappedKey = Key.wrap(this.key);
 
     if (!wrappedKey) {
@@ -482,7 +505,7 @@ Or set the song key before changing key:
   \`song.setKey('C');\``.substring(1));
     }
 
-    return wrappedKey.distanceTo(newKey);
+    return wrappedKey;
   }
 
   /**

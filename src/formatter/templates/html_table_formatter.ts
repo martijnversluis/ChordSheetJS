@@ -1,4 +1,4 @@
-import {hasChordContents, isEvaluatable, isPresent} from '../../utilities';
+import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 import { renderChord } from '../../helpers';
 import { HtmlTemplateArgs } from '../html_formatter';
 
