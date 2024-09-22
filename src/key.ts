@@ -408,12 +408,12 @@ class Key implements KeyProperties {
   }
 
   equals(otherKey: Key): boolean {
-    return this.grade === otherKey.grade
-      && this.number === otherKey.number
-      && this.modifier === otherKey.modifier
-      && this.preferredModifier === otherKey.preferredModifier
-      && this.type === otherKey.type
-      && this.minor === otherKey.minor;
+    return this.grade === otherKey.grade &&
+      this.number === otherKey.number &&
+      this.modifier === otherKey.modifier &&
+      this.preferredModifier === otherKey.preferredModifier &&
+      this.type === otherKey.type &&
+      this.minor === otherKey.minor;
   }
 
   static equals(oneKey: Key | null, otherKey: Key | null) {

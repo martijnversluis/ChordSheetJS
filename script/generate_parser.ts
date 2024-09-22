@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import peggy from 'peggy';
+import process from 'process';
 import tspegjs from 'ts-pegjs';
 import fs from 'fs';
 

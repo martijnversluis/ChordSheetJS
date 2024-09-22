@@ -1,3 +1,5 @@
+// eslint no-console: "off"
+
 import Tracer from 'pegjs-backtrace';
 import theredoc from 'theredoc';
 import { stripHTML } from '../src/template_helpers';
@@ -195,6 +197,7 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
         .filter((n) => n !== 'outcome')
         .map((name) => `${name}=${JSON.stringify(testCase[name])}`).join(', ');
 
+      // eslint-disable-next-line no-undef
       it(`returns ${JSON.stringify(testCase.outcome)} for ${description} (${testCaseProps.index})`, () => {
         callback(testCase);
       });
@@ -227,6 +230,7 @@ export function trace(input: string, callback: (tracer: Tracer) => any): any {
   try {
     return callback(tracer);
   } finally {
+    // eslint-disable-next-line no-console
     console.log(tracer.getParseTreeString());
   }
 }

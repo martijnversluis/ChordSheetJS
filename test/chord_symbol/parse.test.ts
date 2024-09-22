@@ -73,7 +73,7 @@ describe('Chord', () => {
           });
         });
 
-        it('parses a chord with confusing suffix', () => {
+        it('parses a chord with confusing suffix #11', () => {
           const chord = Chord.parse('Fma9(#11)');
 
           expect(chord).toMatchObject({
@@ -107,7 +107,7 @@ describe('Chord', () => {
           });
         });
 
-        it('parses a chord with confusing suffix', () => {
+        it('parses a chord with confusing suffix #9', () => {
           const chord = Chord.parse('A7(#9)');
 
           expect(chord).toMatchObject({
@@ -316,12 +316,7 @@ describe('Chord', () => {
             },
             suffix: null,
           });
-        });
-      });
 
-      describe('chord with only a bass', () => {
-        it('parses a simple chord with no base', () => {
-          const chord = Chord.parse('/B');
           expect(chord?.toString()).toEqual('/B');
         });
       });

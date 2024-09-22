@@ -82,7 +82,7 @@ export function breakChordLyricsPairOnSoftLineBreak(
   let addedLeadingChord: SerializedChordLyricsPair | null = null;
 
   if (chords !== '') {
-    if (!first  || first.type === 'softLineBreak') {
+    if (!first || first.type === 'softLineBreak') {
       addedLeadingChord = { type: 'chordLyricsPair', chords, lyrics: '' };
     } else {
       first = { ...first, chords };

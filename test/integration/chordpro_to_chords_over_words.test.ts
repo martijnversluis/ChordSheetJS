@@ -3,7 +3,7 @@ import { ChordProParser, ChordsOverWordsFormatter } from '../../src';
 import { heredoc } from '../utilities';
 import { normalizeLineEndings } from '../../src/utilities';
 
-describe.only('chordpro to chords over words', () => {
+describe('chordpro to chords over words', () => {
   it('correctly parses and converts the song structure', () => {
     const chordpro = heredoc`
       {title: Honey In The Rock}

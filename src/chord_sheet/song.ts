@@ -73,21 +73,21 @@ class Song extends MetadataAccessors {
    */
   metadata: Metadata;
 
-  currentLine: Line | null = null;
-
-  warnings: ParserWarning[] = [];
-
-  sectionType: ParagraphType = NONE;
-
-  fontStack: FontStack = new FontStack();
-
-  currentKey: string | null = null;
-
-  transposeKey: string | null = null;
+  _bodyLines: Line[] | null = null;
 
   _bodyParagraphs: Paragraph[] | null = null;
 
-  _bodyLines: Line[] | null = null;
+  currentKey: string | null = null;
+
+  currentLine: Line | null = null;
+
+  fontStack: FontStack = new FontStack();
+
+  sectionType: ParagraphType = NONE;
+
+  transposeKey: string | null = null;
+
+  warnings: ParserWarning[] = [];
 
   /**
    * Creates a new {Song} instance

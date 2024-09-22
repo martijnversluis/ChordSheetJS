@@ -1,4 +1,7 @@
+// eslint no-console: "off"
+
 import fs from 'fs';
+import process from 'process';
 import puppeteer from 'puppeteer';
 import esbuild from 'esbuild';
 
@@ -34,7 +37,7 @@ const parserSource = [
 
 async function run() {
   const browser = await puppeteer.launch({
-    args:['--start-maximized'],
+    args: ['--start-maximized'],
     defaultViewport: null,
     headless: false,
   });
@@ -43,15 +46,16 @@ async function run() {
     await browser.close();
   }
 
-  for (const event of ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'SIGTERM']) {
+  ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'uncaughtException', 'SIGTERM'].forEach((event) => {
     process.on(event, shutdownHandler);
-  }
+  });
 
   const [page] = await browser.pages();
   await page.setViewport({ width: 0, height: 0 });
   await page.goto('https://peggyjs.org/online.html');
 
   await page.evaluate((grammar) => {
+    // eslint-disable-next-line no-undef
     const textarea = document.getElementById('grammar');
     if (!textarea) return;
 
@@ -70,4 +74,4 @@ async function run() {
 
 run()
   .then(() => console.log('Done'))
-  .catch(e => console.error(e));
+  .catch((e) => console.error(e));
