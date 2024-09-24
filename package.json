@@ -47,7 +47,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^28.8.0",
-    "husky": "^9.1.5",
+    "husky": "^9.1.6",
     "jest": "^29.7.0",
     "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^9.0.1",
