@@ -57,7 +57,7 @@
     "pegjs-backtrace": "^0.2.1",
     "pinst": "^3.0.0",
     "print": "^1.2.0",
-    "puppeteer": "^23.1.1",
+    "puppeteer": "^23.4.0",
     "shx": "^0.3.4",
     "theredoc": "^1.0.0",
     "ts-jest": "^29.2.3",
