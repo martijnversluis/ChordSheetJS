@@ -1888,7 +1888,7 @@ __metadata:
     eslint: "npm:^9.11.0"
     eslint-config-airbnb-typescript: "npm:^18.0.0"
     eslint-plugin-import: "npm:^2.30.0"
-    eslint-plugin-jest: "npm:^28.8.0"
+    eslint-plugin-jest: "npm:^28.8.3"
     husky: "npm:^9.1.6"
     jest: "npm:^29.7.0"
     jsdoc-babel: "npm:^0.5.0"
@@ -6524,9 +6524,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:^28.8.0":
-  version: 28.8.0
-  resolution: "eslint-plugin-jest@npm:28.8.0"
+"eslint-plugin-jest@npm:^28.8.3":
+  version: 28.8.3
+  resolution: "eslint-plugin-jest@npm:28.8.3"
   dependencies:
     "@typescript-eslint/utils": "npm:^6.0.0 || ^7.0.0 || ^8.0.0"
   peerDependencies:
@@ -6538,7 +6538,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 10c0/cb702701c20224d813b7d7515ed3fe4562b92cd4233db356b0948e0765a382a9887ae7dfd13191c2cabecbb4a6cbbd141f309618830b251c8f86a7f950e7f50b
+  checksum: 10c0/beacf85c2fbb39ef9b9839472a8a837cdbab6549b29abaff8999034ac41021e1f06d1779db3ea9d0f966be52e5daeacfd05c239d686370d8b8cb9c68d60e59b6
   languageName: node
   linkType: hard
 
