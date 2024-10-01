@@ -183,3 +183,7 @@ export function normalizeChordSuffix(suffix: string | null): string | null {
 
   return SUFFIX_MAPPING[suffix] || suffix;
 }
+
+export function capitalize(string: string) {
+  return `${string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()}`;
+}

@@ -3025,6 +3025,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@martijnversluis/unibuild@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "@martijnversluis/unibuild@npm:0.0.2"
+  dependencies:
+    "@humanwhocodes/module-importer": "npm:^1.0.1"
+    chalk: "npm:^5.3.0"
+    commander: "npm:^12.1.0"
+  checksum: 10c0/0c59df310a5148450da1430d4a518c6e074d0619ad7116dc2e3f5828e2054a62107e3e4a1fe13f8fb4430089c25bb1e45e8bae46c7dfc65253be6b3a3c3655f0
+  languageName: node
+  linkType: hard
+
 "@mischnic/json-sourcemap@npm:^0.1.0":
   version: 0.1.0
   resolution: "@mischnic/json-sourcemap@npm:0.1.0"
@@ -5262,6 +5273,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "chalk@npm:5.3.0"
+  checksum: 10c0/8297d436b2c0f95801103ff2ef67268d362021b8210daf8ddbe349695333eb3610a71122172ff3b0272f1ef2cf7cc2c41fdaa4715f52e49ffe04c56340feed09
+  languageName: node
+  linkType: hard
+
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -5301,6 +5319,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.16.7"
     "@eslint/core": "npm:^0.6.0"
     "@eslint/js": "npm:^9.11.0"
+    "@martijnversluis/unibuild": "npm:^0.0.2"
     "@parcel/packager-ts": "npm:2.12.0"
     "@parcel/transformer-typescript-types": "npm:2.12.0"
     "@types/eslint__js": "npm:^8.42.3"
