@@ -7,6 +7,7 @@ type ColorRGBA = [number, number, number, number];
 type RenderColor = ColorShade | ColorString | ColorRGB | ColorRGBA;
 
 type RenderedImage = {
+  type: 'image';
   imageData: string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData;
   format?: ImageFormat;
   x?: number;
@@ -76,6 +77,21 @@ class StubbedPdfDoc {
     this.internal = this.jsPDF.internal;
   }
 
+  addFileToVFS(_fileName: string, _data: string): StubbedPdfDoc {
+    return this;
+  }
+
+  addFont(
+    _postScriptName: string,
+    _id: string,
+    _fontStyle: string,
+    _fontWeight?: string | number,
+    _encoding?:"StandardEncoding" | "MacRomanEncoding" | "Identity-H" | "WinAnsiEncoding",
+    _isStandardFont?: boolean
+  ): string {
+    return "stubbed";
+  }
+
   addImage(
     imageData: string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData,
     format: string,
@@ -121,7 +137,7 @@ class StubbedPdfDoc {
     if (typeof imageDataOrOptions === 'object' && 'imageData' in imageDataOrOptions) {
       // This branch handles the ImageOptions case
       const options = imageDataOrOptions as ImageOptions;
-      this.renderedItems.push(options);
+      this.renderedItems.push({ type: 'image', ...options });
     } else {
       // This branch handles the cases where imageData and other parameters are passed
       const imageData = imageDataOrOptions as string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData;
@@ -137,6 +153,7 @@ class StubbedPdfDoc {
         const rotation = maybeRotation as number;
 
         this.renderedItems.push({
+          type: 'image',
           imageData,
           format,
           x,
@@ -158,6 +175,7 @@ class StubbedPdfDoc {
         const rotation = compressionOrRotation as number;
 
         this.renderedItems.push({
+          type: 'image',
           imageData,
           format,
           x,
@@ -217,11 +235,14 @@ class StubbedPdfDoc {
     if (fontStyle) this.fontStyle = fontStyle;
     if (fontWeight) this.fontWeight = fontWeight;
 
+    this.jsPDF.setFont(fontName, fontStyle, fontWeight);
+
     return this;
   }
 
   setFontSize(size: number): StubbedPdfDoc {
     this.fontSize = size;
+    this.jsPDF.setFontSize(size);
     return this;
   }
 
@@ -237,6 +258,10 @@ class StubbedPdfDoc {
   setTextColor(ch1: string | number, ch2?: number, ch3?: number, ch4?: number): StubbedPdfDoc {
     this.textColor = this.#normalizeColor(ch1, ch2, ch3, ch4);
     return this;
+  }
+
+  splitTextToSize(text: string, maxlen: number, options?: any): any {
+    return this.jsPDF.splitTextToSize(text, maxlen, options);
   }
 
   text(text: string | string[], x: number, y: number, options?: TextOptionsLight, transform?: any): StubbedPdfDoc {

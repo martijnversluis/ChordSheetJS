@@ -4,86 +4,71 @@ import PdfFormatter from '../../src/formatter/pdf_formatter';
 import defaultConfiguration from '../../src/formatter/pdf_formatter/default_configuration';
 import StubbedPdfDoc from './stubbed_pdf_doc';
 
-type ExpectedText = [string, number, number];
-type ExpectedLine = [number, number, number, number];
 
 describe('PdfFormatter', () => {
   it('correctly formats a basic song', () => {
     const formatter = new PdfFormatter();
     formatter.format(exampleSongSymbol, defaultConfiguration, StubbedPdfDoc);
-    const document = formatter.doc as StubbedPdfDoc;
+    const doc = formatter.doc as StubbedPdfDoc;
 
-    const expectedText: ExpectedText[] = [
-      ['Let it be', 25, 40],
-      ['Key of C - BPM  - Time', 25, 53],
-      ['By  ChordSheetJS example version', 25, 63],
-      ['©2024 My Music Publishing', 25, 554],
-      ['Written by: ', 25, 85],
-      ['Verse 1', 25, 108],
-      ['Let it ', 25, 138],
-      ['Am', 54, 126],
-      ['be', 54, 138],
-      [', ', 79, 138],
-      ['let it ', 25, 163],
-      ['C/G', 50, 151],
-      ['be', 50, 163],
-      [', ', 78, 163],
-      ['let it ', 85, 163],
-      ['F', 110, 151],
-      ['F', 110, 151],
-      ['be', 110, 163],
-      [', ', 124, 163],
-      ['let it ', 130, 163],
-      ['C', 156, 151],
-      ['be', 156, 163],
-      ['C', 25, 169],
-      ['Whisper ', 25, 181],
-      ['words of ', 72, 181],
-      ['F', 121, 169],
-      ['wis', 121, 181],
-      ['G', 138, 169],
-      ['dom', 138, 181],
-      [', ', 161, 181],
-      ['let it ', 168, 181],
-      ['F', 193, 169],
-      ['be ', 193, 181],
-      ['C/E', 25, 194],
-      ['Dm', 52, 194],
-      ['C', 77, 194],
-      ['Breakdown', 25, 217],
-      ['Am', 25, 235],
-      ['Whisper words of ', 25, 247],
-      ['Bb', 121, 235],
-      ['wisdom', 121, 247],
-      [', ', 161, 247],
-      ['let it ', 168, 247],
-      ['F', 193, 235],
-      ['be ', 193, 247],
-      ['C', 25, 260],
-      ['Tab 1', 25, 283],
-      ['ABC 1', 25, 342],
-      ['LY 1', 25, 401],
-      ['Bridge 1', 25, 460],
-      ['Bridge line', 25, 478],
-      ['Grid 1', 25, 501],
-    ];
-
-    const expectedLines: ExpectedLine[] = [
-      [25, 109, 65, 109],
-      [25, 218, 85, 218],
-      [25, 284, 54, 284],
-      [25, 343, 59, 343],
-      [25, 402, 48, 402],
-      [25, 461, 69, 461],
-      [25, 502, 58, 502],
-    ];
-
-    expectedText.forEach(([text, x, y]: ExpectedText) => {
-      expect(document).toHaveText({ text, x, y });
-    });
-
-    expectedLines.forEach(([x1, y1, x2, y2]: ExpectedLine) => {
-      expect(document).toHaveLine({ x1, y1, x2, y2 });
-    });
+    expect(doc).toHaveText('Let it be', 45, 50);
+    expect(doc).toHaveText('Key of C - BPM  - Time', 45, 63);
+    expect(doc).toHaveText('By  ChordSheetJS example version', 45, 73);
+    expect(doc).toHaveText('©2024 My Music Publishing', 45, 752);
+    expect(doc).toHaveText('Written by: ', 45, 95);
+    expect(doc).toHaveText('Verse 1', 45, 119);
+    expect(doc).toHaveLine(45, 122, 76, 122);
+    expect(doc).toHaveText('Let it ', 45, 134);
+    expect(doc).toHaveText('Am', 69, 123);
+    expect(doc).toHaveText('be', 69, 134);
+    expect(doc).toHaveText(', ', 78, 134);
+    expect(doc).toHaveText(' ', 88, 134);
+    expect(doc).toHaveText('let it ', 90, 134);
+    expect(doc).toHaveText('C/G  ', 111, 123);
+    expect(doc).toHaveText('be', 111, 134);
+    expect(doc).toHaveText(', ', 120, 134);
+    expect(doc).toHaveText('let it ', 136, 134);
+    expect(doc).toHaveText('F', 157, 123);
+    expect(doc).toHaveText('be', 157, 134);
+    expect(doc).toHaveText(', ', 166, 134);
+    expect(doc).toHaveText('let it ', 171, 134);
+    expect(doc).toHaveText('C', 192, 123);
+    expect(doc).toHaveText('be', 192, 134);
+    expect(doc).toHaveText('C', 45, 148);
+    expect(doc).toHaveText('Whisper ', 45, 159);
+    expect(doc).toHaveText('words of ', 81, 159);
+    expect(doc).toHaveText('F', 119, 148);
+    expect(doc).toHaveText('wis', 119, 159);
+    expect(doc).toHaveText('G', 133, 148);
+    expect(doc).toHaveText('dom', 133, 159);
+    expect(doc).toHaveText(', ', 151, 159);
+    expect(doc).toHaveText('let it ', 156, 159);
+    expect(doc).toHaveText('F', 176, 148);
+    expect(doc).toHaveText('be ', 176, 159);
+    expect(doc).toHaveText('C/E  ', 188, 148);
+    expect(doc).toHaveText('Dm  ', 208, 148);
+    expect(doc).toHaveText('C', 226, 148);
+    expect(doc).toHaveText('Breakdown', 45, 183);
+    expect(doc).toHaveLine(45, 186, 94, 186);
+    expect(doc).toHaveText('Am', 45, 199);
+    expect(doc).toHaveText('Whisper words of ', 45, 210);
+    expect(doc).toHaveText('Bb', 119, 199);
+    expect(doc).toHaveText('wisdom', 119, 210);
+    expect(doc).toHaveText(', ', 151, 210);
+    expect(doc).toHaveText('let it ', 156, 210);
+    expect(doc).toHaveText('F', 176, 199);
+    expect(doc).toHaveText('be ', 176, 210);
+    expect(doc).toHaveText('C', 188, 199);
+    expect(doc).toHaveText('Tab 1', 45, 234);
+    expect(doc).toHaveLine(45, 237, 69, 237);
+    expect(doc).toHaveText('ABC 1', 45, 256);
+    expect(doc).toHaveLine(45, 259, 74, 259);
+    expect(doc).toHaveText('LY 1', 45, 278);
+    expect(doc).toHaveLine(45, 281, 65, 281);
+    expect(doc).toHaveText('Bridge 1', 45, 300);
+    expect(doc).toHaveLine(45, 303, 81, 303);
+    expect(doc).toHaveText('Bridge line', 45, 304);
+    expect(doc).toHaveLine(45, 331, 73, 331);
+    expect(doc).toHaveText('Grid 1', 45, 328);
   });
 });

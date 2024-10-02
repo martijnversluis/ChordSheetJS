@@ -22,11 +22,11 @@ declare global {
 
       toBeSoftLineBreak(): CustomMatcherResult;
 
-      toHaveLine(expected: Partial<RenderedLine>): CustomMatcherResult;
+      toHaveLine(_x1: number, _y1: number, _x2: number, _y2: number): CustomMatcherResult;
 
       toHaveRenderedItem(expected: Partial<RenderedItem>): CustomMatcherResult;
 
-      toHaveText(expected: Partial<RenderedText>): CustomMatcherResult;
+      toHaveText(_text: string, _x: number, _y: number): CustomMatcherResult;
     }
   }
 }
