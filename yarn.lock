@@ -5868,9 +5868,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dmd@npm:^7.0.6":
-  version: 7.0.6
-  resolution: "dmd@npm:7.0.6"
+"dmd@npm:^7.0.7":
+  version: 7.0.7
+  resolution: "dmd@npm:7.0.7"
   dependencies:
     array-back: "npm:^6.2.2"
     cache-point: "npm:^3.0.0"
@@ -5884,7 +5884,7 @@ __metadata:
   peerDependenciesMeta:
     "@75lb/nature":
       optional: true
-  checksum: 10c0/ebaf790fcc3587824d290ba0ce2b035af2f60dc625265ea6fa937cddcba47ee6dd5cf565fe80edc663a35bc9333cefb05ebdadcd36e7a9b1215e1e529349350f
+  checksum: 10c0/b1a4ebf4dc033eb1dfcbc8de3a0607337fdce8cd65ac26eb19a6d35d0e9a612b63cb88d66317a7b25073dc85bcd58008da55aebf271b2fc86ad2eca5d3478ca1
   languageName: node
   linkType: hard
 
@@ -8161,14 +8161,14 @@ __metadata:
   linkType: hard
 
 "jsdoc-to-markdown@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "jsdoc-to-markdown@npm:9.0.1"
+  version: 9.0.2
+  resolution: "jsdoc-to-markdown@npm:9.0.2"
   dependencies:
     array-back: "npm:^6.2.2"
     command-line-args: "npm:^6.0.0"
     command-line-usage: "npm:^7.0.3"
     config-master: "npm:^3.1.0"
-    dmd: "npm:^7.0.6"
+    dmd: "npm:^7.0.7"
     jsdoc-api: "npm:^9.3.1"
     jsdoc-parse: "npm:^6.2.4"
     walk-back: "npm:^5.1.1"
@@ -8179,7 +8179,7 @@ __metadata:
       optional: true
   bin:
     jsdoc2md: bin/cli.js
-  checksum: 10c0/6011568f5ed323775b97b36fb2dd446aec4045ac222a3f7c8b3aa2955fa2494696d3a8945e2489e3b8da0a9bad91e3d880b45c7ff2ae38bf27e1ccf8c715be74
+  checksum: 10c0/96541f61324dc489215c09cf9bfbe41238e7ccabbd067ecd8eb58b9fd7b8b89053fa80bb3c71316f4cf81c119e71c89f78d8b7910308759485c7954ac5515062
   languageName: node
   linkType: hard
 
