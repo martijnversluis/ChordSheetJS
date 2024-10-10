@@ -31,6 +31,8 @@ export const isLiteral = (item: Item): boolean => item instanceof Literal;
 
 export const isComment = (item: Tag): boolean => item.name === 'comment';
 
+export const isColumnBreak = (item: Item): boolean => item instanceof Tag && item.name === 'column_break';
+
 export const isSoftLineBreak = (item: Item): boolean => item instanceof SoftLineBreak;
 
 export function stripHTML(string: string): string {
@@ -105,6 +107,7 @@ export default {
   lineHasContents,
   isTag,
   isComment,
+  isColumnBreak,
   stripHTML,
   each,
   when,

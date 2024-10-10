@@ -2,6 +2,7 @@ import JsPDF, { jsPDFOptions } from 'jspdf';
 import Formatter from './formatter';
 import {
   isChordLyricsPair,
+  isColumnBreak,
   isComment,
   isSoftLineBreak,
   isTag,
@@ -36,6 +37,7 @@ class PdfFormatter extends Formatter {
   song: Song = new Song();
 
   y: number = 0;
+  paragraphY: number = 0;
 
   x: number = 0;
 
@@ -225,20 +227,48 @@ class PdfFormatter extends Formatter {
   }
 
   private formatParagraph(paragraph: Paragraph) {
+    const paragraphSummary: {
+      totalHeight: number;
+      countChordLyricPairLines: number;
+      countCommentLines: number;
+      lineLayouts: LineLayout[][];
+    } = {
+      totalHeight: 0,
+      countChordLyricPairLines: 0,
+      countCommentLines: 0,
+      lineLayouts: [],
+    };
+  
     paragraph.lines.forEach((line) => {
       if (lineHasContents(line)) {
-        this.formatLine(line);
+        const lines = this.measureAndComputeLineLayouts(line);
+        const lineHeight = lines.reduce((sum, l) => sum + l.lineHeight, 0);
+        paragraphSummary.totalHeight += lineHeight;
+        for (const line of lines) {
+          if (line.type === 'ChordLyricsPair') {
+            paragraphSummary.countChordLyricPairLines++;
+          } else if (line.type === 'Comment') {
+            paragraphSummary.countCommentLines++;
+          }
+        }
+        paragraphSummary.lineLayouts.push(lines);
       }
     });
+  
+    // Insert column breaks based on your logic
+    paragraphSummary.lineLayouts = this.insertColumnBreaks(paragraphSummary);
+  
+    for (const lines of paragraphSummary.lineLayouts) {
+      this.renderLines(lines);
+    }
+  
     this.y += this.pdfConfiguration.paragraphSpacing || 0;
   }
 
-  // Format individual lines in the paragraph
-  private formatLine(line: Line) {
+  private measureAndComputeLineLayouts(line: Line ): LineLayout[] {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont = this.getFontConfiguration('text');
     const commentFont = this.getFontConfiguration('comment');
-
     const measuredItems: MeasuredItem[] = line.items.flatMap(
       (item: Item, index: number): MeasuredItem[] => {
         const nextItem = line.items[index + 1] ?? null;
@@ -264,9 +294,7 @@ class PdfFormatter extends Formatter {
       },
     );
 
-    const lines = this.computeLineLayouts(measuredItems, this.y);
-
-    this.renderLines(lines);
+    return this.computeLineLayouts(measuredItems, this.paragraphY);
   }
 
   // Compute line layouts
@@ -338,17 +366,10 @@ class PdfFormatter extends Formatter {
         // **Actual Line Break Occurs Here**
 
         // Get the items for the current line
-        const lineItems = currentLine.slice(0, breakIndex);
-
-        // Check if we need to move to the next column/page
-        const estimatedLineHeight = this.estimateLineHeight(lineItems);
-        if (currentY + estimatedLineHeight > this.getColumnBottomY()) {
-          this.moveToNextColumn();
-          currentY = this.y;
-        }
+        const lineItems = currentLine.slice(0, breakIndex);    
 
         // Create a LineLayout and add it to lines
-        const lineLayout = this.createLineLayout(lineItems, currentY);
+        const lineLayout = this.createLineLayout(lineItems);
         lines.push(lineLayout);
 
         // Update currentY for the next line
@@ -395,18 +416,14 @@ class PdfFormatter extends Formatter {
 
     // **Handle any remaining items in currentLine**
     if (currentLine.length > 0) {
-      const estimatedLineHeight = this.estimateLineHeight(currentLine);
-      if (currentY + estimatedLineHeight > this.getColumnBottomY()) {
-        this.moveToNextColumn();
-        currentY = this.y;
-      }
-      const lineLayout = this.createLineLayout(currentLine, currentY);
+      const lineLayout = this.createLineLayout(currentLine);
       lines.push(lineLayout);
       currentY += lineLayout.lineHeight;
     }
 
     // Update the vertical position
-    this.y = currentY;
+    this.paragraphY = currentY;
+    
 
     return lines;
   }
@@ -464,74 +481,105 @@ class PdfFormatter extends Formatter {
     return lyrics.replace(/^\s*\S*/, (word) => word.charAt(0).toUpperCase() + word.slice(1));
   }
 
-  // Create a line layout
-  private createLineLayout(items: MeasuredItem[], yPosition: number): LineLayout {
+  private createLineLayout(items: MeasuredItem[]): LineLayout {
     const lineHeight = this.estimateLineHeight(items);
     const hasChords = items.some(({ item }) => item instanceof ChordLyricsPair && item.chords);
     const hasLyrics = items.some(
       ({ item }) => item instanceof ChordLyricsPair && item.lyrics && item.lyrics.trim() !== '',
     );
     const hasComments = items.some(({ item }) => item instanceof Tag && isComment(item));
-
-    let chordsY = yPosition;
-    let lyricsY = yPosition;
-
-    const { chordLyricSpacing } = this.pdfConfiguration;
-
-    if (hasChords && hasLyrics) {
-      chordsY = yPosition;
-      lyricsY = chordsY + this.maxChordHeight(items) + chordLyricSpacing;
-    } else if (hasChords && !hasLyrics) {
-      chordsY = yPosition;
-    } else if (!hasChords && hasLyrics) {
-      lyricsY = yPosition;
+    const hasTags = items.some(({ item }) => item instanceof Tag);
+  
+    let type;
+    if (hasChords || hasLyrics) {
+      type = 'ChordLyricsPair';
     } else if (hasComments) {
-      // Comments will be rendered at yPosition
+      type = 'Comment';
+    } else if (hasTags) {
+      type = 'Tag';
     }
-
+  
     return {
+      type,
       items,
       lineHeight,
-      yPosition,
-      chordsY,
-      lyricsY,
     };
+  }
+  
+  private getChordLyricYOffset(items: MeasuredItem[], yOffset) {
+    // Determine line types
+    const hasChords = items.some(({ item }) => item instanceof ChordLyricsPair && item.chords);
+    const hasLyrics = items.some(
+      ({ item }) => item instanceof ChordLyricsPair && item.lyrics && item.lyrics.trim() !== '',
+    );
+
+    const { chordLyricSpacing } = this.pdfConfiguration;
+    let chordsYOffset = yOffset;
+    let lyricsYOffset = yOffset;
+
+    if (hasChords && hasLyrics) {
+      chordsYOffset = yOffset;
+      lyricsYOffset = chordsYOffset + this.maxChordHeight(items) + chordLyricSpacing;
+    } else if (hasChords && !hasLyrics) {
+      chordsYOffset = yOffset;
+    } else if (!hasChords && hasLyrics) {
+      lyricsYOffset = yOffset;
+    }
+
+    return { chordsYOffset, lyricsYOffset };
   }
 
   // Render lines
   private renderLines(lines: LineLayout[]) {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont = this.getFontConfiguration('text');
-
+  
     for (const lineLayout of lines) {
-      const { items, chordsY, lyricsY } = lineLayout;
-
+      const { items, lineHeight } = lineLayout;
+  
+      // Check if the line contains a column break tag
+      if (
+        items.length === 1 &&
+        items[0].item instanceof Tag &&
+        isColumnBreak(items[0].item)
+      ) {
+        this.moveToNextColumn();
+        continue;
+      }
+  
+      const yOffset = this.y;
+      const { chordsYOffset, lyricsYOffset } = this.getChordLyricYOffset(items, yOffset);
+  
       let x = this.x;
-
+  
+      // Render each item in the line
       for (const [index, measuredItem] of items.entries()) {
         const { item, width } = measuredItem;
-
+  
         if (item instanceof ChordLyricsPair) {
           const { chords, lyrics } = item;
-
+  
           if (chords) {
             const chordDimensions = this.getTextDimensions(chords, chordFont);
-            const chordBaseline = chordsY + this.maxChordHeight(items) - chordDimensions.h;
+            const chordBaseline = chordsYOffset + this.maxChordHeight(items) - chordDimensions.h;
             this.renderText(chords, x, chordBaseline, chordFont);
           }
-
+  
           if (lyrics && lyrics.trim() !== '') {
-            this.renderText(lyrics, x, lyricsY, lyricsFont);
+            this.renderText(lyrics, x, lyricsYOffset, lyricsFont);
           }
-
+  
           x += width;
         } else if (item instanceof Tag) {
-          // Handle comments
-          const commentText = item.value;
-          this.formatComment(commentText, x, lineLayout.yPosition); 
-          x += width;
+          if (isColumnBreak(item)) {
+            // Column break already handled at the beginning of the loop
+            continue;
+          } else {
+            const commentText = item.value;
+            this.formatComment(commentText, x, yOffset);
+            x += width;
+          }
         } else if (item instanceof SoftLineBreak) {
-          // Force soft line breaks with content to not be rendered in open space
           let prevChordLyricDifference = 0;
           if (index > 0 && items[index - 1].chordLyricWidthDifference) {
             const previousItem = items[index - 1];
@@ -539,16 +587,196 @@ class PdfFormatter extends Formatter {
               prevChordLyricDifference = previousItem.chordLyricWidthDifference || 0;
             }
           }
-          
-          this.renderText(item.content, x - prevChordLyricDifference, lyricsY, lyricsFont);
+          this.renderText(item.content, x - prevChordLyricDifference, lyricsYOffset, lyricsFont);
           x += width;
         }
       }
-
+  
+      // Update this.y by adding the lineHeight
+      this.y += lineHeight;
       // Reset x to the left margin for the next line
       this.carriageReturn();
     }
   }
+  
+  private insertColumnBreaks(paragraphSummary: {
+    totalHeight: number;
+    countChordLyricPairLines: number;
+    countCommentLines: number;
+    lineLayouts: LineLayout[][];
+  }): LineLayout[][] {
+    const { lineLayouts, totalHeight, countChordLyricPairLines } = paragraphSummary;
+    let newLineLayouts: LineLayout[][] = [];
+    const cumulativeHeight = this.y;
+    const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
+    const columnBottomY = this.getColumnBottomY();
+  
+    // Check if the entire paragraph fits in the current column
+    if (cumulativeHeight + totalHeight <= columnBottomY) {
+      // The entire paragraph fits; no need for column breaks
+      return lineLayouts;
+    }
+  
+    // Paragraph does not fit entirely in current column
+    if (countChordLyricPairLines <= 3) {
+      // Paragraphs with 3 chord-lyric lines or less
+      // Insert column break before the paragraph if not at the top of the column
+      if (cumulativeHeight !== columnStartY) {
+        newLineLayouts.push([this.createColumnBreakLineLayout()]);
+      }
+      newLineLayouts = newLineLayouts.concat(lineLayouts);
+      return newLineLayouts;
+    }
+  
+    if (countChordLyricPairLines === 4) {
+      // Paragraphs with 4 chord-lyric lines
+      // Try to split after the 2nd chord-lyric line
+      newLineLayouts = this.splitParagraphAfterNthChordLyricLine(
+        lineLayouts,
+        2,
+        cumulativeHeight
+      );
+      return newLineLayouts;
+    }
+  
+    if (countChordLyricPairLines >= 5) {
+      // Paragraphs with 5 or more chord-lyric lines
+      newLineLayouts = this.splitParagraphWithMinimumChordLyricLines(
+        lineLayouts,
+        cumulativeHeight,
+        countChordLyricPairLines
+      );
+      return newLineLayouts;
+    }
+  
+    // Default case: return the original lineLayouts
+    return lineLayouts;
+  }
+  
+  
+  
+  private splitParagraphAfterNthChordLyricLine(
+    lineLayouts: LineLayout[][],
+    n: number,
+    cumulativeHeight: number
+  ): LineLayout[][] {
+    let newLineLayouts: LineLayout[][] = [];
+    const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
+    const columnBottomY = this.getColumnBottomY();
+  
+    let chordLyricPairLinesSeen = 0;
+    let splitIndex = -1;
+    let heightFirstPart = 0;
+  
+    for (let i = 0; i < lineLayouts.length; i++) {
+      const lines = lineLayouts[i];
+      let linesHeight = 0;
+      for (const lineLayout of lines) {
+        linesHeight += lineLayout.lineHeight;
+        if (lineLayout.type === 'ChordLyricsPair') {
+          chordLyricPairLinesSeen++;
+        }
+      }
+      heightFirstPart += linesHeight;
+      if (chordLyricPairLinesSeen >= n) {
+        splitIndex = i + 1;
+        break;
+      }
+    }
+  
+    if (cumulativeHeight + heightFirstPart <= columnBottomY) {
+      // First part fits in current column
+      newLineLayouts = newLineLayouts.concat(lineLayouts.slice(0, splitIndex));
+      newLineLayouts.push([this.createColumnBreakLineLayout()]);
+      newLineLayouts = newLineLayouts.concat(lineLayouts.slice(splitIndex));
+    } else {
+      // First part doesn't fit; insert column break before paragraph
+      if (cumulativeHeight !== columnStartY) {
+        newLineLayouts.push([this.createColumnBreakLineLayout()]);
+      }
+      newLineLayouts = newLineLayouts.concat(lineLayouts);
+    }
+  
+    return newLineLayouts;
+  }
+  
+  private splitParagraphWithMinimumChordLyricLines(
+    lineLayouts: LineLayout[][],
+    cumulativeHeight: number,
+    totalChordLyricPairLines: number
+  ): LineLayout[][] {
+    let newLineLayouts: LineLayout[][] = [];
+    const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
+    const columnBottomY = this.getColumnBottomY();
+    const acceptableSplits: { index: number; heightFirstPart: number }[] = [];
+  
+    let heightFirstPart = 0;
+    let chordLyricLinesInFirstPart = 0;
+  
+    // Identify all acceptable split points where both parts have at least two chord-lyric lines
+    for (let i = 0; i < lineLayouts.length - 1; i++) {
+      const lines = lineLayouts[i];
+      let linesHeight = 0;
+      let hasChordLyricPair = false;
+  
+      for (const lineLayout of lines) {
+        linesHeight += lineLayout.lineHeight;
+        if (lineLayout.type === 'ChordLyricsPair') {
+          hasChordLyricPair = true;
+        }
+      }
+  
+      heightFirstPart += linesHeight;
+  
+      if (hasChordLyricPair) {
+        chordLyricLinesInFirstPart++;
+      }
+  
+      const remainingChordLyricLines = totalChordLyricPairLines - chordLyricLinesInFirstPart;
+  
+      // Ensure at least two chord-lyric lines remain in both parts
+      if (chordLyricLinesInFirstPart >= 2 && remainingChordLyricLines >= 2) {
+        acceptableSplits.push({ index: i + 1, heightFirstPart });
+      }
+    }
+  
+    // Try to find the best split point that fits in the current column
+    let splitFound = false;
+  
+    // Start from the split point that includes the most lines in the first part
+    for (let i = acceptableSplits.length - 1; i >= 0; i--) {
+      const split = acceptableSplits[i];
+  
+      if (cumulativeHeight + split.heightFirstPart <= columnBottomY) {
+        // First part fits in current column
+        newLineLayouts = newLineLayouts.concat(lineLayouts.slice(0, split.index));
+        newLineLayouts.push([this.createColumnBreakLineLayout()]);
+        newLineLayouts = newLineLayouts.concat(lineLayouts.slice(split.index));
+        splitFound = true;
+        break;
+      }
+    }
+  
+    if (!splitFound) {
+      // No acceptable split point fits; move entire paragraph to the next column
+      if (cumulativeHeight !== columnStartY) {
+        newLineLayouts.push([this.createColumnBreakLineLayout()]);
+      }
+      newLineLayouts = newLineLayouts.concat(lineLayouts);
+    }
+  
+    return newLineLayouts;
+  }  
+  
+  
+  private createColumnBreakLineLayout(): LineLayout {
+    return {
+      type: 'Tag',
+      items: [{ item: new Tag('column_break'), width: 0 }],
+      lineHeight: 0,
+    };
+  }
+  
 
   // Estimate the line height
   private estimateLineHeight(items: MeasuredItem[]): number {

@@ -62,11 +62,9 @@ export type LayoutItem = {
 };
 
 export type LineLayout = {
+  type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak'
   items: MeasuredItem[];
   lineHeight: number;
-  yPosition: number;
-  chordsY: number;
-  lyricsY: number;
 };
 
 export type MeasuredItem = {
