@@ -381,24 +381,13 @@ class PdfFormatter extends Formatter {
         lastSoftLineBreakIndex = -1;
 
         // **Capitalize the first word of the next item's lyrics**
-
-        // Determine the next item
-        let nextItem: MeasuredItem | null = null;
-        if (currentLine.length > 0) {
-          nextItem = currentLine[0];
-        } else if (i < items.length) {
-          nextItem = items[i];
+        const nextItemWithLyrics = this.findNextItemWithLyrics(currentLine, items, i);
+        if (nextItemWithLyrics) {
+          const { item, lyrics } = nextItemWithLyrics;
+          const nextPair = item.item as ChordLyricsPair;
+          nextPair.lyrics = this.capitalizeFirstWord(lyrics);
         }
 
-        // Capitalize if applicable
-        if (nextItem && nextItem.item instanceof ChordLyricsPair) {
-          const nextPair = nextItem.item as ChordLyricsPair;
-          if (nextPair.lyrics) {
-            nextPair.lyrics = this.capitalizeFirstWord(nextPair.lyrics);
-          }
-        }
-
-        // No need to adjust 'i' here since we've handled it in the splitting logic
       } else {
         // **Item fits in the current line; add it**
         currentLine.push(item);
@@ -475,6 +464,36 @@ class PdfFormatter extends Formatter {
     }
   }
 
+  // Helper function to find the next item with lyrics
+  private findNextItemWithLyrics(
+    currentLine: MeasuredItem[],
+    items: MeasuredItem[],
+    currentIndex: number
+  ): { item: MeasuredItem; lyrics: string } | null {
+    // Check currentLine first
+    for (let idx = 0; idx < currentLine.length; idx++) {
+      const item = currentLine[idx];
+      if (item.item instanceof ChordLyricsPair) {
+        const pair = item.item as ChordLyricsPair;
+        if (pair.lyrics && pair.lyrics.trim() !== '') {
+          return { item, lyrics: pair.lyrics };
+        }
+      }
+    }
+
+    // Then check the remaining items
+    for (let idx = currentIndex; idx < items.length; idx++) {
+      const item = items[idx];
+      if (item.item instanceof ChordLyricsPair) {
+        const pair = item.item as ChordLyricsPair;
+        if (pair.lyrics && pair.lyrics.trim() !== '') {
+          return { item, lyrics: pair.lyrics };
+        }
+      }
+    }
+
+    return null;
+  }
 
   private capitalizeFirstWord(lyrics: string): string {
     if (!lyrics || lyrics.length === 0) return lyrics;
