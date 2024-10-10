@@ -385,7 +385,14 @@ class PdfFormatter extends Formatter {
         if (nextItemWithLyrics) {
           const { item, lyrics } = nextItemWithLyrics;
           const nextPair = item.item as ChordLyricsPair;
-          nextPair.lyrics = this.capitalizeFirstWord(lyrics);
+          nextPair.lyrics = this.capitalizeFirstWord(lyrics);   
+          
+          // // next item has to be re-measured becasue the lyrics have changed
+          const lyricsFont = this.getFontConfiguration('text');
+          const lyricsWidth = lyrics ? this.getTextDimensions(nextPair.lyrics, lyricsFont).w : 0;
+          if (lyricsWidth > item.width) {
+            item.width = lyricsWidth;
+          }
         }
 
       } else {
