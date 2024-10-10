@@ -732,29 +732,33 @@ class PdfFormatter extends Formatter {
     totalChordLyricPairLines: number
   ): LineLayout[][] {
     let newLineLayouts: LineLayout[][] = [];
-    const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
+    const columnStartY =
+      this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     const columnBottomY = this.getColumnBottomY();
+  
+    // Flatten lineLayouts into a flat array of LineLayout
+    const flatLineLayouts: LineLayout[] = [];
+    const lineLayoutIndices: { outerIndex: number; innerIndex: number }[] = [];
+  
+    for (let outerIndex = 0; outerIndex < lineLayouts.length; outerIndex++) {
+      const innerArray = lineLayouts[outerIndex];
+      for (let innerIndex = 0; innerIndex < innerArray.length; innerIndex++) {
+        flatLineLayouts.push(innerArray[innerIndex]);
+        lineLayoutIndices.push({ outerIndex, innerIndex });
+      }
+    }
+  
     const acceptableSplits: { index: number; heightFirstPart: number }[] = [];
   
     let heightFirstPart = 0;
     let chordLyricLinesInFirstPart = 0;
   
     // Identify all acceptable split points where both parts have at least two chord-lyric lines
-    for (let i = 0; i < lineLayouts.length - 1; i++) {
-      const lines = lineLayouts[i];
-      let linesHeight = 0;
-      let hasChordLyricPair = false;
+    for (let i = 0; i < flatLineLayouts.length - 1; i++) {
+      const lineLayout = flatLineLayouts[i];
+      heightFirstPart += lineLayout.lineHeight;
   
-      for (const lineLayout of lines) {
-        linesHeight += lineLayout.lineHeight;
-        if (lineLayout.type === 'ChordLyricsPair') {
-          hasChordLyricPair = true;
-        }
-      }
-  
-      heightFirstPart += linesHeight;
-  
-      if (hasChordLyricPair) {
+      if (lineLayout.type === 'ChordLyricsPair') {
         chordLyricLinesInFirstPart++;
       }
   
@@ -775,9 +779,57 @@ class PdfFormatter extends Formatter {
   
       if (cumulativeHeight + split.heightFirstPart <= columnBottomY) {
         // First part fits in current column
-        newLineLayouts = newLineLayouts.concat(lineLayouts.slice(0, split.index));
+  
+        // Map the flat indices back to lineLayouts indices
+        const splitIndex = split.index;
+        const firstPartLineLayouts: LineLayout[][] = [];
+        const secondPartLineLayouts: LineLayout[][] = [];
+  
+        // Collect lineLayouts for the first part
+        let currentOuterIndex = lineLayoutIndices[0].outerIndex;
+        let currentInnerArray: LineLayout[] = [];
+        for (let j = 0; j < splitIndex; j++) {
+          const { outerIndex } = lineLayoutIndices[j];
+          const lineLayout = flatLineLayouts[j];
+  
+          if (outerIndex !== currentOuterIndex) {
+            if (currentInnerArray.length > 0) {
+              firstPartLineLayouts.push(currentInnerArray);
+            }
+            currentInnerArray = [];
+            currentOuterIndex = outerIndex;
+          }
+          currentInnerArray.push(lineLayout);
+        }
+        if (currentInnerArray.length > 0) {
+          firstPartLineLayouts.push(currentInnerArray);
+        }
+  
+        // Collect lineLayouts for the second part
+        currentOuterIndex = lineLayoutIndices[splitIndex].outerIndex;
+        currentInnerArray = [];
+        for (let j = splitIndex; j < flatLineLayouts.length; j++) {
+          const { outerIndex } = lineLayoutIndices[j];
+          const lineLayout = flatLineLayouts[j];
+  
+          if (outerIndex !== currentOuterIndex) {
+            if (currentInnerArray.length > 0) {
+              secondPartLineLayouts.push(currentInnerArray);
+            }
+            currentInnerArray = [];
+            currentOuterIndex = outerIndex;
+          }
+          currentInnerArray.push(lineLayout);
+        }
+        if (currentInnerArray.length > 0) {
+          secondPartLineLayouts.push(currentInnerArray);
+        }
+  
+        // Build newLineLayouts
+        newLineLayouts = newLineLayouts.concat(firstPartLineLayouts);
         newLineLayouts.push([this.createColumnBreakLineLayout()]);
-        newLineLayouts = newLineLayouts.concat(lineLayouts.slice(split.index));
+        newLineLayouts = newLineLayouts.concat(secondPartLineLayouts);
+  
         splitFound = true;
         break;
       }
@@ -792,9 +844,8 @@ class PdfFormatter extends Formatter {
     }
   
     return newLineLayouts;
-  }  
-  
-  
+  }
+    
   private createColumnBreakLineLayout(): LineLayout {
     return {
       type: 'Tag',
