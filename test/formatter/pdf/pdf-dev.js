@@ -178,7 +178,7 @@ const pdfConfig = {
   columnSpacing: 25,
   layout: {
     header: {
-      height: 80,
+      height: 75,
       content: [
         {
           type: "text",
@@ -191,7 +191,9 @@ const pdfConfig = {
           },
           position: {
             x: "left",
-            y: 15
+            y: 15,
+            clip: true, 
+            ellipsis: true
           }
         },
         {

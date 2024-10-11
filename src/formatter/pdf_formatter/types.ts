@@ -20,6 +20,8 @@ interface Position {
   y: number,
   width?: number,
   height?: number,
+  clip?: boolean,
+  ellipsis?: boolean,
 }
 
 interface Dimension {

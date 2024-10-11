@@ -282,18 +282,48 @@ class PdfFormatter extends Formatter {
     const availableWidth = position.width || (pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright);
     let y = sectionY + position.y;
 
-    const lines = this.doc.splitTextToSize(textValue, availableWidth);
+    if (position.clip) {
+        if (position.ellipsis) {
+            let clippedText = textValue;
+            let textWidth = this.doc.getTextDimensions(clippedText).w;
 
-    lines.forEach((line: string) => {
-        const lineWidth = this.doc.getTextDimensions(line).w;
-        const x = this.calculateX(position.x, lineWidth);
+            while (textWidth > availableWidth) {
+                clippedText = clippedText.slice(0, -1);
+                textWidth = this.doc.getTextDimensions(clippedText + '...').w;
+            }
 
-        this.doc.text(line, x, y);
-        y += style.size * (style.lineHeight ? style.lineHeight : 1.2);
-    });
+            if (clippedText !== textValue) {
+                clippedText += '...';
+            }
+
+            const x = this.calculateX(position.x, textWidth);
+
+            this.doc.text(clippedText, x, y);
+        } else {
+            let clippedText = textValue;
+            let textWidth = this.doc.getTextDimensions(clippedText).w;
+
+            while (textWidth > availableWidth) {
+                clippedText = clippedText.slice(0, -1); 
+                textWidth = this.doc.getTextDimensions(clippedText).w;
+            }
+
+            const x = this.calculateX(position.x, textWidth);
+
+            this.doc.text(clippedText, x, y);
+        }
+    } else {
+        const lines = this.doc.splitTextToSize(textValue, availableWidth);
+
+        lines.forEach((line: string) => {
+            const lineWidth = this.doc.getTextDimensions(line).w;
+            const x = this.calculateX(position.x, lineWidth);
+
+            this.doc.text(line, x, y);
+            y += style.size * (style.lineHeight ?? 1.2);
+        });
+    }
   }
-
-
 
   // Renders individual image items
   private renderImage(imageItem: LayoutContentItemWithImage, sectionY: number) {
