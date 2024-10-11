@@ -9,8 +9,6 @@ import {
   lineHasContents,
 } from '../template_helpers';
 import Song from '../chord_sheet/song';
-import ChordProParser from '../parser/chord_pro_parser';
-import TextFormatter from './text_formatter';
 import Paragraph from '../chord_sheet/paragraph';
 import Line from '../chord_sheet/line';
 import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
@@ -20,8 +18,11 @@ import defaultConfiguration from './pdf_formatter/default_configuration';
 
 import {
   Alignment,
+  Condition,
   FontConfiguration,
+  LayoutContentItem,
   LayoutContentItemWithImage,
+  LayoutContentItemWithLine,
   LayoutContentItemWithText,
   LayoutItem,
   LayoutSection,
@@ -47,6 +48,10 @@ class PdfFormatter extends Formatter {
 
   currentColumn: number = 1;
 
+  totalPages: number = 1;
+  
+  currentPage: number = 1;
+
   columnWidth: number = 0;
 
   pdfConfiguration: PDFConfiguration = defaultConfiguration;
@@ -63,13 +68,20 @@ class PdfFormatter extends Formatter {
     this.song = song;
     this.pdfConfiguration = configuration;
     this.doc = this.setupDoc(docConstructor);
-    this.renderLayout(this.pdfConfiguration.layout.header, 'header');
-    this.renderLayout(this.pdfConfiguration.layout.footer, 'footer');
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     this.x = this.pdfConfiguration.marginleft;
     this.currentColumn = 1;
     this.formatParagraphs();
     this.recordFormattingTime();
+    
+    // Must render the footer and header after all formatting
+    // to ensure the correct total number of pages
+    for (let i = 1; i <= this.totalPages; i++) {
+      this.currentPage = i;
+      this.doc.setPage(i);
+      this.renderLayout(this.pdfConfiguration.layout.header, 'header');
+      this.renderLayout(this.pdfConfiguration.layout.footer, 'footer');
+    }
   }
 
   // Save the formatted document as a PDF file
@@ -163,27 +175,125 @@ class PdfFormatter extends Formatter {
     const sectionY = section === 'header' ? margintop : pageHeight - height - marginbottom;
 
     layoutConfig.content.forEach((contentItem) => {
-      if (contentItem.type === 'text') {
-        this.renderTextItem(contentItem, sectionY);
-      } else if (contentItem.type === 'image') {
-        this.renderImage(contentItem, sectionY);
-      }
+        const item = contentItem as LayoutContentItem;
+
+        if (this.shouldRenderContent(item)) { 
+            if (item.type === 'text') {
+                this.renderTextItem(item as LayoutContentItemWithText, sectionY);
+            } else if (item.type === 'image') {
+                this.renderImage(item as LayoutContentItemWithImage, sectionY);
+            } else if (item.type === 'line') {
+                this.renderLine(item as LayoutContentItemWithLine, sectionY);
+            }
+        }
     });
   }
 
-  // Renders individual text items
-  private renderTextItem(textItem: LayoutContentItemWithText, sectionY: number) {
-    const { value, template, style, position } = textItem;
+  
+  private shouldRenderContent(contentItem: LayoutContentItem): boolean {
+    if (!contentItem.condition) {
+        return true;
+    }
 
-    const textValue = template
-      ? this.interpolateMetadata(template, this.song)
-      : (value as string);
+    return this.evaluateCondition(contentItem.condition);
+  }
+
+  private evaluateCondition(condition: Condition): boolean {
+    if ('and' in condition && Array.isArray(condition.and)) {
+        // All conditions in the 'and' array must be true
+        return condition.and.every((subCondition) => this.evaluateCondition(subCondition));
+    }
+
+    if ('or' in condition && Array.isArray(condition.or)) {
+        // At least one condition in the 'or' array must be true
+        return condition.or.some((subCondition) => this.evaluateCondition(subCondition));
+    }
+
+    // Evaluate a single condition
+    const [field, rule] = Object.entries(condition)[0];
+    const value = field === 'totalPages' ? this.totalPages : (this.song.metadata[field] ?? this[field]);
+
+    if (!rule) {
+        return false;
+    }
+
+    // Handle all supported conditions
+    if ('equals' in rule) {
+        return value === rule.equals;
+    }
+    if ('not_equals' in rule) {
+        return value !== rule.not_equals;
+    }
+    if ('greater_than' in rule) {
+        return typeof value === 'number' && value > rule.greater_than;
+    }
+    if ('greater_than_equal' in rule) {
+        return typeof value === 'number' && value >= rule.greater_than_equal;
+    }
+    if ('less_than' in rule) {
+        return typeof value === 'number' && value < rule.less_than;
+    }
+    if ('less_than_equal' in rule) {
+        return typeof value === 'number' && value <= rule.less_than_equal;
+    }
+    if ('like' in rule) {
+        return typeof value === 'string' && value.toLowerCase().includes(rule.like.toLowerCase());
+    }
+    if ('contains' in rule) {
+        return typeof value === 'string' && value.toLowerCase().includes(rule.contains.toLowerCase());
+    }
+    if ('in' in rule) {
+        return Array.isArray(rule.in) && rule.in.includes(value);
+    }
+    if ('not_in' in rule) {
+        return Array.isArray(rule.not_in) && !rule.not_in.includes(value);
+    }
+    if ('all' in rule) {
+        return Array.isArray(value) && rule.all.every((item: any) => value.includes(item));
+    }
+    if ('exists' in rule) {
+        return rule.exists ? value !== undefined : value === undefined;
+    }
+
+    // Check for first page condition
+    if ('first' in rule) {
+        return rule.first && this.currentPage === 1;
+    }
+
+    // Check for last page condition
+    if ('last' in rule) {
+        return rule.last && this.currentPage === this.totalPages;
+    }
+
+    return false;
+  }
+
+  private renderTextItem(textItem: LayoutContentItemWithText, sectionY: number) {
+    const { value, template = '', style, position } = textItem;
+
+    const textValue = value || this.parseTemplate(template, this.song.metadata);
+
+    if (!textValue) {
+        return;
+    }
 
     this.setFontStyle(style);
-    const x = this.calculateX(position.x);
-    const y = sectionY + position.y;
-    this.doc.text(textValue, x, y);
+    const pageWidth = this.doc.internal.pageSize.getWidth();
+    const availableWidth = position.width || (pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright);
+    let y = sectionY + position.y;
+
+    const lines = this.doc.splitTextToSize(textValue, availableWidth);
+
+    lines.forEach((line: string) => {
+        const lineWidth = this.doc.getTextDimensions(line).w;
+        const x = this.calculateX(position.x, lineWidth);
+
+        this.doc.text(line, x, y);
+        y += style.size * (style.lineHeight ? style.lineHeight : 1.2);
+    });
   }
+
+
 
   // Renders individual image items
   private renderImage(imageItem: LayoutContentItemWithImage, sectionY: number) {
@@ -196,10 +306,77 @@ class PdfFormatter extends Formatter {
     this.doc.addImage(src, format, x, y, size.width, size.height, alias, compression, rotation);
   }
 
-  // Helper method to interpolate metadata
-  private interpolateMetadata(template: string, song: Song): string {
-    const parsedTemplate = new ChordProParser().parse(template);
-    return new TextFormatter().format(parsedTemplate, song.metadata);
+  // Renders individual line items
+  private renderLine(lineItem: LayoutContentItemWithLine, sectionY: number) {
+    const { style, position } = lineItem;
+
+    this.doc.setDrawColor(style.color);
+    this.doc.setLineWidth(style.width);
+
+    if (style.dash && Array.isArray(style.dash)) {
+        this.doc.setLineDash(style.dash);
+        this.doc.setLineCap(1);
+    } else {
+        this.doc.setLineDash([]);
+    }
+
+    const x = this.pdfConfiguration.marginleft + (position.x || 0);
+    const y = sectionY + position.y;
+
+    const pageWidth = this.doc.internal.pageSize.getWidth();
+    const availableWidth = pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright;
+    const lineWidth = position.width === 'auto' ? availableWidth : position.width;
+
+    
+    this.doc.line(x, y, x + lineWidth, y + (position.height || 0));
+    this.doc.setLineDash([]); // Reset dash pattern
+  }
+
+  private parseTemplate(template: string, metadata: { [key: string]: any }): string {
+    const shorthandMapping: { [key: string]: string } = {
+        'k': 'key',
+        // TODO:: share with tag.ts class
+    };
+
+    // Merge metadata and metadata.metadata to ensure both are accessible
+    // supports conditional logic on x_metadata fields
+    const mergedMetadata = {
+        ...metadata.metadata,
+        ...metadata
+    };
+
+    // Include class variables like currentPage and totalPages if available
+    mergedMetadata['currentPage'] = this.currentPage;
+    mergedMetadata['totalPages'] = this.totalPages;
+
+    // Normalize metadata keys to include shorthand equivalents
+    const normalizedMetadata: { [key: string]: any } = { ...mergedMetadata };
+    for (const [shorthand, longform] of Object.entries(shorthandMapping)) {
+        if (mergedMetadata[shorthand] !== undefined) {
+            normalizedMetadata[longform] = mergedMetadata[shorthand];
+        }
+    }
+
+    // Replace placeholders with their corresponding values
+    let parsedTemplate = template.replace(/%\{(\w+)\}/g, (match, key) => {
+        return normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined
+            ? normalizedMetadata[key]
+            : '';
+    });
+
+    // Remove conditional blocks for unavailable fields
+    parsedTemplate = parsedTemplate.replace(/{\?(\w+)}(.*?){\/\1}/g, (match, key, content) => {
+        return normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined
+            ? content
+            : '';
+    });
+
+    // Remove unnecessary bullet separators if adjacent content is missing
+    parsedTemplate = parsedTemplate.replace(/•\s+/g, (_match) => {
+        return ''; // Remove bullet if no content follows
+    }).trim();
+
+    return parsedTemplate;
   }
 
   // Helper method to calculate x position based on alignment
@@ -895,14 +1072,13 @@ class PdfFormatter extends Formatter {
 
     const {
       columnCount,
-      layout: { header, footer },
     } = this.pdfConfiguration;
 
     if (this.currentColumn > columnCount) {
       this.doc.addPage();
+      this.currentPage += 1;
+      this.totalPages += 1;
       this.currentColumn = 1;
-      this.renderLayout(header, 'header');
-      this.renderLayout(footer, 'footer');
     }
 
     this.carriageReturn();

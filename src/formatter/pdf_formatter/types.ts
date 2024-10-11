@@ -11,12 +11,15 @@ export interface FontConfiguration {
   style: string;
   weight?: string | number;
   size: number;
+  lineHeight?: number;
   color: string | number;
 }
 
 interface Position {
   x: Alignment,
   y: number,
+  width?: number,
+  height?: number,
 }
 
 interface Dimension {
@@ -27,6 +30,7 @@ interface Dimension {
 interface ILayoutContentItem {
   type: string,
   position: Position,
+  condition?: Condition, 
 }
 
 export interface LayoutContentItemWithText extends ILayoutContentItem {
@@ -54,7 +58,34 @@ export interface LayoutContentItemWithImage extends ILayoutContentItem {
   rotation?: number,
 }
 
-type LayoutContentItem = LayoutContentItemWithValue | LayoutContentItemWithTemplate | LayoutContentItemWithImage;
+export type LayoutContentItemWithLine = {
+  type: "line";
+  style: {
+      color: string; // Color of the line (e.g., "black", "#000000")
+      width: number; // Line width in points
+      dash?: number[]; // Array for dash pattern, e.g., [2, 2] for dashed lines
+  };
+  position: {
+      x?: number;
+      y: number; 
+      width: number | "auto"; 
+      height?: number;
+  };
+  condition?: Condition;
+};
+
+export type Condition = {
+  and?: Condition[];
+  or?: Condition[]; 
+} | SingleCondition;
+
+interface SingleCondition {
+  [key: string]: {
+      exists: boolean;
+  };
+}
+
+export type LayoutContentItem = LayoutContentItemWithValue | LayoutContentItemWithTemplate | LayoutContentItemWithImage | LayoutContentItemWithLine;
 
 export type LayoutItem = {
   height: number,
