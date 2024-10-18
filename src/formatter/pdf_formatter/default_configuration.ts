@@ -21,6 +21,9 @@ const defaultConfiguration: PDFConfiguration = {
     comment: {
       name: 'NimbusSansL-Bol', style: 'bold', size: 10, color: 'black',
     },
+    sectionLabel: {
+      name: 'NimbusSansL-Bol', style: 'bold', size: 10, color: 'black',
+    },
     annotation: {
       name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 'black',
     },
@@ -37,6 +40,7 @@ const defaultConfiguration: PDFConfiguration = {
   columnCount: 2,
   columnWidth: 0,
   columnSpacing: 25,
+  lyricsOnly: false,
   layout: {
     header: {
       height: 60,

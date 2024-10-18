@@ -32,7 +32,12 @@ import {
   PdfConstructor,
   PdfDoc,
 } from './pdf_formatter/types';
-import { NimbusSansLBolBold, NimbusSansLRegNormal } from './pdf_formatter/fonts/NimbusSansLFonts.base64';
+import { 
+  NimbusSansLBolBold, 
+  NimbusSansLBolItaBoldItalic, 
+  NimbusSansLRegItaItalic, 
+  NimbusSansLRegNormal 
+} from './pdf_formatter/fonts/NimbusSansLFonts.base64';
 
 class PdfFormatter extends Formatter {
   song: Song = new Song();
@@ -116,6 +121,12 @@ class PdfFormatter extends Formatter {
 
     doc.addFileToVFS('NimbusSansL-Bol.ttf', NimbusSansLBolBold);
     doc.addFont('NimbusSansL-Bol.ttf', 'NimbusSansL-Bol', 'bold');
+
+    doc.addFileToVFS('NimbusSansL-RegIta-italic.ttf', NimbusSansLRegItaItalic);
+    doc.addFont('NimbusSansL-RegIta-italic.ttf', 'NimbusSansL-RegIta', 'italic');
+
+    doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
+    doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', 'NimbusSansL-BolIta', 'bolditalic');
 
     const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -437,13 +448,15 @@ class PdfFormatter extends Formatter {
     const paragraphSummary: {
       totalHeight: number;
       countChordLyricPairLines: number;
-      countCommentLines: number;
+      countNonLyricLines: number;
       lineLayouts: LineLayout[][];
+      sectionType: string;
     } = {
       totalHeight: 0,
       countChordLyricPairLines: 0,
-      countCommentLines: 0,
+      countNonLyricLines: 0,
       lineLayouts: [],
+      sectionType: paragraph.type
     };
   
     paragraph.lines.forEach((line) => {
@@ -454,54 +467,81 @@ class PdfFormatter extends Formatter {
         for (const line of lines) {
           if (line.type === 'ChordLyricsPair') {
             paragraphSummary.countChordLyricPairLines++;
-          } else if (line.type === 'Comment') {
-            paragraphSummary.countCommentLines++;
+          } else if (line.type === 'Comment' || line.type === 'SectionLabel') {
+            paragraphSummary.countNonLyricLines++;
           }
         }
         paragraphSummary.lineLayouts.push(lines);
       }
-    });
-  
-    // Insert column breaks based on your logic
+    });  
+
     paragraphSummary.lineLayouts = this.insertColumnBreaks(paragraphSummary);
+
+    // don't render empty chords only sections if lyricsOnly is true
+    if (
+      paragraphSummary.countNonLyricLines === 1 &&
+      paragraphSummary.countChordLyricPairLines === 0 &&
+      this.pdfConfiguration.lyricsOnly
+    ) {
+      return;
+    }
   
     for (const lines of paragraphSummary.lineLayouts) {
       this.renderLines(lines);
     }
   
     this.y += this.pdfConfiguration.paragraphSpacing || 0;
-  }
+  }  
 
-  private measureAndComputeLineLayouts(line: Line ): LineLayout[] {
-    const chordFont = this.getFontConfiguration('chord');
-    const lyricsFont = this.getFontConfiguration('text');
-    const commentFont = this.getFontConfiguration('comment');
+  private measureAndComputeLineLayouts(line: Line): LineLayout[] {   
     const measuredItems: MeasuredItem[] = line.items.flatMap(
       (item: Item, index: number): MeasuredItem[] => {
         const nextItem = line.items[index + 1] ?? null;
+        
+        // Find the next item with lyrics after the current index and get its index
+        let nextItemWithLyrics: ChordLyricsPair | null = null;
+        let nextItemWithLyricsIndex: number | null = null;
+        if (this.pdfConfiguration.lyricsOnly && index == 0) {
+          for (let i = index + 1; i < line.items.length; i++) {
+            if (isChordLyricsPair(line.items[i]) && (line.items[i] as ChordLyricsPair).lyrics?.trim() !== '') {
+              nextItemWithLyrics = line.items[i] as ChordLyricsPair;
+              nextItemWithLyricsIndex = i;
+              break;
+            }
+          }
+        }
+  
         if (isChordLyricsPair(item)) {
+          if (nextItemWithLyrics && nextItemWithLyricsIndex) {
+            for (let i = index + 1; i < nextItemWithLyricsIndex; i++) {
+              if (isChordLyricsPair(line.items[i])) {
+                (line.items[i] as ChordLyricsPair).lyrics = '';
+              }
+            }
+          }
+          if (this.pdfConfiguration.lyricsOnly && index == 0 && (item as ChordLyricsPair).lyrics?.trim() === '') {
+            (item as ChordLyricsPair).lyrics = '';
+          }
           const items: Array<ChordLyricsPair | SoftLineBreak> =
             this.addSoftLineBreaksToChordLyricsPair(item as ChordLyricsPair);
-          return items.flatMap((i): MeasuredItem[] =>
-            this.measureItem(i, nextItem, chordFont, lyricsFont, commentFont),
-          );
-        } else if (isTag(item) && isComment(item as Tag)) {
-          return this.measureTag(item as Tag, commentFont);
+          return items.flatMap((i): MeasuredItem[] => {
+            return this.measureItem(i, nextItem)
+          });
+        } else if (isTag(item) && isComment(item as Tag) || (item as Tag).isSectionDelimiter()) {
+          return this.measureTag(item as Tag);
         } else if (isSoftLineBreak(item)) {
           return this.measureItem(
             item as SoftLineBreak,
-            nextItem,
-            chordFont,
-            lyricsFont,
-            commentFont,
+            nextItem
           );
         } else {
           return [{ item, width: 0 }];
         }
       },
     );
-
-    return this.computeLineLayouts(measuredItems, this.paragraphY);
+    
+    const lines = this.computeLineLayouts(measuredItems, this.paragraphY);
+    return lines;
   }
 
   // Compute line layouts
@@ -573,7 +613,16 @@ class PdfFormatter extends Formatter {
         // **Actual Line Break Occurs Here**
 
         // Get the items for the current line
-        const lineItems = currentLine.slice(0, breakIndex);    
+        const lineItems = currentLine.slice(0, breakIndex); 
+
+        // Remove trailing commas from the last item's lyrics
+        const lastItemInLineItems = lineItems[lineItems.length - 1];
+        if (lastItemInLineItems.item instanceof ChordLyricsPair) {
+          const lastItemLyrics = (lastItemInLineItems.item as ChordLyricsPair).lyrics;
+          if (lastItemLyrics && lastItemLyrics.endsWith(',')){
+            (lineItems[lineItems.length - 1].item as ChordLyricsPair).lyrics = lastItemLyrics.slice(0, -1);
+          }
+        }
 
         // Create a LineLayout and add it to lines
         const lineLayout = this.createLineLayout(lineItems);
@@ -721,15 +770,33 @@ class PdfFormatter extends Formatter {
       ({ item }) => item instanceof ChordLyricsPair && item.lyrics && item.lyrics.trim() !== '',
     );
     const hasComments = items.some(({ item }) => item instanceof Tag && isComment(item));
+    const hasSectionLabel = items.some(({ item }) => item instanceof Tag && item.isSectionDelimiter());
     const hasTags = items.some(({ item }) => item instanceof Tag);
+    const allItemsAreNull = items.every(({item}) => item == null);
   
     let type;
     if (hasChords || hasLyrics) {
       type = 'ChordLyricsPair';
-    } else if (hasComments) {
+    } else if (hasComments && !hasSectionLabel) {
       type = 'Comment';
+    } else if (hasSectionLabel) {
+      type = 'SectionLabel';
     } else if (hasTags) {
       type = 'Tag';
+    } else if (allItemsAreNull) {
+      type = 'Empty';
+    }
+
+    if (this.pdfConfiguration.lyricsOnly && type === 'ChordLyricsPair') {
+      const indexOfFirstItemContainingLyrics = items.findIndex(({ item }) => {
+        return item instanceof ChordLyricsPair && item.lyrics && item.lyrics.trim() !== '';
+      });
+      for (let i = 0; i < indexOfFirstItemContainingLyrics; i++) {
+        if (items[i].item instanceof ChordLyricsPair) {
+          (items[i].item as ChordLyricsPair).lyrics = '';
+          items[i].width = 0;
+        }
+      }
     }
   
     return {
@@ -786,18 +853,20 @@ class PdfFormatter extends Formatter {
       let x = this.x;
   
       // Render each item in the line
-      for (const [index, measuredItem] of items.entries()) {
+      for (const measuredItem of items) {
         const { item, width } = measuredItem;
   
         if (item instanceof ChordLyricsPair) {
           const { chords, lyrics } = item;
   
-          if (chords) {
+          // Render chords only if `lyricsOnly` is false
+          if (!this.pdfConfiguration.lyricsOnly && chords) {
             const chordDimensions = this.getTextDimensions(chords, chordFont);
             const chordBaseline = chordsYOffset + this.maxChordHeight(items) - chordDimensions.h;
             this.renderText(chords, x, chordBaseline, chordFont);
           }
   
+          // Always render lyrics
           if (lyrics && lyrics.trim() !== '') {
             this.renderText(lyrics, x, lyricsYOffset, lyricsFont);
           }
@@ -807,26 +876,22 @@ class PdfFormatter extends Formatter {
           if (isColumnBreak(item)) {
             // Column break already handled at the beginning of the loop
             continue;
-          } else {
-            const commentText = item.value;
-            this.formatComment(commentText, x, yOffset);
+          } else if (item.isSectionDelimiter()) {
+            this.formatSectionLabel(item.value, x, yOffset)
+            x += width;
+          } else if (isComment(item)) {
+            this.formatComment(item.value, x, yOffset);
             x += width;
           }
         } else if (item instanceof SoftLineBreak) {
-          let prevChordLyricDifference = 0;
-          if (index > 0 && items[index - 1].chordLyricWidthDifference) {
-            const previousItem = items[index - 1];
-            if (previousItem.item instanceof ChordLyricsPair) {
-              prevChordLyricDifference = previousItem.chordLyricWidthDifference || 0;
-            }
-          }
-          this.renderText(item.content, x - prevChordLyricDifference, lyricsYOffset, lyricsFont);
+          this.renderText(item.content, x, lyricsYOffset, lyricsFont);
           x += width;
         }
       }
   
-      // Update this.y by adding the lineHeight
+      // Update the vertical position after rendering the line
       this.y += lineHeight;
+  
       // Reset x to the left margin for the next line
       this.carriageReturn();
     }
@@ -835,7 +900,7 @@ class PdfFormatter extends Formatter {
   private insertColumnBreaks(paragraphSummary: {
     totalHeight: number;
     countChordLyricPairLines: number;
-    countCommentLines: number;
+    countNonLyricLines: number;
     lineLayouts: LineLayout[][];
   }): LineLayout[][] {
     const { lineLayouts, totalHeight, countChordLyricPairLines } = paragraphSummary;
@@ -885,8 +950,6 @@ class PdfFormatter extends Formatter {
     // Default case: return the original lineLayouts
     return lineLayouts;
   }
-  
-  
   
   private splitParagraphAfterNthChordLyricLine(
     lineLayouts: LineLayout[][],
@@ -1073,22 +1136,37 @@ class PdfFormatter extends Formatter {
     );
     const hasComments = items.some(({ item }) => item instanceof Tag && isComment(item));
 
+    const hasSectionDelimiter = items.some(({item}) => item instanceof Tag && item.isSectionDelimiter());
+
     let estimatedHeight = linePadding;
+    let lineHeight = 1;
+    let fontConfiguration: FontConfiguration | null = null;
 
     if (hasChords && hasLyrics) {
-      const lyricsFontSize = this.getFontSize(this.getFontConfiguration('text'));
+      fontConfiguration = this.getFontConfiguration('text');
+      const lyricsFontSize = this.getFontSize(fontConfiguration);
       estimatedHeight += maxChordHeight + chordLyricSpacing + lyricsFontSize;
     } else if (hasChords && !hasLyrics) {
       estimatedHeight += maxChordHeight;
     } else if (!hasChords && hasLyrics) {
-      const lyricsFontSize = this.getFontSize(this.getFontConfiguration('text'));
+      fontConfiguration = this.getFontConfiguration('text');
+      const lyricsFontSize = this.getFontSize(fontConfiguration);
       estimatedHeight += lyricsFontSize;
     } else if (hasComments) {
-      const commentFontSize = this.getFontSize(this.getFontConfiguration('comment'));
-      estimatedHeight += commentFontSize + 2;
+      fontConfiguration = this.getFontConfiguration('comment');
+      const commentFontSize = this.getFontSize(fontConfiguration);
+      estimatedHeight += commentFontSize;
+    } else if (hasSectionDelimiter) {
+      fontConfiguration = this.getFontConfiguration('sectionLabel');
+      const commentFontSize = this.getFontSize(fontConfiguration);
+      estimatedHeight += commentFontSize;
     }
 
-    return estimatedHeight;
+    if (fontConfiguration && fontConfiguration.lineHeight) {
+      lineHeight = fontConfiguration.lineHeight;
+    }
+    
+    return estimatedHeight * lineHeight; ;
   }
 
   // Get the maximum chord height
@@ -1146,64 +1224,128 @@ class PdfFormatter extends Formatter {
     this.withFontConfiguration(style, () => this.doc.text(text, x, y));
   }
 
-  // Format comments
+  private formatSectionLabel(label: string, x: number, y: number): void {
+    const style = this.getFontConfiguration('sectionLabel');
+    this.withFontConfiguration(style, () => this.doc.text(label, x, y));
+    const { w: textWidth } = this.getTextDimensions(label, style);
+
+    if (style.underline) {
+      this.doc.setDrawColor(0);
+      this.doc.setLineWidth(1.25);
+      this.doc.line(x, y + 3, x + textWidth, y + 3);
+    }
+  }
+
   private formatComment(commentText: string, x: number, y: number): void {
     const style = this.getFontConfiguration('comment');
     this.withFontConfiguration(style, () => this.doc.text(commentText, x, y));
     const { w: textWidth } = this.getTextDimensions(commentText, style);
-    this.doc.setDrawColor(0);
-    this.doc.setLineWidth(1.25);
-    this.doc.line(x, y + 3, x + textWidth, y + 3);
+
+    if (style.underline) {
+      this.doc.setDrawColor(0);
+      this.doc.setLineWidth(1.25);
+      this.doc.line(x, y + 3, x + textWidth, y + 3);
+    }
   }
 
   // Measure items
   private measureItem(
     item: ChordLyricsPair | SoftLineBreak | Item,
-    nextItem: ChordLyricsPair | SoftLineBreak | Item,
-    chordFont: FontConfiguration,
-    lyricFont: FontConfiguration,
-    commentFont: FontConfiguration,
+    nextItem: ChordLyricsPair | SoftLineBreak | Item
   ): MeasuredItem[] {
     if (item instanceof ChordLyricsPair) {
       let nextItemHasChords = false;
+      let lyrics = item.lyrics ?? '';
       if (nextItem && nextItem instanceof ChordLyricsPair) {
-        const { chords } = nextItem;
-        if (chords && chords.trim() !== '') {
+        const nextLyrics = nextItem.lyrics ?? '';
+        const nextChords = nextItem.chords;
+        
+        // Check if the next item has chords
+        if (nextChords && nextChords.trim() !== '') {
           nextItemHasChords = true;
         }
+
+        // Check if the next item has a hyphen
+        if (this.pdfConfiguration.lyricsOnly) {
+          if (nextLyrics.startsWith(' -' ) || nextLyrics.startsWith('-')) {
+            lyrics = lyrics.trimEnd();
+            nextItem.lyrics = this.removeHyphens(nextLyrics);
+          }
+        }
       }
-      return this.measureChordLyricsPair(item, chordFont, lyricFont, nextItemHasChords);
+      if (this.pdfConfiguration.lyricsOnly) {
+        // clean next lyrics and this lyrics
+        item.lyrics =  this.removeHyphens(lyrics);
+      }
+      return this.measureChordLyricsPair(item, nextItemHasChords);
     }
 
-    if (item instanceof Tag && isComment(item)) {
-      return this.measureTag(item, commentFont);
+    if (item instanceof Tag && (isComment(item) || item.isSectionDelimiter())) {
+      return this.measureTag(item);
     }
 
     if (item instanceof SoftLineBreak) {
-      const width = this.getTextDimensions(item.content, lyricFont).w;
+      const lyricsFont = this.getFontConfiguration('text');
+      const width = this.getTextDimensions(item.content, lyricsFont).w;
       return [{ item, width }];
     }
 
     return [];
   }
 
+  private removeHyphens(lyrics: string): string {
+    // Remove hyphenated word splits (e.g., "well - known" -> "wellknown")
+    lyrics = lyrics.replace(/\b(\w+)\s*-\s*(\w+)\b/g, '$1$2');
+
+    // Remove trailing hyphens and hyphen-space combinations
+    lyrics = lyrics.replace(/(?:\b(\w+)\s*-\s*$)|(?:-\s*$)|(?:\s+-\s+$)/g, '$1');
+
+    // If the entire string is just hyphens and spaces, return an empty string
+    if (/^\s*-\s*$/.test(lyrics)) {
+        return '';
+    }
+
+    return lyrics;
+}
+
+
+  
   private measureChordLyricsPair(
     item: ChordLyricsPair,
-    chordFont: FontConfiguration,
-    lyricsFont: FontConfiguration,
     nextItemHasChords: boolean = false,
   ): MeasuredItem[] {
+    const chordFont = this.getFontConfiguration('chord');
+    const lyricsFont = this.getFontConfiguration('text');
+
     const { chords, lyrics } = item;
 
     const chordWidth = chords ? this.getTextDimensions(chords, chordFont).w : 0;
     const lyricsWidth = lyrics ? this.getTextDimensions(lyrics, lyricsFont).w : 0;
 
+    if (this.pdfConfiguration.lyricsOnly) {
+      if (lyrics === '') {
+        return [
+          { 
+            item: null,
+            width: 0, 
+          }
+        ];
+      }
+      return [
+        {
+          item: new ChordLyricsPair('', lyrics),
+          width: lyricsWidth,
+          chordHeight: 0,
+        },
+      ];
+    }
+
     let adjustedChords = chords || '';
     const adjustedLyrics = lyrics || '';
-
-    if (chordWidth >= lyricsWidth && nextItemHasChords) {
-      adjustedChords += this.chordSpacing;
+    if (chordWidth >= (lyricsWidth - this.getSpaceWidth()) && nextItemHasChords) {      
+      adjustedChords += this.chordSpacingAsSpaces;
     }
+    
 
     const adjustedChordWidth = this.getTextDimensions(adjustedChords, chordFont).w;
     const totalWidth = Math.max(adjustedChordWidth, lyricsWidth);
@@ -1219,7 +1361,12 @@ class PdfFormatter extends Formatter {
     ];
   }
 
-  private measureTag(item: Tag, font: FontConfiguration): MeasuredItem[] {
+  private measureTag(item: Tag): MeasuredItem[] {
+    const commentFont = this.getFontConfiguration('comment');
+    const sectionLabelFont = this.getFontConfiguration('sectionLabel');
+
+    const font = isComment(item) ? commentFont : sectionLabelFont; 
+
     const columnWidth = this.columnAvailableWidth();
     let tagLines: string[] = [];
     this.withFontConfiguration(font, () => {
@@ -1247,13 +1394,16 @@ class PdfFormatter extends Formatter {
 
     lyricFragments.forEach((fragment, index) => {
       if (index > 0 && index !== 0) {
-        items.push(new SoftLineBreak(', '));
+        items.push(new SoftLineBreak(' '));
         if (fragment.trim() !== '') {
           items.push(new ChordLyricsPair('', fragment, ''));
         }
       }
 
-      if (index === 0) {
+      if (index === 0 && lyricFragments.length === 1) {
+        items.push(new ChordLyricsPair(chords, fragment, annotation));
+      } else if (index === 0 && lyricFragments.length > 1) {
+        fragment = fragment + ',';
         items.push(new ChordLyricsPair(chords, fragment, annotation));
       }
     });
@@ -1273,7 +1423,7 @@ class PdfFormatter extends Formatter {
   }
 
   // Get chord spacing
-  private get chordSpacing(): string {
+  private get chordSpacingAsSpaces(): string {
     let str = '';
     for (let i = 0; i < this.pdfConfiguration.chordSpacing; i++) {
       str += ' ';

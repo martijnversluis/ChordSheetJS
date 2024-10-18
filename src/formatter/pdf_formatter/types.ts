@@ -2,7 +2,7 @@ import { ImageCompression, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLigh
 import { ChordLyricsPair, Comment, SoftLineBreak, Tag } from '../../index';
 import Item from '../../chord_sheet/item';
 
-type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation';
+type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation' | 'sectionLabel';
 export type LayoutSection = 'header' | 'footer';
 export type Alignment = 'left' | 'center' | 'right';
 
@@ -13,6 +13,7 @@ export interface FontConfiguration {
   size: number;
   lineHeight?: number;
   color: string | number;
+  underline?: boolean;
 }
 
 interface Position {
@@ -95,13 +96,13 @@ export type LayoutItem = {
 };
 
 export type LineLayout = {
-  type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak'
+  type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak' | 'SectionLabel'
   items: MeasuredItem[];
   lineHeight: number;
 };
 
 export type MeasuredItem = {
-  item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item,
+  item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
@@ -121,6 +122,7 @@ export type PDFConfiguration = {
   columnCount: number,
   columnWidth: number,
   columnSpacing: number,
+  lyricsOnly?: boolean,
   layout: Record<LayoutSection, LayoutItem>,
 };
 
