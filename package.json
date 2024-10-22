@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "description": "A JavaScript library for parsing and formatting chord charts",
   "source": "src/index.ts",
-  "main": "lib/index.js",
-  "module": "lib/module.js",
+  "main": "./lib/index.js",
+  "module": "./lib/module.js",
   "types": "./lib/main.d.ts",
   "files": [
     "/lib"
