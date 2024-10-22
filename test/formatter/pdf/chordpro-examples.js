@@ -135,8 +135,8 @@ Just [F13]let it, just [Bbma9]let it fill the room
 {c:Verse 1}
 Christ is my [Bb]firm foundation, the [Gm7]rock on which I [F(4)]stand
 When everything a - [Bbsus]round me is [Bb]shaken, I’ve [Gm]never been more [F]glad
-That I put my [Eb]faith in Jesus,[Bb/D]\ ‘cause He’s [Gm]never let me [F]down
-He’s faithful through [Eb]generations, [Bb/D]\ so [Gm7]why would He fail[F(4)] now[F]
+That I put my [Eb]faith in Jesus,[Bb/D] ‘cause He’s [Gm]never let me [F]down
+He’s faithful through [Eb]generations, [Bb/D]\\ so [Gm7]why would He fail[F(4)] now[F]
 
 {c:Chorus 1}
 He won’t,[Bb] He won’t[Bbsus]
@@ -144,12 +144,12 @@ He won’t,[Bb] He won’t[Bbsus]
 {c:Verse 2}
 I’ve still got [Bb]joy in chaos, I’ve got [Gm7]peace that makes no [F]sense
 I won’t be [Eb]go - [Bb/D]ing [Cm]un - [Bb]der, I’m not [Gm]held by my own [F]strength
-‘Cause I’ve built my [Eb/G]life on Jesus,[Bb/D]\ He’s [Gm]never [F/A]let [Bb]me [F(4)]down
-He’s faithful in [Eb]every season,[Bb/D]\ so [Gm]why would He fail[F(4)] now
+‘Cause I’ve built my [Eb/G]life on Jesus,[Bb/D]\\ He’s [Gm]never [F/A]let [Bb]me [F(4)]down
+He’s faithful in [Eb]every season,[Bb/D]\\ so [Gm]why would He fail[F(4)] now
 
 {c:Chorus 2 (2x)}
 He won't,[Bb] He won’t[Bbsus]
-He won’t [Gm]fa [F]- [Ebma7]il,\ He won’t [Gm]fa [F]- [Gm/Bb]- [Bb/D]- [Ebma7]il
+He won’t [Gm]fa [F]- [Ebma7]il,\\ He won’t [Gm]fa [F]- [Gm/Bb]- [Bb/D]- [Ebma7]il
 
 {c:Verse 1}
 
@@ -162,7 +162,7 @@ He won’t [Gm]fa [F]- [Ebma7]il,\ He won’t [Gm]fa [F]- [Gm/Bb]- [Bb/D]- [Ebma
 [Eb][/][|][F][/][|][Bb/D][/][|][Gm][F][|]
 
 {c:Bridge (3x)}
-[Eb]Rain came and [F]wind blew\ but [Bb2/D]my house was built on [Gm]You[F]
+[Eb]Rain came and [F]wind blew\\ but [Bb2/D]my house was built on [Gm]You[F]
 [Eb]I’m safe [F]with You, [Bb2/D]I’m going to make it [Gm]through[F]
 
 {c:Tag}
@@ -170,10 +170,10 @@ He won’t [Gm]fa [F]- [Ebma7]il,\ He won’t [Gm]fa [F]- [Gm/Bb]- [Bb/D]- [Ebma
 [Eb]I'm gonna make it [F]through, 'cause [Bb2/D]my house is built on[Gm] You
 
 {c:Verse 3}
-[F]Christ is my [Bb]firm foundation,[Cm]\ the [Gm]rock on which I [F]stand
-When everything a - [Eb]round [Bb/D]me is [Cm]shak - [Bb]en, [Cm]\ I’ve [Gm]never been more [F(4)]glad
-That I put my [Eb]faith in Jesus,[Bb/D]\ He’s [Gm]never [/A]let [/Bb]me [F(4)]down
-He’s faithful through [Eb]generations, [Bb/D]\ so [Gm]why would He fail[F(4)] now
+[F]Christ is my [Bb]firm foundation,[Cm]\\ the [Gm]rock on which I [F]stand
+When everything a - [Eb]round [Bb/D]me is [Cm]shak - [Bb]en, [Cm]\\ I’ve [Gm]never been more [F(4)]glad
+That I put my [Eb]faith in Jesus,[Bb/D]\\ He’s [Gm]never [/A]let [/Bb]me [F(4)]down
+He’s faithful through [Eb]generations, [Bb/D]\\ so [Gm]why would He fail[F(4)] now
 
 {c:Chorus 3 (2x)}
 He won't,[Bb] He won’t[Bbsus]
@@ -183,4 +183,3 @@ He won’t [Gm]fa [F]- [Eb]il, He won’t [Gm]fa [F]- [Bb]- [Bb/D]- [Eb]il
 No, He [Bb]won't`,
     },
   ];
-  
