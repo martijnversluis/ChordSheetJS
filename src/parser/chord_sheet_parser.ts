@@ -42,7 +42,7 @@ class ChordSheetParser {
    */
   constructor(
     { preserveWhitespace = true }: { preserveWhitespace?: boolean } = {},
-    showDeprecationWarning: boolean = true,
+    showDeprecationWarning = true,
   ) {
     if (showDeprecationWarning) {
       deprecate(

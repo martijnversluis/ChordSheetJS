@@ -59,8 +59,8 @@ function getObjectType(object) {
 
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
-  const pass = (!klass || received instanceof klass)
-    && propertyNames.every((name) => valuesEqual(properties[name], received[name]));
+  const pass = (!klass || received instanceof klass) &&
+    propertyNames.every((name) => valuesEqual(properties[name], received[name]));
   const stringifiedProperties = propertyNames.map((name) => `${name}=${properties[name]}`);
 
   if (pass) {
@@ -174,7 +174,9 @@ function findTextMatch(doc: StubbedPdfDoc, text: string, x: number, y: number, d
       .map((item: RenderedItem) => item as RenderedText);
 
   const candidates = textItems
+    // eslint-disable-next-line arrow-body-style
     .filter((item: RenderedText) => {
+      // eslint-disable-next-line max-len
       return item.x >= x - distanceMargin && item.x <= x + distanceMargin && item.y >= y - distanceMargin && item.y <= y + distanceMargin;
     })
     .sort((a, b) => {
@@ -250,6 +252,7 @@ function toHaveLine(received: StubbedPdfDoc, x1, y1, x2, y2) {
   };
 }
 
+// eslint-disable-next-line no-undef
 expect.extend({
   toBeChordLyricsPair,
   toBeComment,

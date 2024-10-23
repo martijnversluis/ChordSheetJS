@@ -53,7 +53,7 @@ describe('chordpro e2e', () => {
     expect(formatted).toEqual('');
   });
 
-  it('correctly parses and formats meta expressions', () => {
+  it('correctly parses and formats meta expressions with errors', () => {
     const chordSheet = heredoc`
       {key: Numbers}
       

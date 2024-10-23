@@ -13,7 +13,7 @@ describe('Chord', () => {
         expect(Chord.parse('Dsus/F#')?.toNumeric('Ab').toString()).toEqual('b5sus/b7');
       });
 
-      xit('supports a minor chord', () => {
+      it.skip('supports a minor chord', () => {
         expect(Chord.parse('Gm')?.toNumeric('Bb')?.toString()).toEqual('6');
       });
     });

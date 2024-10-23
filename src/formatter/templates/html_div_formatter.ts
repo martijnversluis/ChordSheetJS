@@ -1,4 +1,4 @@
-import { HtmlTemplateArgs } from "../html_formatter";
+import { HtmlTemplateArgs } from '../html_formatter';
 import { renderChord } from '../../helpers';
 
 import {
@@ -15,7 +15,7 @@ import {
   stripHTML,
   when,
 } from '../../template_helpers';
-import {isPresent} from "../../utilities";
+import { isPresent } from '../../utilities';
 
 export default (
   {
@@ -54,10 +54,10 @@ export default (
                   ${ when(isChordLyricsPair(item), () => `
                     <div class="column">
                      ${ when(item.annotation).then(() => `
-                       <div class="annotation"${ fontStyleTag(line.chordFont) }>${item.annotation}</div>
+                       <div class="annotation"${ fontStyleTag(line.chordFont) }>${ item.annotation }</div>
                      `).else(() => `
-                        <div class="chord"${ fontStyleTag(line.chordFont) }>${
-                          renderChord(
+                        <div class="chord"${ fontStyleTag(line.chordFont) }>
+                          ${ renderChord(
                             item.chords,
                             line,
                             song,
@@ -65,9 +65,9 @@ export default (
                               renderKey: key,
                               useUnicodeModifier: configuration.useUnicodeModifiers,
                               normalizeChords: configuration.normalizeChords,
-                            }
-                          )
-                        }</div>
+                            },
+                          ) }
+                        </div>
                      `) }
                       <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                     </div>
@@ -82,7 +82,9 @@ export default (
                   `).elseWhen(isEvaluatable(item), () => `
                     <div class="column">
                       <div class="chord"></div>
-                      <div class="lyrics"${ fontStyleTag(line.textFont) }>${ evaluate(item, metadata, configuration) }</div>
+                      <div class="lyrics"${ fontStyleTag(line.textFont) }>
+                        ${ evaluate(item, metadata, configuration) }
+                      </div>
                     </div>
                   `) }
                 `) }

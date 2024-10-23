@@ -6,27 +6,27 @@ import StubbedPdfDoc, { RenderedItem, RenderedLine, RenderedText } from './forma
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toBeKey({ note, modifier, minor: boolean }): CustomMatcherResult;
+      toBeKey({ note, modifier, minor: boolean }): jest.CustomMatcherResult;
 
-      toBeChordLyricsPair(chords: string, lyrics: string, annotation?: string): CustomMatcherResult;
+      toBeChordLyricsPair(chords: string, lyrics: string, annotation?: string): jest.CustomMatcherResult;
 
-      toBeLiteral(string: string): CustomMatcherResult;
+      toBeLiteral(string: string): jest.CustomMatcherResult;
 
-      toBeSection(_type: ContentType, _contents: string): CustomMatcherResult;
+      toBeSection(_type: ContentType, _contents: string): jest.CustomMatcherResult;
 
-      toBeTernary(properties: TernaryProperties): CustomMatcherResult;
+      toBeTernary(properties: TernaryProperties): jest.CustomMatcherResult;
 
-      toBeComment(_contents: string): CustomMatcherResult;
+      toBeComment(_contents: string): jest.CustomMatcherResult;
 
-      toBeTag(_name: string, _value?: string): CustomMatcherResult;
+      toBeTag(_name: string, _value?: string): jest.CustomMatcherResult;
 
-      toBeSoftLineBreak(): CustomMatcherResult;
+      toBeSoftLineBreak(): jest.CustomMatcherResult;
 
-      toHaveLine(_x1: number, _y1: number, _x2: number, _y2: number): CustomMatcherResult;
+      toHaveLine(_x1: number, _y1: number, _x2: number, _y2: number): jest.CustomMatcherResult;
 
-      toHaveRenderedItem(expected: Partial<RenderedItem>): CustomMatcherResult;
+      toHaveRenderedItem(expected: Partial<RenderedItem>): jest.CustomMatcherResult;
 
-      toHaveText(_text: string, _x: number, _y: number): CustomMatcherResult;
+      toHaveText(_text: string, _x: number, _y: number): jest.CustomMatcherResult;
     }
   }
 }

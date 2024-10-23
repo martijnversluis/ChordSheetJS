@@ -363,21 +363,21 @@ class Chord implements ChordProperties {
     },
   ) {
     this.suffix = suffix || null;
-    this.root = this.determineRoot({
+    this.root = Chord.determineRoot({
       root, base, modifier, suffix, chordType,
     });
-    this.bass = this.determineBass({
+    this.bass = Chord.determineBass({
       bass, bassBase, bassModifier, chordType,
     });
   }
 
   equals(otherChord: Chord): boolean {
-    return this.suffix === otherChord.suffix
-      && Key.equals(this.root, otherChord.root)
-      && Key.equals(this.bass, otherChord.bass);
+    return this.suffix === otherChord.suffix &&
+      Key.equals(this.root, otherChord.root) &&
+      Key.equals(this.bass, otherChord.bass);
   }
 
-  determineRoot(
+  static determineRoot(
     {
       root,
       base,
@@ -404,7 +404,7 @@ class Chord implements ChordProperties {
     });
   }
 
-  determineBass(
+  static determineBass(
     {
       bass,
       bassBase,

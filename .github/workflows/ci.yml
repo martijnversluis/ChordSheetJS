@@ -13,7 +13,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        node-version: [ 16.x, 18.x, 20.x, 22.6 ]
+        node-version: [ 18.x, 20.x, 22.6 ]
     name: Ubuntu NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v4
