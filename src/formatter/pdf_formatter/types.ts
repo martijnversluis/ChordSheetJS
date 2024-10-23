@@ -1,10 +1,23 @@
-import { ImageCompression, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLight } from 'jspdf';
-import { ChordLyricsPair, Comment, SoftLineBreak, Tag } from '../../index';
+import {
+  ImageCompression, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLight,
+} from 'jspdf';
+import {
+  ChordLyricsPair, Comment, SoftLineBreak, Tag,
+} from '../../index';
 import Item from '../../chord_sheet/item';
 
 type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation' | 'sectionLabel';
 export type LayoutSection = 'header' | 'footer';
 export type Alignment = 'left' | 'center' | 'right';
+
+type SingleCondition = Record<string, {
+  exists: boolean;
+}>;
+
+export type Condition = {
+and?: Condition[];
+or?: Condition[];
+} | SingleCondition;
 
 export interface FontConfiguration {
   name: string;
@@ -33,7 +46,7 @@ interface Dimension {
 interface ILayoutContentItem {
   type: string,
   position: Position,
-  condition?: Condition, 
+  condition?: Condition,
 }
 
 export interface LayoutContentItemWithText extends ILayoutContentItem {
@@ -61,8 +74,8 @@ export interface LayoutContentItemWithImage extends ILayoutContentItem {
   rotation?: number,
 }
 
-export type LayoutContentItemWithLine = {
-  type: "line";
+export interface LayoutContentItemWithLine {
+  type: 'line';
   style: {
       color: string; // Color of the line (e.g., "black", "#000000")
       width: number; // Line width in points
@@ -70,46 +83,39 @@ export type LayoutContentItemWithLine = {
   };
   position: {
       x?: number;
-      y: number; 
-      width: number | "auto"; 
+      y: number;
+      width: number | 'auto';
       height?: number;
   };
   condition?: Condition;
-};
-
-export type Condition = {
-  and?: Condition[];
-  or?: Condition[]; 
-} | SingleCondition;
-
-interface SingleCondition {
-  [key: string]: {
-      exists: boolean;
-  };
 }
 
-export type LayoutContentItem = LayoutContentItemWithValue | LayoutContentItemWithTemplate | LayoutContentItemWithImage | LayoutContentItemWithLine;
+export type LayoutContentItem =
+  | LayoutContentItemWithValue
+  | LayoutContentItemWithTemplate
+  | LayoutContentItemWithImage
+  | LayoutContentItemWithLine;
 
-export type LayoutItem = {
+export interface LayoutItem {
   height: number,
   content: LayoutContentItem[],
-};
+}
 
-export type LineLayout = {
-  type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak' | 'SectionLabel'
-  items: MeasuredItem[];
-  lineHeight: number;
-};
-
-export type MeasuredItem = {
+export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
   adjustedChord?: string,
-};
+}
 
-export type PDFConfiguration = {
+export interface LineLayout {
+  type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak' | 'SectionLabel'
+  items: MeasuredItem[];
+  lineHeight: number;
+}
+
+export interface PDFConfiguration {
   fonts: Record<FontSection, FontConfiguration>,
   margintop: number,
   marginbottom: number,
@@ -124,9 +130,9 @@ export type PDFConfiguration = {
   columnSpacing: number,
   lyricsOnly?: boolean,
   layout: Record<LayoutSection, LayoutItem>,
-};
+}
 
-export type PdfDoc = {
+export interface PdfDoc {
   get internal(): {
     pageSize: {
       getWidth(): number,
@@ -134,6 +140,7 @@ export type PdfDoc = {
   };
 
   addImage(
+    // eslint-disable-next-line no-undef
     imageData: string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData,
     format: string,
     x: number,
@@ -146,6 +153,7 @@ export type PdfDoc = {
   ): PdfDoc;
 
   addImage(
+    // eslint-disable-next-line no-undef
     imageData: string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData,
     x: number,
     y: number,
@@ -171,6 +179,8 @@ export type PdfDoc = {
 
   setFontSize(size: number): PdfDoc;
 
+  setPage(page: number): PdfDoc;
+
   setLineWidth(width: number): PdfDoc;
 
   setTextColor(ch1: string): PdfDoc;
@@ -186,14 +196,12 @@ export type PdfDoc = {
     fontStyle: string,
     fontWeight?: string | number,
     encoding?:
-      | "StandardEncoding"
-      | "MacRomanEncoding"
-      | "Identity-H"
-      | "WinAnsiEncoding",
+      | 'StandardEncoding'
+      | 'MacRomanEncoding'
+      | 'Identity-H'
+      | 'WinAnsiEncoding',
     isStandardFont?: boolean
   ): string;
-};
+}
 
-export type PdfConstructor = {
-  new (options?: jsPDFOptions): PdfDoc;
-};
+export type PdfConstructor = new (options?: jsPDFOptions) => PdfDoc;

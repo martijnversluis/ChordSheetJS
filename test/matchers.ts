@@ -9,7 +9,7 @@ import {
   Ternary,
 } from '../src';
 import StubbedPdfDoc, { RenderedItem, RenderedLine, RenderedText } from './formatter/stubbed_pdf_doc';
-import levenshtein from "js-levenshtein";
+import levenshtein from 'js-levenshtein';
 
 function typeRepresentation(type, value) {
   if (type === 'object') {
@@ -216,7 +216,7 @@ function toHaveText(received: StubbedPdfDoc, text: string, x: number, y: number)
   return {
     message: () => [
       `expected ${received} to have text "${text}" at (${x}, ${y}), `,
-      `but it was not found. Closest match was ${print(findTextMatch(received, text, x, y))}`
+      `but it was not found. Closest match was ${print(findTextMatch(received, text, x, y))}`,
     ].join(''),
     pass: false,
   };

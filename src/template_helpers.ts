@@ -23,7 +23,7 @@ export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordL
 
 export const lineHasContents = (line: Line): boolean => line.items.some((item: Item) => item.isRenderable());
 
-export const isTag = (item: Item): boolean => item instanceof Tag;
+export const isTag = (item: Item): boolean => item instanceof Tag && typeof item.isSectionDelimiter === 'function';
 
 export const isLiteral = (item: Item): boolean => item instanceof Literal;
 

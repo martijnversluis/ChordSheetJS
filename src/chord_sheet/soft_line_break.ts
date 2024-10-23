@@ -1,8 +1,7 @@
 class SoftLineBreak {
-
   content: string;
 
-  constructor(content: string = ' ') {
+  constructor(content = ' ') {
     this.content = content;
   }
 

@@ -1,7 +1,8 @@
+/* eslint-disable max-len */
 export const chordproExamples = [
-    {
-      name: 'Kingdom',
-      content: `{title: Kingdom}
+  {
+    name: 'Kingdom',
+    content: `{title: Kingdom}
 {subtitle: (feat. Naomi Raine & Chandler Moore)}
 {artist: Maverick City}
 {author: Kirk Franklin}
@@ -118,10 +119,10 @@ Lookin' [F9/A]like, lookin' [Bbma9]like me [A7(#9#5)]and you
 [Dm9]If you wanna know [C7/E]what Heav - [/D]en [/Db]sounds [Cm7]like
 Just [F13]let it, just [Bbma9]let it fill the room
   `,
-    },
-    {
-      name: 'Firm Foundation (He Won\'t)',
-      content: `{t:Firm Foundation (He Won't)}
+  },
+  {
+    name: 'Firm Foundation (He Won\'t)',
+    content: `{t:Firm Foundation (He Won't)}
 {artist: Cody Carnes}
 {author: Cody Carnes, Austin Davis, Chandler Moore}
 {key:Bb}
@@ -181,5 +182,5 @@ He won’t [Gm]fa [F]- [Eb]il, He won’t [Gm]fa [F]- [Bb]- [Bb/D]- [Eb]il
 
 {c:End}
 No, He [Bb]won't`,
-    },
-  ];
+  },
+];

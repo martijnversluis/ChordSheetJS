@@ -1,4 +1,9 @@
-import JsPDF, { ImageCompression, ImageFormat, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLight } from 'jspdf';
+/* eslint-disable no-promise-executor-return */
+/* eslint-disable no-dupe-class-members */
+/* eslint-disable no-undef */
+import JsPDF, {
+  ImageCompression, ImageFormat, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLight,
+} from 'jspdf';
 
 type ColorString = string;
 type ColorShade = number;
@@ -6,7 +11,7 @@ type ColorRGB = [number, number, number];
 type ColorRGBA = [number, number, number, number];
 type RenderColor = ColorShade | ColorString | ColorRGB | ColorRGBA;
 
-type RenderedImage = {
+interface RenderedImage {
   type: 'image';
   imageData: string | HTMLImageElement | HTMLCanvasElement | Uint8Array | RGBAData;
   format?: ImageFormat;
@@ -17,9 +22,9 @@ type RenderedImage = {
   alias?: string;
   compression?: ImageCompression;
   rotation?: number;
-};
+}
 
-export type RenderedLine = {
+export interface RenderedLine {
   type: 'line';
   x1: number;
   y1: number;
@@ -28,9 +33,9 @@ export type RenderedLine = {
   style?: string | null;
   lineWidth: number;
   color: RenderColor;
-};
+}
 
-export type RenderedText = {
+export interface RenderedText {
   type: 'text';
   text: string;
   x: number;
@@ -42,7 +47,7 @@ export type RenderedText = {
   fontStyle?: string;
   fontWeight?: string | number;
   color: RenderColor;
-};
+}
 
 export type RenderedItem = RenderedLine | RenderedImage | RenderedText;
 
@@ -51,19 +56,19 @@ class StubbedPdfDoc {
 
   filename?: string;
 
-  fontName: string = 'helvetica';
+  fontName = 'helvetica';
 
-  fontStyle: string = 'normal';
+  fontStyle = 'normal';
 
   fontWeight: string | number = 'normal';
 
-  fontSize: number = 16;
+  fontSize = 16;
 
   internal: any = null;
 
   jsPDF: JsPDF = new JsPDF();
 
-  lineWidth: number = 0.200025;
+  lineWidth = 0.200025;
 
   options: jsPDFOptions;
 
@@ -86,10 +91,10 @@ class StubbedPdfDoc {
     _id: string,
     _fontStyle: string,
     _fontWeight?: string | number,
-    _encoding?:"StandardEncoding" | "MacRomanEncoding" | "Identity-H" | "WinAnsiEncoding",
-    _isStandardFont?: boolean
+    _encoding?:'StandardEncoding' | 'MacRomanEncoding' | 'Identity-H' | 'WinAnsiEncoding',
+    _isStandardFont?: boolean,
   ): string {
-    return "stubbed";
+    return 'stubbed';
   }
 
   addImage(
@@ -212,6 +217,7 @@ class StubbedPdfDoc {
   }
 
   save(filename: string, options: { returnPromise: true }): Promise<void>;
+
   save(filename?: string): StubbedPdfDoc;
 
   save(filename: string, options?: { returnPromise: true }): Promise<void> | StubbedPdfDoc {
@@ -251,8 +257,15 @@ class StubbedPdfDoc {
     return this;
   }
 
+  setPage(page: number): StubbedPdfDoc {
+    this.jsPDF.setPage(page);
+    return this;
+  }
+
   setTextColor(ch1: string): StubbedPdfDoc;
+
   setTextColor(ch1: number): StubbedPdfDoc;
+
   setTextColor(ch1: number, ch2: number, ch3: number, ch4?: number): StubbedPdfDoc;
 
   setTextColor(ch1: string | number, ch2?: number, ch3?: number, ch4?: number): StubbedPdfDoc {

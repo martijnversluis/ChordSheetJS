@@ -32,32 +32,37 @@ import {
   PdfConstructor,
   PdfDoc,
 } from './pdf_formatter/types';
-import { 
-  NimbusSansLBolBold, 
-  NimbusSansLBolItaBoldItalic, 
-  NimbusSansLRegItaItalic, 
-  NimbusSansLRegNormal 
+import {
+  NimbusSansLBolBold,
+  NimbusSansLBolItaBoldItalic,
+  NimbusSansLRegItaItalic,
+  NimbusSansLRegNormal,
 } from './pdf_formatter/fonts/NimbusSansLFonts.base64';
+
+import { Performance } from 'perf_hooks';
+import { Blob } from 'buffer';
+declare const performance: Performance;
 
 class PdfFormatter extends Formatter {
   song: Song = new Song();
 
-  y: number = 0;
-  paragraphY: number = 0;
+  y = 0;
 
-  x: number = 0;
+  paragraphY = 0;
+
+  x = 0;
 
   doc: any = new JsPDF();
 
-  startTime: number = 0;
+  startTime = 0;
 
-  currentColumn: number = 1;
+  currentColumn = 1;
 
-  totalPages: number = 1;
-  
-  currentPage: number = 1;
+  totalPages = 1;
 
-  columnWidth: number = 0;
+  currentPage = 1;
+
+  columnWidth = 0;
 
   pdfConfiguration: PDFConfiguration = defaultConfiguration;
 
@@ -78,10 +83,10 @@ class PdfFormatter extends Formatter {
     this.currentColumn = 1;
     this.formatParagraphs();
     this.recordFormattingTime();
-    
+
     // Must render the footer and header after all formatting
     // to ensure the correct total number of pages
-    for (let i = 1; i <= this.totalPages; i++) {
+    for (let i = 1; i <= this.totalPages; i += 1) {
       this.currentPage = i;
       this.doc.setPage(i);
       this.renderLayout(this.pdfConfiguration.layout.header, 'header');
@@ -103,16 +108,16 @@ class PdfFormatter extends Formatter {
   }
 
   // Document setup configurations
-  private setupDoc(docConstructor: PdfConstructor): PdfDoc {
+  private setupDoc(DocConstructor: PdfConstructor): PdfDoc {
     const constructorOptions: jsPDFOptions = {
       orientation: 'p',
       unit: 'pt',
       format: 'letter',
       compress: true,
-      putOnlyUsedFonts:true,
+      putOnlyUsedFonts: true,
     };
 
-    const doc = new docConstructor(constructorOptions);
+    const doc = new DocConstructor(constructorOptions);
     doc.setLineWidth(0);
     doc.setDrawColor(0, 0, 0, 0);
 
@@ -186,24 +191,23 @@ class PdfFormatter extends Formatter {
     const sectionY = section === 'header' ? margintop : pageHeight - height - marginbottom;
 
     layoutConfig.content.forEach((contentItem) => {
-        const item = contentItem as LayoutContentItem;
+      const item = contentItem as LayoutContentItem;
 
-        if (this.shouldRenderContent(item)) { 
-            if (item.type === 'text') {
-                this.renderTextItem(item as LayoutContentItemWithText, sectionY);
-            } else if (item.type === 'image') {
-                this.renderImage(item as LayoutContentItemWithImage, sectionY);
-            } else if (item.type === 'line') {
-                this.renderLine(item as LayoutContentItemWithLine, sectionY);
-            }
+      if (this.shouldRenderContent(item)) {
+        if (item.type === 'text') {
+          this.renderTextItem(item as LayoutContentItemWithText, sectionY);
+        } else if (item.type === 'image') {
+          this.renderImage(item as LayoutContentItemWithImage, sectionY);
+        } else if (item.type === 'line') {
+          this.renderLine(item as LayoutContentItemWithLine, sectionY);
         }
+      }
     });
   }
 
-  
   private shouldRenderContent(contentItem: LayoutContentItem): boolean {
     if (!contentItem.condition) {
-        return true;
+      return true;
     }
 
     return this.evaluateCondition(contentItem.condition);
@@ -211,13 +215,13 @@ class PdfFormatter extends Formatter {
 
   private evaluateCondition(condition: Condition): boolean {
     if ('and' in condition && Array.isArray(condition.and)) {
-        // All conditions in the 'and' array must be true
-        return condition.and.every((subCondition) => this.evaluateCondition(subCondition));
+      // All conditions in the 'and' array must be true
+      return condition.and.every((subCondition) => this.evaluateCondition(subCondition));
     }
 
     if ('or' in condition && Array.isArray(condition.or)) {
-        // At least one condition in the 'or' array must be true
-        return condition.or.some((subCondition) => this.evaluateCondition(subCondition));
+      // At least one condition in the 'or' array must be true
+      return condition.or.some((subCondition) => this.evaluateCondition(subCondition));
     }
 
     // Evaluate a single condition
@@ -225,120 +229,125 @@ class PdfFormatter extends Formatter {
     const value = field === 'totalPages' ? this.totalPages : (this.song.metadata[field] ?? this[field]);
 
     if (!rule) {
-        return false;
+      return false;
     }
 
     // Handle all supported conditions
     if ('equals' in rule) {
-        return value === rule.equals;
+      return value === rule.equals;
     }
     if ('not_equals' in rule) {
-        return value !== rule.not_equals;
+      return value !== rule.not_equals;
     }
     if ('greater_than' in rule) {
-        return typeof value === 'number' && value > rule.greater_than;
+      return typeof value === 'number' && value > rule.greater_than;
     }
     if ('greater_than_equal' in rule) {
-        return typeof value === 'number' && value >= rule.greater_than_equal;
+      return typeof value === 'number' && value >= rule.greater_than_equal;
     }
     if ('less_than' in rule) {
-        return typeof value === 'number' && value < rule.less_than;
+      return typeof value === 'number' && value < rule.less_than;
     }
     if ('less_than_equal' in rule) {
-        return typeof value === 'number' && value <= rule.less_than_equal;
+      return typeof value === 'number' && value <= rule.less_than_equal;
     }
     if ('like' in rule) {
-        return typeof value === 'string' && value.toLowerCase().includes(rule.like.toLowerCase());
+      return typeof value === 'string' && value.toLowerCase().includes(rule.like.toLowerCase());
     }
     if ('contains' in rule) {
-        return typeof value === 'string' && value.toLowerCase().includes(rule.contains.toLowerCase());
+      return typeof value === 'string' && value.toLowerCase().includes(rule.contains.toLowerCase());
     }
     if ('in' in rule) {
-        return Array.isArray(rule.in) && rule.in.includes(value);
+      return Array.isArray(rule.in) && rule.in.includes(value);
     }
     if ('not_in' in rule) {
-        return Array.isArray(rule.not_in) && !rule.not_in.includes(value);
+      return Array.isArray(rule.not_in) && !rule.not_in.includes(value);
     }
     if ('all' in rule) {
-        return Array.isArray(value) && rule.all.every((item: any) => value.includes(item));
+      return Array.isArray(value) && rule.all.every((item: any) => value.includes(item));
     }
     if ('exists' in rule) {
-        return rule.exists ? value !== undefined : value === undefined;
+      return rule.exists ? value !== undefined : value === undefined;
     }
 
     // Check for first page condition
     if ('first' in rule) {
-        return rule.first && this.currentPage === 1;
+      return rule.first && this.currentPage === 1;
     }
 
     // Check for last page condition
     if ('last' in rule) {
-        return rule.last && this.currentPage === this.totalPages;
+      return rule.last && this.currentPage === this.totalPages;
     }
 
     return false;
   }
 
   private renderTextItem(textItem: LayoutContentItemWithText, sectionY: number) {
-    const { value, template = '', style, position } = textItem;
+    const {
+      value, template = '', style, position,
+    } = textItem;
 
     const textValue = value || this.parseTemplate(template, this.song.metadata);
 
     if (!textValue) {
-        return;
+      return;
     }
 
     this.setFontStyle(style);
     const pageWidth = this.doc.internal.pageSize.getWidth();
-    const availableWidth = position.width || (pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright);
+    const availableWidth = position.width ||
+      (pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright);
     let y = sectionY + position.y;
 
     if (position.clip) {
-        if (position.ellipsis) {
-            let clippedText = textValue;
-            let textWidth = this.doc.getTextDimensions(clippedText).w;
+      if (position.ellipsis) {
+        let clippedText = textValue;
+        let textWidth = this.doc.getTextDimensions(clippedText).w;
 
-            while (textWidth > availableWidth) {
-                clippedText = clippedText.slice(0, -1);
-                textWidth = this.doc.getTextDimensions(clippedText + '...').w;
-            }
-
-            if (clippedText !== textValue) {
-                clippedText += '...';
-            }
-
-            const x = this.calculateX(position.x, textWidth);
-
-            this.doc.text(clippedText, x, y);
-        } else {
-            let clippedText = textValue;
-            let textWidth = this.doc.getTextDimensions(clippedText).w;
-
-            while (textWidth > availableWidth) {
-                clippedText = clippedText.slice(0, -1); 
-                textWidth = this.doc.getTextDimensions(clippedText).w;
-            }
-
-            const x = this.calculateX(position.x, textWidth);
-
-            this.doc.text(clippedText, x, y);
+        while (textWidth > availableWidth) {
+          clippedText = clippedText.slice(0, -1);
+          textWidth = this.doc.getTextDimensions(`${clippedText}...`).w;
         }
+
+        if (clippedText !== textValue) {
+          clippedText += '...';
+        }
+
+        const x = this.calculateX(position.x, textWidth);
+
+        this.doc.text(clippedText, x, y);
+      } else {
+        let clippedText = textValue;
+        let textWidth = this.doc.getTextDimensions(clippedText).w;
+
+        while (textWidth > availableWidth) {
+          clippedText = clippedText.slice(0, -1);
+          textWidth = this.doc.getTextDimensions(clippedText).w;
+        }
+
+        const x = this.calculateX(position.x, textWidth);
+
+        this.doc.text(clippedText, x, y);
+      }
     } else {
-        const lines = this.doc.splitTextToSize(textValue, availableWidth);
+      const lines = this.doc.splitTextToSize(textValue, availableWidth);
 
-        lines.forEach((line: string) => {
-            const lineWidth = this.doc.getTextDimensions(line).w;
-            const x = this.calculateX(position.x, lineWidth);
+      lines.forEach((line: string) => {
+        const lineWidth = this.doc.getTextDimensions(line).w;
+        const x = this.calculateX(position.x, lineWidth);
 
-            this.doc.text(line, x, y);
-            y += style.size * (style.lineHeight ?? 1.2);
-        });
+        this.doc.text(line, x, y);
+        y += style.size * (style.lineHeight ?? 1.2);
+      });
     }
   }
 
   // Renders individual image items
   private renderImage(imageItem: LayoutContentItemWithImage, sectionY: number) {
-    const { src, position, size, alias, compression, rotation } = imageItem;
+    const {
+      src, position, size, alias, compression, rotation,
+    } = imageItem;
 
     const x = this.calculateX(position.x, size.width);
     const y = sectionY + position.y;
@@ -355,10 +364,10 @@ class PdfFormatter extends Formatter {
     this.doc.setLineWidth(style.width);
 
     if (style.dash && Array.isArray(style.dash)) {
-        this.doc.setLineDash(style.dash);
-        this.doc.setLineCap(1);
+      this.doc.setLineDash(style.dash);
+      this.doc.setLineCap(1);
     } else {
-        this.doc.setLineDash([]);
+      this.doc.setLineDash([]);
     }
 
     const x = this.pdfConfiguration.marginleft + (position.x || 0);
@@ -368,60 +377,59 @@ class PdfFormatter extends Formatter {
     const availableWidth = pageWidth - this.pdfConfiguration.marginleft - this.pdfConfiguration.marginright;
     const lineWidth = position.width === 'auto' ? availableWidth : position.width;
 
-    
     this.doc.line(x, y, x + lineWidth, y + (position.height || 0));
     this.doc.setLineDash([]); // Reset dash pattern
   }
 
-  private parseTemplate(template: string, metadata: { [key: string]: any }): string {
-    const shorthandMapping: { [key: string]: string } = {
-        'k': 'key',
-        // TODO:: share with tag.ts class
+  private parseTemplate(template: string, metadata: Record<string, any>): string {
+    const shorthandMapping: Record<string, string> = {
+      'k': 'key',
+      // TODO:: share with tag.ts class
     };
 
     // Merge metadata and metadata.metadata to ensure both are accessible
     // supports conditional logic on x_metadata fields
     const mergedMetadata = {
-        ...metadata.metadata,
-        ...metadata
+      ...metadata.metadata,
+      ...metadata,
     };
 
     // Include class variables like currentPage and totalPages if available
-    mergedMetadata['currentPage'] = this.currentPage;
-    mergedMetadata['totalPages'] = this.totalPages;
+    mergedMetadata.currentPage = this.currentPage;
+    mergedMetadata.totalPages = this.totalPages;
 
     // Normalize metadata keys to include shorthand equivalents
-    const normalizedMetadata: { [key: string]: any } = { ...mergedMetadata };
-    for (const [shorthand, longform] of Object.entries(shorthandMapping)) {
-        if (mergedMetadata[shorthand] !== undefined) {
-            normalizedMetadata[longform] = mergedMetadata[shorthand];
-        }
-    }
+    const normalizedMetadata: Record<string, any> = { ...mergedMetadata };
+    Object.entries(shorthandMapping).forEach(([shorthand, longform]) => {
+      if (mergedMetadata[shorthand] !== undefined) {
+        normalizedMetadata[longform] = mergedMetadata[shorthand];
+      }
+    });
 
     // Replace placeholders with their corresponding values
-    let parsedTemplate = template.replace(/%\{(\w+)\}/g, (match, key) => {
-        return normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined
-            ? normalizedMetadata[key]
-            : '';
-    });
+    let parsedTemplate = template.replace(/%\{(\w+)\}/g, (match, key) => (
+      normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined ?
+        normalizedMetadata[key] :
+        ''
+    ));
 
     // Remove conditional blocks for unavailable fields
-    parsedTemplate = parsedTemplate.replace(/{\?(\w+)}(.*?){\/\1}/g, (match, key, content) => {
-        return normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined
-            ? content
-            : '';
-    });
+    parsedTemplate = parsedTemplate.replace(
+      /{\?(\w+)}(.*?){\/\1}/g,
+      (match, key, content) => (
+        normalizedMetadata[key] !== null && normalizedMetadata[key] !== undefined ?
+          content :
+          ''),
+    );
 
     // Remove unnecessary bullet separators if adjacent content is missing
-    parsedTemplate = parsedTemplate.replace(/•\s+/g, (_match) => {
-        return ''; // Remove bullet if no content follows
-    }).trim();
+    parsedTemplate = parsedTemplate.replace(/•\s+/g, (_match) => '').trim();
 
     return parsedTemplate;
   }
 
   // Helper method to calculate x position based on alignment
-  private calculateX(alignment: Alignment | number, width: number = 0): number {
+  private calculateX(alignment: Alignment | number, width = 0): number {
     switch (alignment) {
       case 'center':
         return this.doc.internal.pageSize.getWidth() / 2 - width / 2;
@@ -456,24 +464,24 @@ class PdfFormatter extends Formatter {
       countChordLyricPairLines: 0,
       countNonLyricLines: 0,
       lineLayouts: [],
-      sectionType: paragraph.type
+      sectionType: paragraph.type,
     };
-  
+
     paragraph.lines.forEach((line) => {
       if (lineHasContents(line)) {
-        const lines = this.measureAndComputeLineLayouts(line);
-        const lineHeight = lines.reduce((sum, l) => sum + l.lineHeight, 0);
+        const lineLayouts = this.measureAndComputeLineLayouts(line);
+        const lineHeight = lineLayouts.reduce((sum, l) => sum + l.lineHeight, 0);
         paragraphSummary.totalHeight += lineHeight;
-        for (const line of lines) {
-          if (line.type === 'ChordLyricsPair') {
-            paragraphSummary.countChordLyricPairLines++;
-          } else if (line.type === 'Comment' || line.type === 'SectionLabel') {
-            paragraphSummary.countNonLyricLines++;
+        lineLayouts.forEach((lineLayout) => {
+          if (lineLayout.type === 'ChordLyricsPair') {
+            paragraphSummary.countChordLyricPairLines += 1;
+          } else if (lineLayout.type === 'Comment' || lineLayout.type === 'SectionLabel') {
+            paragraphSummary.countNonLyricLines += 1;
           }
-        }
-        paragraphSummary.lineLayouts.push(lines);
+        });
+        paragraphSummary.lineLayouts.push(lineLayouts);
       }
-    });  
+    });
 
     paragraphSummary.lineLayouts = this.insertColumnBreaks(paragraphSummary);
 
@@ -485,24 +493,24 @@ class PdfFormatter extends Formatter {
     ) {
       return;
     }
-  
-    for (const lines of paragraphSummary.lineLayouts) {
-      this.renderLines(lines);
-    }
-  
-    this.y += this.pdfConfiguration.paragraphSpacing || 0;
-  }  
 
-  private measureAndComputeLineLayouts(line: Line): LineLayout[] {   
+    paragraphSummary.lineLayouts.forEach((lines) => {
+      this.renderLines(lines);
+    });
+
+    this.y += this.pdfConfiguration.paragraphSpacing || 0;
+  }
+
+  private measureAndComputeLineLayouts(line: Line): LineLayout[] {
     const measuredItems: MeasuredItem[] = line.items.flatMap(
       (item: Item, index: number): MeasuredItem[] => {
         const nextItem = line.items[index + 1] ?? null;
-        
+
         // Find the next item with lyrics after the current index and get its index
         let nextItemWithLyrics: ChordLyricsPair | null = null;
         let nextItemWithLyricsIndex: number | null = null;
-        if (this.pdfConfiguration.lyricsOnly && index == 0) {
-          for (let i = index + 1; i < line.items.length; i++) {
+        if (this.pdfConfiguration.lyricsOnly && index === 0) {
+          for (let i = index + 1; i < line.items.length; i += 1) {
             if (isChordLyricsPair(line.items[i]) && (line.items[i] as ChordLyricsPair).lyrics?.trim() !== '') {
               nextItemWithLyrics = line.items[i] as ChordLyricsPair;
               nextItemWithLyricsIndex = i;
@@ -510,48 +518,52 @@ class PdfFormatter extends Formatter {
             }
           }
         }
-  
+
         if (isChordLyricsPair(item)) {
           if (nextItemWithLyrics && nextItemWithLyricsIndex) {
-            for (let i = index + 1; i < nextItemWithLyricsIndex; i++) {
+            for (let i = index + 1; i < nextItemWithLyricsIndex; i += 1) {
               if (isChordLyricsPair(line.items[i])) {
-                (line.items[i] as ChordLyricsPair).lyrics = '';
+                const chordLyricsPair = line.items[i] as ChordLyricsPair;
+                chordLyricsPair.lyrics = '';
               }
             }
           }
-          if (this.pdfConfiguration.lyricsOnly && index == 0 && (item as ChordLyricsPair).lyrics?.trim() === '') {
-            (item as ChordLyricsPair).lyrics = '';
+          if (this.pdfConfiguration.lyricsOnly && index === 0 && (item as ChordLyricsPair).lyrics?.trim() === '') {
+            const chordLyricsPairItem = item as ChordLyricsPair;
+            chordLyricsPairItem.lyrics = '';
           }
-          const items: Array<ChordLyricsPair | SoftLineBreak> =
+          const items: (ChordLyricsPair | SoftLineBreak)[] =
             this.addSoftLineBreaksToChordLyricsPair(item as ChordLyricsPair);
-          return items.flatMap((i): MeasuredItem[] => {
-            return this.measureItem(i, nextItem)
-          });
-        } else if (isTag(item) && isComment(item as Tag) || (item as Tag).isSectionDelimiter()) {
+          return items.flatMap((i): MeasuredItem[] => this.measureItem(i, nextItem));
+        }
+
+        if ((isTag(item) && (isComment(item as Tag) || (item as Tag).isSectionDelimiter()))) {
           return this.measureTag(item as Tag);
-        } else if (isSoftLineBreak(item)) {
+        }
+
+        if (isSoftLineBreak(item)) {
           return this.measureItem(
             item as SoftLineBreak,
-            nextItem
+            nextItem,
           );
-        } else {
-          return [{ item, width: 0 }];
         }
+
+        return [{ item, width: 0 }];
       },
     );
-    
+
     const lines = this.computeLineLayouts(measuredItems, this.paragraphY);
     return lines;
   }
 
   // Compute line layouts
   private computeLineLayouts(items: MeasuredItem[], startY: number): LineLayout[] {
-    const lines: LineLayout[] = [];                // Stores the final lines to render
-    let currentLine: MeasuredItem[] = [];          // Items on the current line
-    let currentLineWidth = 0;                      // Width of the current line
-    let currentY = startY;                         // Current vertical position
-    let lastSoftLineBreakIndex = -1;               // Index of the last SoftLineBreak
-    let i = 0;                                     // Index to iterate over items
+    const lines: LineLayout[] = []; // Stores the final lines to render
+    let currentLine: MeasuredItem[] = []; // Items on the current line
+    let currentLineWidth = 0; // Width of the current line
+    let currentY = startY; // Current vertical position
+    let lastSoftLineBreakIndex = -1; // Index of the last SoftLineBreak
+    let i = 0; // Index to iterate over items
 
     while (i < items.length) {
       let item = items[i];
@@ -570,56 +582,53 @@ class PdfFormatter extends Formatter {
 
           // Recalculate currentLineWidth after removing SoftLineBreak
           currentLineWidth = currentLine.reduce((sum, mi) => sum + mi.width, 0);
+        } else if (itemWidth > this.columnAvailableWidth()) {
+          // **Attempt to split the item**
+          const [firstPart, secondPart] =
+            this.splitMeasuredItem(item, this.columnAvailableWidth() - currentLineWidth);
+
+          if (secondPart) {
+            // Insert the second part back into items to process next
+            items.splice(i + 1, 0, secondPart);
+          }
+
+          // Update the current item to the first part
+          item = firstPart;
+          itemWidth = item.width;
+
+          // Add the first part to currentLine
+          currentLine.push(item);
+          currentLineWidth += itemWidth;
+
+          // Increment 'i' to process the second part in the next iteration
+          i += 1;
+
+          // Proceed to break the line after adding the first part
+          breakIndex = currentLine.length;
         } else {
-          // **Case 2: Item itself doesn't fit in the remaining space**
-          if (itemWidth > this.columnAvailableWidth()) {
-            // **Attempt to split the item**
-            const [firstPart, secondPart] =
-              this.splitMeasuredItem(item, this.columnAvailableWidth() - currentLineWidth);
+          // **Case 3: Move the item to the next line**
+          breakIndex = currentLine.length;
 
-            if (secondPart) {
-              // Insert the second part back into items to process next
-              items.splice(i + 1, 0, secondPart);
-            }
-
-            // Update the current item to the first part
-            item = firstPart;
-            itemWidth = item.width;
-
-            // Add the first part to currentLine
+          if (breakIndex === 0) {
+            // **Special Case: Item is too wide even for an empty line**
+            // Add the item to currentLine and increment 'i' to avoid infinite loop
             currentLine.push(item);
             currentLineWidth += itemWidth;
-
-            // Increment 'i' to process the second part in the next iteration
-            i++;
-
-            // Proceed to break the line after adding the first part
+            i += 1;
             breakIndex = currentLine.length;
-          } else {
-            // **Case 3: Move the item to the next line**
-            breakIndex = currentLine.length;
-
-            if (breakIndex === 0) {
-              // **Special Case: Item is too wide even for an empty line**
-              // Add the item to currentLine and increment 'i' to avoid infinite loop
-              currentLine.push(item);
-              currentLineWidth += itemWidth;
-              i++;
-              breakIndex = currentLine.length;
-            }
           }
         }
 
         // **Actual Line Break Occurs Here**
 
         // Get the items for the current line
-        const lineItems = currentLine.slice(0, breakIndex); 
+        const lineItems = currentLine.slice(0, breakIndex);
 
         // Remove trailing commas from the last item's lyrics
         const lastItemInLineItems = lineItems[lineItems.length - 1];
         if (lastItemInLineItems.item instanceof ChordLyricsPair) {
           const lastItemLyrics = (lastItemInLineItems.item as ChordLyricsPair).lyrics;
-          if (lastItemLyrics && lastItemLyrics.endsWith(',')){
+          if (lastItemLyrics && lastItemLyrics.endsWith(',')) {
             (lineItems[lineItems.length - 1].item as ChordLyricsPair).lyrics = lastItemLyrics.slice(0, -1);
           }
         }
@@ -639,18 +648,18 @@ class PdfFormatter extends Formatter {
         // **Capitalize the first word of the next item's lyrics**
         const nextItemWithLyrics = this.findNextItemWithLyrics(currentLine, items, i);
         if (nextItemWithLyrics) {
-          const { item, lyrics } = nextItemWithLyrics;
-          const nextPair = item.item as ChordLyricsPair;
-          nextPair.lyrics = this.capitalizeFirstWord(lyrics);   
-          
+          const nextItem = nextItemWithLyrics.item;
+          const { lyrics } = nextItemWithLyrics;
+          const nextPair = nextItem.item as ChordLyricsPair;
+          nextPair.lyrics = this.capitalizeFirstWord(lyrics);
+
           // // next item has to be re-measured becasue the lyrics have changed
           const lyricsFont = this.getFontConfiguration('text');
           const lyricsWidth = lyrics ? this.getTextDimensions(nextPair.lyrics, lyricsFont).w : 0;
-          if (lyricsWidth > item.width) {
-            item.width = lyricsWidth;
+          if (lyricsWidth > nextItem.width) {
+            nextItem.width = lyricsWidth;
           }
         }
-
       } else {
         // **Item fits in the current line; add it**
         currentLine.push(item);
@@ -662,7 +671,7 @@ class PdfFormatter extends Formatter {
         }
 
         // Move to the next item
-        i++;
+        i += 1;
       }
     }
 
@@ -675,7 +684,6 @@ class PdfFormatter extends Formatter {
 
     // Update the vertical position
     this.paragraphY = currentY;
-    
 
     return lines;
   }
@@ -685,13 +693,11 @@ class PdfFormatter extends Formatter {
     if (item.item instanceof ChordLyricsPair) {
       const lyricsFont = this.getFontConfiguration('text');
 
-      const chords = item.item.chords;
-      const lyrics = item.item.lyrics;
+      const { chords } = item.item;
+      const { lyrics } = item.item;
 
       // Use splitTextToSize to split lyrics into lines that fit the available width
-      const lyricLines = this.withFontConfiguration(lyricsFont, () => {
-        return this.doc.splitTextToSize(lyrics, availableWidth);
-      });
+      const lyricLines = this.withFontConfiguration(lyricsFont, () => this.doc.splitTextToSize(lyrics, availableWidth));
 
       if (lyricLines.length === 1) {
       // Cannot split further; return the original item as is
@@ -721,31 +727,37 @@ class PdfFormatter extends Formatter {
       };
 
       return [firstItem, secondItem];
-    } else {
-    // Cannot split other item types; return the original item
-      return [item, null];
     }
+    // Cannot split other item types; return the original item
+    return [item, null];
   }
 
   // Helper function to find the next item with lyrics
   private findNextItemWithLyrics(
     currentLine: MeasuredItem[],
     items: MeasuredItem[],
-    currentIndex: number
+    currentIndex: number,
   ): { item: MeasuredItem; lyrics: string } | null {
     // Check currentLine first
-    for (let idx = 0; idx < currentLine.length; idx++) {
-      const item = currentLine[idx];
+    let foundItem: { item: MeasuredItem; lyrics: string } | null = null;
+
+    currentLine.some((item) => {
       if (item.item instanceof ChordLyricsPair) {
         const pair = item.item as ChordLyricsPair;
         if (pair.lyrics && pair.lyrics.trim() !== '') {
-          return { item, lyrics: pair.lyrics };
+          foundItem = { item, lyrics: pair.lyrics };
+          return true;
         }
       }
+      return false;
+    });
+
+    if (foundItem) {
+      return foundItem;
     }
 
     // Then check the remaining items
-    for (let idx = currentIndex; idx < items.length; idx++) {
+    for (let idx = currentIndex; idx < items.length; idx += 1) {
       const item = items[idx];
       if (item.item instanceof ChordLyricsPair) {
         const pair = item.item as ChordLyricsPair;
@@ -772,8 +784,8 @@ class PdfFormatter extends Formatter {
     const hasComments = items.some(({ item }) => item instanceof Tag && isComment(item));
     const hasSectionLabel = items.some(({ item }) => item instanceof Tag && item.isSectionDelimiter());
     const hasTags = items.some(({ item }) => item instanceof Tag);
-    const allItemsAreNull = items.every(({item}) => item == null);
-  
+    const allItemsAreNull = items.every(({ item }) => item == null);
+
     let type;
     if (hasChords || hasLyrics) {
       type = 'ChordLyricsPair';
@@ -788,24 +800,45 @@ class PdfFormatter extends Formatter {
     }
 
     if (this.pdfConfiguration.lyricsOnly && type === 'ChordLyricsPair') {
-      const indexOfFirstItemContainingLyrics = items.findIndex(({ item }) => {
-        return item instanceof ChordLyricsPair && item.lyrics && item.lyrics.trim() !== '';
-      });
-      for (let i = 0; i < indexOfFirstItemContainingLyrics; i++) {
-        if (items[i].item instanceof ChordLyricsPair) {
-          (items[i].item as ChordLyricsPair).lyrics = '';
-          items[i].width = 0;
+      const indexOfFirstItemContainingLyrics = items.findIndex(
+        ({ item }) => (
+          item instanceof ChordLyricsPair &&
+          item.lyrics &&
+          item.lyrics.trim() !== ''
+        ),
+      );
+
+      // Create a new array of updated items without modifying the original parameter.
+      const updatedItems = items.map((measuredItem, i) => {
+        if (i < indexOfFirstItemContainingLyrics && measuredItem.item instanceof ChordLyricsPair) {
+          const updatedChordLyricsPair = {
+            ...measuredItem.item,
+            lyrics: '',
+          } as ChordLyricsPair;
+
+          return {
+            ...measuredItem,
+            item: updatedChordLyricsPair,
+            width: 0,
+          };
         }
-      }
+        return measuredItem;
+      });
+
+      return {
+        type,
+        items: updatedItems,
+        lineHeight,
+      };
     }
-  
+
     return {
       type,
       items,
       lineHeight,
     };
   }
-  
+
   private getChordLyricYOffset(items: MeasuredItem[], yOffset) {
     // Determine line types
     const hasChords = items.some(({ item }) => item instanceof ChordLyricsPair && item.chords);
@@ -830,54 +863,51 @@ class PdfFormatter extends Formatter {
   }
 
   // Render lines
-  private renderLines(lines: LineLayout[]) {
+  private renderLines(lines: LineLayout[]): void {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont = this.getFontConfiguration('text');
-  
-    for (const lineLayout of lines) {
+
+    lines.forEach((lineLayout) => {
       const { items, lineHeight } = lineLayout;
-  
-      // Check if the line contains a column break tag
-      if (
-        items.length === 1 &&
-        items[0].item instanceof Tag &&
-        isColumnBreak(items[0].item)
-      ) {
+
+      // Filter items that are column breaks and handle them first.
+      const hasColumnBreak = items.length === 1 && items[0].item instanceof Tag && isColumnBreak(items[0].item);
+      if (hasColumnBreak) {
         this.moveToNextColumn();
-        continue;
+        return; // Skip to the next iteration of lines.
       }
-  
+
       const yOffset = this.y;
       const { chordsYOffset, lyricsYOffset } = this.getChordLyricYOffset(items, yOffset);
-  
-      let x = this.x;
-  
+
+      let { x } = this;
+
       // Render each item in the line
-      for (const measuredItem of items) {
+      items.forEach((measuredItem) => {
         const { item, width } = measuredItem;
-  
+
         if (item instanceof ChordLyricsPair) {
           const { chords, lyrics } = item;
-  
+
           // Render chords only if `lyricsOnly` is false
           if (!this.pdfConfiguration.lyricsOnly && chords) {
             const chordDimensions = this.getTextDimensions(chords, chordFont);
             const chordBaseline = chordsYOffset + this.maxChordHeight(items) - chordDimensions.h;
             this.renderText(chords, x, chordBaseline, chordFont);
           }
-  
+
           // Always render lyrics
           if (lyrics && lyrics.trim() !== '') {
             this.renderText(lyrics, x, lyricsYOffset, lyricsFont);
           }
-  
+
           x += width;
         } else if (item instanceof Tag) {
           if (isColumnBreak(item)) {
-            // Column break already handled at the beginning of the loop
-            continue;
+            // Column break already handled at the beginning, so we don't need `continue`.
+
           } else if (item.isSectionDelimiter()) {
-            this.formatSectionLabel(item.value, x, yOffset)
+            this.formatSectionLabel(item.value, x, yOffset);
             x += width;
           } else if (isComment(item)) {
             this.formatComment(item.value, x, yOffset);
@@ -887,16 +917,16 @@ class PdfFormatter extends Formatter {
           this.renderText(item.content, x, lyricsYOffset, lyricsFont);
           x += width;
         }
-      }
-  
+      });
+
       // Update the vertical position after rendering the line
       this.y += lineHeight;
-  
+
       // Reset x to the left margin for the next line
       this.carriageReturn();
-    }
+    });
   }
-  
+
   private insertColumnBreaks(paragraphSummary: {
     totalHeight: number;
     countChordLyricPairLines: number;
@@ -908,13 +938,13 @@ class PdfFormatter extends Formatter {
     const cumulativeHeight = this.y;
     const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     const columnBottomY = this.getColumnBottomY();
-  
+
     // Check if the entire paragraph fits in the current column
     if (cumulativeHeight + totalHeight <= columnBottomY) {
       // The entire paragraph fits; no need for column breaks
       return lineLayouts;
     }
-  
+
     // Paragraph does not fit entirely in current column
     if (countChordLyricPairLines <= 3) {
       // Paragraphs with 3 chord-lyric lines or less
@@ -925,61 +955,66 @@ class PdfFormatter extends Formatter {
       newLineLayouts = newLineLayouts.concat(lineLayouts);
       return newLineLayouts;
     }
-  
+
     if (countChordLyricPairLines === 4) {
       // Paragraphs with 4 chord-lyric lines
       // Try to split after the 2nd chord-lyric line
       newLineLayouts = this.splitParagraphAfterNthChordLyricLine(
         lineLayouts,
         2,
-        cumulativeHeight
+        cumulativeHeight,
       );
       return newLineLayouts;
     }
-  
+
     if (countChordLyricPairLines >= 5) {
       // Paragraphs with 5 or more chord-lyric lines
       newLineLayouts = this.splitParagraphWithMinimumChordLyricLines(
         lineLayouts,
         cumulativeHeight,
-        countChordLyricPairLines
+        countChordLyricPairLines,
       );
       return newLineLayouts;
     }
-  
+
     // Default case: return the original lineLayouts
     return lineLayouts;
   }
-  
+
   private splitParagraphAfterNthChordLyricLine(
     lineLayouts: LineLayout[][],
     n: number,
-    cumulativeHeight: number
+    cumulativeHeight: number,
   ): LineLayout[][] {
     let newLineLayouts: LineLayout[][] = [];
     const columnStartY = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     const columnBottomY = this.getColumnBottomY();
-  
+
     let chordLyricPairLinesSeen = 0;
     let splitIndex = -1;
     let heightFirstPart = 0;
-  
-    for (let i = 0; i < lineLayouts.length; i++) {
+
+    for (let i = 0; i < lineLayouts.length; i += 1) {
       const lines = lineLayouts[i];
       let linesHeight = 0;
-      for (const lineLayout of lines) {
+      let chordLyricPairLinesSeenInLineLayout = 0;
+      lines.forEach((lineLayout) => {
         linesHeight += lineLayout.lineHeight;
+
         if (lineLayout.type === 'ChordLyricsPair') {
-          chordLyricPairLinesSeen++;
+          chordLyricPairLinesSeenInLineLayout += 1;
         }
-      }
+      });
+
+      chordLyricPairLinesSeen += chordLyricPairLinesSeenInLineLayout;
+
       heightFirstPart += linesHeight;
       if (chordLyricPairLinesSeen >= n) {
         splitIndex = i + 1;
         break;
       }
     }
-  
+
     if (cumulativeHeight + heightFirstPart <= columnBottomY) {
       // First part fits in current column
       newLineLayouts = newLineLayouts.concat(lineLayouts.slice(0, splitIndex));
@@ -992,76 +1027,76 @@ class PdfFormatter extends Formatter {
       }
       newLineLayouts = newLineLayouts.concat(lineLayouts);
     }
-  
+
     return newLineLayouts;
   }
-  
+
   private splitParagraphWithMinimumChordLyricLines(
     lineLayouts: LineLayout[][],
     cumulativeHeight: number,
-    totalChordLyricPairLines: number
+    totalChordLyricPairLines: number,
   ): LineLayout[][] {
     let newLineLayouts: LineLayout[][] = [];
     const columnStartY =
       this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     const columnBottomY = this.getColumnBottomY();
-  
+
     // Flatten lineLayouts into a flat array of LineLayout
     const flatLineLayouts: LineLayout[] = [];
     const lineLayoutIndices: { outerIndex: number; innerIndex: number }[] = [];
-  
-    for (let outerIndex = 0; outerIndex < lineLayouts.length; outerIndex++) {
+
+    for (let outerIndex = 0; outerIndex < lineLayouts.length; outerIndex += 1) {
       const innerArray = lineLayouts[outerIndex];
-      for (let innerIndex = 0; innerIndex < innerArray.length; innerIndex++) {
+      for (let innerIndex = 0; innerIndex < innerArray.length; innerIndex += 1) {
         flatLineLayouts.push(innerArray[innerIndex]);
         lineLayoutIndices.push({ outerIndex, innerIndex });
       }
     }
-  
+
     const acceptableSplits: { index: number; heightFirstPart: number }[] = [];
-  
+
     let heightFirstPart = 0;
     let chordLyricLinesInFirstPart = 0;
-  
+
     // Identify all acceptable split points where both parts have at least two chord-lyric lines
-    for (let i = 0; i < flatLineLayouts.length - 1; i++) {
+    for (let i = 0; i < flatLineLayouts.length - 1; i += 1) {
       const lineLayout = flatLineLayouts[i];
       heightFirstPart += lineLayout.lineHeight;
-  
+
       if (lineLayout.type === 'ChordLyricsPair') {
-        chordLyricLinesInFirstPart++;
+        chordLyricLinesInFirstPart += 1;
       }
-  
+
       const remainingChordLyricLines = totalChordLyricPairLines - chordLyricLinesInFirstPart;
-  
+
       // Ensure at least two chord-lyric lines remain in both parts
       if (chordLyricLinesInFirstPart >= 2 && remainingChordLyricLines >= 2) {
         acceptableSplits.push({ index: i + 1, heightFirstPart });
       }
     }
-  
+
     // Try to find the best split point that fits in the current column
     let splitFound = false;
-  
+
     // Start from the split point that includes the most lines in the first part
-    for (let i = acceptableSplits.length - 1; i >= 0; i--) {
+    for (let i = acceptableSplits.length - 1; i >= 0; i -= 1) {
       const split = acceptableSplits[i];
-  
+
       if (cumulativeHeight + split.heightFirstPart <= columnBottomY) {
         // First part fits in current column
-  
+
         // Map the flat indices back to lineLayouts indices
         const splitIndex = split.index;
         const firstPartLineLayouts: LineLayout[][] = [];
         const secondPartLineLayouts: LineLayout[][] = [];
-  
+
         // Collect lineLayouts for the first part
         let currentOuterIndex = lineLayoutIndices[0].outerIndex;
         let currentInnerArray: LineLayout[] = [];
-        for (let j = 0; j < splitIndex; j++) {
+        for (let j = 0; j < splitIndex; j += 1) {
           const { outerIndex } = lineLayoutIndices[j];
           const lineLayout = flatLineLayouts[j];
-  
+
           if (outerIndex !== currentOuterIndex) {
             if (currentInnerArray.length > 0) {
               firstPartLineLayouts.push(currentInnerArray);
@@ -1074,14 +1109,14 @@ class PdfFormatter extends Formatter {
         if (currentInnerArray.length > 0) {
           firstPartLineLayouts.push(currentInnerArray);
         }
-  
+
         // Collect lineLayouts for the second part
         currentOuterIndex = lineLayoutIndices[splitIndex].outerIndex;
         currentInnerArray = [];
-        for (let j = splitIndex; j < flatLineLayouts.length; j++) {
+        for (let j = splitIndex; j < flatLineLayouts.length; j += 1) {
           const { outerIndex } = lineLayoutIndices[j];
           const lineLayout = flatLineLayouts[j];
-  
+
           if (outerIndex !== currentOuterIndex) {
             if (currentInnerArray.length > 0) {
               secondPartLineLayouts.push(currentInnerArray);
@@ -1094,17 +1129,17 @@ class PdfFormatter extends Formatter {
         if (currentInnerArray.length > 0) {
           secondPartLineLayouts.push(currentInnerArray);
         }
-  
+
         // Build newLineLayouts
         newLineLayouts = newLineLayouts.concat(firstPartLineLayouts);
         newLineLayouts.push([this.createColumnBreakLineLayout()]);
         newLineLayouts = newLineLayouts.concat(secondPartLineLayouts);
-  
+
         splitFound = true;
         break;
       }
     }
-  
+
     if (!splitFound) {
       // No acceptable split point fits; move entire paragraph to the next column
       if (cumulativeHeight !== columnStartY) {
@@ -1112,10 +1147,10 @@ class PdfFormatter extends Formatter {
       }
       newLineLayouts = newLineLayouts.concat(lineLayouts);
     }
-  
+
     return newLineLayouts;
   }
-    
+
   private createColumnBreakLineLayout(): LineLayout {
     return {
       type: 'Tag',
@@ -1123,7 +1158,6 @@ class PdfFormatter extends Formatter {
       lineHeight: 0,
     };
   }
-  
 
   // Estimate the line height
   private estimateLineHeight(items: MeasuredItem[]): number {
@@ -1136,7 +1170,7 @@ class PdfFormatter extends Formatter {
     );
     const hasComments = items.some(({ item }) => item instanceof Tag && isComment(item));
 
-    const hasSectionDelimiter = items.some(({item}) => item instanceof Tag && item.isSectionDelimiter());
+    const hasSectionDelimiter = items.some(({ item }) => item instanceof Tag && item.isSectionDelimiter());
 
     let estimatedHeight = linePadding;
     let lineHeight = 1;
@@ -1165,8 +1199,8 @@ class PdfFormatter extends Formatter {
     if (fontConfiguration && fontConfiguration.lineHeight) {
       lineHeight = fontConfiguration.lineHeight;
     }
-    
-    return estimatedHeight * lineHeight; ;
+
+    return estimatedHeight * lineHeight;
   }
 
   // Get the maximum chord height
@@ -1251,7 +1285,7 @@ class PdfFormatter extends Formatter {
   // Measure items
   private measureItem(
     item: ChordLyricsPair | SoftLineBreak | Item,
-    nextItem: ChordLyricsPair | SoftLineBreak | Item
+    nextItem: ChordLyricsPair | SoftLineBreak | Item,
   ): MeasuredItem[] {
     if (item instanceof ChordLyricsPair) {
       let nextItemHasChords = false;
@@ -1259,7 +1293,7 @@ class PdfFormatter extends Formatter {
       if (nextItem && nextItem instanceof ChordLyricsPair) {
         const nextLyrics = nextItem.lyrics ?? '';
         const nextChords = nextItem.chords;
-        
+
         // Check if the next item has chords
         if (nextChords && nextChords.trim() !== '') {
           nextItemHasChords = true;
@@ -1267,15 +1301,17 @@ class PdfFormatter extends Formatter {
 
         // Check if the next item has a hyphen
         if (this.pdfConfiguration.lyricsOnly) {
-          if (nextLyrics.startsWith(' -' ) || nextLyrics.startsWith('-')) {
+          if (nextLyrics.startsWith(' -') || nextLyrics.startsWith('-')) {
             lyrics = lyrics.trimEnd();
+            // eslint-disable-next-line no-param-reassign
             nextItem.lyrics = this.removeHyphens(nextLyrics);
           }
         }
       }
       if (this.pdfConfiguration.lyricsOnly) {
         // clean next lyrics and this lyrics
-        item.lyrics =  this.removeHyphens(lyrics);
+        // eslint-disable-next-line no-param-reassign
+        item.lyrics = this.removeHyphens(lyrics);
       }
       return this.measureChordLyricsPair(item, nextItemHasChords);
     }
@@ -1294,25 +1330,24 @@ class PdfFormatter extends Formatter {
   }
 
   private removeHyphens(lyrics: string): string {
+    let cleanedLyrics = lyrics;
     // Remove hyphenated word splits (e.g., "well - known" -> "wellknown")
-    lyrics = lyrics.replace(/\b(\w+)\s*-\s*(\w+)\b/g, '$1$2');
+    cleanedLyrics = lyrics.replace(/\b(\w+)\s*-\s*(\w+)\b/g, '$1$2');
 
     // Remove trailing hyphens and hyphen-space combinations
-    lyrics = lyrics.replace(/(?:\b(\w+)\s*-\s*$)|(?:-\s*$)|(?:\s+-\s+$)/g, '$1');
+    cleanedLyrics = cleanedLyrics.replace(/(?:\b(\w+)\s*-\s*$)|(?:-\s*$)|(?:\s+-\s+$)/g, '$1');
 
     // If the entire string is just hyphens and spaces, return an empty string
-    if (/^\s*-\s*$/.test(lyrics)) {
-        return '';
+    if (/^\s*-\s*$/.test(cleanedLyrics)) {
+      return '';
     }
 
-    return lyrics;
-}
+    return cleanedLyrics;
+  }
 
-
-  
   private measureChordLyricsPair(
     item: ChordLyricsPair,
-    nextItemHasChords: boolean = false,
+    nextItemHasChords = false,
   ): MeasuredItem[] {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont = this.getFontConfiguration('text');
@@ -1325,10 +1360,10 @@ class PdfFormatter extends Formatter {
     if (this.pdfConfiguration.lyricsOnly) {
       if (lyrics === '') {
         return [
-          { 
+          {
             item: null,
-            width: 0, 
-          }
+            width: 0,
+          },
         ];
       }
       return [
@@ -1342,14 +1377,15 @@ class PdfFormatter extends Formatter {
 
     let adjustedChords = chords || '';
     const adjustedLyrics = lyrics || '';
-    if (chordWidth >= (lyricsWidth - this.getSpaceWidth()) && nextItemHasChords) {      
+    if (chordWidth >= (lyricsWidth - this.getSpaceWidth()) && nextItemHasChords) {
       adjustedChords += this.chordSpacingAsSpaces;
     }
-    
 
     const adjustedChordWidth = this.getTextDimensions(adjustedChords, chordFont).w;
     const totalWidth = Math.max(adjustedChordWidth, lyricsWidth);
-    const chordLyricWidthDifference = adjustedChordWidth > 0 && adjustedChordWidth > lyricsWidth ? Math.abs(adjustedChordWidth - lyricsWidth) : 0;
+    const chordLyricWidthDifference =
+      adjustedChordWidth > 0 && adjustedChordWidth > lyricsWidth ?
+        Math.abs(adjustedChordWidth - lyricsWidth) : 0;
 
     return [
       {
@@ -1365,7 +1401,7 @@ class PdfFormatter extends Formatter {
     const commentFont = this.getFontConfiguration('comment');
     const sectionLabelFont = this.getFontConfiguration('sectionLabel');
 
-    const font = isComment(item) ? commentFont : sectionLabelFont; 
+    const font = isComment(item) ? commentFont : sectionLabelFont;
 
     const columnWidth = this.columnAvailableWidth();
     let tagLines: string[] = [];
@@ -1381,7 +1417,7 @@ class PdfFormatter extends Formatter {
 
   private addSoftLineBreaksToChordLyricsPair(
     chordLyricsPair: ChordLyricsPair,
-  ): Array<ChordLyricsPair | SoftLineBreak> {
+  ): (ChordLyricsPair | SoftLineBreak)[] {
     const { chords, lyrics, annotation } = chordLyricsPair;
 
     if (!lyrics || lyrics.trim() === '') {
@@ -1390,7 +1426,7 @@ class PdfFormatter extends Formatter {
 
     const lyricFragments = lyrics.split(/,\s*/);
 
-    const items: Array<ChordLyricsPair | SoftLineBreak> = [];
+    const items: (ChordLyricsPair | SoftLineBreak)[] = [];
 
     lyricFragments.forEach((fragment, index) => {
       if (index > 0 && index !== 0) {
@@ -1403,8 +1439,9 @@ class PdfFormatter extends Formatter {
       if (index === 0 && lyricFragments.length === 1) {
         items.push(new ChordLyricsPair(chords, fragment, annotation));
       } else if (index === 0 && lyricFragments.length > 1) {
-        fragment = fragment + ',';
-        items.push(new ChordLyricsPair(chords, fragment, annotation));
+        let commaAdjustedFragment = fragment;
+        commaAdjustedFragment += ',';
+        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation));
       }
     });
 
@@ -1425,7 +1462,7 @@ class PdfFormatter extends Formatter {
   // Get chord spacing
   private get chordSpacingAsSpaces(): string {
     let str = '';
-    for (let i = 0; i < this.pdfConfiguration.chordSpacing; i++) {
+    for (let i = 0; i < this.pdfConfiguration.chordSpacing; i += 1) {
       str += ' ';
     }
     return str;
