@@ -215,7 +215,7 @@ describe('Key', () => {
       });
     });
 
-    it('correctly handles minor keys', () => {
+    it('correctly handles minor solfege keys', () => {
       expect(buildKey('Mi', SOLFEGE, '#', true).transposeUp().toString()).toEqual('Fa#m');
     });
   });

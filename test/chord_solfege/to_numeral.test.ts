@@ -14,7 +14,7 @@ describe('Chord', () => {
         expect(Chord.parse('Resus/Fa#')?.toNumeral('Lab').toString()).toEqual('bVsus/bVII');
       });
 
-      xit('supports a minor chord', () => {
+      it.skip('supports a minor chord', () => {
         expect(Chord.parse('Solm')?.toNumeral('Sib').toString()).toEqual('vi');
       });
     });

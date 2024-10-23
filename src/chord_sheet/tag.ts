@@ -399,13 +399,13 @@ const translateTagNameAlias = (name: string) => {
  * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
  */
 class Tag extends AstComponent {
+  _isMetaTag = false;
+
   _originalName = '';
 
   _name = '';
 
   _value = '';
-
-  _isMetaTag = false;
 
   constructor(name: string, value: string | null = null, traceInfo: TraceInfo | null = null) {
     super(traceInfo);

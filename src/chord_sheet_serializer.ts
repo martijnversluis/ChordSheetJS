@@ -20,6 +20,7 @@ import {
   SerializedTag, SerializedTernary,
 } from './serialized_types';
 import SoftLineBreak from './chord_sheet/soft_line_break';
+import { warn } from './utilities';
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const CHORD_SHEET = 'chordSheet';
@@ -154,7 +155,7 @@ class ChordSheetSerializer {
         this.parseLine(astComponent);
         break;
       default:
-        console.warn(`Unhandled AST component "${astComponent.type}"`, astComponent);
+        warn(`Unhandled AST component "${astComponent.type}"`);
     }
 
     return null;
@@ -222,7 +223,7 @@ class ChordSheetSerializer {
     });
   }
 
-  parseExpression(expression: Array<SerializedLiteral | SerializedTernary>): Array<AstType | null> {
+  parseExpression(expression: (SerializedLiteral | SerializedTernary)[]): (AstType | null)[] {
     return (expression || [])
       .map((part) => this.parseAstComponent(part))
       .filter((part) => part !== null);

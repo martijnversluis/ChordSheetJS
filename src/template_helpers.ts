@@ -14,9 +14,7 @@ import When from './template_helpers/when';
 import { Literal } from './index';
 import WhenCallback from './template_helpers/when_callback';
 
-interface EachCallback {
-  (_item: any): string;
-}
+type EachCallback = (_item: any) => string;
 
 export { hasChordContents, isEvaluatable } from './utilities';
 export { renderChord } from './helpers';
@@ -57,9 +55,9 @@ export function when(condition: any, callback?: WhenCallback): When {
 
 export const hasTextContents = (line: Line): boolean => (
   line.items.some((item) => (
-    (item instanceof ChordLyricsPair && !isEmptyString(item.lyrics))
-    || (item instanceof Tag && item.isRenderable())
-    || isEvaluatable(item)
+    (item instanceof ChordLyricsPair && !isEmptyString(item.lyrics)) ||
+    (item instanceof Tag && item.isRenderable()) ||
+    isEvaluatable(item)
   ))
 );
 

@@ -1,3 +1,5 @@
+// eslint no-console: "off"
+
 import Tracer from 'pegjs-backtrace';
 import theredoc from 'theredoc';
 import { stripHTML } from '../src/template_helpers';
@@ -65,7 +67,7 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name: string, value: string = '') {
+export function createTag(name: string, value = '') {
   return new Tag(name, value);
 }
 
@@ -93,7 +95,7 @@ export function createSongFromAst(lines: SerializedItem[][]): Song {
   return new ChordSheetSerializer().deserialize(serializedSong);
 }
 
-export function tag(name: string, value: string = ''): SerializedTag {
+export function tag(name: string, value = ''): SerializedTag {
   return { type: 'tag', name, value };
 }
 
@@ -115,7 +117,7 @@ export function section(
   ];
 }
 
-export function chordLyricsPair(chords: string, lyrics: string, annotation: string = ''): SerializedChordLyricsPair {
+export function chordLyricsPair(chords: string, lyrics: string, annotation = ''): SerializedChordLyricsPair {
   return {
     type: 'chordLyricsPair', chords, lyrics, annotation,
   };
@@ -151,11 +153,11 @@ export function softLineBreak(): SerializedSoftLineBreak {
   return { type: 'softLineBreak' };
 }
 
-type TestCaseProps = {
+interface TestCaseProps {
   [key: string]: any;
   outcome: any;
   index: string;
-};
+}
 
 export function eachTestCase(table: string, callback: (_testCase: TestCaseProps) => void): void {
   const lines = table.trim().split('\n');
@@ -195,6 +197,7 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
         .filter((n) => n !== 'outcome')
         .map((name) => `${name}=${JSON.stringify(testCase[name])}`).join(', ');
 
+      // eslint-disable-next-line no-undef
       it(`returns ${JSON.stringify(testCase.outcome)} for ${description} (${testCaseProps.index})`, () => {
         callback(testCase);
       });
@@ -205,7 +208,7 @@ export function buildKey(
   keyString: string | number,
   keyType: ChordType,
   modifier?: Modifier | null,
-  minor: boolean = false,
+  minor = false,
 ) {
   const resolvedKey = Key.resolve({
     key: keyString,
@@ -227,6 +230,7 @@ export function trace(input: string, callback: (tracer: Tracer) => any): any {
   try {
     return callback(tracer);
   } finally {
+    // eslint-disable-next-line no-console
     console.log(tracer.getParseTreeString());
   }
 }

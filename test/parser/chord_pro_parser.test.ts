@@ -375,7 +375,7 @@ This part is [G]key
 Let it [Am]be
 [C]Whisper wor]ds of [F]wis[G]dom`;
 
-      new ChordProParser().parse(chordSheetWithError);
+      expect(() => new ChordProParser().parse(chordSheetWithError)).not.toThrow();
     });
 
     it('allows dangling }', () => {
@@ -383,7 +383,7 @@ Let it [Am]be
 Let it [Am]be
 [C]Whisper wor}ds of [F]wis[G]dom`;
 
-      new ChordProParser().parse(chordSheetWithError);
+      expect(() => new ChordProParser().parse(chordSheetWithError)).not.toThrow();
     });
   });
 
@@ -423,7 +423,7 @@ Let it [Am]be
     });
   });
 
-  describe('when encountering {start_of_chorus} while the current section type is not none', () => {
+  describe('when encountering {start_of_verse} while the current section type is not none', () => {
     it('adds a parser warning', () => {
       const invalidChordSheet = '{start_of_chorus}\n{start_of_verse}';
 

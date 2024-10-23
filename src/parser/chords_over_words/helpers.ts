@@ -15,24 +15,24 @@ type NewLine = CarriageReturn | LineFeed | CarriageReturnLineFeed;
 type Lyrics = string;
 type Chord = { column: number, value: string } & SerializedChord;
 
-type RhythmSymbol = {
+interface RhythmSymbol {
   type: 'symbol',
   value: '/' | '|' | '-' | 'x',
   column: number,
-};
+}
 
 type DirectionLine = SerializedLine;
 type InlineMetadata = SerializedLine;
 
-type ChordsLine = {
+interface ChordsLine {
   type: 'chordsLine',
-  items: Array<Chord | RhythmSymbol>
-};
+  items: (Chord | RhythmSymbol)[]
+}
 
-type LyricsLine = {
+interface LyricsLine {
   type: 'lyricsLine',
   content: Lyrics,
-};
+}
 
 type ChordSheetLine = DirectionLine | InlineMetadata | ChordsLine | LyricsLine;
 
@@ -43,10 +43,10 @@ function combineChordSheetLines(
 ): ChordSheetLine[] {
   const hasEmptyLine = newLine && newLine.length > 0;
   const emptyLines = (hasEmptyLine ? [{ type: 'line', items: [] }] : []) as ChordSheetLine[];
-  return [...emptyLines, ...lines, trailingLine].filter(x => x !== null);
+  return [...emptyLines, ...lines, trailingLine].filter((x) => x !== null);
 }
 
-function applySoftLineBreaks(line: string): Array<SerializedSoftLineBreak | SerializedChordLyricsPair | null> {
+function applySoftLineBreaks(line: string): (SerializedSoftLineBreak | SerializedChordLyricsPair | null)[] {
   return line
     .split(/\\\s+/)
     .flatMap((lyric, index) => ([
@@ -59,7 +59,6 @@ type ChordProperties = Omit<Chord, 'type'>;
 
 function chordProperties(chord: Chord): ChordProperties {
   // Disable no-unused-vars until destructuredObjectIgnorePattern is available
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type: _type, ...properties } = chord;
   return properties;
 }
@@ -67,7 +66,7 @@ function chordProperties(chord: Chord): ChordProperties {
 function constructChordLyricsPairs(
   chords: Chord[],
   lyrics: string,
-): Array<SerializedChordLyricsPair | SerializedSoftLineBreak> {
+): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] {
   return chords.map((chord, i) => {
     const nextChord = chords[i + 1];
     const start = chord.column - 1;
@@ -80,7 +79,7 @@ function constructChordLyricsPairs(
       return [
         { ...chordData, type: 'chordLyricsPair', lyrics: `${firstWord} ` } as SerializedChordLyricsPair,
         ...applySoftLineBreaks(rest),
-      ].filter(x => x !== null);
+      ].filter((x) => x !== null);
     }
 
     return { ...chordData, type: 'chordLyricsPair', lyrics: firstWord } as SerializedChordLyricsPair;
@@ -125,7 +124,9 @@ function lyricsStringToLine(lyrics: string): SerializedLine {
 function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol): SerializedChordLyricsPair {
   switch (item.type) {
     case 'chord':
-      return { type: 'chordLyricsPair', chord: item, chords: '', lyrics: null };
+      return {
+        type: 'chordLyricsPair', chord: item, chords: '', lyrics: null,
+      };
     case 'symbol':
       return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
     default:

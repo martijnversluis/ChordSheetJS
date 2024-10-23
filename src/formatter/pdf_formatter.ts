@@ -57,41 +57,41 @@ interface LayoutContentItemWithImage extends ILayoutContentItem {
 
 type LayoutContentItem = LayoutContentItemWithValue | LayoutContentItemWithTemplate | LayoutContentItemWithImage;
 
-type LayoutItem = {
-  height: number,
-  content: LayoutContentItem[],
-};
+interface LayoutItem {
+  height: number;
+  content: LayoutContentItem[];
+}
 
-type PDFConfiguration = {
-  fonts: Record<FontSection, FontConfiguration>,
-  margintop: number,
-  marginbottom: number,
-  marginleft: number,
-  marginright: number,
-  lineHeight: number,
-  chordLyricSpacing: number,
-  linePadding: number,
-  numberOfSpacesToAdd: number,
-  columnCount: number,
-  columnWidth: number,
-  columnSpacing: number,
-  layout: Record<LayoutSection, LayoutItem>,
-};
+interface PDFConfiguration {
+  fonts: Record<FontSection, FontConfiguration>;
+  margintop: number;
+  marginbottom: number;
+  marginleft: number;
+  marginright: number;
+  lineHeight: number;
+  chordLyricSpacing: number;
+  linePadding: number;
+  numberOfSpacesToAdd: number;
+  columnCount: number;
+  columnWidth: number;
+  columnSpacing: number;
+  layout: Record<LayoutSection, LayoutItem>;
+}
 
 class PdfFormatter extends Formatter {
   song: Song = new Song();
 
-  y: number = 0;
+  y = 0;
 
-  x: number = 0;
+  x = 0;
 
   doc: JsPDF = new JsPDF();
 
-  startTime: number = 0;
+  startTime = 0;
 
-  currentColumn: number = 1;
+  currentColumn = 1;
 
-  columnWidth: number = 0;
+  columnWidth = 0;
 
   pdfConfiguration: PDFConfiguration = this.defaultPdfConfiguration;
 
@@ -183,7 +183,13 @@ class PdfFormatter extends Formatter {
 
   // Main function to format and save the song as a PDF
   format(song: Song, configuration: PDFConfiguration = this.defaultPdfConfiguration): void {
-    this.startTime = performance.now();
+    const perf = globalThis.performance;
+
+    if (!perf) {
+      return;
+    }
+
+    this.startTime = perf.now();
     this.song = song;
     this.pdfConfiguration = configuration;
     this.doc = this.setupDoc();
@@ -201,7 +207,7 @@ class PdfFormatter extends Formatter {
   }
 
   // Generate the PDF as a Blob object
-  async generatePDF(): Promise<Blob> {
+  async generatePDF(): Promise<any> {
     return new Promise((resolve): void => {
       const blob = this.doc.output('blob');
       resolve(blob);
@@ -251,9 +257,9 @@ class PdfFormatter extends Formatter {
       position,
     } = textItem;
 
-    const textValue = template
-      ? this.interpolateMetadata(template, this.song)
-      : value as string;
+    const textValue = template ?
+      this.interpolateMetadata(template, this.song) :
+      value as string;
 
     this.setFontStyle(style);
     const x = this.calculateX(position.x);
@@ -455,7 +461,13 @@ class PdfFormatter extends Formatter {
   }
 
   recordFormattingTime() {
-    const endTime = performance.now();
+    const perf = globalThis.performance;
+
+    if (!perf) {
+      return;
+    }
+
+    const endTime = perf.now();
     const timeTaken = ((endTime - this.startTime) / 1000).toFixed(5);
 
     const style = this.pdfConfiguration.fonts.text;

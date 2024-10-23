@@ -70,10 +70,10 @@ class UltimateGuitarParser extends ChordSheetParser {
   }
 
   isSectionEnd(): boolean {
-    return this.songLine !== null
-      && this.songLine.isEmpty()
-      && this.song.previousLine !== null
-      && !this.song.previousLine.isEmpty();
+    return this.songLine !== null &&
+      this.songLine.isEmpty() &&
+      this.song.previousLine !== null &&
+      !this.song.previousLine.isEmpty();
   }
 
   endOfSong() {

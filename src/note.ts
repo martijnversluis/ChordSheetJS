@@ -72,7 +72,7 @@ interface NoteProperties {
 }
 
 class Note implements NoteProperties {
-  _note: AtomicNote;
+  readonly _note: AtomicNote;
 
   type: ChordType;
 

@@ -2,7 +2,7 @@ import WhenClause from './when_clause';
 import WhenCallback from './when_callback';
 
 class When {
-  condition: boolean = false;
+  condition = false;
 
   clauses: WhenClause[] = [];
 
