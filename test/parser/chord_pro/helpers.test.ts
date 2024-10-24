@@ -1,34 +1,5 @@
-import { breakChordLyricsPairOnSoftLineBreak, stringSplitReplace } from '../../../src/parser/chord_pro/helpers';
+import { breakChordLyricsPairOnSoftLineBreak } from '../../../src/parser/chord_pro/helpers';
 import { SerializedChordLyricsPair, SerializedSoftLineBreak } from '../../../src/serialized_types';
-
-describe('stringSplitReplace', () => {
-  it('should replace all instances of a match', () => {
-    const testString = 'I am a barber';
-
-    const result =
-      stringSplitReplace(
-        testString,
-        'a',
-        (_match) => 'BREAK',
-      );
-
-    expect(result).toEqual(['I ', 'BREAK', 'm ', 'BREAK', ' b', 'BREAK', 'rber']);
-  });
-
-  it('should replace all instances of a match and the rest of the string', () => {
-    const testString = 'ai am a barber';
-
-    const result =
-      stringSplitReplace(
-        testString,
-        'a',
-        (_match) => 'BREAK',
-        (match) => match.toUpperCase(),
-      );
-
-    expect(result).toEqual(['BREAK', 'I ', 'BREAK', 'M ', 'BREAK', ' B', 'BREAK', 'RBER']);
-  });
-});
 
 describe('breakChordLyricsPairOnSoftLineBreak', () => {
   it('supports breaking a pair\'s lyrics on a soft line break', () => {

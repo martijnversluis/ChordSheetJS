@@ -87,6 +87,31 @@ export function renderChord(
   return changeChordType(normalizedChord, chordStyle, effectiveKey).toString({ useUnicodeModifier });
 }
 
+export function stringSplitReplace(
+  string: string,
+  search: string | RegExp,
+  replaceMatch: (subString: string) => any,
+  replaceRest: (subString: string, match: string | null) => any = (subString) => subString,
+): any[] {
+  const regExp = new RegExp(search, 'g');
+  const occurrences = Array.from(string.matchAll(regExp));
+  const result: string[] = [];
+  let index = 0;
+
+  occurrences.forEach((match) => {
+    const before = string.slice(index, match.index);
+    const matchedPart = match[0];
+    if (before !== '') result.push(replaceRest(before, matchedPart));
+    result.push(replaceMatch(matchedPart));
+    index = match.index + matchedPart.length;
+  });
+
+  const rest = string.slice(index);
+  if (rest !== '') result.push(replaceRest(rest, null));
+
+  return result;
+}
+
 /**
  * Returns applicable capos for the provided key
  * @param {Key|string} key The key to get capos for

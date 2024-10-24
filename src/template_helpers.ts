@@ -11,7 +11,7 @@ import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import { renderChord } from './helpers';
 import When from './template_helpers/when';
-import { Literal } from './index';
+import { Literal, SoftLineBreak } from './index';
 import WhenCallback from './template_helpers/when_callback';
 
 type EachCallback = (_item: any) => string;
@@ -23,11 +23,15 @@ export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordL
 
 export const lineHasContents = (line: Line): boolean => line.items.some((item: Item) => item.isRenderable());
 
-export const isTag = (item: Item): boolean => item instanceof Tag;
+export const isTag = (item: Item): boolean => item instanceof Tag && typeof item.isSectionDelimiter === 'function';
 
 export const isLiteral = (item: Item): boolean => item instanceof Literal;
 
 export const isComment = (item: Tag): boolean => item.name === 'comment';
+
+export const isColumnBreak = (item: Item): boolean => item instanceof Tag && item.name === 'column_break';
+
+export const isSoftLineBreak = (item: Item): boolean => item instanceof SoftLineBreak;
 
 export function stripHTML(string: string): string {
   return string
@@ -101,6 +105,7 @@ export default {
   lineHasContents,
   isTag,
   isComment,
+  isColumnBreak,
   stripHTML,
   each,
   when,

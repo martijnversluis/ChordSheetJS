@@ -5,19 +5,55 @@
     <title>Chordsheet Editor</title>
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <!-- CodeMirror JS and any necessary modes/plugins -->
+    <!-- CodeMirror JS and necessary modes/plugins -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/json/json.min.js"></script>
     <style>
-        #editors { height: 98vh; width: 49%;  float: left;}
+        #editors { height: 98vh; width: 49%; float: left; }
         #pdfViewer { height: 98vh; width: 49%; float: right; }
+        #editor, #configEditor {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .dropdown-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .key-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
 <body style="height: 100%;">
     <div id="editors">
-        <div id="editor"></div>
-        <div id="configEditor"></div>
+        <div id="chordproEditorContainer">
+            <div class="dropdown-container">
+                <label for="chordproSelect">ChordPro File: </label>
+                <select id="chordproSelect"></select>
+                <div class="key-controls">
+                    <label for="keySelect">Key: </label>
+                    <select id="keySelect"></select>
+                    <label for="capoSelect">Capo: </label>
+                    <select id="capoSelect">
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+            <div id="editor"></div>
+        </div>
+        <div id="configEditorContainer">
+            <div class="dropdown-container">
+                <label for="configSelect">Config File: </label>
+                <select id="configSelect"></select>
+            </div>
+            <div id="configEditor"></div>
+        </div>
     </div>
     <div id="pdfViewer"></div>
     <script type="module" src="./pdf-dev.js"></script>

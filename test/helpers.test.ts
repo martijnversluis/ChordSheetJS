@@ -1,6 +1,6 @@
 import Song from '../src/chord_sheet/song';
 import { createLine } from './utilities';
-import { renderChord } from '../src/helpers';
+import { renderChord, stringSplitReplace } from '../src/helpers';
 import Key from '../src/key';
 
 describe('renderChord', () => {
@@ -27,5 +27,34 @@ describe('renderChord', () => {
     song.setMetadata('key', 'F');
 
     expect(renderChord('Dm7', line, song, { renderKey: Key.parse('B'), useUnicodeModifier: true })).toEqual('G♯m7');
+  });
+});
+
+describe('stringSplitReplace', () => {
+  it('should replace all instances of a match', () => {
+    const testString = 'I am a barber';
+
+    const result =
+      stringSplitReplace(
+        testString,
+        'a',
+        (_match) => 'BREAK',
+      );
+
+    expect(result).toEqual(['I ', 'BREAK', 'm ', 'BREAK', ' b', 'BREAK', 'rber']);
+  });
+
+  it('should replace all instances of a match and the rest of the string', () => {
+    const testString = 'ai am a barber';
+
+    const result =
+      stringSplitReplace(
+        testString,
+        'a',
+        (_match) => 'BREAK',
+        (match) => match.toUpperCase(),
+      );
+
+    expect(result).toEqual(['BREAK', 'I ', 'BREAK', 'M ', 'BREAK', ' B', 'BREAK', 'RBER']);
   });
 });
