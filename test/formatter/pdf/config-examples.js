@@ -122,7 +122,7 @@ export const configExamples = [
             },
             {
               type: 'text',
-              template: '{?key}Key: %{key}{/key}{?tempo} · Tempo: %{tempo}{/tempo}{?time} · Time: %{time}{/time}',
+              template: '{?key}Key: %{key}{/key}{?capo} · Capo: %{capo} (%{capoKey}){/capo}{?tempo} · Tempo: %{tempo}{/tempo}{?time} · Time: %{time}{/time}',
               style: {
                 name: 'NimbusSansL-Reg',
                 style: 'normal',
@@ -354,7 +354,7 @@ export const configExamples = [
             },
             {
               type: 'text',
-              template: '{?key}Key: %{key}{/key}{?tempo} · Tempo: %{tempo}{/tempo}{?time} · Time: %{time}{/time}',
+              template: '{?key}Key: %{key}{/key}{?capo} · Capo: %{capo} (%{capoKey}){/capo}{?tempo} · Tempo: %{tempo}{/tempo}{?time} · Time: %{time}{/time}',
               style: {
                 name: 'NimbusSansL-Reg',
                 style: 'normal',

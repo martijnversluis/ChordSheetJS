@@ -7,11 +7,16 @@ import {
   isSoftLineBreak,
   isTag,
   lineHasContents,
+  renderChord,
 } from '../template_helpers';
 import Song from '../chord_sheet/song';
 import Paragraph from '../chord_sheet/paragraph';
 import Line from '../chord_sheet/line';
-import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
+import {
+  ChordLyricsPair,
+  SoftLineBreak,
+  Tag,
+} from '../index';
 import Item from '../chord_sheet/item';
 import jsPDF from 'jspdf';
 import defaultConfiguration from './pdf_formatter/default_configuration';
@@ -41,6 +46,8 @@ import {
 
 import { Performance } from 'perf_hooks';
 import { Blob } from 'buffer';
+import Configuration from './configuration/configuration';
+import { getCapos } from '../helpers';
 declare const performance: Performance;
 
 class PdfFormatter extends Formatter {
@@ -64,6 +71,8 @@ class PdfFormatter extends Formatter {
 
   columnWidth = 0;
 
+  configuration: Configuration = new Configuration();
+
   pdfConfiguration: PDFConfiguration = defaultConfiguration;
 
   fontConfiguration: FontConfiguration = defaultConfiguration.fonts.text;
@@ -71,12 +80,14 @@ class PdfFormatter extends Formatter {
   // Main function to format and save the song as a PDF
   format(
     song: Song,
-    configuration: PDFConfiguration = defaultConfiguration,
+    configuration: Configuration,
+    pdfConfiguration: PDFConfiguration = defaultConfiguration,
     docConstructor: PdfConstructor = jsPDF,
   ): void {
     this.startTime = performance.now();
     this.song = song;
-    this.pdfConfiguration = configuration;
+    this.configuration = configuration;
+    this.pdfConfiguration = pdfConfiguration;
     this.doc = this.setupDoc(docConstructor);
     this.y = this.pdfConfiguration.margintop + this.pdfConfiguration.layout.header.height;
     this.x = this.pdfConfiguration.marginleft;
@@ -394,6 +405,11 @@ class PdfFormatter extends Formatter {
       ...metadata,
     };
 
+    if (mergedMetadata.capo && mergedMetadata.key) {
+      const capoInt = parseInt(mergedMetadata.capo, 10);
+      mergedMetadata.capoKey = getCapos(metadata.key)[capoInt];
+    }
+
     // Include class variables like currentPage and totalPages if available
     mergedMetadata.currentPage = this.currentPage;
     mergedMetadata.totalPages = this.totalPages;
@@ -534,7 +550,7 @@ class PdfFormatter extends Formatter {
           }
           const items: (ChordLyricsPair | SoftLineBreak)[] =
             this.addSoftLineBreaksToChordLyricsPair(item as ChordLyricsPair);
-          return items.flatMap((i): MeasuredItem[] => this.measureItem(i, nextItem));
+          return items.flatMap((i): MeasuredItem[] => this.measureItem(i, nextItem, line));
         }
 
         if ((isTag(item) && (isComment(item as Tag) || (item as Tag).isSectionDelimiter()))) {
@@ -545,6 +561,7 @@ class PdfFormatter extends Formatter {
           return this.measureItem(
             item as SoftLineBreak,
             nextItem,
+            line,
           );
         }
 
@@ -552,12 +569,12 @@ class PdfFormatter extends Formatter {
       },
     );
 
-    const lines = this.computeLineLayouts(measuredItems, this.paragraphY);
+    const lines = this.computeLineLayouts(measuredItems, this.paragraphY, line);
     return lines;
   }
 
   // Compute line layouts
-  private computeLineLayouts(items: MeasuredItem[], startY: number): LineLayout[] {
+  private computeLineLayouts(items: MeasuredItem[], startY: number, originalLine: Line): LineLayout[] {
     const lines: LineLayout[] = []; // Stores the final lines to render
     let currentLine: MeasuredItem[] = []; // Items on the current line
     let currentLineWidth = 0; // Width of the current line
@@ -634,7 +651,7 @@ class PdfFormatter extends Formatter {
         }
 
         // Create a LineLayout and add it to lines
-        const lineLayout = this.createLineLayout(lineItems);
+        const lineLayout = this.createLineLayout(lineItems, originalLine);
         lines.push(lineLayout);
 
         // Update currentY for the next line
@@ -677,7 +694,7 @@ class PdfFormatter extends Formatter {
 
     // **Handle any remaining items in currentLine**
     if (currentLine.length > 0) {
-      const lineLayout = this.createLineLayout(currentLine);
+      const lineLayout = this.createLineLayout(currentLine, originalLine);
       lines.push(lineLayout);
       currentY += lineLayout.lineHeight;
     }
@@ -775,7 +792,7 @@ class PdfFormatter extends Formatter {
     return lyrics.replace(/^\s*\S*/, (word) => word.charAt(0).toUpperCase() + word.slice(1));
   }
 
-  private createLineLayout(items: MeasuredItem[]): LineLayout {
+  private createLineLayout(items: MeasuredItem[], originalLine: Line): LineLayout {
     const lineHeight = this.estimateLineHeight(items);
     const hasChords = items.some(({ item }) => item instanceof ChordLyricsPair && item.chords);
     const hasLyrics = items.some(
@@ -836,6 +853,7 @@ class PdfFormatter extends Formatter {
       type,
       items,
       lineHeight,
+      line: originalLine,
     };
   }
 
@@ -868,7 +886,7 @@ class PdfFormatter extends Formatter {
     const lyricsFont = this.getFontConfiguration('text');
 
     lines.forEach((lineLayout) => {
-      const { items, lineHeight } = lineLayout;
+      const { items, lineHeight, line } = lineLayout;
 
       // Filter items that are column breaks and handle them first.
       const hasColumnBreak = items.length === 1 && items[0].item instanceof Tag && isColumnBreak(items[0].item);
@@ -887,7 +905,19 @@ class PdfFormatter extends Formatter {
         const { item, width } = measuredItem;
 
         if (item instanceof ChordLyricsPair) {
-          const { chords, lyrics } = item;
+          let { chords } = item;
+          const { lyrics } = item;
+
+          chords = renderChord(
+            chords,
+            (line as Line),
+            this.song,
+            {
+              renderKey: null,
+              useUnicodeModifier: this.configuration.useUnicodeModifiers,
+              normalizeChords: this.configuration.normalizeChords,
+            },
+          );
 
           // Render chords only if `lyricsOnly` is false
           if (!this.pdfConfiguration.lyricsOnly && chords) {
@@ -1286,6 +1316,7 @@ class PdfFormatter extends Formatter {
   private measureItem(
     item: ChordLyricsPair | SoftLineBreak | Item,
     nextItem: ChordLyricsPair | SoftLineBreak | Item,
+    line: Line,
   ): MeasuredItem[] {
     if (item instanceof ChordLyricsPair) {
       let nextItemHasChords = false;
@@ -1313,7 +1344,7 @@ class PdfFormatter extends Formatter {
         // eslint-disable-next-line no-param-reassign
         item.lyrics = this.removeHyphens(lyrics);
       }
-      return this.measureChordLyricsPair(item, nextItemHasChords);
+      return this.measureChordLyricsPair(line, item, nextItemHasChords);
     }
 
     if (item instanceof Tag && (isComment(item) || item.isSectionDelimiter())) {
@@ -1346,14 +1377,27 @@ class PdfFormatter extends Formatter {
   }
 
   private measureChordLyricsPair(
+    line: Line,
     item: ChordLyricsPair,
     nextItemHasChords = false,
   ): MeasuredItem[] {
     const chordFont = this.getFontConfiguration('chord');
     const lyricsFont = this.getFontConfiguration('text');
 
-    const { chords, lyrics } = item;
+    let { chords } = item;
+    let beforeChords = chords || '';
+    const { lyrics } = item;
 
+    chords = renderChord(
+      chords,
+      line,
+      this.song,
+      {
+        renderKey: null,
+        useUnicodeModifier: this.configuration.useUnicodeModifiers,
+        normalizeChords: this.configuration.normalizeChords,
+      },
+    );
     const chordWidth = chords ? this.getTextDimensions(chords, chordFont).w : 0;
     const lyricsWidth = lyrics ? this.getTextDimensions(lyrics, lyricsFont).w : 0;
 
@@ -1379,6 +1423,7 @@ class PdfFormatter extends Formatter {
     const adjustedLyrics = lyrics || '';
     if (chordWidth >= (lyricsWidth - this.getSpaceWidth()) && nextItemHasChords) {
       adjustedChords += this.chordSpacingAsSpaces;
+      beforeChords += this.chordSpacingAsSpaces;
     }
 
     const adjustedChordWidth = this.getTextDimensions(adjustedChords, chordFont).w;
@@ -1389,7 +1434,10 @@ class PdfFormatter extends Formatter {
 
     return [
       {
-        item: new ChordLyricsPair(adjustedChords, adjustedLyrics),
+        // even though we measure against the "rendered" chord
+        // we have to keep the original chord in the item so that
+        // when it is rendered, it is rendered correctly
+        item: new ChordLyricsPair(beforeChords, adjustedLyrics),
         width: totalWidth,
         chordLyricWidthDifference,
         chordHeight: chords ? this.getTextDimensions(chords, chordFont).h : 0,

@@ -2,7 +2,7 @@ import {
   ImageCompression, ImageOptions, jsPDFOptions, RGBAData, TextOptionsLight,
 } from 'jspdf';
 import {
-  ChordLyricsPair, Comment, SoftLineBreak, Tag,
+  ChordLyricsPair, Comment, Line, SoftLineBreak, Tag,
 } from '../../index';
 import Item from '../../chord_sheet/item';
 
@@ -113,6 +113,7 @@ export interface LineLayout {
   type: 'ChordLyricsPair' | 'Comment' | 'Tag' | 'ColumnBreak' | 'SectionLabel'
   items: MeasuredItem[];
   lineHeight: number;
+  line?: Line
 }
 
 export interface PDFConfiguration {

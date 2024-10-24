@@ -1,4 +1,6 @@
-import { ChordProParser, PdfFormatter } from '../../../lib';
+import { normalize } from 'path';
+import { ChordProParser, PdfFormatter, Configuration } from '../../../lib';
+import { getKeys, getCapos } from '../../../src/helpers';
 
 import { chordproExamples } from './chordpro-examples';
 import { configExamples } from './config-examples';
@@ -21,6 +23,8 @@ configEditor.setSize('100%', '46vh');
 // Populate the dropdowns
 const chordproSelect = document.getElementById('chordproSelect');
 const configSelect = document.getElementById('configSelect');
+const keySelect = document.getElementById('keySelect');
+const capoSelect = document.getElementById('capoSelect');
 
 function populateSelect(selectElement, options) {
   selectElement.innerHTML = '';
@@ -42,19 +46,49 @@ const renderPDFInBrowser = async (pdfBlob) => {
   const iframe = document.createElement('iframe');
   iframe.style.width = '100%';
   iframe.style.height = '100%';
-  const blobUrl = URL.createObjectURL(pdfBlob); // Create a URL representing the Blob object
-  iframe.src = blobUrl; // Use the Blob URL as the source for the iframe
+  const blobUrl = URL.createObjectURL(pdfBlob);
+  iframe.src = blobUrl;
   pdfContainer.appendChild(iframe);
 };
 
-// Function to update the PDF based on the editor content
-const updatePDF = async () => {
+function initializeKeyAndCapoSelectors(songKey) {
+  // Initialize key selector
+  const keys = getKeys(songKey);
+  keySelect.innerHTML = '';
+  keys.forEach(key => {
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = key;
+    keySelect.appendChild(option);
+  });
+  keySelect.value = songKey;
+
+  // Initialize capo selector
+  const capoPositions = getCapos(songKey);
+  capoSelect.innerHTML = '';
+  
+  // Add 'None' option first
+  const noneOption = document.createElement('option');
+  noneOption.value = 'none';
+  noneOption.textContent = 'None';
+  capoSelect.appendChild(noneOption);
+  
+  // Add capo positions with their resulting keys
+  Object.entries(capoPositions).forEach(([position, resultingKey]) => {
+    const option = document.createElement('option');
+    option.value = position;
+    option.textContent = `${position} (${resultingKey})`;
+    capoSelect.appendChild(option);
+  });
+}
+
+const updatePDF = async (key, capo) => {
   const chordProText = editor.getValue();
   const configText = configEditor.getValue();
   if (!chordProText.trim() || !configText.trim()) {
-    // Wait until both editors have content
     return;
   }
+  
   let configJson;
   try {
     configJson = JSON.parse(configText);
@@ -62,10 +96,34 @@ const updatePDF = async () => {
     console.error('Invalid JSON in config editor:', e);
     return;
   }
+  
   try {
-    const song = new ChordProParser().parse(chordProText, { softLineBreaks: true });
+    let song = new ChordProParser().parse(chordProText, { softLineBreaks: true });
+    
+    // If this is the first load or selectors haven't been initialized
+    if (!keySelect.options.length) {
+      initializeKeyAndCapoSelectors(song.key);
+    }
+    
+    // Use either the provided key/capo or the current selector values
+    const initialKey = key || keySelect.value;
+    const capoPosition = capo || capoSelect.value;
+    
+    // Set the key first
+    song = song.changeKey(initialKey);
+    
+    // Apply capo if it's not 'none'
+    if (capoPosition !== 'none') {
+      song = song.setCapo(parseInt(capoPosition));
+    }
+    
     const formatter = new PdfFormatter();
-    formatter.format(song, configJson);
+    const configuration = {
+      key: initialKey,
+      normalizeChords: true,
+      useUnicodeModifiers: false,
+    };
+    formatter.format(song, configuration, configJson);
     const pdfBlob = await formatter.generatePDF();
     renderPDFInBrowser(pdfBlob);
   } catch (e) {
@@ -88,7 +146,19 @@ function loadConfigExample(index) {
   updatePDF();
 }
 
-// Listen for selection changes
+// Event Listeners
+keySelect.addEventListener('change', (e) => {
+  const newKey = e.target.value;
+  // Reinitialize both selectors for the new key
+  initializeKeyAndCapoSelectors(newKey);
+  updatePDF(newKey, capoSelect.value);
+});
+
+capoSelect.addEventListener('change', (e) => {
+  updatePDF(keySelect.value, e.target.value);
+});
+
+
 chordproSelect.addEventListener('change', () => {
   loadChordproExample(chordproSelect.value);
 });
@@ -97,7 +167,6 @@ configSelect.addEventListener('change', () => {
   loadConfigExample(configSelect.value);
 });
 
-// Listen for changes in the editors
 editor.on('change', () => {
   updatePDF();
 });
@@ -106,10 +175,15 @@ configEditor.on('change', () => {
   updatePDF();
 });
 
-// Set default selections
-chordproSelect.value = 0;
-configSelect.value = 0;
+// Initialize the application
+function initialize() {
+  // Set default selections
+  chordproSelect.value = 0;
+  configSelect.value = 0;
+  
+  // Initial loading of examples
+  loadChordproExample(chordproSelect.value);
+  loadConfigExample(configSelect.value);
+}
 
-// Initial loading of examples
-loadChordproExample(chordproSelect.value);
-loadConfigExample(configSelect.value);
+document.addEventListener('DOMContentLoaded', initialize);

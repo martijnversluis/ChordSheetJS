@@ -18,8 +18,15 @@
         }
         .dropdown-container {
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
             margin-bottom: 5px;
+        }
+        .key-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -28,14 +35,22 @@
         <div id="chordproEditorContainer">
             <div class="dropdown-container">
                 <label for="chordproSelect">ChordPro File: </label>
-                <select id="chordproSelect" style="margin-left: 10px;"></select>
+                <select id="chordproSelect"></select>
+                <div class="key-controls">
+                    <label for="keySelect">Key: </label>
+                    <select id="keySelect"></select>
+                    <label for="capoSelect">Capo: </label>
+                    <select id="capoSelect">
+                        <option value="none">None</option>
+                    </select>
+                </div>
             </div>
             <div id="editor"></div>
         </div>
         <div id="configEditorContainer">
             <div class="dropdown-container">
                 <label for="configSelect">Config File: </label>
-                <select id="configSelect" style="margin-left: 10px;"></select>
+                <select id="configSelect"></select>
             </div>
             <div id="configEditor"></div>
         </div>
