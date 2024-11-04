@@ -2134,6 +2134,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/core@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@eslint/core@npm:0.8.0"
+  checksum: 10c0/5de53efe9c07beb8a98465ca5457268ab95a5b3f5c6800ebb284eafb3d3272f516636474bb360b27e7f9dc725430f2c10b4dc5ed8798a9fd0908e49376d2556a
+  languageName: node
+  linkType: hard
+
 "@eslint/eslintrc@npm:^3.1.0":
   version: 3.1.0
   resolution: "@eslint/eslintrc@npm:3.1.0"
@@ -4899,7 +4906,7 @@ __metadata:
     "@babel/plugin-proposal-object-rest-spread": "npm:^7.17.3"
     "@babel/preset-env": "npm:^7.16.11"
     "@babel/preset-typescript": "npm:^7.16.7"
-    "@eslint/core": "npm:^0.7.0"
+    "@eslint/core": "npm:^0.8.0"
     "@eslint/js": "npm:^9.11.0"
     "@martijnversluis/unibuild": "npm:0.3.3"
     "@parcel/packager-ts": "npm:2.12.0"
