@@ -319,10 +319,10 @@ use those to change the generated output.
 
 ### Chord diagrams
 
-| Directive | Support                  |
-|:--------- |:------------------------:|
-| define    | :heavy_multiplication_x: |
-| chord     | :heavy_multiplication_x: |
+| Directive | Support            |
+|:--------- |:------------------:|
+| define    | :heavy_check_mark: |
+| chord     | :heavy_check_mark: |
 
 ### Fonts, sizes and colours
 
