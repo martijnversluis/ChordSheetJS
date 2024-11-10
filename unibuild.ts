@@ -80,7 +80,7 @@ unibuild((u: Builder) => {
 
   u.asset('sources', {
     input: [suffixNormalizeMapping, chordSuffixGrammar, scales],
-    outfile: 'src/index.ts',
+    outfile: 'lib/index.js',
     command: 'parcel build',
     releaseOnly: true,
   });
