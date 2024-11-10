@@ -1,5 +1,9 @@
 import { EOL } from 'os';
-import { BuildOptions } from 'esbuild';
+
+interface BuildOptions {
+  force: boolean;
+  release: boolean;
+}
 
 export default function buildChordSuffixGrammar(_: BuildOptions, data: string): string {
   const suffixes: string[] = data
