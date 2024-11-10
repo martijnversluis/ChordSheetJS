@@ -9,6 +9,7 @@ import unibuild, { Builder } from '@martijnversluis/unibuild';
 import buildChordSuffixNormalizeMapping from './script/build_chord_suffix_normalize_mapping';
 import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
 import buildScales from './script/build_scales';
+import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
 interface BuildOptions {
   force: boolean;
@@ -55,11 +56,17 @@ unibuild((u: Builder) => {
     ),
   });
 
+  const sectionsGrammar = u.asset('sectionsGrammar', {
+    input: 'data/sections.ts',
+    outfile: 'src/parser/chord_pro/sections_grammar.pegjs',
+    build: buildChordProSectionGrammar,
+  });
+
   u.asset('chordProParser', {
-    input: ['src/parser/chord_pro/grammar.pegjs'],
+    input: ['src/parser/chord_pro/grammar.pegjs', sectionsGrammar],
     outfile: 'src/parser/chord_pro/peg_parser.ts',
-    build: ({ release }: BuildOptions, baseGrammar: string) => {
-      const parserSource = peggyGenerate(baseGrammar, release);
+    build: ({ release }: BuildOptions, baseGrammar: string, sections: string) => {
+      const parserSource = peggyGenerate(`${baseGrammar}\n\n${sections}`, release);
       return `import * as helpers from './helpers';\n\n${parserSource}`;
     },
   });
