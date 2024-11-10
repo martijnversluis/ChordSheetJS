@@ -11,6 +11,7 @@ import Item from './chord_sheet/item';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 
 import {
+  SerializedChordDefinition,
   SerializedChordLyricsPair,
   SerializedComment,
   SerializedComponent,
@@ -21,6 +22,7 @@ import {
 } from './serialized_types';
 import SoftLineBreak from './chord_sheet/soft_line_break';
 import { warn } from './utilities';
+import ChordDefinition from './chord_sheet/chord_pro/chord_definition';
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const CHORD_SHEET = 'chordSheet';
@@ -83,12 +85,27 @@ class ChordSheetSerializer {
     throw new Error(`Don't know how to serialize ${item.constructor.name}`);
   }
 
-  serializeTag(tag: Tag): SerializedTag {
+  serializeChordDefinition(chordDefinition: ChordDefinition): SerializedChordDefinition {
     return {
+      name: chordDefinition.name,
+      baseFret: chordDefinition.baseFret,
+      frets: chordDefinition.frets,
+      fingers: chordDefinition.fingers,
+    };
+  }
+
+  serializeTag(tag: Tag): SerializedTag {
+    const serializedTag: SerializedTag = {
       type: TAG,
       name: tag.originalName,
       value: tag.value,
     };
+
+    if (tag.chordDefinition) {
+      serializedTag.chordDefinition = this.serializeChordDefinition(tag.chordDefinition);
+    }
+
+    return serializedTag;
   }
 
   serializeChordLyricsPair(chordLyricsPair: ChordLyricsPair) {
@@ -194,8 +211,20 @@ class ChordSheetSerializer {
       name,
       value,
       location: { offset = null, line = null, column = null } = {},
+      chordDefinition,
     } = astComponent;
-    return new Tag(name, value, { line, column, offset });
+    const tag = new Tag(name, value, { line, column, offset });
+
+    if (chordDefinition) {
+      tag.chordDefinition = new ChordDefinition(
+        chordDefinition.name,
+        chordDefinition.baseFret,
+        chordDefinition.frets,
+        chordDefinition.fingers,
+      );
+    }
+
+    return tag;
   }
 
   parseComment(astComponent: SerializedComment): Comment {

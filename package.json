@@ -72,7 +72,7 @@
     "build:bundle:default": "esbuild lib/index.js --outfile=lib/bundle.js --bundle --global-name=ChordSheetJS",
     "build:bundle:min": "esbuild lib/index.js --outfile=lib/bundle.min.js --bundle --global-name=ChordSheetJS --minify-whitespace --minify-identifiers --minify-syntax",
     "build:check-types": "tsc lib/main.d.ts",
-    "build:code-generate": "tsx ./unibuild.ts",
+    "build:code-generate": "yarn unibuild",
     "build:sources": "parcel build",
     "ci": "yarn install && yarn lint && yarn test && yarn build && yarn readme",
     "clean": "shx rm -rf node_modules && shx rm -rf lib",
@@ -92,7 +92,8 @@
     "prepublish": "pinst --disable && yarn install && yarn test && yarn build:code-generate",
     "pretest": "NODE_ENV=test yarn build:code-generate",
     "readme": "node_modules/.bin/jsdoc2md -f src/**/*.ts -f src/*.ts --configure ./jsdoc2md.json --template doc/README.hbs > README.md",
-    "test": "yarn pretest && yarn linter:run && yarn jest:run"
+    "test": "yarn pretest && yarn linter:run && yarn jest:run",
+    "unibuild": "tsx ./unibuild.ts"
   },
   "dependencies": {
     "lodash.get": "^4.4.2"
