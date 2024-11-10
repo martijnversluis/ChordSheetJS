@@ -306,16 +306,16 @@ use those to change the generated output.
 
 ### Environment directives
 
-| Directive                    | Support                  |
-|:---------------------------- |:------------------------:|
-| start_of_chorus (short: soc) | :heavy_check_mark:       |
-| end_of_chorus (short: eoc)   | :heavy_check_mark:       |
-| start_of_verse               | :heavy_check_mark:       |
-| end_of_verse                 | :heavy_check_mark:       |
-| start_of_tab (short: sot)    | :heavy_check_mark:       |
-| end_of_tab (short: eot)      | :heavy_check_mark:       |
-| start_of_grid                | :heavy_multiplication_x: |
-| end_of_grid                  | :heavy_multiplication_x: |
+| Directive                    | Support            |
+|:---------------------------- |:------------------:|
+| start_of_chorus (short: soc) | :heavy_check_mark: |
+| end_of_chorus (short: eoc)   | :heavy_check_mark: |
+| start_of_verse               | :heavy_check_mark: |
+| end_of_verse                 | :heavy_check_mark: |
+| start_of_tab (short: sot)    | :heavy_check_mark: |
+| end_of_tab (short: eot)      | :heavy_check_mark: |
+| start_of_grid                | :heavy_check_mark: |
+| end_of_grid                  | :heavy_check_mark: |
 
 ### Chord diagrams
 
