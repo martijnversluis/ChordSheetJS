@@ -35,15 +35,16 @@ export function html(strings: TemplateStringsArray, ...values: any[]): string {
   return stripHTML(theredoc(strings, ...values));
 }
 
-export function createSong(lines, metadata: Record<string, string> = {}) {
+export function createSong(rows, metadata: Record<string, string> = {}) {
   const song = new Song(metadata || new Metadata());
 
-  lines.forEach((line) => {
-    if (Array.isArray(line)) {
-      song.addLine();
-      line.forEach((item) => song.addItem(item));
+  rows.forEach((row) => {
+    if (Array.isArray(row)) {
+      const line = new Line();
+      song.addLine(line);
+      row.forEach((item) => line.addItem(item));
     } else {
-      song.lines.push(line);
+      song.lines.push(row);
     }
   });
 
