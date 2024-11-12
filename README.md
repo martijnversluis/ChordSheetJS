@@ -892,6 +892,7 @@ the paragraph contents as one string where lines are separated by newlines.</p>
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
     * [.getChords()](#Song+getChords) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.getChordDefinitions()](#Song+getChordDefinitions) ⇒ <code>Record.&lt;string, ChordDefinition&gt;</code>
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_Song_new"></a>
@@ -1102,6 +1103,20 @@ song.mapItems((item) => {
 
 **Kind**: instance method of [<code>Song</code>](#Song)  
 **Returns**: <code>Array.&lt;string&gt;</code> - <p>the chords</p>  
+<a name="Song+getChordDefinitions"></a>
+
+### song.getChordDefinitions() ⇒ <code>Record.&lt;string, ChordDefinition&gt;</code>
+<p>Returns all chord definitions from the song.
+Definitions are made using the <code>{chord}</code> or <code>{define}</code> directive.
+A chord definitions overrides a previous chord definition for the exact same chord.</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: <code>Record.&lt;string, ChordDefinition&gt;</code> - <p>the chord definitions</p>  
+**See**
+
+- https://chordpro.org/chordpro/directives-define/
+- https://chordpro.org/chordpro/directives-chord/
+
 <a name="Song+mapLines"></a>
 
 ### song.mapLines(func) ⇒ [<code>Song</code>](#Song)

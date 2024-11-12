@@ -1,5 +1,11 @@
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
-import { createChordLyricsPair, createLine, createSong } from '../utilities';
+
+import {
+  createChordDefinition,
+  createChordLyricsPair,
+  createLine,
+  createSong, createTag,
+} from '../utilities';
 
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
@@ -316,6 +322,42 @@ describe('Song', () => {
       ]);
 
       expect(song.getChords()).toEqual([]);
+    });
+  });
+
+  describe('#getChordDefinitions', () => {
+    it('returns the unique chord definitions in a song', () => {
+      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
+
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7', cm7),
+        ]),
+        createLine([]),
+        createLine([
+          createTag('define', 'Dm', dm),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions()).toEqual({
+        CM7: cm7,
+        Dm: dm,
+      });
+    });
+
+    it('returns an empty array if there are no chords in the song', () => {
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7'),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('Am', 'be'),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions()).toEqual({});
     });
   });
 });
