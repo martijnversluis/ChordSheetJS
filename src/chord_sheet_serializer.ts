@@ -23,6 +23,7 @@ import {
 import SoftLineBreak from './chord_sheet/soft_line_break';
 import { warn } from './utilities';
 import ChordDefinition from './chord_sheet/chord_pro/chord_definition';
+import SongBuilder from './song_builder';
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const CHORD_SHEET = 'chordSheet';
@@ -37,6 +38,8 @@ const TERNARY = 'ternary';
  */
 class ChordSheetSerializer {
   song: Song = new Song();
+
+  songBuilder: SongBuilder = new SongBuilder(this.song);
 
   /**
    * Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
@@ -181,16 +184,17 @@ class ChordSheetSerializer {
   parseChordSheet(astComponent: SerializedSong): void {
     const { lines } = astComponent;
     this.song = new Song();
+    this.songBuilder = new SongBuilder(this.song);
     lines.forEach((line) => this.parseAstComponent(line));
   }
 
   parseLine(astComponent: SerializedLine): void {
     const { items } = astComponent;
-    this.song.addLine();
+    this.songBuilder.addLine();
 
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;
-      this.song.addItem(parsedItem);
+      this.songBuilder.addItem(parsedItem);
     });
   }
 
