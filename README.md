@@ -891,6 +891,7 @@ the paragraph contents as one string where lines are separated by newlines.</p>
     * [.useModifier(modifier)](#Song+useModifier) ⇒ [<code>Song</code>](#Song)
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
+    * [.getChords()](#Song+getChords) ⇒ <code>Array.&lt;string&gt;</code>
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_Song_new"></a>
@@ -1094,6 +1095,13 @@ song.mapItems((item) => {
   return item;
 });
 ```
+<a name="Song+getChords"></a>
+
+### song.getChords() ⇒ <code>Array.&lt;string&gt;</code>
+<p>Returns all unique chords used in the song</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: <code>Array.&lt;string&gt;</code> - <p>the chords</p>  
 <a name="Song+mapLines"></a>
 
 ### song.mapLines(func) ⇒ [<code>Song</code>](#Song)
