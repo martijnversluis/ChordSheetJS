@@ -1,5 +1,5 @@
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
-import { createSong } from '../utilities';
+import { createChordLyricsPair, createLine, createSong } from '../utilities';
 
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
@@ -281,5 +281,41 @@ describe('Song', () => {
 
   it('solfege can be deserialized', () => {
     expect(new ChordSheetSerializer().deserialize(serializedSongSolfege)).toEqual(exampleSongSolfege);
+  });
+
+  describe('#getChords', () => {
+    it('returns the unique chords in a song', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('CM7', 'let'),
+          createChordLyricsPair('', 'it'),
+          createChordLyricsPair('Dm7', ''),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('F#', 'be'),
+          createChordLyricsPair('', 'changed'),
+        ]),
+      ]);
+
+      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#']);
+    });
+
+    it('returns an empty array if there are no chords in the song', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('', 'let'),
+          createChordLyricsPair('', 'it'),
+          createChordLyricsPair('', ''),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('', 'be'),
+          createChordLyricsPair('', 'changed'),
+        ]),
+      ]);
+
+      expect(song.getChords()).toEqual([]);
+    });
   });
 });

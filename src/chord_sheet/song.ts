@@ -17,6 +17,8 @@ import Tag, {
 } from './tag';
 import SongBuilder from '../song_builder';
 
+type EachItemCallback = (_item: Item) => void;
+
 type MapItemsCallback = (_item: Item) => Item | null;
 
 type MapLinesCallback = (_line: Line) => Line | null;
@@ -409,6 +411,34 @@ Or set the song key before changing key:
     });
 
     return clonedSong;
+  }
+
+  foreachItem(func: EachItemCallback): void {
+    this.lines.forEach((line) => {
+      line.items.forEach(func);
+    });
+  }
+
+  /**
+   * Returns all unique chords used in the song
+   * @returns {string[]} the chords
+   */
+  getChords(): string[] {
+    const chords = new Set<string>();
+
+    this.foreachItem((item: Item) => {
+      if (!(item instanceof ChordLyricsPair)) {
+        return;
+      }
+
+      const itemChords = (item as ChordLyricsPair).chords;
+
+      if (itemChords && itemChords.length > 0) {
+        chords.add(itemChords);
+      }
+    });
+
+    return Array.from(chords);
   }
 
   /**
