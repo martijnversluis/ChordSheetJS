@@ -9,6 +9,7 @@ import {
   Ternary,
   VERSE,
 } from '../../src';
+import { PART } from '../../src/constants';
 
 import '../matchers';
 import { heredoc } from '../utilities';
@@ -193,13 +194,16 @@ describe('ChordProParser', () => {
       [C]Whisper words of [F]wis[G]dom
       {start_of_chorus}
       Let it [F]be [C]
-      {end_of_chorus}`;
+      {end_of_chorus}
+      {start_of_part}
+      [Gm][F][/][/][|]
+      {end_of_part}`;
 
     const parser = new ChordProParser();
     const song = parser.parse(markedChordSheet);
     const lineTypes = song.lines.map((line) => line.type);
 
-    expect(lineTypes).toEqual([VERSE, VERSE, VERSE, NONE, CHORUS, CHORUS, CHORUS]);
+    expect(lineTypes).toEqual([VERSE, VERSE, VERSE, NONE, CHORUS, CHORUS, CHORUS, PART, PART, PART]);
     expect(parser.warnings).toHaveLength(0);
   });
 
@@ -728,5 +732,22 @@ Let it [Am]be
         fingers: [],
       });
     });
+  });
+
+  it('adds uses label of part type section for line type', () => {
+    const markedChordSheet = heredoc`
+      {start_of_verse}
+      Let it [Am]be
+      {end_of_verse}
+      {start_of_part: Intro}
+      Let it [Am]be
+      {end_of_part}`;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(markedChordSheet);
+    const lineTypes = song.lines.map((line) => line.type);
+
+    expect(lineTypes).toEqual([VERSE, VERSE, VERSE, 'intro', 'intro', 'intro']);
+    expect(parser.warnings).toHaveLength(0);
   });
 });

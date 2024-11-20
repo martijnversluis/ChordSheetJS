@@ -93,6 +93,12 @@ export const END_OF_TAB = 'end_of_tab';
 export const END_OF_VERSE = 'end_of_verse';
 
 /**
+ * End of part directive.
+ * @type {string}
+ */
+export const END_OF_PART = 'end_of_part';
+
+/**
  * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
  * @type {string}
  */
@@ -158,6 +164,12 @@ export const START_OF_TAB = 'start_of_tab';
  * @type {string}
  */
 export const START_OF_VERSE = 'start_of_verse';
+
+/**
+ * Start of part
+ * @type {string}
+ */
+export const START_OF_PART = 'start_of_part';
 
 /**
  * Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
@@ -280,12 +292,14 @@ const END_OF_CHORUS_SHORT = 'eoc';
 const END_OF_GRID_SHORT = 'eog';
 const END_OF_TAB_SHORT = 'eot';
 const END_OF_VERSE_SHORT = 'eov';
+const END_OF_PART_SHORT = 'eop';
 const NEW_KEY_SHORT = 'nk';
 const START_OF_BRIDGE_SHORT = 'sob';
 const START_OF_CHORUS_SHORT = 'soc';
 const START_OF_GRID_SHORT = 'sog';
 const START_OF_TAB_SHORT = 'sot';
 const START_OF_VERSE_SHORT = 'sov';
+const START_OF_PART_SHORT = 'sop';
 const SUBTITLE_SHORT = 'st';
 const TEXTFONT_SHORT = 'tf';
 const TEXTSIZE_SHORT = 'ts';
@@ -322,6 +336,7 @@ const SECTION_END_TAGS = [
   END_OF_LY,
   END_OF_TAB,
   END_OF_VERSE,
+  END_OF_PART,
 ];
 
 export const SECTION_START_TAGS = [
@@ -332,6 +347,7 @@ export const SECTION_START_TAGS = [
   START_OF_LY,
   START_OF_TAB,
   START_OF_VERSE,
+  START_OF_PART,
 ];
 
 const INLINE_FONT_TAGS = [
@@ -352,6 +368,7 @@ const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   START_OF_LY,
   START_OF_TAB,
   START_OF_VERSE,
+  START_OF_PART,
 ];
 
 const ALIASES: Record<string, string> = {
@@ -363,12 +380,14 @@ const ALIASES: Record<string, string> = {
   [END_OF_GRID_SHORT]: END_OF_GRID,
   [END_OF_TAB_SHORT]: END_OF_TAB,
   [END_OF_VERSE_SHORT]: END_OF_VERSE,
+  [END_OF_PART_SHORT]: END_OF_PART,
   [NEW_KEY_SHORT]: NEW_KEY,
   [START_OF_BRIDGE_SHORT]: START_OF_BRIDGE,
   [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
   [START_OF_GRID_SHORT]: START_OF_GRID,
   [START_OF_TAB_SHORT]: START_OF_TAB,
   [START_OF_VERSE_SHORT]: START_OF_VERSE,
+  [START_OF_PART_SHORT]: START_OF_PART,
   [SUBTITLE_SHORT]: SUBTITLE,
   [TEXTFONT_SHORT]: TEXTFONT,
   [TEXTSIZE_SHORT]: TEXTSIZE,

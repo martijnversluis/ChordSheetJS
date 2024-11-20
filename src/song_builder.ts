@@ -5,7 +5,7 @@ import {
   GRID,
   LILYPOND,
   NONE,
-  ParagraphType,
+  ParagraphType, PART,
   TAB,
   VERSE,
 } from './constants';
@@ -189,8 +189,14 @@ class SongBuilder {
 
   startSection(sectionType: ParagraphType, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
-    this.sectionType = sectionType;
-    this.setCurrentProperties(sectionType);
+
+    if (sectionType === PART && tag.value) {
+      this.sectionType = tag.value.split(' ')[0].toLowerCase();
+    } else {
+      this.sectionType = sectionType;
+    }
+
+    this.setCurrentProperties(this.sectionType);
   }
 
   endSection(sectionType: ParagraphType, tag: Tag): void {
@@ -199,7 +205,7 @@ class SongBuilder {
   }
 
   checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
-    if (this.sectionType !== sectionType) {
+    if (this.sectionType !== sectionType && !(sectionType === 'part' && tag.name === 'end_of_part')) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }

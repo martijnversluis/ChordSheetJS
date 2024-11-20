@@ -24,6 +24,7 @@ describe('default export', () => {
     'CHORUS',
     'INDETERMINATE',
     'VERSE',
+    'PART',
     'NONE',
   ].forEach((constantName) => {
     it(`contains ${constantName}`, () => {

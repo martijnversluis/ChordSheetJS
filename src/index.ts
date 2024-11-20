@@ -29,6 +29,7 @@ import {
   NONE,
   TAB,
   VERSE,
+  PART,
 } from './constants';
 
 export { default as Chord } from './chord';
@@ -71,6 +72,7 @@ export {
   SYMBOL,
   TAB,
   VERSE,
+  PART,
   NUMERAL,
 } from './constants';
 
@@ -104,4 +106,5 @@ export default {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  PART,
 };
