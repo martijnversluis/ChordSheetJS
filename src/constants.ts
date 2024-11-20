@@ -48,6 +48,13 @@ export const TAB = 'tab';
 export const VERSE = 'verse';
 
 /**
+ * Used to mark a paragraph as part
+ * @constant
+ * @type {string}
+ */
+export const PART = 'part';
+
+/**
  * Used to mark a section as Lilypond notation
  * @constant
  * @type {string}
@@ -70,7 +77,9 @@ export type ParagraphType =
   'ly' |
   'none' |
   'tab' |
-  'verse';
+  'verse' |
+  'part' |
+  string;
 
 export const SYMBOL = 'symbol';
 export const NUMERIC = 'numeric';

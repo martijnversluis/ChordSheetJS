@@ -63,6 +63,26 @@ describe('Line', () => {
     });
   });
 
+  describe('#isPart', () => {
+    describe('when the line type is "part"', () => {
+      it('returns true', () => {
+        const line = new Line();
+        line.type = 'part';
+
+        expect(line.isPart()).toBe(true);
+      });
+    });
+
+    describe('when the line type is not "verse"', () => {
+      it('returns false', () => {
+        const line = new Line();
+        line.type = 'chorus';
+
+        expect(line.isPart()).toBe(false);
+      });
+    });
+  });
+
   describe('#isChorus', () => {
     describe('when the line type is "chorus"', () => {
       it('returns true', () => {
