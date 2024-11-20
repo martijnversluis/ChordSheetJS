@@ -50,6 +50,8 @@ export interface SerializedComment {
 
 export type ContentType = 'tab' | 'abc' | 'ly' | 'grid';
 
+export type PartTypes = 'part' | 'intro' | 'instrumental' | 'tag' | 'end';
+
 export interface SerializedSection {
   type: 'section',
   sectionType: ContentType,
