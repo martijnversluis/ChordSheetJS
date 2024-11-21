@@ -123,9 +123,11 @@ unibuild((u: Builder) => {
   u.asset('readme', {
     input: ['doc/README.hbs', './jsdoc2md.json', 'src/'],
     outfile: 'README.md',
-    command: ({ input: [template, config], outfile }) => (
-      'node node_modules/.bin/jsdoc2md -f src/**/*.ts -f src/*.ts ' +
-      `--configure ${config} --template ${template} > ${outfile}`
+    command: () => (
+    // command: ({ input: [template, config], outfile }) => (
+      // 'node node_modules/.bin/jsdoc2md -f src/**/*.ts -f src/*.ts ' +
+      // `--configure ${config} --template ${template} > ${outfile}`
+      'npm run readme'
     ),
   });
 
