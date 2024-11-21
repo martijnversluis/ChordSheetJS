@@ -3501,7 +3501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/transformer-typescript-types@npm:^2.13.0":
+"@parcel/transformer-typescript-types@npm:2.13.0":
   version: 2.13.0
   resolution: "@parcel/transformer-typescript-types@npm:2.13.0"
   dependencies:
@@ -5057,7 +5057,7 @@ __metadata:
     "@eslint/js": "npm:^9.11.0"
     "@martijnversluis/unibuild": "npm:^1.1.0"
     "@parcel/packager-ts": "npm:2.12.0"
-    "@parcel/transformer-typescript-types": "npm:^2.13.0"
+    "@parcel/transformer-typescript-types": "npm:2.13.0"
     "@types/eslint__js": "npm:^8.42.3"
     "@types/jest": "npm:^27.4.1"
     "@types/lodash.get": "npm:^4.4.7"
