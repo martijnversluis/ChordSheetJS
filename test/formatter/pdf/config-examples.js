@@ -217,7 +217,7 @@ export const configExamples = [
                   },
                 ],
               },
-            }
+            },
           ],
         },
         sections: {
