@@ -55,7 +55,6 @@
     "jsdoc-babel": "^0.5.0",
     "jsdoc-to-markdown": "^9.0.1",
     "parcel": "2.13.0",
-    "parcel-transformer-hbs": "^1.0.4",
     "peggy": "^4.0.2",
     "pegjs-backtrace": "^0.2.1",
     "pinst": "^3.0.0",
