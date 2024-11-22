@@ -4951,7 +4951,7 @@ __metadata:
     husky: "npm:^9.0.11"
     jest: "npm:^27.0.1"
     jsdoc-babel: "npm:^0.5.0"
-    jsdoc-to-markdown: "npm:^9.0.1"
+    jsdoc-to-markdown: "npm:^9.0.5"
     lodash.get: "npm:^4.4.2"
     parcel: "npm:2.13.0"
     peggy: "npm:^4.0.2"
@@ -7761,7 +7761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdoc-to-markdown@npm:^9.0.1":
+"jsdoc-to-markdown@npm:^9.0.5":
   version: 9.0.5
   resolution: "jsdoc-to-markdown@npm:9.0.5"
   dependencies:
