@@ -78,7 +78,6 @@
     "postpublish": "pinst --enable",
     "prepare": "husky install",
     "prepublish": "pinst --disable && yarn install && yarn test && yarn build:release",
-    "readme": "jsdoc2md -f src/**/*.ts -f src/*.ts --configure ./jsdoc2md.json --template doc/README.hbs > README.md",
     "test": "yarn unibuild lint && yarn unibuild test",
     "unibuild": "tsx ./unibuild.ts"
   },
