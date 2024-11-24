@@ -16,6 +16,7 @@ import Tag, {
   START_OF_CHORUS,
 } from './tag';
 import SongBuilder from '../song_builder';
+import ChordDefinition from './chord_pro/chord_definition';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -439,6 +440,32 @@ Or set the song key before changing key:
     });
 
     return Array.from(chords);
+  }
+
+  /**
+   * Returns all chord definitions from the song.
+   * Definitions are made using the `{chord}` or `{define}` directive.
+   * A chord definitions overrides a previous chord definition for the exact same chord.
+   * @returns {Record<string, ChordDefinition>} the chord definitions
+   * @see https://chordpro.org/chordpro/directives-define/
+   * @see https://chordpro.org/chordpro/directives-chord/
+   */
+  getChordDefinitions(): Record<string, ChordDefinition> {
+    const chordDefinitions: Record<string, ChordDefinition> = {};
+
+    this.foreachItem((item: Item) => {
+      if (!(item instanceof Tag)) {
+        return;
+      }
+
+      const { chordDefinition } = (item as Tag);
+
+      if (chordDefinition) {
+        chordDefinitions[chordDefinition.name] = chordDefinition.clone();
+      }
+    });
+
+    return chordDefinitions;
   }
 
   /**

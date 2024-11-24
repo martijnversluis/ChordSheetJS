@@ -8,9 +8,10 @@ import { LineType } from '../src/chord_sheet/line';
 import Metadata from '../src/chord_sheet/metadata';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import Item from '../src/chord_sheet/item';
-import { ChordType, Modifier } from '../src/constants';
+import { ChordType, Fret, Modifier } from '../src/constants';
 import Key from '../src/key';
 import ChordSheetSerializer from '../src/chord_sheet_serializer';
+import ChordDefinition from '../src/chord_sheet/chord_pro/chord_definition';
 
 import {
   ContentType,
@@ -68,8 +69,14 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name: string, value = '') {
-  return new Tag(name, value);
+export function createTag(name: string, value = '', chordDefinition: ChordDefinition | null = null): Tag {
+  const newTag = new Tag(name, value);
+  if (chordDefinition) newTag.chordDefinition = chordDefinition;
+  return newTag;
+}
+
+export function createChordDefinition(name: string, baseFret: number, frets: Fret[], fingers: number[] = []) {
+  return new ChordDefinition(name, baseFret, frets, fingers);
 }
 
 export function createComposite(expressions) {

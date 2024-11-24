@@ -1,5 +1,6 @@
 import ChordSheetJS, {
   Chord,
+  ChordDefinition,
   ChordLyricsPair,
   ChordProFormatter,
   ChordProParser,
@@ -54,6 +55,7 @@ const {
 describe('exports', () => {
   it('supplies all required constants as named exports', () => {
     expect(Chord).toBeDefined();
+    expect(ChordDefinition).toBeDefined();
     expect(ChordLyricsPair).toBeDefined();
     expect(ChordProFormatter).toBeDefined();
     expect(ChordProParser).toBeDefined();
@@ -106,6 +108,7 @@ describe('exports', () => {
   });
 
   it('supplies all constants as properties of the default export', () => {
+    expect(ChordSheetJS.ChordDefinition).toBeDefined();
     expect(ChordSheetJS.ChordProParser).toBeDefined();
     expect(ChordSheetJS.ChordSheetParser).toBeDefined();
     expect(ChordSheetJS.ChordsOverWordsParser).toBeDefined();
