@@ -306,23 +306,23 @@ use those to change the generated output.
 
 ### Environment directives
 
-| Directive                    | Support                  |
-|:---------------------------- |:------------------------:|
-| start_of_chorus (short: soc) | :heavy_check_mark:       |
-| end_of_chorus (short: eoc)   | :heavy_check_mark:       |
-| start_of_verse               | :heavy_check_mark:       |
-| end_of_verse                 | :heavy_check_mark:       |
-| start_of_tab (short: sot)    | :heavy_check_mark:       |
-| end_of_tab (short: eot)      | :heavy_check_mark:       |
-| start_of_grid                | :heavy_multiplication_x: |
-| end_of_grid                  | :heavy_multiplication_x: |
+| Directive                    | Support            |
+|:---------------------------- |:------------------:|
+| start_of_chorus (short: soc) | :heavy_check_mark: |
+| end_of_chorus (short: eoc)   | :heavy_check_mark: |
+| start_of_verse               | :heavy_check_mark: |
+| end_of_verse                 | :heavy_check_mark: |
+| start_of_tab (short: sot)    | :heavy_check_mark: |
+| end_of_tab (short: eot)      | :heavy_check_mark: |
+| start_of_grid                | :heavy_check_mark: |
+| end_of_grid                  | :heavy_check_mark: |
 
 ### Chord diagrams
 
-| Directive | Support                  |
-|:--------- |:------------------------:|
-| define    | :heavy_multiplication_x: |
-| chord     | :heavy_multiplication_x: |
+| Directive | Support            |
+|:--------- |:------------------:|
+| define    | :heavy_check_mark: |
+| chord     | :heavy_check_mark: |
 
 ### Fonts, sizes and colours
 
@@ -898,6 +898,8 @@ the paragraph contents as one string where lines are separated by newlines.</p>
     * [.useModifier(modifier)](#Song+useModifier) ⇒ [<code>Song</code>](#Song)
     * [.changeMetadata(name, value)](#Song+changeMetadata)
     * [.mapItems(func)](#Song+mapItems) ⇒ [<code>Song</code>](#Song)
+    * [.getChords()](#Song+getChords) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.getChordDefinitions()](#Song+getChordDefinitions) ⇒ <code>Record.&lt;string, ChordDefinition&gt;</code>
     * [.mapLines(func)](#Song+mapLines) ⇒ [<code>Song</code>](#Song)
 
 <a name="new_Song_new"></a>
@@ -1101,6 +1103,27 @@ song.mapItems((item) => {
   return item;
 });
 ```
+<a name="Song+getChords"></a>
+
+### song.getChords() ⇒ <code>Array.&lt;string&gt;</code>
+<p>Returns all unique chords used in the song</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: <code>Array.&lt;string&gt;</code> - <p>the chords</p>  
+<a name="Song+getChordDefinitions"></a>
+
+### song.getChordDefinitions() ⇒ <code>Record.&lt;string, ChordDefinition&gt;</code>
+<p>Returns all chord definitions from the song.
+Definitions are made using the <code>{chord}</code> or <code>{define}</code> directive.
+A chord definitions overrides a previous chord definition for the exact same chord.</p>
+
+**Kind**: instance method of [<code>Song</code>](#Song)  
+**Returns**: <code>Record.&lt;string, ChordDefinition&gt;</code> - <p>the chord definitions</p>  
+**See**
+
+- https://chordpro.org/chordpro/directives-define/
+- https://chordpro.org/chordpro/directives-chord/
+
 <a name="Song+mapLines"></a>
 
 ### song.mapLines(func) ⇒ [<code>Song</code>](#Song)

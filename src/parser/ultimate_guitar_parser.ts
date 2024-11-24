@@ -72,8 +72,8 @@ class UltimateGuitarParser extends ChordSheetParser {
   isSectionEnd(): boolean {
     return this.songLine !== null &&
       this.songLine.isEmpty() &&
-      this.song.previousLine !== null &&
-      !this.song.previousLine.isEmpty();
+      this.songBuilder.previousLine !== null &&
+      !this.songBuilder.previousLine.isEmpty();
   }
 
   endOfSong() {
@@ -90,28 +90,28 @@ class UltimateGuitarParser extends ChordSheetParser {
     }
 
     this.currentSectionType = sectionType;
-    this.song.setCurrentProperties(sectionType);
+    this.songBuilder.setCurrentProperties(sectionType);
 
     if (sectionType in startSectionTags) {
-      this.song.addTag(new Tag(startSectionTags[sectionType], label));
+      this.songBuilder.addTag(new Tag(startSectionTags[sectionType], label));
     }
   }
 
   endSection({ addNewLine = true } = {}) {
     if (this.currentSectionType !== null && this.currentSectionType in endSectionTags) {
-      this.song.addTag(new Tag(endSectionTags[this.currentSectionType]));
+      this.songBuilder.addTag(new Tag(endSectionTags[this.currentSectionType]));
 
       if (addNewLine) {
         this.startNewLine();
       }
     }
 
-    this.song.setCurrentProperties(NONE);
+    this.songBuilder.setCurrentProperties(NONE);
     this.currentSectionType = null;
   }
 
   startNewLine() {
-    this.songLine = this.song.addLine();
+    this.songLine = this.songBuilder.addLine();
   }
 }
 

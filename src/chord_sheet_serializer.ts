@@ -11,6 +11,7 @@ import Item from './chord_sheet/item';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 
 import {
+  SerializedChordDefinition,
   SerializedChordLyricsPair,
   SerializedComment,
   SerializedComponent,
@@ -21,6 +22,8 @@ import {
 } from './serialized_types';
 import SoftLineBreak from './chord_sheet/soft_line_break';
 import { warn } from './utilities';
+import ChordDefinition from './chord_sheet/chord_pro/chord_definition';
+import SongBuilder from './song_builder';
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const CHORD_SHEET = 'chordSheet';
@@ -35,6 +38,8 @@ const TERNARY = 'ternary';
  */
 class ChordSheetSerializer {
   song: Song = new Song();
+
+  songBuilder: SongBuilder = new SongBuilder(this.song);
 
   /**
    * Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
@@ -83,12 +88,27 @@ class ChordSheetSerializer {
     throw new Error(`Don't know how to serialize ${item.constructor.name}`);
   }
 
-  serializeTag(tag: Tag): SerializedTag {
+  serializeChordDefinition(chordDefinition: ChordDefinition): SerializedChordDefinition {
     return {
+      name: chordDefinition.name,
+      baseFret: chordDefinition.baseFret,
+      frets: chordDefinition.frets,
+      fingers: chordDefinition.fingers,
+    };
+  }
+
+  serializeTag(tag: Tag): SerializedTag {
+    const serializedTag: SerializedTag = {
       type: TAG,
       name: tag.originalName,
       value: tag.value,
     };
+
+    if (tag.chordDefinition) {
+      serializedTag.chordDefinition = this.serializeChordDefinition(tag.chordDefinition);
+    }
+
+    return serializedTag;
   }
 
   serializeChordLyricsPair(chordLyricsPair: ChordLyricsPair) {
@@ -164,16 +184,17 @@ class ChordSheetSerializer {
   parseChordSheet(astComponent: SerializedSong): void {
     const { lines } = astComponent;
     this.song = new Song();
+    this.songBuilder = new SongBuilder(this.song);
     lines.forEach((line) => this.parseAstComponent(line));
   }
 
   parseLine(astComponent: SerializedLine): void {
     const { items } = astComponent;
-    this.song.addLine();
+    this.songBuilder.addLine();
 
     items.forEach((item) => {
       const parsedItem = this.parseAstComponent(item) as Item;
-      this.song.addItem(parsedItem);
+      this.songBuilder.addItem(parsedItem);
     });
   }
 
@@ -194,8 +215,20 @@ class ChordSheetSerializer {
       name,
       value,
       location: { offset = null, line = null, column = null } = {},
+      chordDefinition,
     } = astComponent;
-    return new Tag(name, value, { line, column, offset });
+    const tag = new Tag(name, value, { line, column, offset });
+
+    if (chordDefinition) {
+      tag.chordDefinition = new ChordDefinition(
+        chordDefinition.name,
+        chordDefinition.baseFret,
+        chordDefinition.frets,
+        chordDefinition.fingers,
+      );
+    }
+
+    return tag;
   }
 
   parseComment(astComponent: SerializedComment): Comment {

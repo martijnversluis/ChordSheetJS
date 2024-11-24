@@ -1,4 +1,4 @@
-import { ChordType, Modifier } from './constants';
+import { ChordType, Fret, Modifier } from './constants';
 
 export interface SerializedTraceInfo {
   location?: {
@@ -26,10 +26,18 @@ export interface SerializedChordLyricsPair {
   annotation?: string | null,
 }
 
+export interface SerializedChordDefinition {
+  name: string,
+  baseFret: number,
+  frets: Fret[],
+  fingers?: number[],
+}
+
 export type SerializedTag = SerializedTraceInfo & {
   type: 'tag',
   name: string,
   value: string,
+  chordDefinition?: SerializedChordDefinition,
 };
 
 export interface SerializedComment {

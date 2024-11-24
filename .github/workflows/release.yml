@@ -14,7 +14,7 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
       - name: Build
-        run: yarn install && yarn build
+        run: yarn install && yarn build:release
       - name: Test
         run: cat lib/bundle.js
       - name: Release
