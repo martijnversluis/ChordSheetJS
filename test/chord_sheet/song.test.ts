@@ -1,5 +1,11 @@
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
-import { createSong } from '../utilities';
+
+import {
+  createChordDefinition,
+  createChordLyricsPair,
+  createLine,
+  createSong, createTag,
+} from '../utilities';
 
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
@@ -281,5 +287,77 @@ describe('Song', () => {
 
   it('solfege can be deserialized', () => {
     expect(new ChordSheetSerializer().deserialize(serializedSongSolfege)).toEqual(exampleSongSolfege);
+  });
+
+  describe('#getChords', () => {
+    it('returns the unique chords in a song', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('CM7', 'let'),
+          createChordLyricsPair('', 'it'),
+          createChordLyricsPair('Dm7', ''),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('F#', 'be'),
+          createChordLyricsPair('', 'changed'),
+        ]),
+      ]);
+
+      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#']);
+    });
+
+    it('returns an empty array if there are no chords in the song', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('', 'let'),
+          createChordLyricsPair('', 'it'),
+          createChordLyricsPair('', ''),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('', 'be'),
+          createChordLyricsPair('', 'changed'),
+        ]),
+      ]);
+
+      expect(song.getChords()).toEqual([]);
+    });
+  });
+
+  describe('#getChordDefinitions', () => {
+    it('returns the unique chord definitions in a song', () => {
+      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
+
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7', cm7),
+        ]),
+        createLine([]),
+        createLine([
+          createTag('define', 'Dm', dm),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions()).toEqual({
+        CM7: cm7,
+        Dm: dm,
+      });
+    });
+
+    it('returns an empty array if there are no chords in the song', () => {
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7'),
+        ]),
+        createLine([]),
+        createLine([
+          createChordLyricsPair('Am', 'be'),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions()).toEqual({});
+    });
   });
 });

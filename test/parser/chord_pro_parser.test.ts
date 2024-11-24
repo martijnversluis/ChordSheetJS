@@ -5,6 +5,7 @@ import {
   LILYPOND,
   NONE,
   TAB,
+  Tag,
   Ternary,
   VERSE,
 } from '../../src';
@@ -651,5 +652,81 @@ Let it [Am]be
     expect(items[0]).toBeChordLyricsPair('Am', 'Let ');
     expect(items[1]).toBeChordLyricsPair('', 'it be, let it ');
     expect(items[2]).toBeChordLyricsPair('C/G', 'be');
+  });
+
+  describe('{define} chord definitions', () => {
+    it('parses chord definitions with finger numbers', () => {
+      const chordSheet = '{define: D7 base-fret 3 frets x 3 2 3 1 x fingers 1 2 3 4 5 6 }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('define', 'D7 base-fret 3 frets x 3 2 3 1 x fingers 1 2 3 4 5 6');
+
+      expect(chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [1, 2, 3, 4, 5, 6],
+      });
+    });
+
+    it('parses chord definitions without finger numbers', () => {
+      const chordSheet = '{define: D7 base-fret 3 frets x 3 2 3 1 x }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('define', 'D7 base-fret 3 frets x 3 2 3 1 x');
+
+      expect(chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [],
+      });
+    });
+  });
+
+  describe('{chord} chord definitions', () => {
+    it('parses chord definitions with finger numbers', () => {
+      const chordSheet = '{chord: D7 base-fret 3 frets x 3 2 3 1 x fingers 1 2 3 4 5 6 }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x fingers 1 2 3 4 5 6');
+
+      expect(chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [1, 2, 3, 4, 5, 6],
+      });
+    });
+
+    it('parses chord definitions without finger numbers', () => {
+      const chordSheet = '{chord: D7 base-fret 3 frets x 3 2 3 1 x }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x');
+
+      expect(chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [],
+      });
+    });
   });
 });

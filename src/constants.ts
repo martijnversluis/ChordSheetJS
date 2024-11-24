@@ -92,3 +92,9 @@ export const MINOR = 'm';
 export const MAJOR = 'M';
 
 export type Mode = 'M' | 'm';
+
+type FretNumber = number;
+type OpenFret = '0';
+type NonSoundingString = '-1' | 'N' | 'x';
+
+export type Fret = FretNumber | OpenFret | NonSoundingString;

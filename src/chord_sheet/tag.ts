@@ -4,6 +4,7 @@
  */
 import AstComponent from './ast_component';
 import TraceInfo from './trace_info';
+import ChordDefinition from './chord_pro/chord_definition';
 
 export const ALBUM = 'album';
 
@@ -406,6 +407,8 @@ class Tag extends AstComponent {
   _name = '';
 
   _value = '';
+
+  chordDefinition?: ChordDefinition;
 
   constructor(name: string, value: string | null = null, traceInfo: TraceInfo | null = null) {
     super(traceInfo);
