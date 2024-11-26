@@ -102,7 +102,7 @@ unibuild((u: Builder) => {
     command: ({ input: [intro], outfile }) => {
       const tmpDir = 'tmp/docs';
       return [
-        `typedoc --plugin typedoc-plugin-markdown  --out ${tmpDir} ${source}`,
+        `typedoc --plugin typedoc-plugin-markdown  --out ${tmpDir} ${source} --logLevel Error`,
         `cat ${intro} > ${outfile}`,
         `concat-md --decrease-title-levels --dir-name-as-title ${tmpDir} >> ${outfile}`,
         `rm -rf ${tmpDir}`,
