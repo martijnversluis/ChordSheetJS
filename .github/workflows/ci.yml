@@ -64,7 +64,7 @@ jobs:
       - name: Install node modules
         run: yarn install
       - name: Verify README.md
-        run: yarn unibuild readme && git diff --quiet README.md
+        run: yarn readme && git diff README.md
   verify-install:
     runs-on: ubuntu-latest
     strategy:

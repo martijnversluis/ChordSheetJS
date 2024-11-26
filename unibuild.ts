@@ -10,7 +10,9 @@ import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
 import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
-const { main, types, bundle } = packageJSON;
+const {
+  main, source, types, bundle,
+} = packageJSON;
 
 interface BuildOptions {
   force: boolean;
@@ -94,6 +96,20 @@ unibuild((u: Builder) => {
     chordsOverWordsParser,
   ];
 
+  u.asset('readme', {
+    input: ['INTRO.md', 'src', ...codeGeneratedAssets],
+    outfile: 'README.md',
+    command: ({ input: [intro], outfile }) => {
+      const tmpDir = 'tmp/docs';
+      return [
+        `typedoc --plugin typedoc-plugin-markdown  --out ${tmpDir} ${source} --logLevel Error`,
+        `cat ${intro} > ${outfile}`,
+        `concat-md --decrease-title-levels --dir-name-as-title ${tmpDir} >> ${outfile}`,
+        `rm -rf ${tmpDir}`,
+      ];
+    },
+  });
+
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
     outfile: main,
@@ -118,14 +134,6 @@ unibuild((u: Builder) => {
       '--minify-whitespace --minify-identifiers --minify-syntax'
     ),
     releaseOnly: true,
-  });
-
-  u.asset('readme', {
-    input: ['doc/README.hbs', './jsdoc2md.json', 'src/'],
-    outfile: 'README.md',
-    command: ({ input: [template, config], outfile }) => (
-      `jsdoc2md -f src/**/*.ts -f src/*.ts --configure ${config} --template ${template} > ${outfile}`
-    ),
   });
 
   u.lint('checkTypes', {

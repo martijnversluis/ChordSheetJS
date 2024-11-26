@@ -360,5 +360,3 @@ use those to change the generated output.
 
 Note: all classes, methods and constants that are documented here can be considered public API and will only be
 subject to breaking changes between major versions.
-
-{{>main}}

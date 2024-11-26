@@ -10,3 +10,4 @@ src/normalize_mappings/suffix-normalize-mapping.ts
 src/parser/chord/combined_grammer.pegjs
 src/parser/chord/suffix_grammar.pegjs
 src/parser/chord_pro/sections_grammar.pegjs
+tmp

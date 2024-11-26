@@ -1,5 +1,7 @@
 export default class CloneableStub {
-  constructor(value) {
+  value: any;
+
+  constructor(value: any) {
     this.value = value;
   }
 
