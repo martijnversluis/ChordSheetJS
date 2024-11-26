@@ -2008,7 +2008,7 @@ __metadata:
     jspdf: "npm:^2.5.2"
     lodash.get: "npm:^4.4.2"
     parcel: "npm:2.13.0"
-    peggy: "npm:^4.0.2"
+    peggy: "npm:^4.2.0"
     pegjs-backtrace: "npm:^0.2.1"
     pinst: "npm:^3.0.0"
     print: "npm:^1.2.0"
@@ -3857,12 +3857,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@peggyjs/from-mem@npm:1.3.0":
-  version: 1.3.0
-  resolution: "@peggyjs/from-mem@npm:1.3.0"
+"@peggyjs/from-mem@npm:1.3.5":
+  version: 1.3.5
+  resolution: "@peggyjs/from-mem@npm:1.3.5"
   dependencies:
-    semver: "npm:7.6.0"
-  checksum: 10c0/062c184c1e2946a72b98ea8f8d52d2ac3f905331252167399167a7c578363f8b850d78423fbc3683f30eaf65918996d52c6c53791298705a4cee643011cc0d1f
+    semver: "npm:7.6.3"
+  checksum: 10c0/3e3e9c161353d253b1b2e5c1ffe0cb665236c915381ad1edce13f2c147541961ad4917d6fb7d1718b824df1d8f262b83467e654b14b109facc14ab68118c4d76
   languageName: node
   linkType: hard
 
@@ -9444,16 +9444,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"peggy@npm:^4.0.2":
-  version: 4.0.3
-  resolution: "peggy@npm:4.0.3"
+"peggy@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "peggy@npm:4.2.0"
   dependencies:
-    "@peggyjs/from-mem": "npm:1.3.0"
+    "@peggyjs/from-mem": "npm:1.3.5"
     commander: "npm:^12.1.0"
     source-map-generator: "npm:0.8.0"
   bin:
     peggy: bin/peggy.js
-  checksum: 10c0/798982b58b405f86eedb4d8556ef13785b9c4d46d5a55b4d30366fa974d5647bfd4a8a37800fd8fcbfae35b1bcc2a412af999ac1919e766b82939f0148a488ca
+  checksum: 10c0/a985524151ce1844af29c43390d03f8c2638e362ca446e133543cc01a65b929f4e98d23dc3984931bf709352a4e99d97c6fd7456b9babea4d69a5e0b28fa2d18
   languageName: node
   linkType: hard
 
@@ -10089,14 +10089,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:7.6.0":
-  version: 7.6.0
-  resolution: "semver@npm:7.6.0"
-  dependencies:
-    lru-cache: "npm:^6.0.0"
+"semver@npm:7.6.3, semver@npm:^7.5.3, semver@npm:^7.6.0, semver@npm:^7.6.3":
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
   bin:
     semver: bin/semver.js
-  checksum: 10c0/fbfe717094ace0aa8d6332d7ef5ce727259815bd8d8815700853f4faf23aacbd7192522f0dc5af6df52ef4fa85a355ebd2f5d39f554bd028200d6cf481ab9b53
+  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
   languageName: node
   linkType: hard
 
@@ -10135,15 +10133,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10c0/97d3441e97ace8be4b1976433d1c32658f6afaff09f143e52c593bae7eef33de19e3e369c88bd985ce1042c6f441c80c6803078d1de2a9988080b66684cbb30c
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.5.3, semver@npm:^7.6.0, semver@npm:^7.6.3":
-  version: 7.6.3
-  resolution: "semver@npm:7.6.3"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
   languageName: node
   linkType: hard
 
