@@ -88,8 +88,16 @@ unibuild((u: Builder) => {
     },
   });
 
+  const codeGeneratedAssets: Asset[] = [
+    suffixNormalizeMapping,
+    scales,
+    chordParser,
+    chordProParser,
+    chordsOverWordsParser,
+  ];
+
   u.asset('readme', {
-    input: ['INTRO.md', 'src'],
+    input: ['INTRO.md', 'src', ...codeGeneratedAssets],
     outfile: 'README.md',
     command: ({ input: [intro], outfile }) => {
       const tmpDir = 'tmp/docs';
@@ -101,14 +109,6 @@ unibuild((u: Builder) => {
       ];
     },
   });
-
-  const codeGeneratedAssets: Asset[] = [
-    suffixNormalizeMapping,
-    scales,
-    chordParser,
-    chordProParser,
-    chordsOverWordsParser,
-  ];
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
