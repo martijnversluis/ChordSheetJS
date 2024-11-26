@@ -129,10 +129,10 @@ unibuild((u: Builder) => {
   u.asset('minifiedBundle', {
     input: jsBuild,
     outfile: bundle.minified,
-    command: ({ input, outfile }) => [
+    command: ({ input, outfile }) => (
       `esbuild ${input[0]} --outfile=${outfile} --bundle --global-name=${bundle.globalName} ` +
-      '--minify-whitespace --minify-identifiers --minify-syntax',
-    ],
+      '--minify-whitespace --minify-identifiers --minify-syntax'
+    ),
     releaseOnly: true,
   });
 

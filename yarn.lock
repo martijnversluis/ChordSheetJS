@@ -1406,13 +1406,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@martijnversluis/unibuild@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@martijnversluis/unibuild@npm:1.2.0"
+"@martijnversluis/unibuild@npm:1.2.1":
+  version: 1.2.1
+  resolution: "@martijnversluis/unibuild@npm:1.2.1"
   dependencies:
     chalk: "npm:^5.3.0"
     commander: "npm:^12.1.0"
-  checksum: 10c0/3cd5340699ab3f3eff02d17c58a67255b9018ce22cfb6bfa5de9a55e947bbad19e24b12f1c3ed9c635bd2cf132eb4322f0ef0b777255e77f1f1618395d6d16a6
+  checksum: 10c0/33bf69f501b49f6c272397429b9e2fd475da995320bb780fcf7620e1cb40dd312ada13b770e1852fd6ea0660af95495c054991bf40bd3a65b6a4f946294cac6b
   languageName: node
   linkType: hard
 
@@ -3776,7 +3776,7 @@ __metadata:
   dependencies:
     "@eslint/core": "npm:^0.9.0"
     "@eslint/js": "npm:^9.11.0"
-    "@martijnversluis/unibuild": "npm:1.2.0"
+    "@martijnversluis/unibuild": "npm:1.2.1"
     "@parcel/packager-ts": "npm:2.13.0"
     "@parcel/transformer-typescript-types": "npm:2.13.0"
     "@types/eslint__js": "npm:^8.42.3"
