@@ -3790,13 +3790,11 @@ __metadata:
     eslint-config-airbnb: "npm:^19.0.4"
     eslint-plugin-jest: "npm:^28.8.3"
     globals: "npm:^15.9.0"
-    husky: "npm:^9.0.11"
     jest: "npm:^27.0.1"
     lodash.get: "npm:^4.4.2"
     parcel: "npm:2.13.0"
     peggy: "npm:^4.0.2"
     pegjs-backtrace: "npm:^0.2.1"
-    pinst: "npm:^3.0.0"
     print: "npm:^1.2.0"
     puppeteer: "npm:^23.1.0"
     shx: "npm:^0.3.4"
@@ -5927,15 +5925,6 @@ __metadata:
   version: 2.1.0
   resolution: "human-signals@npm:2.1.0"
   checksum: 10c0/695edb3edfcfe9c8b52a76926cd31b36978782062c0ed9b1192b36bebc75c4c87c82e178dfcb0ed0fc27ca59d434198aac0bd0be18f5781ded775604db22304a
-  languageName: node
-  linkType: hard
-
-"husky@npm:^9.0.11":
-  version: 9.1.6
-  resolution: "husky@npm:9.1.6"
-  bin:
-    husky: bin.js
-  checksum: 10c0/705673db4a247c1febd9c5df5f6a3519106cf0335845027bb50a15fba9b1f542cb2610932ede96fd08008f6d9f49db0f15560509861808b0031cdc0e7c798bac
   languageName: node
   linkType: hard
 
@@ -8584,15 +8573,6 @@ __metadata:
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
   checksum: 10c0/26c02b8d06f03206fc2ab8d16f19960f2ff9e81a658f831ecb656d8f17d9edc799e8364b1f4a7873e89d9702dff96204be0fa26fe4181f6843f040f819dac4be
-  languageName: node
-  linkType: hard
-
-"pinst@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "pinst@npm:3.0.0"
-  bin:
-    pinst: bin.js
-  checksum: 10c0/abb1ed62ea2acb2207a7a860715bdb26ecbde74ede8fad5f6200194f3e22db25e2b7a49af05e5cc7fc05384709c651e0000323f0077d7239060c4b68c8acd428
   languageName: node
   linkType: hard
 
