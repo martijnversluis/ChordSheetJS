@@ -70,8 +70,8 @@
     "ci": "yarn install && yarn unibuild lint && yarn unibuild test && yarn build:release",
     "debug:chordpro": "tsx script/debug_parser.ts chord_pro --skip-chord-grammar",
     "postpublish": "pinst --enable",
-    "prepare": "husky install",
-    "prepublish": "pinst --disable && yarn install && yarn test && yarn build:release",
+    "prepare": "husky install && yarn build",
+    "prepublishOnly": "pinst --disable && yarn install && yarn test && yarn build:release",
     "readme": "yarn unibuild build readme -f",
     "test": "yarn unibuild lint && yarn unibuild test",
     "unibuild": "tsx ./unibuild.ts"
