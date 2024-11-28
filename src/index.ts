@@ -21,6 +21,7 @@ import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
 import TextFormatter from './formatter/text_formatter';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
+import templateHelpers from './template_helpers';
 
 import {
   CHORUS,
@@ -101,4 +102,5 @@ export default {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  templateHelpers,
 };
