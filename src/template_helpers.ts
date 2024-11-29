@@ -82,7 +82,7 @@ export const paragraphClasses = (paragraph: Paragraph): string => {
 };
 
 export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: Configuration): string => (
-  item.evaluate(metadata, configuration.get('metadata.separator'))
+  item.evaluate(metadata, configuration.getSeparator())
 );
 
 export function fontStyleTag(font: Font) {

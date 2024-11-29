@@ -1,5 +1,3 @@
-import lodashGet from 'lodash.get';
-
 import Key from '../../key';
 import { ContentType } from '../../serialized_types';
 
@@ -65,8 +63,8 @@ class Configuration {
     this.configuration = { configuration, delegates: this.delegates };
   }
 
-  get(key: string): string {
-    return lodashGet(this, key);
+  getSeparator(): string {
+    return this.metadata.separator ?? '';
   }
 }
 
