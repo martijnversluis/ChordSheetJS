@@ -108,6 +108,7 @@ unibuild((u: Builder) => {
         `rm -rf ${tmpDir}`,
       ];
     },
+    releaseOnly: true,
   });
 
   const jsBuild = u.asset('sources', {
