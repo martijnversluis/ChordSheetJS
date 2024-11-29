@@ -6,7 +6,7 @@
   "source": "src/index.ts",
   "main": "lib/index.js",
   "module": "lib/module.js",
-  "types": "./lib/main.d.ts",
+  "types": "lib/main.d.ts",
   "files": [
     "/lib"
   ],
