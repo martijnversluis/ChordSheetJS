@@ -8,7 +8,7 @@ WhitespaceCharacter
   = [ \t\n\r]
 
 Space "space"
-  = [ \t]+
+  = $([ \t]+)
 
 NewLine
   = CarriageReturn / LineFeed / CarriageReturnLineFeed
