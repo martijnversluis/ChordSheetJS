@@ -14,10 +14,16 @@ const grammarFile = `${parserFolder}/grammar.pegjs`;
 const helpersFile = `${parserFolder}/helpers.ts`;
 const chordGrammarFile = './src/parser/chord/base_grammar.pegjs';
 const chordSuffixGrammarFile = './src/parser/chord/suffix_grammar.pegjs';
+const whitespaceGrammarFile = './src/parser/whitespace_grammar.pegjs';
+const sectionsGrammarFile = './src/parser/chord_pro/sections_grammar.pegjs';
+const chordDefinitionGrammarFile = './src/parser/chord_definition/grammar.pegjs';
 
 const parserGrammar = fs.readFileSync(grammarFile, 'utf8');
 const chordGrammar = skipChordGrammar ? '' : fs.readFileSync(chordGrammarFile);
 const chordSuffixGrammar = fs.readFileSync(chordSuffixGrammarFile);
+const whitespaceGrammar = fs.readFileSync(whitespaceGrammarFile);
+const sectionsGrammar = fs.readFileSync(sectionsGrammarFile);
+const chordDefinitionGrammar = fs.readFileSync(chordDefinitionGrammarFile);
 
 const result = esbuild.buildSync({
   bundle: true,
@@ -33,6 +39,9 @@ const parserSource = [
   parserGrammar,
   chordGrammar,
   chordSuffixGrammar,
+  chordDefinitionGrammar,
+  sectionsGrammar,
+  whitespaceGrammar,
 ].join('\n\n');
 
 async function run() {

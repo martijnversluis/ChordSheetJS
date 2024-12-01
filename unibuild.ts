@@ -70,7 +70,7 @@ unibuild((u: Builder) => {
       'src/parser/chord_pro/grammar.pegjs',
       'src/parser/chord_definition/grammar.pegjs',
       sectionsGrammar,
-      'src/parser/whitespace.grammar',
+      'src/parser/whitespace_grammar.pegjs',
     ],
     outfile: 'src/parser/chord_pro/peg_parser.ts',
     build: ({ release }: BuildOptions, ...grammars: string[]) => {
@@ -82,7 +82,7 @@ unibuild((u: Builder) => {
   const chordDefinitionParser = u.asset('chordDefinitionParser', {
     input: [
       'src/parser/chord_definition/grammar.pegjs',
-      'src/parser/whitespace.grammar',
+      'src/parser/whitespace_grammar.pegjs',
     ],
     outfile: 'src/parser/chord_definition/peg_parser.ts',
     build: ({ release }: BuildOptions, ...grammars: string[]) => (

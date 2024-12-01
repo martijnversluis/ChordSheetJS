@@ -76,6 +76,15 @@ describe('ChordProParser', () => {
     expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
   });
 
+  it('correctly parses multiple whitespace characters', () => {
+    const chordSheet = '[C]Let it be         ';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be         ');
+  });
+
   it('parses directive with empty value', () => {
     const song = new ChordProParser().parse('{c: }');
     expect(song.lines[0].items[0]).toBeTag('comment', '');
