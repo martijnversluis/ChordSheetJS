@@ -45,7 +45,7 @@
     "eslint-plugin-jest": "^28.8.3",
     "globals": "^15.9.0",
     "jest": "^27.0.1",
-    "parcel": "2.13.0",
+    "parcel": "2.13.2",
     "peggy": "^4.0.2",
     "pegjs-backtrace": "^0.2.1",
     "print": "^1.2.0",
