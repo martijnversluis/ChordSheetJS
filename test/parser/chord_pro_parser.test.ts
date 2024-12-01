@@ -85,6 +85,16 @@ describe('ChordProParser', () => {
     expect(items[1]).toBeChordLyricsPair('', 'it be         ');
   });
 
+  it('correctly parses percent characters in lyrics', () => {
+    const chordSheet = '[C]Let it be [Am]100%';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be ');
+    expect(items[2]).toBeChordLyricsPair('Am', '100%');
+  });
+
   it('parses directive with empty value', () => {
     const song = new ChordProParser().parse('{c: }');
     expect(song.lines[0].items[0]).toBeTag('comment', '');
