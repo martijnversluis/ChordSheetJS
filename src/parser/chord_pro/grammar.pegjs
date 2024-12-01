@@ -130,9 +130,10 @@ MetaExpression
 
 LyricsChar
   = WordChar
-  / "]" { return { type: 'char', char: ']'    }; }
-  / "|" { return { type: 'char', char: '|'    }; }
-  / "}" { return { type: 'char', char: '\x7d' }; }
+  / "%" !"{" { return { type: 'char', char: '%'    }; }
+  / "]"      { return { type: 'char', char: ']'    }; }
+  / "|"      { return { type: 'char', char: '|'    }; }
+  / "}"      { return { type: 'char', char: '\x7d' }; }
 
 Char
   = WordChar
