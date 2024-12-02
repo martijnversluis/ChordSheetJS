@@ -11,7 +11,7 @@ import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
 const {
-  main, source, types, bundle,
+  main, types, bundle,
 } = packageJSON;
 
 interface BuildOptions {
@@ -112,21 +112,6 @@ unibuild((u: Builder) => {
     chordsOverWordsParser,
     chordDefinitionParser,
   ];
-
-  u.asset('readme', {
-    input: ['INTRO.md', 'src', ...codeGeneratedAssets],
-    outfile: 'README.md',
-    command: ({ input: [intro], outfile }) => {
-      const tmpDir = 'tmp/docs';
-      return [
-        `typedoc --plugin typedoc-plugin-markdown  --out ${tmpDir} ${source} --logLevel Error`,
-        `cat ${intro} > ${outfile}`,
-        `concat-md --decrease-title-levels --dir-name-as-title ${tmpDir} >> ${outfile}`,
-        `rm -rf ${tmpDir}`,
-      ];
-    },
-    releaseOnly: true,
-  });
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
