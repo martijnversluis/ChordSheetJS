@@ -794,7 +794,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gerrit0/mini-shiki@npm:^1.23.2":
+"@gerrit0/mini-shiki@npm:^1.24.0":
   version: 1.24.1
   resolution: "@gerrit0/mini-shiki@npm:1.24.1"
   dependencies:
@@ -9396,10 +9396,10 @@ __metadata:
   linkType: hard
 
 "typedoc@npm:^0.27.1":
-  version: 0.27.1
-  resolution: "typedoc@npm:0.27.1"
+  version: 0.27.2
+  resolution: "typedoc@npm:0.27.2"
   dependencies:
-    "@gerrit0/mini-shiki": "npm:^1.23.2"
+    "@gerrit0/mini-shiki": "npm:^1.24.0"
     lunr: "npm:^2.3.9"
     markdown-it: "npm:^14.1.0"
     minimatch: "npm:^9.0.5"
@@ -9408,7 +9408,7 @@ __metadata:
     typescript: 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x
   bin:
     typedoc: bin/typedoc
-  checksum: 10c0/28e62707c7157c1f07a24e5422143de5e8f6ed0967a7fb4f76ae220824e14d79d43589ec963ed6b7327eb4e5066c7037adad7a1a523a7d4a6aab259ef0f22570
+  checksum: 10c0/85184d40760a5528a7f82a6b1a2932973208fc55762a4b8c3445b895c4fbdd65bbfbde9b1c2b335019129b59e36eda294080de9d332df6e1c856500234f0bb4d
   languageName: node
   linkType: hard
 
