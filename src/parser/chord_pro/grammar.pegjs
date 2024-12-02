@@ -170,25 +170,51 @@ ChordDefinition
     }
 
 Tag
-  = "{" _ tagName:$(TagName) _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return {
-        type: 'tag',
-        name: tagName,
-        value: tagColonWithValue,
-        location: location().start,
-      };
+  = "{" _ tagName:$(TagName) _ tagColonWithValue:TagColonWithValue? "}" {
+      return helpers.buildTag(tagName, tagColonWithValue, location());
     }
 
 TagColonWithValue
-  = ":" _ tagValue:TagValue {
-      return tagValue.map(c => c.char || c).join('');
+  = ":" tagValue:TagValue {
+      return tagValue;
+    }
+
+TagValue
+  = attributes:TagAttributes {
+      return { attributes: attributes };
+    }
+  / value:TagSimpleValue {
+      return { value: value };
+    }
+
+TagAttributes
+  = attributes:TagAttributeWithLeadingSpace+ {
+      const obj = {};
+
+      attributes.forEach((pair) => {
+        obj[pair[0]] = pair[1];
+      });
+
+      return obj;
+    }
+
+TagAttributeWithLeadingSpace
+  = __ attribute:TagAttribute {
+      return attribute;
+    }
+
+TagAttribute
+  = name:TagAttributeName _ "=" _ value:TagAttributeValue {
+      return [name, value];
     }
 
 TagName
   = [a-zA-Z-_]+
 
-TagValue
-  = TagValueChar*
+TagSimpleValue
+  = _ chars:TagValueChar* {
+      return chars.map(c => c.char || c).join('');
+    }
 
 TagValueChar
   = [^}\\\r\n]
@@ -197,6 +223,25 @@ TagValueChar
         "\\" { return { type: 'char', char: '\\'   }; }
       / "}"  { return { type: 'char', char: '\x7d' }; }
       / "{"  { return { type: 'char', char: '\x7b' }; }
+    ) {
+      return sequence;
+    }
+
+TagAttributeName
+  = $([a-zA-Z-_]+)
+
+TagAttributeValue
+  = "\"" value:$(TagAttributeValueChar*) "\"" {
+      return value;
+    }
+
+TagAttributeValueChar
+  = [^"}]
+  / Escape
+    sequence: (
+      "\\" { return { type: 'char', char: '\\'   }; }
+      / "}"  { return { type: 'char', char: '\x7d' }; }
+      / "\"" { return { type: 'char', char: '"' }; }
     ) {
       return sequence;
     }

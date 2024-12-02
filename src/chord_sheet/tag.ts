@@ -409,9 +409,22 @@ class Tag extends AstComponent {
 
   chordDefinition?: ChordDefinition;
 
-  constructor(name: string, value: string | null = null, traceInfo: TraceInfo | null = null) {
+  /**
+   * The tag attributes. For example, section related tags can have a label:
+   * `{start_of_verse: label="Verse 1"}`
+   * @type {Record<string, string>}
+   */
+  attributes: Record<string, string> = {};
+
+  constructor(
+    name: string,
+    value: string | null = null,
+    traceInfo: TraceInfo | null = null,
+    attributes: Record<string, string> = {},
+  ) {
     super(traceInfo);
     this.parseNameValue(name, value);
+    this.attributes = attributes;
   }
 
   private parseNameValue(name: string, value: string | null): void {
@@ -460,6 +473,16 @@ class Tag extends AstComponent {
     }
 
     return parsed;
+  }
+
+  get label() {
+    const labelAttribute = this.attributes.label;
+
+    if (labelAttribute && labelAttribute.length > 0) {
+      return labelAttribute;
+    }
+
+    return this.value || '';
   }
 
   isSectionDelimiter(): boolean {
@@ -522,6 +545,14 @@ class Tag extends AstComponent {
     return this.value.length > 0;
   }
 
+  hasAttributes() {
+    return Object.keys(this.attributes).length > 0;
+  }
+
+  hasLabel(): boolean {
+    return this.label.length > 0;
+  }
+
   /**
    * Checks whether the tag is usually rendered inline. It currently only applies to comment tags.
    * @returns {boolean}
@@ -537,7 +568,7 @@ class Tag extends AstComponent {
    * https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/
    */
   hasRenderableLabel(): boolean {
-    return DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) && this.hasValue();
+    return DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) && this.hasLabel();
   }
 
   /**
@@ -553,7 +584,7 @@ class Tag extends AstComponent {
    * @returns {Tag} The cloned tag
    */
   clone(): Tag {
-    return new Tag(this._originalName, this.value);
+    return new Tag(this._originalName, this.value, null, this.attributes);
   }
 
   toString(): string {
@@ -561,7 +592,19 @@ class Tag extends AstComponent {
   }
 
   set({ value }: { value: string }): Tag {
-    return new Tag(this._originalName, value);
+    return new Tag(this._originalName, value, null, this.attributes);
+  }
+
+  setAttribute(name: string, value: string) {
+    return new Tag(
+      this._originalName,
+      this.value,
+      null,
+      {
+        ...this.attributes,
+        [name]: value,
+      },
+    );
   }
 }
 

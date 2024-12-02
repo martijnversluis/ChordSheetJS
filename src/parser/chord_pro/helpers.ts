@@ -29,12 +29,17 @@ export function buildSection(startTag: SerializedTag, endTag: SerializedTag, con
   ];
 }
 
-export function buildTag(name: string, value: string | null, location: FileRange): SerializedTag {
+export function buildTag(
+  name: string,
+  value: Partial<{ value: string | null, attributes: Record<string, string>}> | null,
+  location: FileRange,
+): SerializedTag {
   return {
     type: 'tag',
     name,
-    value: value || '',
     location: location.start,
+    value: value?.value || '',
+    attributes: value?.attributes || {},
   };
 }
 

@@ -77,7 +77,7 @@ export default (
                     `) }
                     
                     ${ when(item.hasRenderableLabel(), () => `
-                      <h3 class="label">${ item.value }</h3>
+                      <h3 class="label">${ item.label }</h3>
                     `) }
                   `).elseWhen(isEvaluatable(item), () => `
                     <div class="column">
