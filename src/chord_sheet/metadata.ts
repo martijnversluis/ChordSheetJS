@@ -88,8 +88,7 @@ class Metadata extends MetadataAccessors {
    *
    * This method deprecates direct property access, eg: metadata['author']
    *
-   * Examples:
-   *
+   * @example
    * const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
    * metadata.get('lyricist') // => 'Pete'
    * metadata.get('author')   // => ['John', 'Mary']

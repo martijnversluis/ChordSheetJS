@@ -3555,7 +3555,6 @@ __metadata:
     tsc: "npm:^2.0.4"
     tsx: "npm:^4.10.5"
     typedoc: "npm:^0.27.1"
-    typedoc-plugin-markdown: "npm:^4.3.0"
     typescript: "npm:^5.6.2"
     typescript-eslint: "npm:^8.6.0"
   languageName: unknown
@@ -9383,15 +9382,6 @@ __metadata:
     typed-array-buffer: "npm:^1.0.2"
     typed-array-byte-offset: "npm:^1.0.2"
   checksum: 10c0/6ac110a8b58a1ccb086242f09d1ce9c7ba2885924e816364a7879083b983d4096f19aab6f9aa8c0ce5ddd3d8ae3f3ba5581e10fa6838880f296a0c54c26f424b
-  languageName: node
-  linkType: hard
-
-"typedoc-plugin-markdown@npm:^4.3.0":
-  version: 4.3.1
-  resolution: "typedoc-plugin-markdown@npm:4.3.1"
-  peerDependencies:
-    typedoc: 0.27.x
-  checksum: 10c0/031e7d61611899fc4f45953575b7b63734c34379c1f9791b42e0ab4605dd2fff952dd35d53d8edd8068afdc9b127858a6b93fda94ec065e8a6ab869012e84500
   languageName: node
   linkType: hard
 
