@@ -3,20 +3,21 @@ import Tag from './tag';
 import Comment from './comment';
 import Item from './item';
 import Font from './font';
-import { ContentType } from '../serialized_types';
+import { ContentType, PartTypes } from '../serialized_types';
 
 import {
   BRIDGE,
   CHORUS,
   GRID,
   NONE,
+  PART,
   TAB,
   VERSE,
 } from '../constants';
 
 type MapItemFunc = (_item: Item) => Item | null;
 
-export type LineType = 'bridge' | 'chorus' | 'none' | 'tab' | 'verse' | ContentType | 'indeterminate';
+export type LineType = 'bridge' | 'chorus' | 'none' | 'tab' | 'verse' | ContentType | 'indeterminate' | PartTypes;
 
 /**
  * Represents a line in a chord sheet, consisting of items of type ChordLyricsPair or Tag
@@ -160,6 +161,14 @@ class Line {
    */
   isVerse(): boolean {
     return this.type === VERSE;
+  }
+
+  /**
+   * Indicates whether the line type is {@link PART}
+   * @returns {boolean}
+   */
+  isPart(): boolean {
+    return this.type === PART;
   }
 
   /**

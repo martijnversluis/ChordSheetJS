@@ -490,6 +490,8 @@ Inherits from [ChordSheetParser](#ChordSheetParser)</p></dd>
 <dd><p>End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#END_OF_VERSE">END_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p></dd>
+<dt><a href="#END_OF_PART">END_OF_PART</a> : <code>string</code></dt>
+<dd><p>End of part directive.</p></dd>
 <dt><a href="#KEY">KEY</a> : <code>string</code></dt>
 <dd><p>Key meta directive. See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dt><a href="#_KEY">_KEY</a> : <code>string</code></dt>
@@ -513,6 +515,8 @@ See https://www.chordpro.org/chordpro/directives-key/</p></dd>
 <dd><p>Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/</p></dd>
 <dt><a href="#START_OF_VERSE">START_OF_VERSE</a> : <code>string</code></dt>
 <dd><p>Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p></dd>
+<dt><a href="#START_OF_PART">START_OF_PART</a> : <code>string</code></dt>
+<dd><p>Start of part</p></dd>
 <dt><a href="#SUBTITLE">SUBTITLE</a> : <code>string</code></dt>
 <dd><p>Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/</p></dd>
 <dt><a href="#TEMPO">TEMPO</a> : <code>string</code></dt>
@@ -565,6 +569,8 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p></dd>
 <dd><p>Used to mark a paragraph as tab</p></dd>
 <dt><a href="#VERSE">VERSE</a> : <code>string</code></dt>
 <dd><p>Used to mark a paragraph as verse</p></dd>
+<dt><a href="#PART">PART</a> : <code>string</code></dt>
+<dd><p>Used to mark a paragraph as part</p></dd>
 <dt><a href="#LILYPOND">LILYPOND</a> : <code>string</code></dt>
 <dd><p>Used to mark a section as Lilypond notation</p></dd>
 <dt><a href="#ABC">ABC</a> : <code>string</code></dt>
@@ -712,6 +718,7 @@ Can be deserialized using [deserialize](deserialize)</p>
     * [.isGrid()](#Line+isGrid) ⇒ <code>boolean</code>
     * [.isTab()](#Line+isTab) ⇒ <code>boolean</code>
     * [.isVerse()](#Line+isVerse) ⇒ <code>boolean</code>
+    * [.isPart()](#Line+isPart) ⇒ <code>boolean</code>
     * ~~[.hasContent()](#Line+hasContent) ⇒ <code>boolean</code>~~
 
 <a name="Line+isEmpty"></a>
@@ -771,6 +778,12 @@ Can be deserialized using [deserialize](deserialize)</p>
 
 ### line.isVerse() ⇒ <code>boolean</code>
 <p>Indicates whether the line type is [VERSE](#VERSE)</p>
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+<a name="Line+isPart"></a>
+
+### line.isPart() ⇒ <code>boolean</code>
+<p>Indicates whether the line type is [PART](#PART)</p>
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 <a name="Line+hasContent"></a>
@@ -1931,6 +1944,12 @@ new FontSize(120, '%').toString()
 <p>End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
 
 **Kind**: global constant  
+<a name="END_OF_PART"></a>
+
+## END\_OF\_PART : <code>string</code>
+<p>End of part directive.</p>
+
+**Kind**: global constant  
 <a name="KEY"></a>
 
 ## KEY : <code>string</code>
@@ -1996,6 +2015,12 @@ See https://www.chordpro.org/chordpro/directives-key/</p>
 
 ## START\_OF\_VERSE : <code>string</code>
 <p>Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/</p>
+
+**Kind**: global constant  
+<a name="START_OF_PART"></a>
+
+## START\_OF\_PART : <code>string</code>
+<p>Start of part</p>
 
 **Kind**: global constant  
 <a name="SUBTITLE"></a>
@@ -2149,6 +2174,12 @@ Possible values are 'solfege', 'symbol', 'numeral' and 'number'</p>
 
 ## VERSE : <code>string</code>
 <p>Used to mark a paragraph as verse</p>
+
+**Kind**: global constant  
+<a name="PART"></a>
+
+## PART : <code>string</code>
+<p>Used to mark a paragraph as part</p>
 
 **Kind**: global constant  
 <a name="LILYPOND"></a>

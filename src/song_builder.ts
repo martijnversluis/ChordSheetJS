@@ -5,7 +5,7 @@ import {
   GRID,
   LILYPOND,
   NONE,
-  ParagraphType,
+  ParagraphType, PART,
   TAB,
   VERSE,
 } from './constants';
@@ -18,6 +18,7 @@ import Tag, {
   END_OF_CHORUS,
   END_OF_GRID,
   END_OF_LY,
+  END_OF_PART,
   END_OF_TAB,
   END_OF_VERSE,
   KEY,
@@ -27,6 +28,7 @@ import Tag, {
   START_OF_CHORUS,
   START_OF_GRID,
   START_OF_LY,
+  START_OF_PART,
   START_OF_TAB,
   START_OF_VERSE,
   TRANSPOSE,
@@ -47,6 +49,7 @@ const START_TAG_TO_SECTION_TYPE = {
   [START_OF_LY]: LILYPOND,
   [START_OF_TAB]: TAB,
   [START_OF_VERSE]: VERSE,
+  [START_OF_PART]: PART,
 };
 
 const END_TAG_TO_SECTION_TYPE = {
@@ -57,6 +60,7 @@ const END_TAG_TO_SECTION_TYPE = {
   [END_OF_LY]: LILYPOND,
   [END_OF_TAB]: TAB,
   [END_OF_VERSE]: VERSE,
+  [END_OF_PART]: PART,
 };
 
 class SongBuilder {
@@ -189,8 +193,14 @@ class SongBuilder {
 
   startSection(sectionType: ParagraphType, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
-    this.sectionType = sectionType;
-    this.setCurrentProperties(sectionType);
+
+    if (sectionType === PART && tag.value) {
+      this.sectionType = tag.value.split(' ')[0].toLowerCase();
+    } else {
+      this.sectionType = sectionType;
+    }
+
+    this.setCurrentProperties(this.sectionType);
   }
 
   endSection(sectionType: ParagraphType, tag: Tag): void {
@@ -199,7 +209,7 @@ class SongBuilder {
   }
 
   checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
-    if (this.sectionType !== sectionType) {
+    if (this.sectionType !== sectionType && !(sectionType === 'part' && tag.name === 'end_of_part')) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }
