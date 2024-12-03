@@ -73,7 +73,7 @@ class Paragraph {
     const startTag = this.lines[0].items.find((item: Item) => item instanceof Tag && item.isSectionDelimiter());
 
     if (startTag) {
-      return (startTag as Tag).value;
+      return (startTag as Tag).label;
     }
 
     return null;

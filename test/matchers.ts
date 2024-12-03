@@ -55,6 +55,10 @@ function getObjectType(object) {
   return `${object} (${typeof object})`;
 }
 
+function property(value: any) {
+  return `${print(value)} (${typeof value})`;
+}
+
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
   const pass = (!klass || received instanceof klass) &&
@@ -98,7 +102,9 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
                but it was a ${actualRepr}`,
             );
           } else if (!valuesEqual(expectedProperty, actualProperty)) {
-            errors.push(`its ${name} value was: ${print(actualProperty)} vs ${print(expectedProperty)}`);
+            errors.push(
+              `its ${name} value was: ${property(actualProperty)} vs ${property(expectedProperty)}`,
+            );
           }
         });
       }

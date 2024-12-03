@@ -99,6 +99,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+        
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -106,6 +107,30 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">Em</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">F</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
               <div class="lyrics">Whisper words of </div>
             </div>
             <div class="column">
@@ -258,9 +283,34 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+        
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Mim</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Fa</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Do</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Sol</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
           </div>
           <div class="row">
             <div class="column">
@@ -597,6 +647,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+        
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -604,6 +655,30 @@ describe('HtmlDivFormatter', () => {
           <div class="row">
             <div class="column">
               <div class="chord">Gm</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Ab</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Bb</div>
               <div class="lyrics">Whisper words of </div>
             </div>
             <div class="column">
@@ -757,9 +832,34 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+        
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Solm</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Lab</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Mib</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Sib</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
           </div>
           <div class="row">
             <div class="column">
@@ -904,7 +1004,7 @@ describe('HtmlDivFormatter', () => {
 
   it('does not render empty section labels', () => {
     const song = createSongFromAst([
-      ...section('tab', '', 'Line 1\nLine 2'),
+      ...section('tab', '', {}, 'Line 1\nLine 2'),
     ]);
 
     const expectedOutput = html`
@@ -928,7 +1028,7 @@ describe('HtmlDivFormatter', () => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration({
@@ -956,7 +1056,7 @@ describe('HtmlDivFormatter', () => {
 
         it('defaults to the default delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration();

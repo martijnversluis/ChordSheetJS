@@ -128,6 +128,15 @@ describe('ChordProParser', () => {
     expect(song.metadata.get('x_other_directive')).toEqual('Bar');
   });
 
+  it('parses directives with attributes', () => {
+    const chordSheet = '{start_of_verse: label="Verse 1"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('start_of_verse');
+    expect(tag.attributes).toEqual({ label: 'Verse 1' });
+  });
+
   it('parses meta directives', () => {
     const chordSheetWithCustomMetaData = `
       {meta: one_directive Foo}
@@ -626,6 +635,7 @@ Let it [Am]be
     expect(paragraphs).toHaveLength(1);
     expect(paragraph.type).toEqual(LILYPOND);
     expect(lines).toHaveLength(3);
+
     expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
     expect(lines[1].items[0]).toBeLiteral('LY line 1');
     expect(lines[2].items[0]).toBeLiteral('LY line 2');

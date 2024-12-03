@@ -77,6 +77,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
+        
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -86,6 +87,30 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord">Em</td>
+              <td class="chord">F</td>
+              <td class="chord">C</td>
+              <td class="chord">G</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Chorus 2</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">G</td>
               <td class="chord">F</td>
               <td class="chord">C</td>
               <td class="chord">G</td>
@@ -224,10 +249,35 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
+        
         <div class="paragraph chorus">
           <table class="row">
             <tr>
               <td class="comment">Breakdown</td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Mim</td>
+              <td class="chord">Fa</td>
+              <td class="chord">Do</td>
+              <td class="chord">Sol</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Chorus 2</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -565,6 +615,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
+        
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -574,6 +625,30 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord">Gm</td>
+              <td class="chord">Ab</td>
+              <td class="chord">Eb</td>
+              <td class="chord">Bb</td>
+            </tr>
+            <tr>
+              <td class="lyrics">Whisper words of </td>
+              <td class="lyrics">wisdom, let it </td>
+              <td class="lyrics">be </td>
+              <td class="lyrics"></td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="paragraph chorus">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Chorus 2</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="row">
+            <tr>
+              <td class="chord">Bb</td>
               <td class="chord">Ab</td>
               <td class="chord">Eb</td>
               <td class="chord">Bb</td>
@@ -686,7 +761,7 @@ describe('HtmlTableFormatter', () => {
 
   it('does not render empty section labels', () => {
     const song = createSongFromAst([
-      ...section('tab', '', 'Line 1\nLine 2'),
+      ...section('tab', '', {}, 'Line 1\nLine 2'),
     ]);
 
     const expectedOutput = html`
@@ -782,7 +857,7 @@ describe('HtmlTableFormatter', () => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration({
@@ -812,7 +887,7 @@ describe('HtmlTableFormatter', () => {
 
         it('defaults to the default delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration();
