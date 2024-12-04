@@ -308,15 +308,18 @@ describe('Song', () => {
           createChordLyricsPair('CM7', 'let'),
           createChordLyricsPair('', 'it'),
           createChordLyricsPair('Dm7', ''),
+          createChordLyricsPair('Dm7   ', ''),
         ]),
         createLine([]),
         createLine([
           createChordLyricsPair('F#', 'be'),
+          createChordLyricsPair('d#', 'be'),
+          createChordLyricsPair('     F#', 'be'),
           createChordLyricsPair('', 'changed'),
         ]),
       ]);
 
-      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#']);
+      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#', 'D#']);
     });
 
     it('returns an empty array if there are no chords in the song', () => {
