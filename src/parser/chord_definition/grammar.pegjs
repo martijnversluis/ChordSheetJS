@@ -4,19 +4,28 @@ ChordDefinitionValue
     }
 
 ChordFingersDefinition
-  = __ "fingers" fingers:FingerNumberWithLeadingSpace+ {
+  = __ "fingers" fingers:FingerWithLeadingSpace+ {
       return fingers;
     }
 
-FingerNumberWithLeadingSpace
-  = __ finger:FingerNumber {
+FingerWithLeadingSpace
+  = __ finger:Finger {
       return finger;
     }
 
+Finger
+  = FingerNumber / FingerLetter / NoFingerSetting
+
 FingerNumber
-  = number:[1-9] {
+  = number:[0-9] {
       return parseInt(number, 10);
     }
+
+FingerLetter
+  = [a-zA-Z]
+
+NoFingerSetting
+  = "-" / "x" / "X" / "n" / "N"
 
 FretWithLeadingSpace
   = __ fret:Fret {
@@ -39,4 +48,4 @@ OpenFret
     }
 
 NonSoundingString
-  = "-1" / "N" / "x"
+  = "-1" / "n" / "N" / "x" / "X"
