@@ -231,6 +231,35 @@ describe('ChordProParser', () => {
     expect(parser.warnings).toHaveLength(0);
   });
 
+  it('supports custom section types', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda: Coda 1}
+      Let it [Am]be
+      {end_of_coda}
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    expect(lines[0].type).toEqual('coda');
+    expect(parser.warnings).toHaveLength(0);
+  });
+
+  it('is forgiving to unended custom sections', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda}
+      Let it [Am]be
+      
+      {start_of_interlude}
+      [C]Speaking words of [G]wisdom
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    const lineTypes = lines.map((line) => line.type);
+    expect(lineTypes).toEqual(['coda', 'coda', 'coda', 'interlude', 'interlude']);
+    expect(parser.warnings).toHaveLength(1);
+  });
+
   it('adds the transposeKey to lines', () => {
     const chordSheetWithTranspose = `
 {key: A}
