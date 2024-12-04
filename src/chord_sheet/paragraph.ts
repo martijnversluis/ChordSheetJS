@@ -1,5 +1,5 @@
 import { INDETERMINATE } from '../constants';
-import Line, { LineType } from './line';
+import Line from './line';
 import Literal from './chord_pro/literal';
 import Tag from './tag';
 import Item from './item';
@@ -82,9 +82,10 @@ class Paragraph {
   /**
    * Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
    * If not, it returns {@link INDETERMINATE}
+   * For the possible values, see {@link Line.type}
    * @returns {string}
    */
-  get type(): LineType {
+  get type(): string {
     const types = this.lines.map((line) => line.type);
     const uniqueTypes = [...new Set(types)];
 

@@ -30,10 +30,21 @@ class Line {
 
   /**
    * The line type, This is set by the ChordProParser when it read tags like {start_of_chorus} or {start_of_verse}
-   * Values can be {@link VERSE}, {@link CHORUS} or {@link NONE}
+   * It uses the following mapping to determine the line type from directives:
+   * - `start_of_abc` => {@link ABC}
+   * - `start_of_bridge` => {@link BRIDGE}
+   * - `start_of_chorus` => {@link CHORUS}
+   * - `start_of_grid` => {@link GRID}
+   * - `start_of_ly` => {@link LILYPOND}
+   * - `start_of_tab` => {@link TAB}
+   * - `start_of_verse` => {@link VERSE}
+   *
+   * There are two special cases:
+   * - {@link INDETERMINATE} when the paragraph lines do not have a consistent type
+   * - {@link NONE} when no type is derived
    * @type {string}
    */
-  type: LineType = NONE;
+  type: string = NONE;
 
   currentChordLyricsPair: ChordLyricsPair = new ChordLyricsPair();
 
@@ -59,7 +70,7 @@ class Line {
    */
   chordFont: Font = new Font();
 
-  constructor({ type, items }: { type: LineType, items: Item[] } = { type: NONE, items: [] }) {
+  constructor({ type, items }: { type: string, items: Item[] } = { type: NONE, items: [] }) {
     this.type = type;
     this.items = items;
   }
@@ -210,7 +221,7 @@ class Line {
     return comment;
   }
 
-  set(properties: { type?: LineType, items?: Item[] }): Line {
+  set(properties: { type?: string, items?: Item[] }): Line {
     return new Line(
       {
         type: this.type,
