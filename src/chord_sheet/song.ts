@@ -17,6 +17,7 @@ import Tag, {
 } from './tag';
 import SongBuilder from '../song_builder';
 import ChordDefinition from './chord_pro/chord_definition';
+import Chord from '../chord';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -435,7 +436,11 @@ Or set the song key before changing key:
       const itemChords = (item as ChordLyricsPair).chords;
 
       if (itemChords && itemChords.length > 0) {
-        chords.add(itemChords);
+        const parsedChord = Chord.parse(itemChords);
+
+        if (parsedChord) {
+          chords.add(parsedChord.toString());
+        }
       }
     });
 
