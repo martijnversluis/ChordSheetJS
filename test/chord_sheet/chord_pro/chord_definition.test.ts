@@ -38,5 +38,20 @@ describe('ChordDefinition', () => {
       expect(chordDefinition.frets).toEqual(['x', 3, 2, 3, 1, 'x']);
       expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
     });
+
+    [
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers a 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers A 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers x 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers X 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers n 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers N 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers - 2 3 4 5 6',
+      'D7 base-fret 1 frets N 3 2 3 1 N fingers 0 2 3 4 5 6',
+    ].forEach((definitionString) => {
+      it(`can parse ${definitionString}`, () => {
+        expect(() => ChordDefinition.parse(definitionString)).not.toThrow();
+      });
+    });
   });
 });
