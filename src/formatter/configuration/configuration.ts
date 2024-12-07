@@ -63,8 +63,11 @@ class Configuration {
     this.configuration = { configuration, delegates: this.delegates };
   }
 
-  getSeparator(): string {
-    return this.metadata.separator ?? '';
+  get(path: string): any {
+    return path
+      .split(/[.[\]]/)
+      .filter(Boolean)
+      .reduce((val, key) => (val as any)?.[key], this);
   }
 }
 

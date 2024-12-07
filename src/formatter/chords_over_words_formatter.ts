@@ -163,7 +163,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatEvaluatable(item: Ternary, metadata: Metadata) {
-    return item.evaluate(metadata, this.configuration.getSeparator());
+    return item.evaluate(metadata, this.configuration.get('metadata.separator'));
   }
 
   private formatChordLyricsPair(item: ChordLyricsPair, line: Line) {
