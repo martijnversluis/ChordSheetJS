@@ -425,6 +425,56 @@ export const changedSongSymbol: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_solo',
+          value: 'Solo 1 changed',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'D',
+          lyrics: 'SOLO LINE 1',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'G',
+          lyrics: 'SOLO LINE 2',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_solo',
+          value: 'changed',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_tab',
           value: 'changed',
           attributes: {
@@ -1012,6 +1062,56 @@ export const changedSongSolfege: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_chorus',
+          value: 'changed',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_solo',
+          value: 'Solo 1 changed',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'Re',
+          lyrics: 'SOLO LINE 1',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'Sol',
+          lyrics: 'SOLO LINE 2',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_solo',
           value: 'changed',
           attributes: {},
         },

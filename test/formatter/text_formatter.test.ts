@@ -19,38 +19,44 @@ describe('TextFormatter', () => {
     const expectedChordSheet = heredoc`
       LET IT BE
       ChordSheetJS example version
-      
+
       Written by: John Lennon,Paul McCartney
-      
+
       Verse 1
              Am         C/G        F          C
       Let it be, let it be, let it be, let it be
       D       strong   G  A           G  D/F# Em D
       Whisper words of wisdom, let it be
-      
+
       Breakdown
       Em               F              C  G
       Whisper words of wisdom, let it be
-      
+
       Chorus 2
       G                F              C  G
       Whisper words of wisdom, let it be
-      
+
+      Solo 1
+      G
+      Solo line 1
+      C
+      Solo line 2
+
       Tab 1
       Tab line 1
       Tab line 2
-      
+
       ABC 1
       ABC line 1
       ABC line 2
-      
+
       LY 1
       LY line 1
       LY line 2
-      
+
       Bridge 1
       Bridge line
-      
+
       Grid 1
       Grid line 1
       Grid line 2`;
@@ -78,6 +84,12 @@ Whisper words of wisdom, let it be
 Chorus 2
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
+
+Solo 1
+Sol
+Solo line 1
+Do
+Solo line 2
 
 Tab 1
 Tab line 1
@@ -147,10 +159,16 @@ Let it be, let it be, let it be, let it be`;
       Breakdown
       Gm               Ab             Eb Bb
       Whisper words of wisdom, let it be
-      
+
       Chorus 2
       Bb               Ab             Eb Bb
       Whisper words of wisdom, let it be
+
+      Solo 1
+      Bb
+      Solo line 1
+      Eb
+      Solo line 2
 
       Tab 1
       Tab line 1

@@ -425,6 +425,56 @@ export const serializedSongSymbol: SerializedSong = {
       items: [
         {
           type: 'tag',
+          name: 'start_of_solo',
+          value: 'Solo 1',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'C',
+          lyrics: 'Solo line 1',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'F',
+          lyrics: 'Solo line 2',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_solo',
+          value: '',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
           name: 'start_of_tab',
           value: '',
           attributes: { label: 'Tab 1' },
@@ -1010,6 +1060,56 @@ export const serializedSongSolfege: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_chorus',
+          value: '',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_solo',
+          value: 'Solo 1',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'Do',
+          lyrics: 'Solo line 1',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'chordLyricsPair',
+          chords: 'Fa',
+          lyrics: 'Solo line 2',
+          chord: null,
+          annotation: '',
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_solo',
           value: '',
           attributes: {},
         },

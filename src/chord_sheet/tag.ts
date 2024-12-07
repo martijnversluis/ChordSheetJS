@@ -328,13 +328,6 @@ const INLINE_FONT_TAGS = [
 
 const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   CHORUS,
-  START_OF_ABC,
-  START_OF_BRIDGE,
-  START_OF_CHORUS,
-  START_OF_GRID,
-  START_OF_LY,
-  START_OF_TAB,
-  START_OF_VERSE,
 ];
 
 const ALIASES: Record<string, string> = {
@@ -603,7 +596,7 @@ class Tag extends AstComponent {
    * https://chordpro.org/chordpro/directives-env_bridge/, https://chordpro.org/chordpro/directives-env_tab/
    */
   hasRenderableLabel(): boolean {
-    return DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) && this.hasLabel();
+    return (DIRECTIVES_WITH_RENDERABLE_LABEL.includes(this.name) || this.isSectionStart()) && this.hasLabel();
   }
 
   /**
