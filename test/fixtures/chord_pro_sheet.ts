@@ -23,7 +23,11 @@ Let it [Am]be, \\ let it [C/G]be, let it [F]be, let it [C]be
 [Am]Whisper words of [Bb]wisdom, let it [F]be [C]
 {end_of_chorus}
 
-{start_of_tab: Tab 1}
+{start_of_chorus: label="Chorus 2"}
+[C]Whisper words of [Bb]wisdom, let it [F]be [C]
+{end_of_chorus}
+
+{start_of_tab: label="Tab 1"}
 Tab line 1
 Tab line 2
 {end_of_tab}
@@ -67,6 +71,10 @@ Let it [Lam]be, let it [Do/Sol]be, let it [Fa]be, let it [Do]be
 {start_of_chorus}
 {comment: Breakdown}
 {transpose: Sol}
+[Lam]Whisper words of [Sib]wisdom, let it [Fa]be [Do]
+{end_of_chorus}
+
+{start_of_chorus: label="Chorus 2"}
 [Lam]Whisper words of [Sib]wisdom, let it [Fa]be [Do]
 {end_of_chorus}
 

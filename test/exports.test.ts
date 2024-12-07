@@ -134,4 +134,22 @@ describe('exports', () => {
     expect(ChordSheetJS.TAB).toBeDefined();
     expect(ChordSheetJS.VERSE).toBeDefined();
   });
+
+  it('supplies template helpers on the default export', () => {
+    expect(ChordSheetJS.templateHelpers.isEvaluatable).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.isChordLyricsPair).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.lineHasContents).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.isTag).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.isComment).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.stripHTML).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.each).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.when).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.hasTextContents).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.lineClasses).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.paragraphClasses).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.evaluate).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.fontStyleTag).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.renderChord).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.hasChordContents).toBeDefined();
+  });
 });

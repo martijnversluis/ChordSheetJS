@@ -153,7 +153,13 @@ describe('Song', () => {
           }
 
           if (item instanceof Tag) {
-            return item.set({ value: `${item.value} changed` });
+            let changedTag = item.set({ value: `${item.value} changed` });
+
+            if (item.attributes.label) {
+              changedTag = changedTag.setAttribute('label', `${item.attributes.label} changed`);
+            }
+
+            return changedTag;
           }
 
           return item;
@@ -212,7 +218,7 @@ describe('Song', () => {
   describe('#mapItems', () => {
     it('changes the symbol song', () => {
       const song = exampleSongSymbol.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 2, 3, 3, 3, 2, 3]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
@@ -223,7 +229,13 @@ describe('Song', () => {
         }
 
         if (item instanceof Tag) {
-          return item.set({ value: `${item.value} changed` });
+          let changedTag = item.set({ value: `${item.value} changed` });
+
+          if (item.attributes.label) {
+            changedTag = changedTag.setAttribute('label', `${item.attributes.label} changed`);
+          }
+
+          return changedTag;
         }
 
         return item;
@@ -243,7 +255,7 @@ describe('Song', () => {
 
     it('changes the solfege song', () => {
       const song = exampleSongSolfege.clone();
-      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 3, 3, 3, 2, 3]);
+      expect(song.paragraphs.map((p) => p.lines.length)).toEqual([0, 1, 3, 2, 2, 3, 3, 3, 2, 3]);
 
       const changedSong = song.mapItems((item) => {
         if (item instanceof ChordLyricsPair) {
@@ -296,15 +308,18 @@ describe('Song', () => {
           createChordLyricsPair('CM7', 'let'),
           createChordLyricsPair('', 'it'),
           createChordLyricsPair('Dm7', ''),
+          createChordLyricsPair('Dm7   ', ''),
         ]),
         createLine([]),
         createLine([
           createChordLyricsPair('F#', 'be'),
+          createChordLyricsPair('d#', 'be'),
+          createChordLyricsPair('     F#', 'be'),
           createChordLyricsPair('', 'changed'),
         ]),
       ]);
 
-      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#']);
+      expect(song.getChords()).toEqual(['CM7', 'Dm7', 'F#', 'D#']);
     });
 
     it('returns an empty array if there are no chords in the song', () => {

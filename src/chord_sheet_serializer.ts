@@ -102,6 +102,7 @@ class ChordSheetSerializer {
       type: TAG,
       name: tag.originalName,
       value: tag.value,
+      attributes: tag.attributes || {},
     };
 
     if (tag.chordDefinition) {
@@ -216,8 +217,9 @@ class ChordSheetSerializer {
       value,
       location: { offset = null, line = null, column = null } = {},
       chordDefinition,
+      attributes,
     } = astComponent;
-    const tag = new Tag(name, value, { line, column, offset });
+    const tag = new Tag(name, value, { line, column, offset }, attributes);
 
     if (chordDefinition) {
       tag.chordDefinition = new ChordDefinition(

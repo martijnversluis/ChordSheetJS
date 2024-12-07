@@ -1,34 +1,12 @@
-import {
-  ABC,
-  BRIDGE,
-  CHORUS,
-  GRID,
-  LILYPOND,
-  NONE,
-  ParagraphType,
-  TAB,
-  VERSE,
-} from './constants';
+import { NONE } from './constants';
 
 import Line, { LineType } from './chord_sheet/line';
 
 import Tag, {
-  END_OF_ABC,
-  END_OF_BRIDGE,
-  END_OF_CHORUS,
-  END_OF_GRID,
-  END_OF_LY,
-  END_OF_TAB,
-  END_OF_VERSE,
+  END_TAG,
   KEY,
   NEW_KEY,
-  START_OF_ABC,
-  START_OF_BRIDGE,
-  START_OF_CHORUS,
-  START_OF_GRID,
-  START_OF_LY,
-  START_OF_TAB,
-  START_OF_VERSE,
+  START_TAG,
   TRANSPOSE,
 } from './chord_sheet/tag';
 
@@ -38,26 +16,6 @@ import Item from './chord_sheet/item';
 import TraceInfo from './chord_sheet/trace_info';
 import ParserWarning from './parser/parser_warning';
 import Song from './chord_sheet/song';
-
-const START_TAG_TO_SECTION_TYPE = {
-  [START_OF_ABC]: ABC,
-  [START_OF_BRIDGE]: BRIDGE,
-  [START_OF_CHORUS]: CHORUS,
-  [START_OF_GRID]: GRID,
-  [START_OF_LY]: LILYPOND,
-  [START_OF_TAB]: TAB,
-  [START_OF_VERSE]: VERSE,
-};
-
-const END_TAG_TO_SECTION_TYPE = {
-  [END_OF_ABC]: ABC,
-  [END_OF_BRIDGE]: BRIDGE,
-  [END_OF_CHORUS]: CHORUS,
-  [END_OF_GRID]: GRID,
-  [END_OF_LY]: LILYPOND,
-  [END_OF_TAB]: TAB,
-  [END_OF_VERSE]: VERSE,
-};
 
 class SongBuilder {
   currentKey: string | null = null;
@@ -70,7 +28,7 @@ class SongBuilder {
 
   metadata: Metadata = new Metadata();
 
-  sectionType: ParagraphType = NONE;
+  sectionType: string = NONE;
 
   song: Song;
 
@@ -110,7 +68,7 @@ class SongBuilder {
     return this.currentLine;
   }
 
-  setCurrentProperties(sectionType: ParagraphType): void {
+  setCurrentProperties(sectionType: string): void {
     if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
 
     this.currentLine.type = sectionType as LineType;
@@ -177,28 +135,31 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    if (tag.name in START_TAG_TO_SECTION_TYPE) {
-      this.startSection(START_TAG_TO_SECTION_TYPE[tag.name], tag);
+    const [tagType, sectionType] = Tag.recognizeSectionTag(tag.name);
+
+    if (!sectionType) {
       return;
     }
 
-    if (tag.name in END_TAG_TO_SECTION_TYPE) {
-      this.endSection(END_TAG_TO_SECTION_TYPE[tag.name], tag);
+    if (tagType === START_TAG) {
+      this.startSection(sectionType, tag);
+    } else if (tagType === END_TAG) {
+      this.endSection(sectionType, tag);
     }
   }
 
-  startSection(sectionType: ParagraphType, tag: Tag): void {
+  startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
     this.sectionType = sectionType;
     this.setCurrentProperties(sectionType);
   }
 
-  endSection(sectionType: ParagraphType, tag: Tag): void {
+  endSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(sectionType, tag);
     this.sectionType = NONE;
   }
 
-  checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
+  checkCurrentSectionType(sectionType: string, tag: Tag): void {
     if (this.sectionType !== sectionType) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }

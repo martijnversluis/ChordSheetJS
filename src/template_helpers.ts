@@ -19,15 +19,25 @@ type EachCallback = (_item: any) => string;
 export { hasChordContents, isEvaluatable } from './utilities';
 export { renderChord } from './helpers';
 
-export const isChordLyricsPair = (item: Item): boolean => item instanceof ChordLyricsPair;
+export function isChordLyricsPair(item: Item): boolean {
+  return item instanceof ChordLyricsPair;
+}
 
-export const lineHasContents = (line: Line): boolean => line.items.some((item: Item) => item.isRenderable());
+export function lineHasContents(line: Line): boolean {
+  return line.items.some((item: Item) => item.isRenderable());
+}
 
-export const isTag = (item: Item): boolean => item instanceof Tag;
+export function isTag(item: Item): boolean {
+  return item instanceof Tag;
+}
 
-export const isLiteral = (item: Item): boolean => item instanceof Literal;
+export function isLiteral(item: Item): boolean {
+  return item instanceof Literal;
+}
 
-export const isComment = (item: Tag): boolean => item.name === 'comment';
+export function isComment(item: Tag): boolean {
+  return item.name === 'comment';
+}
 
 export function stripHTML(string: string): string {
   return string
@@ -37,7 +47,9 @@ export function stripHTML(string: string): string {
     .replace(/(\n)\s+/g, '');
 }
 
-export const newlinesToBreaks = (string: string): string => string.replace(/\n/g, '<br>');
+export function newlinesToBreaks(string: string): string {
+  return string.replace(/\n/g, '<br>');
+}
 
 export function renderSection(paragraph: Paragraph, configuration: Configuration): string {
   const delegate: Delegate = configuration.delegates[paragraph.type] || defaultDelegate;
@@ -53,15 +65,15 @@ export function when(condition: any, callback?: WhenCallback): When {
   return new When(condition, callback);
 }
 
-export const hasTextContents = (line: Line): boolean => (
-  line.items.some((item) => (
+export function hasTextContents(line: Line): boolean {
+  return line.items.some((item) => (
     (item instanceof ChordLyricsPair && !isEmptyString(item.lyrics)) ||
     (item instanceof Tag && item.isRenderable()) ||
     isEvaluatable(item)
-  ))
-);
+  ));
+}
 
-export const lineClasses = (line: Line): string => {
+export function lineClasses(line: Line): string {
   const classes = ['row'];
 
   if (!lineHasContents(line)) {
@@ -69,9 +81,9 @@ export const lineClasses = (line: Line): string => {
   }
 
   return classes.join(' ');
-};
+}
 
-export const paragraphClasses = (paragraph: Paragraph): string => {
+export function paragraphClasses(paragraph: Paragraph): string {
   const classes = ['paragraph'];
 
   if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
@@ -79,13 +91,13 @@ export const paragraphClasses = (paragraph: Paragraph): string => {
   }
 
   return classes.join(' ');
-};
+}
 
-export const evaluate = (item: Evaluatable, metadata: Metadata, configuration: Configuration): string => (
-  item.evaluate(metadata, configuration.getSeparator())
-);
+export function evaluate(item: Evaluatable, metadata: Metadata, configuration: Configuration): string {
+  return item.evaluate(metadata, configuration.getSeparator());
+}
 
-export function fontStyleTag(font: Font) {
+export function fontStyleTag(font: Font): string {
   const cssString = font.toCssString();
 
   if (cssString) {

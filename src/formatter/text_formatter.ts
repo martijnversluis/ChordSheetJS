@@ -128,7 +128,7 @@ class TextFormatter extends Formatter {
 
   formatItemTop(item: Item, _metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
-      return item.value || '';
+      return item.label;
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -160,7 +160,7 @@ class TextFormatter extends Formatter {
 
   formatItemBottom(item: Item, metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
-      return item.value || '';
+      return item.label;
     }
 
     if (item instanceof ChordLyricsPair) {

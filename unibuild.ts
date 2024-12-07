@@ -11,7 +11,7 @@ import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
 const {
-  main, source, types, bundle,
+  main, types, bundle,
 } = packageJSON;
 
 interface BuildOptions {
@@ -66,12 +66,28 @@ unibuild((u: Builder) => {
   });
 
   const chordProParser = u.asset('chordProParser', {
-    input: ['src/parser/chord_pro/grammar.pegjs', sectionsGrammar],
+    input: [
+      'src/parser/chord_pro/grammar.pegjs',
+      'src/parser/chord_definition/grammar.pegjs',
+      sectionsGrammar,
+      'src/parser/whitespace_grammar.pegjs',
+    ],
     outfile: 'src/parser/chord_pro/peg_parser.ts',
-    build: ({ release }: BuildOptions, baseGrammar: string, sections: string) => {
-      const parserSource = peggyGenerate(`${baseGrammar}\n\n${sections}`, release);
+    build: ({ release }: BuildOptions, ...grammars: string[]) => {
+      const parserSource = peggyGenerate(grammars.join('\n\n'), release);
       return `import * as helpers from './helpers';\n\n${parserSource}`;
     },
+  });
+
+  const chordDefinitionParser = u.asset('chordDefinitionParser', {
+    input: [
+      'src/parser/chord_definition/grammar.pegjs',
+      'src/parser/whitespace_grammar.pegjs',
+    ],
+    outfile: 'src/parser/chord_definition/peg_parser.ts',
+    build: ({ release }: BuildOptions, ...grammars: string[]) => (
+      peggyGenerate(grammars.join('\n\n'), release)
+    ),
   });
 
   const chordsOverWordsParser = u.asset('chordsOverWordsParser', {
@@ -94,21 +110,8 @@ unibuild((u: Builder) => {
     chordParser,
     chordProParser,
     chordsOverWordsParser,
+    chordDefinitionParser,
   ];
-
-  u.asset('readme', {
-    input: ['INTRO.md', 'src', ...codeGeneratedAssets],
-    outfile: 'README.md',
-    command: ({ input: [intro], outfile }) => {
-      const tmpDir = 'tmp/docs';
-      return [
-        `typedoc --plugin typedoc-plugin-markdown  --out ${tmpDir} ${source} --logLevel Error`,
-        `cat ${intro} > ${outfile}`,
-        `concat-md --decrease-title-levels --dir-name-as-title ${tmpDir} >> ${outfile}`,
-        `rm -rf ${tmpDir}`,
-      ];
-    },
-  });
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,

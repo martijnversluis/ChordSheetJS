@@ -90,7 +90,7 @@ export default (
                           `) }
                           
                           ${ when(item.hasRenderableLabel(), () => `
-                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.value }</h3></td>
+                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.label }</h3></td>
                           `) }
                         `).elseWhen(isLiteral(item), () => `
                           <td class="literal">${ item.string }</td>

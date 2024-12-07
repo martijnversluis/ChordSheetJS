@@ -76,6 +76,25 @@ describe('ChordProParser', () => {
     expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
   });
 
+  it('correctly parses multiple whitespace characters', () => {
+    const chordSheet = '[C]Let it be         ';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be         ');
+  });
+
+  it('correctly parses percent characters in lyrics', () => {
+    const chordSheet = '[C]Let it be [Am]100%';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be ');
+    expect(items[2]).toBeChordLyricsPair('Am', '100%');
+  });
+
   it('parses directive with empty value', () => {
     const song = new ChordProParser().parse('{c: }');
     expect(song.lines[0].items[0]).toBeTag('comment', '');
@@ -107,6 +126,15 @@ describe('ChordProParser', () => {
 
     expect(song.metadata.get('x_one_directive')).toEqual('Foo');
     expect(song.metadata.get('x_other_directive')).toEqual('Bar');
+  });
+
+  it('parses directives with attributes', () => {
+    const chordSheet = '{start_of_verse: label="Verse 1"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('start_of_verse');
+    expect(tag.attributes).toEqual({ label: 'Verse 1' });
   });
 
   it('parses meta directives', () => {
@@ -201,6 +229,35 @@ describe('ChordProParser', () => {
 
     expect(lineTypes).toEqual([VERSE, VERSE, VERSE, NONE, CHORUS, CHORUS, CHORUS]);
     expect(parser.warnings).toHaveLength(0);
+  });
+
+  it('supports custom section types', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda: Coda 1}
+      Let it [Am]be
+      {end_of_coda}
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    expect(lines[0].type).toEqual('coda');
+    expect(parser.warnings).toHaveLength(0);
+  });
+
+  it('is forgiving to unended custom sections', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda}
+      Let it [Am]be
+      
+      {start_of_interlude}
+      [C]Speaking words of [G]wisdom
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    const lineTypes = lines.map((line) => line.type);
+    expect(lineTypes).toEqual(['coda', 'coda', 'coda', 'interlude', 'interlude']);
+    expect(parser.warnings).toHaveLength(1);
   });
 
   it('adds the transposeKey to lines', () => {
@@ -607,6 +664,7 @@ Let it [Am]be
     expect(paragraphs).toHaveLength(1);
     expect(paragraph.type).toEqual(LILYPOND);
     expect(lines).toHaveLength(3);
+
     expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
     expect(lines[1].items[0]).toBeLiteral('LY line 1');
     expect(lines[2].items[0]).toBeLiteral('LY line 2');

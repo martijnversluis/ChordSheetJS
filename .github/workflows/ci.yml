@@ -28,6 +28,7 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn ci
+
   build-windows:
     continue-on-error: true
     runs-on: windows-latest
@@ -47,12 +48,13 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn ci
-  verify-readme:
+
+  generate-typedoc:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [ 22.6 ]
-    name: Verify README.md
+    name: Generate typedoc
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -63,8 +65,16 @@ jobs:
         run: corepack enable
       - name: Install node modules
         run: yarn install
-      - name: Verify README.md
-        run: yarn readme && git diff README.md
+      - name: Build
+        run: yarn build
+      - name: Generate typedoc
+        run: yarn typedoc
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: tmp/docs
+
   verify-install:
     runs-on: ubuntu-latest
     strategy:

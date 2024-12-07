@@ -122,11 +122,25 @@ class ChordProFormatter extends Formatter {
   }
 
   formatTag(tag: Tag): string {
+    if (tag.hasAttributes()) {
+      return `{${tag.originalName}: ${this.formatTagAttributes(tag)}}`;
+    }
+
     if (tag.hasValue()) {
       return `{${tag.originalName}: ${tag.value}}`;
     }
 
     return `{${tag.originalName}}`;
+  }
+
+  formatTagAttributes(tag: Tag) {
+    const keys = Object.keys(tag.attributes);
+
+    if (keys.length === 0) {
+      return '';
+    }
+
+    return keys.map((key) => `${key}="${tag.attributes[key]}"`).join(' ');
   }
 
   formatChordLyricsPair(chordLyricsPair: ChordLyricsPair): string {

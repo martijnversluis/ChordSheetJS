@@ -32,6 +32,10 @@ describe('TextFormatter', () => {
       Em               F              C  G
       Whisper words of wisdom, let it be
       
+      Chorus 2
+      G                F              C  G
+      Whisper words of wisdom, let it be
+      
       Tab 1
       Tab line 1
       Tab line 2
@@ -68,6 +72,10 @@ Re      strong   Sol La          Sol Re/Fa# Mim Re
 Whisper words of wis dom, let it be
 
 Breakdown
+Mim              Fa             Do Sol
+Whisper words of wisdom, let it be
+
+Chorus 2
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
@@ -139,6 +147,10 @@ Let it be, let it be, let it be, let it be`;
       Breakdown
       Gm               Ab             Eb Bb
       Whisper words of wisdom, let it be
+      
+      Chorus 2
+      Bb               Ab             Eb Bb
+      Whisper words of wisdom, let it be
 
       Tab 1
       Tab line 1
@@ -194,7 +206,7 @@ Let it be, let it be, let it be, let it be`;
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration({
@@ -214,7 +226,7 @@ Let it be, let it be, let it be, let it be`;
 
         it('defaults to the default delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration();
