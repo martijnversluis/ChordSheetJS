@@ -116,7 +116,7 @@ unibuild((u: Builder) => {
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
     outfile: main,
-    command: 'parcel build',
+    command: 'parcel build --no-cache',
     releaseOnly: true,
   });
 
