@@ -94,7 +94,7 @@ export function paragraphClasses(paragraph: Paragraph): string {
 }
 
 export function evaluate(item: Evaluatable, metadata: Metadata, configuration: Configuration): string {
-  return item.evaluate(metadata, configuration.get('metadata.separator'));
+  return item.evaluate(metadata, configuration.metadata.separator ?? '');
 }
 
 export function fontStyleTag(font: Font): string {

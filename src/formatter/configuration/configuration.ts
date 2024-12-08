@@ -62,13 +62,6 @@ class Configuration {
     this.delegates = { ...defaultConfiguration.delegates, ...configuration.delegates };
     this.configuration = { configuration, delegates: this.delegates };
   }
-
-  get(path: string): any {
-    return path
-      .split(/[.[\]]/)
-      .filter(Boolean)
-      .reduce((val, key) => (val as any)?.[key], this);
-  }
 }
 
 export default Configuration;
