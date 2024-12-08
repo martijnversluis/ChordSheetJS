@@ -62,5 +62,43 @@ describe('ChordDefinition', () => {
         expect(() => ChordDefinition.parse(definitionString)).not.toThrow();
       });
     });
+
+    // From: https://en.wikipedia.org/wiki/Chord_(music)#Symbols
+    [
+      'm',
+      'min',
+      '−',
+      'M',
+      'Ma',
+      'Maj',
+      'Δ',
+      '+',
+      'aug',
+      'o',
+      'dim',
+      'ø',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '9',
+      '11',
+      '13',
+      '6/9',
+      'sus4',
+      'sus2',
+      '(♭9)',
+      'add',
+      'alt',
+      'omit5',
+      'no5',
+    ].forEach((suffix) => {
+      it(`can parse a chord definition with suffix ${suffix}`, () => {
+        const chordDefinition = ChordDefinition.parse(`Db${suffix} base-fret 3 frets x 3 2 3 1 x`);
+        expect(chordDefinition.name).toEqual(`Db${suffix}`);
+      });
+    });
   });
 });
