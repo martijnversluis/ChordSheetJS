@@ -78,7 +78,7 @@ export default (
                       `) }
                     </tr>
                   `) }
-                  
+
                   ${ when(hasTextContents(line), () => `
                     <tr>
                       ${ each(line.items, (item) => `
@@ -88,7 +88,7 @@ export default (
                           ${ when(isComment(item), () => `
                             <td class="comment"${ fontStyleTag(line.textFont) }>${ item.value }</td>
                           `) }
-                          
+
                           ${ when(item.hasRenderableLabel(), () => `
                             <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.label }</h3></td>
                           `) }

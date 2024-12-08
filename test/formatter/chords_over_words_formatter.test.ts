@@ -33,7 +33,7 @@ describe('ChordsOverWordsFormatter', () => {
       Let it be, let it be, let it be, let it be
       D       strong   G  A           G  D/F# Em D
       Whisper words of wisdom, let it be
-      
+
       Breakdown
       Em               F              C  G
       Whisper words of wisdom, let it be
@@ -51,7 +51,7 @@ describe('ChordsOverWordsFormatter', () => {
       Tab 1
       Tab line 1
       Tab line 2
-      
+
       ABC 1
       ABC line 1
       ABC line 2

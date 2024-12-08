@@ -99,7 +99,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -123,7 +123,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -147,7 +147,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph solo">
           <div class="row">
             <h3 class="label">Solo 1</h3>
@@ -165,7 +165,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -175,7 +175,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -185,7 +185,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -195,7 +195,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -207,7 +207,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
@@ -301,7 +301,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -325,7 +325,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -349,7 +349,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph solo">
           <div class="row">
             <h3 class="label">Solo 1</h3>
@@ -367,7 +367,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -377,7 +377,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -387,7 +387,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -397,7 +397,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -409,7 +409,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
@@ -471,19 +471,19 @@ describe('HtmlDivFormatter', () => {
       .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .row {
         display: flex;
       }
-      
+
       .chord:after {
         content: '\\200b';
       }
-      
+
       .lyrics:after {
         content: '\\200b';
       }`;
@@ -497,19 +497,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -523,19 +523,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -683,7 +683,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -707,7 +707,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -731,7 +731,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph solo">
           <div class="row">
             <h3 class="label">Solo 1</h3>
@@ -749,7 +749,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -759,7 +759,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -769,7 +769,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -779,7 +779,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -791,7 +791,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>

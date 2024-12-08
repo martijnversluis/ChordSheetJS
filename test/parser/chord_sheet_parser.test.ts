@@ -39,7 +39,7 @@ describe('ChordSheetParser', () => {
       Let it be, let it be, let it be, let it be
       C                F  G           F  C/E Dm C
       Whisper words of wisdom, let it be
-      
+
       Am               Bb             F  C
       Whisper words of wisdom, let it be`;
 

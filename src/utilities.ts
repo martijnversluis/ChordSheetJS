@@ -160,11 +160,11 @@ export function gradeToKey({
 
   if (!key) {
     throw new Error(
-      `Could not resolve 
-      type=${type} 
-      modifier=${modifier} 
-      grade=${grade} 
-      preferredModifier=${preferredModifier} 
+      `Could not resolve
+      type=${type}
+      modifier=${modifier}
+      grade=${grade}
+      preferredModifier=${preferredModifier}
       minor=${minor}
 to a key`,
     );

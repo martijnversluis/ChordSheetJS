@@ -15,7 +15,7 @@ When your changes are complete, be sure to run `yarn readme` to regenerate `READ
 
 ## Pull request guidelines
 
-N.B. I do not expect you to have all required knowledge and experience to meet these guidelines; 
+N.B. I do not expect you to have all required knowledge and experience to meet these guidelines;
 I'm happy to help you out! ❤️
 However, the better your PR meets these guidelines the sooner it will get merged.
 

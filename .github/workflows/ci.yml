@@ -29,6 +29,18 @@ jobs:
       - name: Run tests
         run: yarn ci
 
+  check-trailing-whitespace:
+    runs-on: ubuntu-latest
+    name: Check trailing whitespace
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install node modules
+        run: yarn install
+      - name: Check trailing whitespace
+        run: git ls-files | yarn tsx script/check_trailing_whitespace.ts
+
   build-windows:
     continue-on-error: true
     runs-on: windows-latest

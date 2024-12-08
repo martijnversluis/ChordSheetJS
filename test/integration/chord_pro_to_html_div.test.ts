@@ -157,13 +157,13 @@ describe('chordpro to HTML with DIVs', () => {
       {start_of_verse: Verse 1}
       Let it [Am]Be
       {end_of_verse}
-      
+
       {start_of_chorus: Chorus 2}
-      [C]Whisper words of 
+      [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_bridge: Bridge 3}
-      [G]wisdom, let it 
+      [G]wisdom, let it
       {end_of_bridge}`;
 
     const expectedHTML = stripHTML(`
@@ -194,7 +194,7 @@ describe('chordpro to HTML with DIVs', () => {
             </div>
             <div class="column">
               <div class="chord"></div>
-              <div class="lyrics">words of </div>
+              <div class="lyrics">words of</div>
             </div>
           </div>
         </div>
@@ -209,7 +209,7 @@ describe('chordpro to HTML with DIVs', () => {
             </div>
             <div class="column">
               <div class="chord"></div>
-              <div class="lyrics">let it </div>
+              <div class="lyrics">let it</div>
             </div>
           </div>
         </div>
@@ -225,21 +225,21 @@ describe('chordpro to HTML with DIVs', () => {
   it('can expand {chorus} directives when expandChorusDirective=true', () => {
     const chordSheet = heredoc`
       {start_of_chorus: Chorus 1:}
-      [C]Whisper words of 
+      [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_verse: Verse 1:}
       Let it [Am]be
       {end_of_verse}
-      
+
       {chorus: Repeat chorus 1:}
-      
+
       {start_of_chorus: Chorus 2:}
       [G]wisdom, let it
       {end_of_chorus}
-      
+
       {chorus: Repeat chorus 2:}
-      
+
       {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = stripHTML(`
@@ -255,7 +255,7 @@ describe('chordpro to HTML with DIVs', () => {
             </div>
             <div class="column">
               <div class="chord"></div>
-              <div class="lyrics">words of </div>
+              <div class="lyrics">words of</div>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ describe('chordpro to HTML with DIVs', () => {
             </div>
             <div class="column">
               <div class="chord"></div>
-              <div class="lyrics">words of </div>
+              <div class="lyrics">words of</div>
             </div>
           </div>
         </div>
@@ -346,21 +346,21 @@ describe('chordpro to HTML with DIVs', () => {
   it('does not expand {chorus} directives when expandChorusDirective=false', () => {
     const chordSheet = heredoc`
       {start_of_chorus: Chorus 1:}
-      [C]Whisper words of 
+      [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_verse: Verse 1:}
       Let it [Am]be
       {end_of_verse}
-      
+
       {chorus: Repeat chorus 1:}
-      
+
       {start_of_chorus: Chorus 2:}
       [G]wisdom, let it
       {end_of_chorus}
-      
+
       {chorus: Repeat chorus 2:}
-      
+
       {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = stripHTML(`
@@ -376,7 +376,7 @@ describe('chordpro to HTML with DIVs', () => {
             </div>
             <div class="column">
               <div class="chord"></div>
-              <div class="lyrics">words of </div>
+              <div class="lyrics">words of</div>
             </div>
           </div>
         </div>
