@@ -39,6 +39,15 @@ describe('ChordDefinition', () => {
       expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
+    it('parses a chord definition without base-fret', () => {
+      const chordDefinition = ChordDefinition.parse('D7 frets x 3 2 3 1 x fingers 1 2 3 4 5 6');
+
+      expect(chordDefinition.name).toEqual('D7');
+      expect(chordDefinition.baseFret).toEqual(1);
+      expect(chordDefinition.frets).toEqual(['x', 3, 2, 3, 1, 'x']);
+      expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
+    });
+
     [
       'D7 base-fret 1 frets N 3 2 3 1 N fingers a 2 3 4 5 6',
       'D7 base-fret 1 frets N 3 2 3 1 N fingers A 2 3 4 5 6',
@@ -51,6 +60,44 @@ describe('ChordDefinition', () => {
     ].forEach((definitionString) => {
       it(`can parse ${definitionString}`, () => {
         expect(() => ChordDefinition.parse(definitionString)).not.toThrow();
+      });
+    });
+
+    // From: https://en.wikipedia.org/wiki/Chord_(music)#Symbols
+    [
+      'm',
+      'min',
+      '−',
+      'M',
+      'Ma',
+      'Maj',
+      'Δ',
+      '+',
+      'aug',
+      'o',
+      'dim',
+      'ø',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '9',
+      '11',
+      '13',
+      '6/9',
+      'sus4',
+      'sus2',
+      '(♭9)',
+      'add',
+      'alt',
+      'omit5',
+      'no5',
+    ].forEach((suffix) => {
+      it(`can parse a chord definition with suffix ${suffix}`, () => {
+        const chordDefinition = ChordDefinition.parse(`Db${suffix} base-fret 3 frets x 3 2 3 1 x`);
+        expect(chordDefinition.name).toEqual(`Db${suffix}`);
       });
     });
   });
