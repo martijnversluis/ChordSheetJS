@@ -99,7 +99,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -123,7 +123,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -147,7 +147,25 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -157,7 +175,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -167,7 +185,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -177,7 +195,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -189,7 +207,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
@@ -283,7 +301,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -307,7 +325,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -331,7 +349,25 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Sol</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Do</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -341,7 +377,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -351,7 +387,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -361,7 +397,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -373,7 +409,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
@@ -435,19 +471,19 @@ describe('HtmlDivFormatter', () => {
       .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .row {
         display: flex;
       }
-      
+
       .chord:after {
         content: '\\200b';
       }
-      
+
       .lyrics:after {
         content: '\\200b';
       }`;
@@ -461,19 +497,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -487,19 +523,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -647,7 +683,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -671,7 +707,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -695,7 +731,25 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -705,7 +759,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -715,7 +769,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -725,7 +779,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -737,7 +791,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
@@ -801,7 +855,7 @@ describe('HtmlDivFormatter', () => {
               <div class="chord">Fa</div>
               <div class="lyrics">Whisper </div>
             </div>
-            
+
             <div class="column">
               <div class="annotation">strong</div>
               <div class="lyrics">words of </div>
@@ -832,7 +886,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -856,7 +910,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph chorus">
           <div class="row">
             <h3 class="label">Chorus 2</h3>
@@ -880,7 +934,25 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Sib</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Mib</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
@@ -890,7 +962,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
@@ -900,7 +972,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
@@ -910,7 +982,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -922,7 +994,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>

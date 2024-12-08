@@ -55,7 +55,7 @@ describe('ChordsOverWordsParser', () => {
     const chordOverWords = heredoc`
       title: Let it be
       key: C
-      
+
       Chorus 1:
              Am         C/G        F          C
       Let it be, let it be, let it be, let it be
@@ -127,7 +127,7 @@ describe('ChordsOverWordsParser', () => {
              Am
       Let it be
       Whisper words of wisdom, let it be
-      
+
       Verse
       When I find myself in times of trouble
       Mother Mary comes to me`;
@@ -230,9 +230,9 @@ describe('ChordsOverWordsParser', () => {
       title: Rattle
       Intro (5x)
       Eb(no3) / / / | / / / / |
-      
+
       Verse 1
-      Eb                   Ebsus         Eb      
+      Eb                   Ebsus         Eb
       Saturday was silent, surely it was through
       Ab2 - Eb/G Eb /`;
 

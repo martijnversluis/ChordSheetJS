@@ -73,6 +73,10 @@ describe('Tag', () => {
       });
     });
 
+    it('returns true for custom environment directives with label', () => {
+      expect(new Tag('start_of_solo', 'some label').isRenderable()).toBe(true);
+    });
+
     it('returns false for environment directives without label', () => {
       ['start_of_chorus', 'start_of_verse', 'start_of_bridge', 'start_of_tab'].forEach((tag) => {
         expect(new Tag(tag, '').isRenderable()).toBe(false);

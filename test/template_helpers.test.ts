@@ -99,7 +99,7 @@ describe('template_helpers', () => {
   describe('stripHTML', () => {
     it('removes all whitespace from a HTML string', () => {
       const expandedHTML = `
-        <span 
+        <span${' '}
           class="foo"
         > FOO </span>
       `;

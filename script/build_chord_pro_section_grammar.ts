@@ -26,10 +26,10 @@ function sectionTags(sectionName: string, shortTag: boolean, type: 'start' | 'en
 export default function buildChordProSectionGrammar(_: BuildOptions, _data: string): string {
   const sectionsGrammars = sections.map(([name, shortTags]) => `
 ${capitalize(name)}Section
-  = startTag:${capitalize(name)}StartTag 
-    NewLine 
-    content:$(!${capitalize(name)}EndTag SectionCharacter)* 
-    endTag:${capitalize(name)}EndTag 
+  = startTag:${capitalize(name)}StartTag
+    NewLine
+    content:$(!${capitalize(name)}EndTag SectionCharacter)*
+    endTag:${capitalize(name)}EndTag
     {
       return helpers.buildSection(startTag, endTag, content);
     }

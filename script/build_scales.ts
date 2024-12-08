@@ -37,18 +37,18 @@ export default function buildScales(_: BuildOptions): string {
             - edit the data source, located in \`data/scales.ts\`
             - run \`yarn build:code-generate\` to re-generate this file.
    */
-   
+
   import {
-    ChordType, 
+    ChordType,
     Mode,
-    ModifierMaybe, 
-    FLAT, 
+    ModifierMaybe,
+    FLAT,
     MAJOR,
     MINOR,
-    NO_MODIFIER, 
-    NUMERAL, 
-    NUMERIC, 
-    SHARP, 
+    NO_MODIFIER,
+    NUMERAL,
+    NUMERIC,
+    SHARP,
     SYMBOL,
     SOLFEGE
   } from './constants';
@@ -83,7 +83,7 @@ export default function buildScales(_: BuildOptions): string {
       `).join('\n')
     }
   };
-  
+
   export const GRADE_TO_KEY: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<number, string>>>> = {
     ${
       Object.entries(KEY_TYPES).map(([keyTypeName, keyTypeValue]) => `
