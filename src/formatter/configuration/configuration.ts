@@ -51,6 +51,10 @@ class Configuration {
 
   delegates: Partial<Record<ContentType, Delegate>>;
 
+  get separator(): string {
+    return this.metadata.separator ?? '';
+  }
+
   constructor(configuration: Partial<ConfigurationProperties> = defaultConfiguration) {
     const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
     this.evaluate = mergedConfig.evaluate;
