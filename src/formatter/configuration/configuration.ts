@@ -1,5 +1,3 @@
-import lodashGet from 'lodash.get';
-
 import Key from '../../key';
 import { ContentType } from '../../serialized_types';
 
@@ -53,6 +51,10 @@ class Configuration {
 
   delegates: Partial<Record<ContentType, Delegate>>;
 
+  get metadataSeparator(): string {
+    return this.metadata.separator ?? '';
+  }
+
   constructor(configuration: Partial<ConfigurationProperties> = defaultConfiguration) {
     const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
     this.evaluate = mergedConfig.evaluate;
@@ -63,10 +65,6 @@ class Configuration {
     this.key = configuration.key ? Key.wrap(configuration.key) : null;
     this.delegates = { ...defaultConfiguration.delegates, ...configuration.delegates };
     this.configuration = { configuration, delegates: this.delegates };
-  }
-
-  get(key: string): string {
-    return lodashGet(this, key);
   }
 }
 

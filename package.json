@@ -35,7 +35,6 @@
     "@parcel/transformer-typescript-types": "^2.13.2",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^27.4.1",
-    "@types/lodash.get": "^4.4.7",
     "@types/node": "^22.0.0",
     "concat-md": "^0.5.1",
     "detect-newline": "^4.0.1",
@@ -73,9 +72,6 @@
     "readme": "yarn unibuild build readme -f",
     "test": "yarn unibuild lint && yarn unibuild test",
     "unibuild": "tsx ./unibuild.ts"
-  },
-  "dependencies": {
-    "lodash.get": "^4.4.2"
   },
   "packageManager": "yarn@4.2.2"
 }
