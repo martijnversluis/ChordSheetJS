@@ -1,6 +1,17 @@
 ChordDefinitionValue
-  = name:$([A-Za-z0-9]+) _ "base-fret" __ baseFret:FretNumber __ "frets" frets:FretWithLeadingSpace+ fingers:ChordFingersDefinition? {
-      return { name, baseFret, frets, fingers, text: text() };
+  = name:$([A-Za-z0-9]+) _ baseFret:BaseFret? "frets" frets:FretWithLeadingSpace+ fingers:ChordFingersDefinition? {
+      return {
+        name,
+        baseFret: baseFret || 1,
+        frets,
+        fingers,
+        text: text()
+      };
+    }
+
+BaseFret
+  = "base-fret" __ baseFret:FretNumber __ {
+      return baseFret;
     }
 
 ChordFingersDefinition

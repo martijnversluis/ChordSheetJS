@@ -39,6 +39,15 @@ describe('ChordDefinition', () => {
       expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
+    it('parses a chord definition without base-fret', () => {
+      const chordDefinition = ChordDefinition.parse('D7 frets x 3 2 3 1 x fingers 1 2 3 4 5 6');
+
+      expect(chordDefinition.name).toEqual('D7');
+      expect(chordDefinition.baseFret).toEqual(1);
+      expect(chordDefinition.frets).toEqual(['x', 3, 2, 3, 1, 'x']);
+      expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
+    });
+
     [
       'D7 base-fret 1 frets N 3 2 3 1 N fingers a 2 3 4 5 6',
       'D7 base-fret 1 frets N 3 2 3 1 N fingers A 2 3 4 5 6',
