@@ -15,7 +15,7 @@ describe('chordpro to chord sheet', () => {
 
     const expectedChordSheet = heredoc`
       A
-      
+
       A
       B
       artist is not X
@@ -34,14 +34,14 @@ describe('chordpro to chord sheet', () => {
       {title: Let it be}
       {subtitle: ChordSheetJS example version}
       {Chorus}
-      
+
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
       [C]Whisper words of [G]wisdom, let it [F]be [C/E] [Dm] [C]`;
 
     const expectedChordSheet = heredoc`
       LET IT BE
       ChordSheetJS example version
-      
+
              Am         C/G        F          C
       Let it be, let it be, let it be, let it be
       C                G              F  C/E Dm C
@@ -65,24 +65,24 @@ describe('chordpro to chord sheet', () => {
       {start_of_verse: Verse 1:}
       Let it [Am]be
       {end_of_verse}
-      
+
       {start_of_chorus: Chorus 2:}
-      [C]Whisper words of 
+      [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_bridge: Bridge 3:}
-      [G]wisdom, let it 
+      [G]wisdom, let it
       {end_of_bridge}`;
 
     const expectedText = heredoc`
       Verse 1:
              Am
       Let it be
-      
+
       Chorus 2:
       C
       Whisper words of
-      
+
       Bridge 3:
       G
       wisdom, let it`;
@@ -98,42 +98,42 @@ describe('chordpro to chord sheet', () => {
       {start_of_chorus: Chorus 1:}
       [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_verse: Verse 1:}
       Let it [Am]be
       {end_of_verse}
-      
+
       {chorus: Repeat chorus 1:}
-      
+
       {start_of_chorus: Chorus 2:}
       [G]wisdom, let it
       {end_of_chorus}
-      
+
       {chorus: Repeat chorus 2:}
-      
+
       {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = heredoc`
       Chorus 1:
       C
       Whisper words of
-      
+
       Verse 1:
              Am
       Let it be
-      
+
       Repeat chorus 1:
       C
       Whisper words of
-      
+
       Chorus 2:
       G
       wisdom, let it
-      
+
       Repeat chorus 2:
       G
       wisdom, let it
-      
+
       Repeat chorus 2 again:
       G
       wisdom, let it`;
@@ -149,38 +149,38 @@ describe('chordpro to chord sheet', () => {
       {start_of_chorus: Chorus 1:}
       [C]Whisper words of
       {end_of_chorus}
-      
+
       {start_of_verse: Verse 1:}
       Let it [Am]be
       {end_of_verse}
-      
+
       {chorus: Repeat chorus 1:}
-      
+
       {start_of_chorus: Chorus 2:}
       [G]wisdom, let it
       {end_of_chorus}
-      
+
       {chorus: Repeat chorus 2:}
-      
+
       {chorus: Repeat chorus 2 again:}`;
 
     const expectedText = heredoc`
       Chorus 1:
       C
       Whisper words of
-      
+
       Verse 1:
              Am
       Let it be
-      
+
       Repeat chorus 1:
-      
+
       Chorus 2:
       G
       wisdom, let it
-      
+
       Repeat chorus 2:
-      
+
       Repeat chorus 2 again:`;
 
     const song = new ChordProParser().parse(chordSheet);

@@ -112,13 +112,13 @@ describe('renderChord helper', () => {
        5 | "IV"        |         | "numeral"  | "IV"    |
        6 | "IV"        |         | "number"   | "4"     |
        7 | "IV"        | "Bb"    | "symbol"   | "Eb"    |
-       8 | "IV"        | "Bb"    | "numeral"  | "IV"    | 
+       8 | "IV"        | "Bb"    | "numeral"  | "IV"    |
        9 | "IV"        | "Bb"    | "number"   | "4"     |
       10 | "4"         |         | "numeral"  | "IV"    |
       11 | "4"         |         | "number"   | "4"     |
       12 | "4"         | "Bb"    | "symbol"   | "Eb"    |
       13 | "4"         | "Bb"    | "numeral"  | "IV"    |
-      14 | "4"         | "Bb"    | "number"   | "4"     | 
+      14 | "4"         | "Bb"    | "number"   | "4"     |
       15 | "Solm"      |         | "solfege"  | "Solm"  |
       16 | "Solm"      | "Sib"   | "solfege"  | "Solm"  |
       17 | "IV"        | "Sib"   | "solfege"  | "Mib"   |

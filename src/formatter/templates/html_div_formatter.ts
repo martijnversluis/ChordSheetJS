@@ -35,7 +35,7 @@ export default (
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title }</h1>`) }
   ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }
-  
+
   <div class="chord-sheet">
     ${ each(bodyParagraphs, (paragraph) => `
       <div class="${ paragraphClasses(paragraph) }">
@@ -75,7 +75,7 @@ export default (
                     ${ when(isComment(item), () => `
                       <div class="comment">${ item.value }</div>
                     `) }
-                    
+
                     ${ when(item.hasRenderableLabel(), () => `
                       <h3 class="label">${ item.label }</h3>
                     `) }

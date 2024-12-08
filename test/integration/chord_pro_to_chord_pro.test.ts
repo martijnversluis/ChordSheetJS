@@ -56,7 +56,7 @@ describe('chordpro e2e', () => {
   it('correctly parses and formats meta expressions with errors', () => {
     const chordSheet = heredoc`
       {key: Numbers}
-      
+
       [Ab] Hello`;
 
     const song = new ChordProParser().parse(chordSheet);

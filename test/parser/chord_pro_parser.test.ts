@@ -19,7 +19,7 @@ describe('ChordProParser', () => {
       {title: Let it be}
       {subtitle: ChordSheetJS example version}
       {Chorus}
-      
+
       Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
       [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`;
 
@@ -174,7 +174,7 @@ describe('ChordProParser', () => {
     const chordSheetWithParagraphs = heredoc`
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
       [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
-      
+
       [Am]Whisper words of [Bb]wisdom, let it [F]be [C]`;
 
     const parser = new ChordProParser();
@@ -248,7 +248,7 @@ describe('ChordProParser', () => {
     const markedChordSheet = heredoc`
       {start_of_coda}
       Let it [Am]be
-      
+
       {start_of_interlude}
       [C]Speaking words of [G]wisdom
     `;
@@ -504,7 +504,7 @@ Let it [Am]be
       A|---------------------------2-------------0--------------------|
       E|---------------------------3----------------------------------|
       {end_of_tab}
-      
+
       {start_of_verse}
       [D]Here comes the sun [G]Here comes [E7]the sun
       {end_of_verse}`;

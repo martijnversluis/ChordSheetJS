@@ -14,7 +14,7 @@ describe('chords over words to chordpro', () => {
       Let it be, let it be, let it be, let it be
       C                G              F  C/E Dm C
       Whisper words of wisdom, let it be
-      
+
              Bbm7       DbM7/Ab    Gbsus2     Db
       Let it be, let it be, let it be, let it be
       GbM7             Absus          Gb  Db/F Ebm Db
@@ -26,7 +26,7 @@ describe('chords over words to chordpro', () => {
       {comment: Chorus 1:}
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
       [C]Whisper words of [G]wisdom, let it [F]be[C/E][Dm][C]
-      
+
       Let it [Bbm7]be, let it [Dbma7/Ab]be, let it [Gb2]be, let it [Db]be
       [Gbma7]Whisper words of [Absus]wisdom, let it [Gb]be[Db/F][Ebm][Db]`;
 
@@ -40,15 +40,15 @@ describe('chords over words to chordpro', () => {
     const chordOverWords = heredoc`
       title: Honey In The Rock
       key: D
-      
+
       Verse 1
-      D        Dsus               D        Dsus 
+      D        Dsus               D        Dsus
         Praying     for a miracle,  thirsty`;
 
     const expectedChordPro = heredoc`
       {title: Honey In The Rock}
       {key: D}
-      
+
       {comment: Verse 1}
       [D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`;
 
@@ -62,15 +62,15 @@ describe('chords over words to chordpro', () => {
     const chordOverWords = heredoc`
       title: Honey In The Rock
       key: D
-      
+
       Verse 1
-      D       Dsus           D       Dsus 
+      D       Dsus           D       Dsus
        Praying for a miracle, thirsty`;
 
     const expectedChordPro = heredoc`
       {title: Honey In The Rock}
       {key: D}
-      
+
       {comment: Verse 1}
       [D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`;
 

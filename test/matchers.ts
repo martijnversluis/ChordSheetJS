@@ -98,7 +98,7 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
 
           if (actualType !== expectedType) {
             errors.push(
-              `expected ${name} to be a ${expectedRepr} 
+              `expected ${name} to be a ${expectedRepr}
                but it was a ${actualRepr}`,
             );
           } else if (!valuesEqual(expectedProperty, actualProperty)) {

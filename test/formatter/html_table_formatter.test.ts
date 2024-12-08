@@ -275,7 +275,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -297,7 +297,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -321,7 +321,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph solo">
           <table class="row">
             <tr>
@@ -347,7 +347,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph tab">
           <table class="literal">
             <tr>
@@ -359,7 +359,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph abc">
           <table class="literal">
             <tr>
@@ -371,7 +371,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph ly">
           <table class="literal">
             <tr>
@@ -383,7 +383,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph bridge">
           <table class="row">
             <tr>
@@ -398,7 +398,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph grid">
           <table class="literal">
             <tr>
@@ -466,24 +466,24 @@ describe('HtmlTableFormatter', () => {
       h1 {
         font-size: 1.5em;
       }
-      
+
       h2 {
         font-size: 1.1em;
       }
-      
+
       table {
         border-spacing: 0;
         color: inherit;
       }
-      
+
       td {
         padding: 3px 0;
       }
-      
+
       .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .paragraph {
         margin-bottom: 1em;
       }`;
@@ -497,24 +497,24 @@ describe('HtmlTableFormatter', () => {
       .someScope h1 {
         font-size: 1.5em;
       }
-      
+
       .someScope h2 {
         font-size: 1.1em;
       }
-      
+
       .someScope table {
         border-spacing: 0;
         color: inherit;
       }
-      
+
       .someScope td {
         padding: 3px 0;
       }
-      
+
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }`;
@@ -528,24 +528,24 @@ describe('HtmlTableFormatter', () => {
       .someScope h1 {
         font-size: 1.5em;
       }
-      
+
       .someScope h2 {
         font-size: 1.1em;
       }
-      
+
       .someScope table {
         border-spacing: 0;
         color: inherit;
       }
-      
+
       .someScope td {
         padding: 3px 0;
       }
-      
+
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }`;
@@ -667,7 +667,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -689,7 +689,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph chorus">
           <table class="row">
             <tr>
@@ -713,7 +713,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph solo">
           <table class="row">
             <tr>
@@ -739,7 +739,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph tab">
           <table class="literal">
             <tr>
@@ -751,7 +751,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph abc">
           <table class="literal">
             <tr>
@@ -763,7 +763,7 @@ describe('HtmlTableFormatter', () => {
             </tr>
           </table>
         </div>
-        
+
         <div class="paragraph ly">
           <table class="literal">
             <tr>
@@ -774,7 +774,7 @@ describe('HtmlTableFormatter', () => {
               </tr>
             </table>
           </div>
-          
+
           <div class="paragraph bridge">
             <table class="row">
               <tr>
@@ -789,7 +789,7 @@ describe('HtmlTableFormatter', () => {
               </tr>
             </table>
           </div>
-          
+
           <div class="paragraph grid">
             <table class="literal">
               <tr>
