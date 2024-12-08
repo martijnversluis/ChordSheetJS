@@ -168,7 +168,7 @@ class TextFormatter extends Formatter {
     }
 
     if ('evaluate' in item) {
-      return item.evaluate(metadata, this.configuration.separator);
+      return item.evaluate(metadata, this.configuration.metadataSeparator);
     }
 
     return '';

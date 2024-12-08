@@ -61,7 +61,7 @@ class ChordProFormatter extends Formatter {
 
   formatOrEvaluateItem(item: Evaluatable, metadata: Metadata): string {
     if (this.configuration.evaluate) {
-      return item.evaluate(metadata, this.configuration.separator);
+      return item.evaluate(metadata, this.configuration.metadataSeparator);
     }
 
     if (item instanceof Ternary) {

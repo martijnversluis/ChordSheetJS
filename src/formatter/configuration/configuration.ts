@@ -51,7 +51,7 @@ class Configuration {
 
   delegates: Partial<Record<ContentType, Delegate>>;
 
-  get separator(): string {
+  get metadataSeparator(): string {
     return this.metadata.separator ?? '';
   }
 
