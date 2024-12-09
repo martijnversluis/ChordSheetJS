@@ -30,6 +30,8 @@ class SongBuilder {
 
   sectionType: string = NONE;
 
+  selector: string | null = null;
+
   song: Song;
 
   transposeKey: string | null = null;
@@ -61,17 +63,18 @@ class SongBuilder {
       this.lines.push(this.currentLine);
     }
 
-    this.setCurrentProperties(this.sectionType);
+    this.setCurrentProperties(this.sectionType, this.selector);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
     this.currentLine.lineNumber = this.lines.length - 1;
     return this.currentLine;
   }
 
-  setCurrentProperties(sectionType: string): void {
+  setCurrentProperties(sectionType: string, selector: string | null = null): void {
     if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
 
     this.currentLine.type = sectionType as LineType;
+    this.currentLine.selector = selector;
     this.currentLine.textFont = this.fontStack.textFont.clone();
     this.currentLine.chordFont = this.fontStack.chordFont.clone();
   }
@@ -151,12 +154,14 @@ class SongBuilder {
   startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
     this.sectionType = sectionType;
-    this.setCurrentProperties(sectionType);
+    this.selector = tag.selector;
+    this.setCurrentProperties(sectionType, tag.selector);
   }
 
   endSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(sectionType, tag);
     this.sectionType = NONE;
+    this.selector = null;
   }
 
   checkCurrentSectionType(sectionType: string, tag: Tag): void {

@@ -218,8 +218,10 @@ class ChordSheetSerializer {
       location: { offset = null, line = null, column = null } = {},
       chordDefinition,
       attributes,
+      selector,
     } = astComponent;
     const tag = new Tag(name, value, { line, column, offset }, attributes);
+    tag.selector = selector || null;
 
     if (chordDefinition) {
       tag.chordDefinition = new ChordDefinition(

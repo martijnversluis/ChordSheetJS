@@ -54,6 +54,8 @@ class Line {
 
   lineNumber: number | null = null;
 
+  selector: string | null = null;
+
   /**
    * The text font that applies to this line. Is derived from the directives:
    * `textfont`, `textsize` and `textcolour`

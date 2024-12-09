@@ -24,26 +24,32 @@ function sectionTags(sectionName: string, shortTag: boolean, type: 'start' | 'en
 }
 
 export default function buildChordProSectionGrammar(_: BuildOptions, _data: string): string {
-  const sectionsGrammars = sections.map(([name, shortTags]) => `
-${capitalize(name)}Section
-  = startTag:${capitalize(name)}StartTag
+  const sectionsGrammars = sections.map(([name, shortTags]) => {
+    const sectionName = capitalize(name);
+    const startTag = sectionTags(name, shortTags, 'start');
+    const endTag = sectionTags(name, shortTags, 'end');
+
+    return `
+${sectionName}Section
+  = startTag:${sectionName}StartTag
     NewLine
-    content:$(!${capitalize(name)}EndTag SectionCharacter)*
-    endTag:${capitalize(name)}EndTag
+    content:$(!${sectionName}EndTag SectionCharacter)*
+    endTag:${sectionName}EndTag
     {
       return helpers.buildSection(startTag, endTag, content);
     }
 
-${capitalize(name)}StartTag
-  = "{" _ tagName:(${sectionTags(name, shortTags, 'start')}) _ tagColonWithValue: TagColonWithValue? _ "}" {
-      return helpers.buildTag(tagName, tagColonWithValue, location());
+${sectionName}StartTag
+  = "{" _ tagName:(${startTag}) selector:TagSelector? _ tagColonWithValue:TagColonWithValue? _ "}" {
+      return helpers.buildTag(tagName, tagColonWithValue, selector, location());
     }
 
-${capitalize(name)}EndTag
-  = "{" _ tagName:(${sectionTags(name, shortTags, 'end')}) _ "}" {
-      return helpers.buildTag(tagName, null, location());
+${sectionName}EndTag
+  = "{" _ tagName:(${endTag}) _ "}" {
+      return helpers.buildTag(tagName, null, null, location());
     }
-`);
+`;
+  });
 
   return `
 Section
