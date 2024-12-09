@@ -411,6 +411,8 @@ class Tag extends AstComponent {
 
   chordDefinition?: ChordDefinition;
 
+  selector: string | null = null;
+
   /**
    * The tag attributes. For example, section related tags can have a label:
    * `{start_of_verse: label="Verse 1"}`

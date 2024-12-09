@@ -17,7 +17,7 @@ declare global {
 
       toBeComment(_contents: string): jest.CustomMatcherResult;
 
-      toBeTag(_name: string, _value?: string): jest.CustomMatcherResult;
+      toBeTag(_name: string, _value?: string, _selector?: string): jest.CustomMatcherResult;
 
       toBeSoftLineBreak(): jest.CustomMatcherResult;
     }

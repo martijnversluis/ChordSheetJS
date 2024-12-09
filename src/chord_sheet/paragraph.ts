@@ -4,6 +4,16 @@ import Literal from './chord_pro/literal';
 import Tag from './tag';
 import Item from './item';
 
+function getCommonValue(values: string[], fallback: string | null): string | null {
+  const uniqueValues = [...new Set(values)];
+
+  if (uniqueValues.length === 1) {
+    return uniqueValues[0];
+  }
+
+  return fallback;
+}
+
 /**
  * Represents a paragraph of lines in a chord sheet
  */
@@ -87,13 +97,16 @@ class Paragraph {
    */
   get type(): string {
     const types = this.lines.map((line) => line.type);
-    const uniqueTypes = [...new Set(types)];
+    return getCommonValue(types, INDETERMINATE) as string;
+  }
 
-    if (uniqueTypes.length === 1) {
-      return uniqueTypes[0];
-    }
+  get selector(): string | null {
+    const selectors =
+      this.lines
+        .map((line) => line.selector)
+        .filter((selector) => selector !== null);
 
-    return INDETERMINATE;
+    return getCommonValue(selectors, null);
   }
 
   /**

@@ -32,6 +32,7 @@ export function buildSection(startTag: SerializedTag, endTag: SerializedTag, con
 export function buildTag(
   name: string,
   value: Partial<{ value: string | null, attributes: Record<string, string>}> | null,
+  selector: string | null,
   location: FileRange,
 ): SerializedTag {
   return {
@@ -40,6 +41,7 @@ export function buildTag(
     location: location.start,
     value: value?.value || '',
     attributes: value?.attributes || {},
+    selector,
   };
 }
 

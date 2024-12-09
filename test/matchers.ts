@@ -119,8 +119,8 @@ function toBeChordLyricsPair(received, chords, lyrics, annotation = '') {
   return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics, annotation });
 }
 
-function toBeTag(received, name, value = '') {
-  return toBeClassInstanceWithProperties(received, Tag, { name, value });
+function toBeTag(received, name, value = '', selector = null) {
+  return toBeClassInstanceWithProperties(received, Tag, { name, value, selector });
 }
 
 function toBeComment(received, content) {

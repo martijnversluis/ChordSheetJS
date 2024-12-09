@@ -157,7 +157,7 @@ WordChar
     }
 
 ChordDefinition
-  = "{" _ name:("chord" / "define") _ ":" _ value:ChordDefinitionValue _ "}" {
+  = "{" _ name:("chord" / "define") selector:TagSelector? _ ":" _ value:ChordDefinitionValue _ "}" {
       const { text, ...chordDefinition } = value;
 
       return {
@@ -166,13 +166,22 @@ ChordDefinition
         value: text,
         chordDefinition,
         location: location().start,
+        selector,
       };
     }
 
 Tag
-  = "{" _ tagName:$(TagName) _ tagColonWithValue:TagColonWithValue? "}" {
-      return helpers.buildTag(tagName, tagColonWithValue, location());
+  = "{" _ tagName:$(TagName) selector:TagSelector? _ tagColonWithValue:TagColonWithValue? "}" {
+      return helpers.buildTag(tagName, tagColonWithValue, selector, location());
     }
+
+TagSelector
+  = "-" value:TagSelectorValue {
+      return value;
+    }
+
+TagSelectorValue
+  = $([a-zA-Z0-9-_]+)
 
 TagColonWithValue
   = ":" tagValue:TagValue {
@@ -209,7 +218,7 @@ TagAttribute
     }
 
 TagName
-  = [a-zA-Z-_]+
+  = [a-zA-Z_]+
 
 TagSimpleValue
   = _ chars:TagValueChar* {

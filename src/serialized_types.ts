@@ -39,6 +39,7 @@ export type SerializedTag = SerializedTraceInfo & {
   value: string,
   chordDefinition?: SerializedChordDefinition,
   attributes?: Record<string, string>,
+  selector?: string | null,
 };
 
 export interface SerializedComment {

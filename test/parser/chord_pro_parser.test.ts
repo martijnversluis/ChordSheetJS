@@ -337,6 +337,15 @@ This part is [G]key
     expect(song.title).toEqual('my {title}');
   });
 
+  it('allows conditional directives', () => {
+    const chordSheet = '{title-guitar: Guitar song}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag).toBeTag('title', 'Guitar song', 'guitar');
+  });
+
   it('parses annotation', () => {
     const chordSheet = '[*Full band!]Let it be';
     const song = new ChordProParser().parse(chordSheet);
@@ -670,6 +679,32 @@ Let it [Am]be
     expect(lines[2].items[0]).toBeLiteral('LY line 2');
   });
 
+  it('parses conditional sections', () => {
+    const chordSheet = heredoc`
+      {start_of_ly-guitar: Intro}
+      LY line 1
+      LY line 2
+      {end_of_ly}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(LILYPOND);
+    expect(paragraph.selector).toEqual('guitar');
+    expect(lines).toHaveLength(3);
+
+    expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro', 'guitar');
+    expect(lines[1].items[0]).toBeLiteral('LY line 1');
+    expect(lines[2].items[0]).toBeLiteral('LY line 2');
+
+    expect(lines.every((line) => line.selector === 'guitar')).toBe(true);
+  });
+
   it('parses soft line breaks when enabled', () => {
     const chordSheet = heredoc`
       [Am]Let it be,\\ let it [C/G]be
@@ -748,6 +783,23 @@ Let it [Am]be
         fingers: [],
       });
     });
+
+    it('parses conditional chord definitions', () => {
+      const chordSheet = '{define-guitar: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('define', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+
+      expect(chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
+        fingers: [],
+      });
+    });
   });
 
   describe('{chord} chord definitions', () => {
@@ -778,6 +830,24 @@ Let it [Am]be
       const { chordDefinition } = (tag as Tag);
 
       expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x');
+
+      expect(chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [],
+      });
+    });
+
+    it('parses conditional chord definitions', () => {
+      const chordSheet = '{chord-ukulele: D7 base-fret 3 frets x 3 2 3 1 x }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0];
+      const { chordDefinition } = (tag as Tag);
+
+      expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x', 'ukulele');
 
       expect(chordDefinition).toEqual({
         name: 'D7',
