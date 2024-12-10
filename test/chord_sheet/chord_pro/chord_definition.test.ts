@@ -1,5 +1,6 @@
 import { ChordDefinition } from '../../../src';
 import { Fret } from '../../../src/constants';
+import SUFFIX_MAPPING from '../../../src/normalize_mappings/suffix-normalize-mapping';
 
 describe('ChordDefinition', () => {
   describe('#clone', () => {
@@ -48,57 +49,15 @@ describe('ChordDefinition', () => {
       expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
-    [
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers a 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers A 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers x 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers X 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers n 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers N 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers - 2 3 4 5 6',
-      'D7 base-fret 1 frets N 3 2 3 1 N fingers 0 2 3 4 5 6',
-    ].forEach((definitionString) => {
-      it(`can parse ${definitionString}`, () => {
-        expect(() => ChordDefinition.parse(definitionString)).not.toThrow();
+    Object
+      .keys(SUFFIX_MAPPING)
+      .filter((suffix) => suffix !== '[blank]')
+      .forEach((suffix) => {
+        it(`can parse a chord definition with suffix ${suffix}`, () => {
+          const chord = `Db${suffix}/A#`;
+          const chordDefinition = ChordDefinition.parse(`${chord} base-fret 3 frets x 3 2 3 1 x`);
+          expect(chordDefinition.name).toEqual(chord);
+        });
       });
-    });
-
-    // From: https://en.wikipedia.org/wiki/Chord_(music)#Symbols
-    [
-      'm',
-      'min',
-      '−',
-      'M',
-      'Ma',
-      'Maj',
-      'Δ',
-      '+',
-      'aug',
-      'o',
-      'dim',
-      'ø',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '9',
-      '11',
-      '13',
-      '6/9',
-      'sus4',
-      'sus2',
-      '(♭9)',
-      'add',
-      'alt',
-      'omit5',
-      'no5',
-    ].forEach((suffix) => {
-      it(`can parse a chord definition with suffix ${suffix}`, () => {
-        const chordDefinition = ChordDefinition.parse(`Db${suffix} base-fret 3 frets x 3 2 3 1 x`);
-        expect(chordDefinition.name).toEqual(`Db${suffix}`);
-      });
-    });
   });
 });

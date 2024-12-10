@@ -10,9 +10,19 @@ ChordDefinitionValue
     }
 
 ChordDefinitionName
-  = name:$([A-Za-z0-9/-♭\(\)\+]+) {
-      return name;
-    }
+  = $(ChordDefinitionNameBase bass:ChordDefinitionNameBass?)
+
+ChordDefinitionNameBase
+  = $(ChordDefinitionNote ChordDefinitionSuffix?)
+
+ChordDefinitionNameBass
+  = $("/" ChordDefinitionNote)
+
+ChordDefinitionNote
+  = $([A-Ga-g]([b#♭♯] / "es" / "s" / "is")?)
+
+ChordDefinitionSuffix
+  = $([a-zA-Z0-9#♯b♭\(\)\+\-\/øΔ−]+)
 
 BaseFret
   = "base-fret" __ baseFret:FretNumber __ {
