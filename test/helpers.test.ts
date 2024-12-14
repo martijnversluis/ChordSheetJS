@@ -1,7 +1,9 @@
 import Song from '../src/chord_sheet/song';
 import { createLine } from './utilities';
-import { renderChord } from '../src/helpers';
+import { renderChord, testSelector } from '../src/helpers';
 import Key from '../src/key';
+import Metadata from '../src/chord_sheet/metadata';
+import Configuration from '../src/formatter/configuration/configuration';
 
 describe('renderChord', () => {
   it('correctly normalizes when a capo is set', () => {
@@ -27,5 +29,56 @@ describe('renderChord', () => {
     song.setMetadata('key', 'F');
 
     expect(renderChord('Dm7', line, song, { renderKey: Key.parse('B'), useUnicodeModifier: true })).toEqual('G♯m7');
+  });
+});
+
+describe('testSelector', () => {
+  it('returns true when the selector matches the configured instrument type', () => {
+    const configuration = new Configuration({ instrument: { type: 'guitar' } });
+    const metadata = new Metadata();
+
+    expect(testSelector('guitar', configuration, metadata)).toEqual(true);
+  });
+
+  it('returns false when the selector does not match the configured instrument type', () => {
+    const configuration = new Configuration({ instrument: { type: 'guitar' } });
+    const metadata = new Metadata();
+
+    expect(testSelector('piano', configuration, metadata)).toEqual(false);
+  });
+
+  it('return true when the selector matches the configured user name', () => {
+    const configuration = new Configuration({ user: { name: 'john' } });
+    const metadata = new Metadata();
+
+    expect(testSelector('john', configuration, metadata)).toEqual(true);
+  });
+
+  it('returns false when the selector does not match the configured user name', () => {
+    const configuration = new Configuration({ user: { name: 'john' } });
+    const metadata = new Metadata();
+
+    expect(testSelector('jane', configuration, metadata)).toEqual(false);
+  });
+
+  it('returns true when the selector matches a truthy metadata value', () => {
+    const configuration = new Configuration();
+    const metadata = new Metadata({ 'horns': 'true' });
+
+    expect(testSelector('horns', configuration, metadata)).toEqual(true);
+  });
+
+  it('returns false when the selector matches an empty metadata value', () => {
+    const configuration = new Configuration();
+    const metadata = new Metadata({ 'horns': '' });
+
+    expect(testSelector('horns', configuration, metadata)).toEqual(false);
+  });
+
+  it('returns false when the selector does not match a metadata value', () => {
+    const configuration = new Configuration();
+    const metadata = new Metadata();
+
+    expect(testSelector('horns', configuration, metadata)).toEqual(false);
   });
 });
