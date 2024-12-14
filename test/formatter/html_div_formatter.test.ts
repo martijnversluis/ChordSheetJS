@@ -169,6 +169,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
@@ -179,6 +181,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
@@ -189,6 +193,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
@@ -211,6 +217,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -371,6 +379,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
@@ -381,6 +391,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
@@ -391,6 +403,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
@@ -413,6 +427,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -753,6 +769,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
@@ -763,6 +781,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
@@ -773,6 +793,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
@@ -795,6 +817,9 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -956,6 +981,9 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
@@ -966,6 +994,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
@@ -976,6 +1006,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
@@ -998,6 +1030,8 @@ describe('HtmlDivFormatter', () => {
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -1114,6 +1148,9 @@ describe('HtmlDivFormatter', () => {
               <div class="paragraph ${type}">
                 <div class="row">
                   <h3 class="label">${type} section</h3>
+                </div>
+
+                <div class="row">
                   <div class="literal">
                     ${type.toUpperCase()} LINE 1<br>
                     ${type.toUpperCase()} LINE 2
@@ -1138,6 +1175,9 @@ describe('HtmlDivFormatter', () => {
               <div class="paragraph ${type}">
                 <div class="row">
                   <h3 class="label">${type} section</h3>
+                </div>
+
+                <div class="row">
                   <div class="literal">
                     ${type} line 1<br>
                     ${type} line 2

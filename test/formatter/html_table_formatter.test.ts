@@ -151,9 +151,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">Tab 1</td>
               <td class="contents">
                 Tab line 1<br>
                 Tab line 2
@@ -163,9 +170,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph abc">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">ABC 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">ABC 1</td>
               <td class="contents">
                 ABC line 1<br>
                 ABC line 2
@@ -175,9 +189,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph ly">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">LY 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">LY 1</td>
               <td class="contents">
                 LY line 1<br>
                 LY line 2
@@ -202,9 +223,16 @@ describe('HtmlTableFormatter', () => {
       </div>
 
       <div class="paragraph grid">
+        <table class="row">
+          <tr>
+            <td>
+              <h3 class="label">Grid 1</h3>
+            </td>
+          </tr>
+        </table>
+
         <table class="literal">
           <tr>
-            <td class="label">Grid 1</td>
             <td class="contents">
               Grid line 1<br>
               Grid line 2
@@ -349,9 +377,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">Tab 1</td>
               <td class="contents">
                 Tab line 1<br>
                 Tab line 2
@@ -361,9 +396,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph abc">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">ABC 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">ABC 1</td>
               <td class="contents">
                 ABC line 1<br>
                 ABC line 2
@@ -373,9 +415,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph ly">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">LY 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">LY 1</td>
               <td class="contents">
                 LY line 1<br>
                 LY line 2
@@ -400,9 +449,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph grid">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Grid 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">Grid 1</td>
               <td class="contents">
                 Grid line 1<br>
                 Grid line 2
@@ -741,9 +797,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph tab">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">Tab 1</td>
               <td class="contents">
                 Tab line 1<br>
                 Tab line 2
@@ -753,9 +816,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph abc">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">ABC 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">ABC 1</td>
               <td class="contents">
                 ABC line 1<br>
                 ABC line 2
@@ -765,9 +835,16 @@ describe('HtmlTableFormatter', () => {
         </div>
 
         <div class="paragraph ly">
+          <table class="row">
+            <tr>
+              <td>
+                <h3 class="label">LY 1</h3>
+              </td>
+            </tr>
+          </table>
+
           <table class="literal">
             <tr>
-              <td class="label">LY 1</td>
               <td class="contents">
                 LY line 1<br>
                 LY line 2</td>
@@ -791,9 +868,16 @@ describe('HtmlTableFormatter', () => {
           </div>
 
           <div class="paragraph grid">
+            <table class="row">
+              <tr>
+                <td>
+                  <h3 class="label">Grid 1</h3>
+                </td>
+              </tr>
+            </table>
+
             <table class="literal">
               <tr>
-                <td class="label">Grid 1</td>
                 <td class="contents">
                   Grid line 1<br>
                   Grid line 2
@@ -947,9 +1031,16 @@ describe('HtmlTableFormatter', () => {
           const expectedOutput = html`
             <div class="chord-sheet">
               <div class="paragraph ${type}">
+                <table class="row">
+                  <tr>
+                    <td>
+                      <h3 class="label">${type} section</h3>
+                    </td>
+                  </tr>
+                </table>
+
                 <table class="literal">
                   <tr>
-                    <td class="label">${type} section</td>
                     <td class="contents">
                       ${type.toUpperCase()} LINE 1<br>
                       ${type.toUpperCase()} LINE 2
@@ -973,9 +1064,16 @@ describe('HtmlTableFormatter', () => {
           const expectedOutput = html`
             <div class="chord-sheet">
               <div class="paragraph ${type}">
+                <table class="row">
+                  <tr>
+                    <td>
+                      <h3 class="label">${type} section</h3>
+                    </td>
+                  </tr>
+                </table>
+
                 <table class="literal">
                   <tr>
-                    <td class="label">${type} section</td>
                     <td class="contents">
                       ${type} line 1<br>
                       ${type} line 2
