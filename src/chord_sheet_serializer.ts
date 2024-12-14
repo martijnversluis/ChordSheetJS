@@ -219,9 +219,11 @@ class ChordSheetSerializer {
       chordDefinition,
       attributes,
       selector,
+      isNegated,
     } = astComponent;
     const tag = new Tag(name, value, { line, column, offset }, attributes);
     tag.selector = selector || null;
+    tag.isNegated = isNegated || false;
 
     if (chordDefinition) {
       tag.chordDefinition = new ChordDefinition(
