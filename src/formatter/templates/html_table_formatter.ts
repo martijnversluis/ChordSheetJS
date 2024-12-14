@@ -42,11 +42,18 @@ export default (
       ${ each(bodyParagraphs, (paragraph) => `
         <div class="${ paragraphClasses(paragraph) }">
           ${ when(paragraph.isLiteral(), () => `
+            ${ when(isPresent(paragraph.label), () => `
+              <table class="row">
+                <tr>
+                  <td>
+                    <h3 class="label">${ paragraph.label }</h3>
+                  </td>
+                </tr>
+              </table>
+            `) }
+
             <table class="literal">
               <tr>
-                ${ when(isPresent(paragraph.label), () => `
-                  <td class="label">${ paragraph.label }</td>
-                `) }
                 <td class="contents">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
               </tr>
             </table>
