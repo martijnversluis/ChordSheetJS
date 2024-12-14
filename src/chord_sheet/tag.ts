@@ -413,6 +413,8 @@ class Tag extends AstComponent {
 
   selector: string | null = null;
 
+  isNegated = false;
+
   /**
    * The tag attributes. For example, section related tags can have a label:
    * `{start_of_verse: label="Verse 1"}`

@@ -40,6 +40,7 @@ export type SerializedTag = SerializedTraceInfo & {
   chordDefinition?: SerializedChordDefinition,
   attributes?: Record<string, string>,
   selector?: string | null,
+  isNegated?: boolean,
 };
 
 export interface SerializedComment {

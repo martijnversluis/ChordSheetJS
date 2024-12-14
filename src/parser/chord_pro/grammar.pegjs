@@ -166,7 +166,8 @@ ChordDefinition
         value: text,
         chordDefinition,
         location: location().start,
-        selector,
+        selector: selector?.value,
+        isNegated: selector?.isNegated,
       };
     }
 
@@ -176,8 +177,16 @@ Tag
     }
 
 TagSelector
-  = "-" value:TagSelectorValue {
-      return value;
+  = "-" value:TagSelectorValue negator:TagSelectorNegator? {
+      return {
+        value,
+        isNegated: !!negator,
+      };
+    }
+
+TagSelectorNegator
+  = "!" {
+      return true;
     }
 
 TagSelectorValue

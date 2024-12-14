@@ -346,6 +346,17 @@ This part is [G]key
     expect(tag).toBeTag('title', 'Guitar song', 'guitar');
   });
 
+  it('allows negated conditional directives', () => {
+    const chordSheet = '{title-guitar!: Guitar song}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag).toBeTag('title', 'Guitar song', 'guitar');
+
+    expect(tag.isNegated).toBe(true);
+  });
+
   it('parses annotation', () => {
     const chordSheet = '[*Full band!]Let it be';
     const song = new ChordProParser().parse(chordSheet);
@@ -788,12 +799,29 @@ Let it [Am]be
       const chordSheet = '{define-guitar: Am base-fret 1 frets 0 2 2 1 0 0}';
       const parser = new ChordProParser();
       const song = parser.parse(chordSheet);
-      const tag = song.lines[0].items[0];
-      const { chordDefinition } = (tag as Tag);
+      const tag = song.lines[0].items[0] as Tag;
 
       expect(tag).toBeTag('define', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(false);
 
-      expect(chordDefinition).toEqual({
+      expect(tag.chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
+        fingers: [],
+      });
+    });
+
+    it('parses negated conditional chord definitions', () => {
+      const chordSheet = '{define-guitar!: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('define', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(true);
+
+      expect(tag.chordDefinition).toEqual({
         name: 'Am',
         baseFret: 1,
         frets: [0, 2, 2, 1, 0, 0],
@@ -844,15 +872,32 @@ Let it [Am]be
 
       const parser = new ChordProParser();
       const song = parser.parse(chordSheet);
-      const tag = song.lines[0].items[0];
-      const { chordDefinition } = (tag as Tag);
+      const tag = song.lines[0].items[0] as Tag;
 
       expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x', 'ukulele');
+      expect(tag.isNegated).toBe(false);
 
-      expect(chordDefinition).toEqual({
+      expect(tag.chordDefinition).toEqual({
         name: 'D7',
         baseFret: 3,
         frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [],
+      });
+    });
+
+    it('parses negated conditional chord definitions', () => {
+      const chordSheet = '{chord-guitar!: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('chord', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(true);
+
+      expect(tag.chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
         fingers: [],
       });
     });
