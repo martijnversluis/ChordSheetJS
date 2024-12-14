@@ -9,8 +9,8 @@ export const defaultMetadataConfiguration: MetadataConfigurationProperties = {
 class MetadataConfiguration {
   separator?: string;
 
-  constructor(metadataConfiguration: MetadataConfigurationProperties = defaultMetadataConfiguration) {
-    this.separator = metadataConfiguration.separator;
+  constructor(metadataConfiguration: Partial<MetadataConfigurationProperties> = {}) {
+    this.separator = metadataConfiguration.separator || defaultMetadataConfiguration.separator;
   }
 }
 
