@@ -427,10 +427,14 @@ class Tag extends AstComponent {
     value: string | null = null,
     traceInfo: TraceInfo | null = null,
     attributes: Record<string, string> = {},
+    selector: string | null = null,
+    isNegated = false,
   ) {
     super(traceInfo);
     this.parseNameValue(name, value);
     this.attributes = attributes;
+    this.selector = selector;
+    this.isNegated = isNegated;
   }
 
   private parseNameValue(name: string, value: string | null): void {
