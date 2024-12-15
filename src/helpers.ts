@@ -112,16 +112,30 @@ export function getKeys(key: Key | string): string[] {
   return keyObj.isMinor() ? minorKeys[chordType] : majorKeys[chordType];
 }
 
-export function testSelector(selector: string, configuration: Configuration, metadata: Metadata) {
+export function testSelector(
+  {
+    selector,
+    isNegated,
+    configuration,
+    metadata,
+  }:
+  {
+    selector: string,
+    isNegated: boolean,
+    configuration: Configuration,
+    metadata: Metadata
+  },
+) {
   if (selector === configuration.instrument?.type) {
-    return true;
+    return !isNegated;
   }
 
   if (selector === configuration.user?.name) {
-    return true;
+    return !isNegated;
   }
 
   const metadataValue = metadata.getSingle(selector);
+  const metadataValueTruthy = metadataValue && metadataValue !== '';
 
-  return !!(metadataValue && metadataValue !== '');
+  return isNegated ? !metadataValueTruthy : !!metadataValueTruthy;
 }
