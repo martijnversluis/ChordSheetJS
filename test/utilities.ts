@@ -69,8 +69,14 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name: string, value = '', chordDefinition: ChordDefinition | null = null): Tag {
-  const newTag = new Tag(name, value);
+export function createTag(
+  name: string,
+  value = '',
+  chordDefinition: ChordDefinition | null = null,
+  selector: string | null = null,
+  isNegated = false,
+): Tag {
+  const newTag = new Tag(name, value, null, {}, selector, isNegated);
   if (chordDefinition) newTag.chordDefinition = chordDefinition;
   return newTag;
 }

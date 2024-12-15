@@ -18,6 +18,8 @@ import Tag, {
 import SongBuilder from '../song_builder';
 import ChordDefinition from './chord_pro/chord_definition';
 import Chord from '../chord';
+import FormattingContext from '../formatter/formatting_context';
+import { testSelector } from '../helpers';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -455,7 +457,7 @@ Or set the song key before changing key:
    * @see https://chordpro.org/chordpro/directives-define/
    * @see https://chordpro.org/chordpro/directives-chord/
    */
-  getChordDefinitions(): Record<string, ChordDefinition> {
+  getChordDefinitions(context?: FormattingContext): Record<string, ChordDefinition> {
     const chordDefinitions: Record<string, ChordDefinition> = {};
 
     this.foreachItem((item: Item) => {
@@ -463,7 +465,11 @@ Or set the song key before changing key:
         return;
       }
 
-      const { chordDefinition } = (item as Tag);
+      const { chordDefinition, selector, isNegated } = (item as Tag);
+
+      if (selector && context && !testSelector({ selector, isNegated }, context)) {
+        return;
+      }
 
       if (chordDefinition) {
         chordDefinitions[chordDefinition.name] = chordDefinition.clone();

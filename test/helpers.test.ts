@@ -38,12 +38,10 @@ describe('testSelector', () => {
     const metadata = new Metadata();
 
     expect(
-      testSelector({
-        selector: 'guitar',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'guitar', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(true);
   });
 
@@ -52,12 +50,10 @@ describe('testSelector', () => {
     const metadata = new Metadata();
 
     expect(
-      testSelector({
-        selector: 'piano',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'piano', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(false);
   });
 
@@ -66,12 +62,10 @@ describe('testSelector', () => {
     const metadata = new Metadata();
 
     expect(
-      testSelector({
-        selector: 'john',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'john', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(true);
   });
 
@@ -80,12 +74,10 @@ describe('testSelector', () => {
     const metadata = new Metadata();
 
     expect(
-      testSelector({
-        selector: 'jane',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'jane', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(false);
   });
 
@@ -94,12 +86,10 @@ describe('testSelector', () => {
     const metadata = new Metadata({ 'horns': 'true' });
 
     expect(
-      testSelector({
-        selector: 'horns',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'horns', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(true);
   });
 
@@ -108,12 +98,10 @@ describe('testSelector', () => {
     const metadata = new Metadata({ 'horns': '' });
 
     expect(
-      testSelector({
-        selector: 'horns',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'horns', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(false);
   });
 
@@ -122,12 +110,10 @@ describe('testSelector', () => {
     const metadata = new Metadata();
 
     expect(
-      testSelector({
-        selector: 'horns',
-        isNegated: false,
-        configuration,
-        metadata,
-      }),
+      testSelector(
+        { selector: 'horns', isNegated: false },
+        { configuration, metadata },
+      ),
     ).toEqual(false);
   });
 
@@ -137,12 +123,10 @@ describe('testSelector', () => {
       const metadata = new Metadata();
 
       expect(
-        testSelector({
-          selector: 'guitar',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'guitar', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(false);
     });
 
@@ -151,12 +135,10 @@ describe('testSelector', () => {
       const metadata = new Metadata();
 
       expect(
-        testSelector({
-          selector: 'piano',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'piano', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(true);
     });
 
@@ -165,12 +147,10 @@ describe('testSelector', () => {
       const metadata = new Metadata();
 
       expect(
-        testSelector({
-          selector: 'john',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'john', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(false);
     });
 
@@ -179,12 +159,10 @@ describe('testSelector', () => {
       const metadata = new Metadata();
 
       expect(
-        testSelector({
-          selector: 'jane',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'jane', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(true);
     });
 
@@ -193,12 +171,10 @@ describe('testSelector', () => {
       const metadata = new Metadata({ 'horns': 'true' });
 
       expect(
-        testSelector({
-          selector: 'horns',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'horns', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(false);
     });
 
@@ -207,12 +183,10 @@ describe('testSelector', () => {
       const metadata = new Metadata({ 'horns': '' });
 
       expect(
-        testSelector({
-          selector: 'horns',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'horns', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(true);
     });
 
@@ -221,12 +195,10 @@ describe('testSelector', () => {
       const metadata = new Metadata();
 
       expect(
-        testSelector({
-          selector: 'horns',
-          isNegated: true,
-          configuration,
-          metadata,
-        }),
+        testSelector(
+          { selector: 'horns', isNegated: true },
+          { configuration, metadata },
+        ),
       ).toEqual(true);
     });
   });

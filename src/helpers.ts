@@ -4,8 +4,7 @@ import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
 import { CAPO, CHORD_STYLE, ChordType } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
-import Configuration from './formatter/configuration/configuration';
-import Metadata from './chord_sheet/metadata';
+import FormattingContext from './formatter/formatting_context';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -113,18 +112,8 @@ export function getKeys(key: Key | string): string[] {
 }
 
 export function testSelector(
-  {
-    selector,
-    isNegated,
-    configuration,
-    metadata,
-  }:
-  {
-    selector: string,
-    isNegated: boolean,
-    configuration: Configuration,
-    metadata: Metadata
-  },
+  { selector, isNegated }: { selector: string, isNegated: boolean },
+  { configuration, metadata }: FormattingContext,
 ) {
   if (selector === configuration.instrument?.type) {
     return !isNegated;

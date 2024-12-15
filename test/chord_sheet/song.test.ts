@@ -11,6 +11,8 @@ import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
 import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
 import Song from '../../src/chord_sheet/song';
+import Configuration from '../../src/formatter/configuration/configuration';
+import Metadata from '../../src/chord_sheet/metadata';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -373,6 +375,46 @@ describe('Song', () => {
       ]);
 
       expect(song.getChordDefinitions()).toEqual({});
+    });
+
+    it('leaves out chord definitions with non-matching selector', () => {
+      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
+
+      const configuration = new Configuration({ instrument: { type: 'ukulele' } });
+      const metadata = new Metadata();
+
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7', cm7, 'guitar'),
+        ]),
+        createLine([]),
+        createLine([
+          createTag('define', 'Dm', dm, 'ukulele'),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions({ configuration, metadata })).toEqual({ Dm: dm });
+    });
+
+    it('leaves out chord definitions with a negated matching selector', () => {
+      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
+
+      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const metadata = new Metadata();
+
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7', cm7, 'guitar', true),
+        ]),
+        createLine([]),
+        createLine([
+          createTag('define', 'Dm', dm),
+        ]),
+      ]);
+
+      expect(song.getChordDefinitions({ configuration, metadata })).toEqual({ Dm: dm });
     });
   });
 });
