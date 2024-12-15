@@ -37,48 +37,197 @@ describe('testSelector', () => {
     const configuration = new Configuration({ instrument: { type: 'guitar' } });
     const metadata = new Metadata();
 
-    expect(testSelector('guitar', configuration, metadata)).toEqual(true);
+    expect(
+      testSelector({
+        selector: 'guitar',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(true);
   });
 
   it('returns false when the selector does not match the configured instrument type', () => {
     const configuration = new Configuration({ instrument: { type: 'guitar' } });
     const metadata = new Metadata();
 
-    expect(testSelector('piano', configuration, metadata)).toEqual(false);
+    expect(
+      testSelector({
+        selector: 'piano',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(false);
   });
 
   it('return true when the selector matches the configured user name', () => {
     const configuration = new Configuration({ user: { name: 'john' } });
     const metadata = new Metadata();
 
-    expect(testSelector('john', configuration, metadata)).toEqual(true);
+    expect(
+      testSelector({
+        selector: 'john',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(true);
   });
 
   it('returns false when the selector does not match the configured user name', () => {
     const configuration = new Configuration({ user: { name: 'john' } });
     const metadata = new Metadata();
 
-    expect(testSelector('jane', configuration, metadata)).toEqual(false);
+    expect(
+      testSelector({
+        selector: 'jane',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(false);
   });
 
   it('returns true when the selector matches a truthy metadata value', () => {
     const configuration = new Configuration();
     const metadata = new Metadata({ 'horns': 'true' });
 
-    expect(testSelector('horns', configuration, metadata)).toEqual(true);
+    expect(
+      testSelector({
+        selector: 'horns',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(true);
   });
 
   it('returns false when the selector matches an empty metadata value', () => {
     const configuration = new Configuration();
     const metadata = new Metadata({ 'horns': '' });
 
-    expect(testSelector('horns', configuration, metadata)).toEqual(false);
+    expect(
+      testSelector({
+        selector: 'horns',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(false);
   });
 
   it('returns false when the selector does not match a metadata value', () => {
     const configuration = new Configuration();
     const metadata = new Metadata();
 
-    expect(testSelector('horns', configuration, metadata)).toEqual(false);
+    expect(
+      testSelector({
+        selector: 'horns',
+        isNegated: false,
+        configuration,
+        metadata,
+      }),
+    ).toEqual(false);
+  });
+
+  describe('when negated', () => {
+    it('returns false when the selector matches the configured instrument type', () => {
+      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const metadata = new Metadata();
+
+      expect(
+        testSelector({
+          selector: 'guitar',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(false);
+    });
+
+    it('returns true when the selector does not match the configured instrument type', () => {
+      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const metadata = new Metadata();
+
+      expect(
+        testSelector({
+          selector: 'piano',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(true);
+    });
+
+    it('returns false when the selector matches the configured user name', () => {
+      const configuration = new Configuration({ user: { name: 'john' } });
+      const metadata = new Metadata();
+
+      expect(
+        testSelector({
+          selector: 'john',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(false);
+    });
+
+    it('returns true when the selector does not match the configured user name', () => {
+      const configuration = new Configuration({ user: { name: 'john' } });
+      const metadata = new Metadata();
+
+      expect(
+        testSelector({
+          selector: 'jane',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(true);
+    });
+
+    it('returns false when the selector matches a truthy metadata value', () => {
+      const configuration = new Configuration();
+      const metadata = new Metadata({ 'horns': 'true' });
+
+      expect(
+        testSelector({
+          selector: 'horns',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(false);
+    });
+
+    it('returns true when the selector matches an empty metadata value', () => {
+      const configuration = new Configuration();
+      const metadata = new Metadata({ 'horns': '' });
+
+      expect(
+        testSelector({
+          selector: 'horns',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(true);
+    });
+
+    it('returns true when the selector does not match a metadata value', () => {
+      const configuration = new Configuration();
+      const metadata = new Metadata();
+
+      expect(
+        testSelector({
+          selector: 'horns',
+          isNegated: true,
+          configuration,
+          metadata,
+        }),
+      ).toEqual(true);
+    });
   });
 });
