@@ -82,19 +82,20 @@ class StubbedPdfDoc {
     this.internal = this.jsPDF.internal;
   }
 
-  addFileToVFS(_fileName: string, _data: string): StubbedPdfDoc {
+  addFileToVFS(fileName: string, data: string): StubbedPdfDoc {
+    this.jsPDF.addFileToVFS(fileName, data);
     return this;
   }
 
   addFont(
-    _postScriptName: string,
-    _id: string,
-    _fontStyle: string,
-    _fontWeight?: string | number,
-    _encoding?:'StandardEncoding' | 'MacRomanEncoding' | 'Identity-H' | 'WinAnsiEncoding',
-    _isStandardFont?: boolean,
+    postScriptName: string,
+    id: string,
+    fontStyle: string,
+    fontWeight?: string | number,
+    encoding?:'StandardEncoding' | 'MacRomanEncoding' | 'Identity-H' | 'WinAnsiEncoding',
+    isStandardFont?: boolean,
   ): string {
-    return 'stubbed';
+    return this.jsPDF.addFont(postScriptName, id, fontStyle, fontWeight, encoding, isStandardFont);
   }
 
   addImage(

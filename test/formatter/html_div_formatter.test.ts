@@ -99,6 +99,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -122,37 +123,85 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">F</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">G</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">C</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -164,10 +213,12 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -258,6 +309,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -281,37 +333,85 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Mim</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Fa</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Do</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Sol</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Sol</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Do</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -323,10 +423,12 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -385,19 +487,19 @@ describe('HtmlDivFormatter', () => {
       .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .row {
         display: flex;
       }
-      
+
       .chord:after {
         content: '\\200b';
       }
-      
+
       .lyrics:after {
         content: '\\200b';
       }`;
@@ -411,19 +513,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -437,19 +539,19 @@ describe('HtmlDivFormatter', () => {
       .someScope .chord:not(:last-child) {
         padding-right: 10px;
       }
-      
+
       .someScope .paragraph {
         margin-bottom: 1em;
       }
-      
+
       .someScope .row {
         display: flex;
       }
-      
+
       .someScope .chord:after {
         content: '\\200b';
       }
-      
+
       .someScope .lyrics:after {
         content: '\\200b';
       }`;
@@ -597,6 +699,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -620,37 +723,85 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Ab</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Bb</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Eb</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -662,10 +813,13 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -726,7 +880,7 @@ describe('HtmlDivFormatter', () => {
               <div class="chord">Fa</div>
               <div class="lyrics">Whisper </div>
             </div>
-            
+
             <div class="column">
               <div class="annotation">strong</div>
               <div class="lyrics">words of </div>
@@ -757,6 +911,7 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
         <div class="paragraph chorus">
           <div class="row">
             <div class="comment">Breakdown</div>
@@ -780,37 +935,86 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
+        <div class="paragraph chorus">
+          <div class="row">
+            <h3 class="label">Chorus 2</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Solm</div>
+              <div class="lyrics">Whisper words of </div>
+            </div>
+            <div class="column">
+              <div class="chord">Lab</div>
+              <div class="lyrics">wisdom, let it </div>
+            </div>
+            <div class="column">
+              <div class="chord">Mib</div>
+              <div class="lyrics">be </div>
+            </div>
+            <div class="column">
+              <div class="chord">Sib</div>
+              <div class="lyrics"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="paragraph solo">
+          <div class="row">
+            <h3 class="label">Solo 1</h3>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Sib</div>
+              <div class="lyrics">Solo line 1</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column">
+              <div class="chord">Mib</div>
+              <div class="lyrics">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
         <div class="paragraph tab">
           <div class="row">
             <h3 class="label">Tab 1</h3>
+          </div>
+
+          <div class="row">
             <div class="literal">
               Tab line 1<br>
               Tab line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph abc">
           <div class="row">
             <h3 class="label">ABC 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               ABC line 1<br>
               ABC line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph ly">
           <div class="row">
             <h3 class="label">LY 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               LY line 1<br>
               LY line 2
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph bridge">
           <div class="row">
             <h3 class="label">Bridge 1</h3>
@@ -822,10 +1026,12 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
-        
+
         <div class="paragraph grid">
           <div class="row">
             <h3 class="label">Grid 1</h3>
+          </div>
+          <div class="row">
             <div class="literal">
               Grid line 1<br>
               Grid line 2
@@ -904,7 +1110,7 @@ describe('HtmlDivFormatter', () => {
 
   it('does not render empty section labels', () => {
     const song = createSongFromAst([
-      ...section('tab', '', 'Line 1\nLine 2'),
+      ...section('tab', '', {}, 'Line 1\nLine 2'),
     ]);
 
     const expectedOutput = html`
@@ -928,7 +1134,7 @@ describe('HtmlDivFormatter', () => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration({
@@ -942,6 +1148,9 @@ describe('HtmlDivFormatter', () => {
               <div class="paragraph ${type}">
                 <div class="row">
                   <h3 class="label">${type} section</h3>
+                </div>
+
+                <div class="row">
                   <div class="literal">
                     ${type.toUpperCase()} LINE 1<br>
                     ${type.toUpperCase()} LINE 2
@@ -956,7 +1165,7 @@ describe('HtmlDivFormatter', () => {
 
         it('defaults to the default delegate', () => {
           const song = createSongFromAst([
-            ...section(type as ContentType, `${type} section`, `${type} line 1\n${type} line 2`),
+            ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
           const configuration = new Configuration();
@@ -966,6 +1175,9 @@ describe('HtmlDivFormatter', () => {
               <div class="paragraph ${type}">
                 <div class="row">
                   <h3 class="label">${type} section</h3>
+                </div>
+
+                <div class="row">
                   <div class="literal">
                     ${type} line 1<br>
                     ${type} line 2

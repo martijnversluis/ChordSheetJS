@@ -13,7 +13,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        node-version: [ 18.x, 20.x, 22.6 ]
+        node-version: [ 18.x, 20.x, 22.x ]
     name: Ubuntu NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v4
@@ -27,12 +27,25 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn ci
+
+  check-trailing-whitespace:
+    runs-on: ubuntu-latest
+    name: Check trailing whitespace
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install node modules
+        run: yarn install
+      - name: Check trailing whitespace
+        run: git ls-files | yarn tsx script/check_trailing_whitespace.ts
+
   build-windows:
     continue-on-error: true
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [ 22.6 ]
+        node-version: [ 22.x ]
     name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v4
@@ -46,12 +59,13 @@ jobs:
         run: yarn install
       - name: Run tests
         run: yarn ci
-  verify-readme:
+
+  generate-typedoc:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22.6 ]
-    name: Verify README.md
+        node-version: [ 22.x ]
+    name: Generate typedoc
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
@@ -62,13 +76,21 @@ jobs:
         run: corepack enable
       - name: Install node modules
         run: yarn install
-      - name: Verify README.md
-        run: yarn unibuild readme && git diff --quiet README.md
+      - name: Build
+        run: yarn build
+      - name: Generate typedoc
+        run: yarn typedoc
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: tmp/docs
+
   verify-install:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22.6 ]
+        node-version: [ 22.x ]
     name: Verify NodeJS installation
     steps:
       - name: Use Node.js ${{ matrix.node-version }}

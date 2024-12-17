@@ -1,5 +1,3 @@
-import lodashGet from 'lodash.get';
-
 import Key from '../../key';
 import { ContentType } from '../../serialized_types';
 
@@ -7,6 +5,9 @@ import MetadataConfiguration, {
   defaultMetadataConfiguration,
   MetadataConfigurationProperties,
 } from './metadata_configuration';
+
+import InstrumentConfiguration, { InstrumentConfigurationProperties } from './instrument_configuration';
+import UserConfiguration, { UserConfigurationProperties } from './user_configuration';
 
 export type Delegate = (_string: string) => string;
 export const defaultDelegate: Delegate = (string: string) => string;
@@ -19,6 +20,8 @@ export type ConfigurationProperties = Record<string, any> & {
   useUnicodeModifiers: boolean,
   normalizeChords: boolean,
   delegates: Partial<Record<ContentType, Delegate>>;
+  instrument?: InstrumentConfigurationProperties;
+  user?: UserConfigurationProperties;
 };
 
 export const defaultConfiguration: ConfigurationProperties = {
@@ -43,8 +46,6 @@ class Configuration {
 
   key: Key | null;
 
-  configuration: Record<string, any>;
-
   expandChorusDirective: boolean;
 
   useUnicodeModifiers: boolean;
@@ -52,6 +53,14 @@ class Configuration {
   normalizeChords: boolean;
 
   delegates: Partial<Record<ContentType, Delegate>>;
+
+  instrument?: InstrumentConfiguration;
+
+  user?: UserConfiguration;
+
+  get metadataSeparator(): string {
+    return this.metadata.separator ?? '';
+  }
 
   constructor(configuration: Partial<ConfigurationProperties> = defaultConfiguration) {
     const mergedConfig: ConfigurationProperties = { ...defaultConfiguration, ...configuration };
@@ -62,11 +71,8 @@ class Configuration {
     this.metadata = new MetadataConfiguration(configuration.metadata);
     this.key = configuration.key ? Key.wrap(configuration.key) : null;
     this.delegates = { ...defaultConfiguration.delegates, ...configuration.delegates };
-    this.configuration = { configuration, delegates: this.delegates };
-  }
-
-  get(key: string): string {
-    return lodashGet(this, key);
+    this.instrument = configuration.instrument ? new InstrumentConfiguration(configuration.instrument) : undefined;
+    this.user = configuration.user ? new UserConfiguration(configuration.user) : undefined;
   }
 }
 

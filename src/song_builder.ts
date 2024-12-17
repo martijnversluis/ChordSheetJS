@@ -1,36 +1,12 @@
-import {
-  ABC,
-  BRIDGE,
-  CHORUS,
-  GRID,
-  LILYPOND,
-  NONE,
-  ParagraphType, PART,
-  TAB,
-  VERSE,
-} from './constants';
-
+import { NONE, PART } from './constants';
 import Line, { LineType } from './chord_sheet/line';
 
 import Tag, {
-  END_OF_ABC,
-  END_OF_BRIDGE,
-  END_OF_CHORUS,
-  END_OF_GRID,
-  END_OF_LY,
-  END_OF_PART,
-  END_OF_TAB,
-  END_OF_VERSE,
+  AUTO,
+  END_TAG,
   KEY,
   NEW_KEY,
-  START_OF_ABC,
-  START_OF_BRIDGE,
-  START_OF_CHORUS,
-  START_OF_GRID,
-  START_OF_LY,
-  START_OF_PART,
-  START_OF_TAB,
-  START_OF_VERSE,
+  START_TAG,
   TRANSPOSE,
 } from './chord_sheet/tag';
 
@@ -40,28 +16,6 @@ import Item from './chord_sheet/item';
 import TraceInfo from './chord_sheet/trace_info';
 import ParserWarning from './parser/parser_warning';
 import Song from './chord_sheet/song';
-
-const START_TAG_TO_SECTION_TYPE = {
-  [START_OF_ABC]: ABC,
-  [START_OF_BRIDGE]: BRIDGE,
-  [START_OF_CHORUS]: CHORUS,
-  [START_OF_GRID]: GRID,
-  [START_OF_LY]: LILYPOND,
-  [START_OF_TAB]: TAB,
-  [START_OF_VERSE]: VERSE,
-  [START_OF_PART]: PART,
-};
-
-const END_TAG_TO_SECTION_TYPE = {
-  [END_OF_ABC]: ABC,
-  [END_OF_BRIDGE]: BRIDGE,
-  [END_OF_CHORUS]: CHORUS,
-  [END_OF_GRID]: GRID,
-  [END_OF_LY]: LILYPOND,
-  [END_OF_TAB]: TAB,
-  [END_OF_VERSE]: VERSE,
-  [END_OF_PART]: PART,
-};
 
 class SongBuilder {
   currentKey: string | null = null;
@@ -74,7 +28,9 @@ class SongBuilder {
 
   metadata: Metadata = new Metadata();
 
-  sectionType: ParagraphType = NONE;
+  sectionType: string = NONE;
+
+  selector: string | null = null;
 
   song: Song;
 
@@ -107,17 +63,18 @@ class SongBuilder {
       this.lines.push(this.currentLine);
     }
 
-    this.setCurrentProperties(this.sectionType);
+    this.setCurrentProperties(this.sectionType, this.selector);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.metadata.getSingle(KEY);
     this.currentLine.lineNumber = this.lines.length - 1;
     return this.currentLine;
   }
 
-  setCurrentProperties(sectionType: ParagraphType): void {
+  setCurrentProperties(sectionType: string, selector: string | null = null): void {
     if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
 
     this.currentLine.type = sectionType as LineType;
+    this.currentLine.selector = selector;
     this.currentLine.textFont = this.fontStack.textFont.clone();
     this.currentLine.chordFont = this.fontStack.chordFont.clone();
   }
@@ -181,17 +138,20 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    if (tag.name in START_TAG_TO_SECTION_TYPE) {
-      this.startSection(START_TAG_TO_SECTION_TYPE[tag.name], tag);
+    const [tagType, sectionType] = Tag.recognizeSectionTag(tag.name, tag.value);
+
+    if (!sectionType) {
       return;
     }
 
-    if (tag.name in END_TAG_TO_SECTION_TYPE) {
-      this.endSection(END_TAG_TO_SECTION_TYPE[tag.name], tag);
+    if (tagType === START_TAG) {
+      this.startSection(sectionType, tag);
+    } else if (tagType === END_TAG) {
+      this.endSection(sectionType === AUTO ? this.sectionType : sectionType, tag);
     }
   }
 
-  startSection(sectionType: ParagraphType, tag: Tag): void {
+  startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
 
     if (sectionType === PART && tag.value) {
@@ -200,16 +160,18 @@ class SongBuilder {
       this.sectionType = sectionType;
     }
 
-    this.setCurrentProperties(this.sectionType);
+    this.selector = tag.selector;
+    this.setCurrentProperties(sectionType, tag.selector);
   }
 
-  endSection(sectionType: ParagraphType, tag: Tag): void {
+  endSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(sectionType, tag);
     this.sectionType = NONE;
+    this.selector = null;
   }
 
-  checkCurrentSectionType(sectionType: ParagraphType, tag: Tag): void {
-    if (this.sectionType !== sectionType && !(sectionType === 'part' && tag.name === 'end_of_part')) {
+  checkCurrentSectionType(sectionType: string, tag: Tag): void {
+    if (this.sectionType !== sectionType) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }

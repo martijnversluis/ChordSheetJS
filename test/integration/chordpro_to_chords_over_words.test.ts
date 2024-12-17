@@ -7,13 +7,13 @@ describe('chordpro to chords over words', () => {
   it('correctly parses and converts the song structure', () => {
     const chordpro = heredoc`
       {title: Honey In The Rock}
-      
+
       {comment: Verse 1}
       [D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`;
 
     const expectedChordOverWords = heredoc`
       title: Honey In The Rock
-      
+
       Verse 1
       D        Dsus               D        Dsus
         Praying     for a miracle,  thirsty`;

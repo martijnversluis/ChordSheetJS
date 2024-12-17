@@ -100,7 +100,7 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatItemTop(item: Item, _metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
-      return item.value || '';
+      return item.label;
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -148,7 +148,7 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof Tag && item.isRenderable()) {
-      return item.value || '';
+      return item.label;
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -163,7 +163,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatEvaluatable(item: Ternary, metadata: Metadata) {
-    return item.evaluate(metadata, this.configuration.get('metadata.separator'));
+    return item.evaluate(metadata, this.configuration.metadataSeparator);
   }
 
   private formatChordLyricsPair(item: ChordLyricsPair, line: Line) {

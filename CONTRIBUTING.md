@@ -7,15 +7,15 @@ I love receiving pull requests from everyone! Please read this short document be
 ### `README.md`
 
 Are you trying to make changes to `README.md`? Wait! `README.md` is a auto-generated file.
-  - to make changes in the first part, go to [docs/README.hbs](docs/README.hbs)
+  - to make changes in the first part, go to [INTRO.md](INTRO.md)
   - the api docs are generated from JSdoc comment embedded in the code, so changing those
     comments will result in API doc changes.
 
-When your changes are complete, be sure to run `yarn readme` to regenerate `README.md` and commit the updated `README.md` _together_ with the `README.hbs` changes and/or API doc changes.
+When your changes are complete, be sure to run `yarn readme` to regenerate `README.md` and commit the updated `README.md` _together_ with the `INTRO.md` changes and/or API doc changes.
 
 ## Pull request guidelines
 
-N.B. I do not expect you to have all required knowledge and experience to meet these guidelines; 
+N.B. I do not expect you to have all required knowledge and experience to meet these guidelines;
 I'm happy to help you out! ❤️
 However, the better your PR meets these guidelines the sooner it will get merged.
 

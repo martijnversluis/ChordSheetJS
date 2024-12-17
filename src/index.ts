@@ -24,6 +24,24 @@ import TextFormatter from './formatter/text_formatter';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 
 import {
+  each,
+  evaluate,
+  fontStyleTag,
+  hasChordContents,
+  hasTextContents,
+  isChordLyricsPair,
+  isComment,
+  isEvaluatable,
+  isTag,
+  lineClasses,
+  lineHasContents,
+  paragraphClasses,
+  renderChord,
+  stripHTML,
+  when,
+} from './template_helpers';
+
+import {
   CHORUS,
   INDETERMINATE,
   NONE,
@@ -98,6 +116,7 @@ export default {
   Metadata,
   NONE,
   Paragraph,
+  PART,
   SoftLineBreak,
   Song,
   TAB,
@@ -106,5 +125,21 @@ export default {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
-  PART,
+  templateHelpers: {
+    isEvaluatable,
+    isChordLyricsPair,
+    lineHasContents,
+    isTag,
+    isComment,
+    stripHTML,
+    each,
+    when,
+    hasTextContents,
+    lineClasses,
+    paragraphClasses,
+    evaluate,
+    fontStyleTag,
+    renderChord,
+    hasChordContents,
+  },
 };

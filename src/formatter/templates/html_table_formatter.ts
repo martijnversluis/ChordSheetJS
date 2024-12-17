@@ -42,11 +42,18 @@ export default (
       ${ each(bodyParagraphs, (paragraph) => `
         <div class="${ paragraphClasses(paragraph) }">
           ${ when(paragraph.isLiteral(), () => `
+            ${ when(isPresent(paragraph.label), () => `
+              <table class="row">
+                <tr>
+                  <td>
+                    <h3 class="label">${ paragraph.label }</h3>
+                  </td>
+                </tr>
+              </table>
+            `) }
+
             <table class="literal">
               <tr>
-                ${ when(isPresent(paragraph.label), () => `
-                  <td class="label">${ paragraph.label }</td>
-                `) }
                 <td class="contents">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
               </tr>
             </table>
@@ -78,7 +85,6 @@ export default (
                       `) }
                     </tr>
                   `) }
-                  
                   ${ when(hasTextContents(line), () => `
                     <tr>
                       ${ each(line.items, (item) => `
@@ -88,9 +94,9 @@ export default (
                           ${ when(isComment(item), () => `
                             <td class="comment"${ fontStyleTag(line.textFont) }>${ item.value }</td>
                           `) }
-                          
+
                           ${ when(item.hasRenderableLabel(), () => `
-                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.value }</h3></td>
+                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.label }</h3></td>
                           `) }
                         `).elseWhen(isLiteral(item), () => `
                           <td class="literal">${ item.string }</td>

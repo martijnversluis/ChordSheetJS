@@ -35,15 +35,18 @@ export default (
 ): string => stripHTML(`
   ${ when(title, () => `<h1>${ title }</h1>`) }
   ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }
-  
+
   <div class="chord-sheet">
     ${ each(bodyParagraphs, (paragraph) => `
       <div class="${ paragraphClasses(paragraph) }">
         ${ when(paragraph.isLiteral(), () => `
-          <div class="row">
-            ${ when(isPresent(paragraph.label), () => `
+          ${ when(isPresent(paragraph.label), () => `
+            <div class="row">
               <h3 class="label">${ paragraph.label }</h3>
-            `) }
+            </div>
+          `) }
+
+          <div class="row">
             <div class="literal">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</div>
           </div>
         `).else(() => `
@@ -75,9 +78,9 @@ export default (
                     ${ when(isComment(item), () => `
                       <div class="comment">${ item.value }</div>
                     `) }
-                    
+
                     ${ when(item.hasRenderableLabel(), () => `
-                      <h3 class="label">${ item.value }</h3>
+                      <h3 class="label">${ item.label }</h3>
                     `) }
                   `).elseWhen(isEvaluatable(item), () => `
                     <div class="column">

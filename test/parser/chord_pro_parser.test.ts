@@ -20,7 +20,7 @@ describe('ChordProParser', () => {
       {title: Let it be}
       {subtitle: ChordSheetJS example version}
       {Chorus}
-      
+
       Let it [Am]be, let it [C/A][C/G#]be, let it [F]be, let it [C]be
       [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]`;
 
@@ -77,6 +77,25 @@ describe('ChordProParser', () => {
     expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
   });
 
+  it('correctly parses multiple whitespace characters', () => {
+    const chordSheet = '[C]Let it be         ';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be         ');
+  });
+
+  it('correctly parses percent characters in lyrics', () => {
+    const chordSheet = '[C]Let it be [Am]100%';
+    const song = new ChordProParser().parse(chordSheet);
+    const { items } = song.lines[0];
+
+    expect(items[0]).toBeChordLyricsPair('C', 'Let ');
+    expect(items[1]).toBeChordLyricsPair('', 'it be ');
+    expect(items[2]).toBeChordLyricsPair('Am', '100%');
+  });
+
   it('parses directive with empty value', () => {
     const song = new ChordProParser().parse('{c: }');
     expect(song.lines[0].items[0]).toBeTag('comment', '');
@@ -108,6 +127,15 @@ describe('ChordProParser', () => {
 
     expect(song.metadata.get('x_one_directive')).toEqual('Foo');
     expect(song.metadata.get('x_other_directive')).toEqual('Bar');
+  });
+
+  it('parses directives with attributes', () => {
+    const chordSheet = '{start_of_verse: label="Verse 1"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('start_of_verse');
+    expect(tag.attributes).toEqual({ label: 'Verse 1' });
   });
 
   it('parses meta directives', () => {
@@ -147,7 +175,7 @@ describe('ChordProParser', () => {
     const chordSheetWithParagraphs = heredoc`
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
       [C]Whisper words of [F]wis[G]dom, let it [F]be [C/E] [Dm] [C]
-      
+
       [Am]Whisper words of [Bb]wisdom, let it [F]be [C]`;
 
     const parser = new ChordProParser();
@@ -205,6 +233,35 @@ describe('ChordProParser', () => {
 
     expect(lineTypes).toEqual([VERSE, VERSE, VERSE, NONE, CHORUS, CHORUS, CHORUS, PART, PART, PART]);
     expect(parser.warnings).toHaveLength(0);
+  });
+
+  it('supports custom section types', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda: Coda 1}
+      Let it [Am]be
+      {end_of_coda}
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    expect(lines[0].type).toEqual('coda');
+    expect(parser.warnings).toHaveLength(0);
+  });
+
+  it('is forgiving to unended custom sections', () => {
+    const markedChordSheet = heredoc`
+      {start_of_coda}
+      Let it [Am]be
+
+      {start_of_interlude}
+      [C]Speaking words of [G]wisdom
+    `;
+
+    const parser = new ChordProParser();
+    const { lines } = parser.parse(markedChordSheet);
+    const lineTypes = lines.map((line) => line.type);
+    expect(lineTypes).toEqual(['coda', 'coda', 'coda', 'interlude', 'interlude']);
+    expect(parser.warnings).toHaveLength(1);
   });
 
   it('adds the transposeKey to lines', () => {
@@ -282,6 +339,26 @@ This part is [G]key
     const chordSheet = '{title: my \\{title\\}}';
     const song = new ChordProParser().parse(chordSheet);
     expect(song.title).toEqual('my {title}');
+  });
+
+  it('allows conditional directives', () => {
+    const chordSheet = '{title-guitar: Guitar song}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag).toBeTag('title', 'Guitar song', 'guitar');
+  });
+
+  it('allows negated conditional directives', () => {
+    const chordSheet = '{title-guitar!: Guitar song}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag).toBeTag('title', 'Guitar song', 'guitar');
+
+    expect(tag.isNegated).toBe(true);
   });
 
   it('parses annotation', () => {
@@ -451,7 +528,7 @@ Let it [Am]be
       A|---------------------------2-------------0--------------------|
       E|---------------------------3----------------------------------|
       {end_of_tab}
-      
+
       {start_of_verse}
       [D]Here comes the sun [G]Here comes [E7]the sun
       {end_of_verse}`;
@@ -611,9 +688,36 @@ Let it [Am]be
     expect(paragraphs).toHaveLength(1);
     expect(paragraph.type).toEqual(LILYPOND);
     expect(lines).toHaveLength(3);
+
     expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
     expect(lines[1].items[0]).toBeLiteral('LY line 1');
     expect(lines[2].items[0]).toBeLiteral('LY line 2');
+  });
+
+  it('parses conditional sections', () => {
+    const chordSheet = heredoc`
+      {start_of_ly-guitar: Intro}
+      LY line 1
+      LY line 2
+      {end_of_ly}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(LILYPOND);
+    expect(paragraph.selector).toEqual('guitar');
+    expect(lines).toHaveLength(3);
+
+    expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro', 'guitar');
+    expect(lines[1].items[0]).toBeLiteral('LY line 1');
+    expect(lines[2].items[0]).toBeLiteral('LY line 2');
+
+    expect(lines.every((line) => line.selector === 'guitar')).toBe(true);
   });
 
   it('parses soft line breaks when enabled', () => {
@@ -694,6 +798,40 @@ Let it [Am]be
         fingers: [],
       });
     });
+
+    it('parses conditional chord definitions', () => {
+      const chordSheet = '{define-guitar: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('define', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(false);
+
+      expect(tag.chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
+        fingers: [],
+      });
+    });
+
+    it('parses negated conditional chord definitions', () => {
+      const chordSheet = '{define-guitar!: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('define', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(true);
+
+      expect(tag.chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
+        fingers: [],
+      });
+    });
   });
 
   describe('{chord} chord definitions', () => {
@@ -732,10 +870,44 @@ Let it [Am]be
         fingers: [],
       });
     });
-  });
 
-  it('adds uses label of part type section for line type', () => {
-    const markedChordSheet = heredoc`
+    it('parses conditional chord definitions', () => {
+      const chordSheet = '{chord-ukulele: D7 base-fret 3 frets x 3 2 3 1 x }';
+
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('chord', 'D7 base-fret 3 frets x 3 2 3 1 x', 'ukulele');
+      expect(tag.isNegated).toBe(false);
+
+      expect(tag.chordDefinition).toEqual({
+        name: 'D7',
+        baseFret: 3,
+        frets: ['x', 3, 2, 3, 1, 'x'],
+        fingers: [],
+      });
+    });
+
+    it('parses negated conditional chord definitions', () => {
+      const chordSheet = '{chord-guitar!: Am base-fret 1 frets 0 2 2 1 0 0}';
+      const parser = new ChordProParser();
+      const song = parser.parse(chordSheet);
+      const tag = song.lines[0].items[0] as Tag;
+
+      expect(tag).toBeTag('chord', 'Am base-fret 1 frets 0 2 2 1 0 0', 'guitar');
+      expect(tag.isNegated).toBe(true);
+
+      expect(tag.chordDefinition).toEqual({
+        name: 'Am',
+        baseFret: 1,
+        frets: [0, 2, 2, 1, 0, 0],
+        fingers: [],
+      });
+    });
+
+    it('adds uses label of part type section for line type', () => {
+      const markedChordSheet = heredoc`
       {start_of_verse}
       Let it [Am]be
       {end_of_verse}
@@ -743,16 +915,16 @@ Let it [Am]be
       Let it [Am]be
       {end_of_part}`;
 
-    const parser = new ChordProParser();
-    const song = parser.parse(markedChordSheet);
-    const lineTypes = song.lines.map((line) => line.type);
+      const parser = new ChordProParser();
+      const song = parser.parse(markedChordSheet);
+      const lineTypes = song.lines.map((line) => line.type);
 
-    expect(lineTypes).toEqual([VERSE, VERSE, VERSE, 'intro', 'intro', 'intro']);
-    expect(parser.warnings).toHaveLength(0);
-  });
+      expect(lineTypes).toEqual([VERSE, VERSE, VERSE, 'intro', 'intro', 'intro']);
+      expect(parser.warnings).toHaveLength(0);
+    });
 
-  it('part short form can make verse and chord paragraph types', () => {
-    const markedChordSheet = heredoc`
+    it('part short form can make verse and chord paragraph types', () => {
+      const markedChordSheet = heredoc`
       {p: Intro (2x)}
       [Gm][F]
       {ep}
@@ -763,11 +935,12 @@ Let it [Am]be
       [Gm] This is the [F]first chorus
       {ep}`;
 
-    const parser = new ChordProParser();
-    const song = parser.parse(markedChordSheet);
-    const lineTypes = song.lines.map((line) => line.type);
+      const parser = new ChordProParser();
+      const song = parser.parse(markedChordSheet);
+      const lineTypes = song.lines.map((line) => line.type);
 
-    expect(lineTypes).toEqual(['intro', 'intro', 'intro', VERSE, VERSE, VERSE, CHORUS, CHORUS, CHORUS]);
-    expect(parser.warnings).toHaveLength(0);
+      expect(lineTypes).toEqual(['intro', 'intro', 'intro', VERSE, VERSE, VERSE, CHORUS, CHORUS, CHORUS]);
+      expect(parser.warnings).toHaveLength(0);
+    });
   });
 });

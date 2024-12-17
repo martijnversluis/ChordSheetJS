@@ -1,8 +1,18 @@
 import { INDETERMINATE } from '../constants';
-import Line, { LineType } from './line';
+import Line from './line';
 import Literal from './chord_pro/literal';
 import Tag from './tag';
 import Item from './item';
+
+function getCommonValue(values: string[], fallback: string | null): string | null {
+  const uniqueValues = [...new Set(values)];
+
+  if (uniqueValues.length === 1) {
+    return uniqueValues[0];
+  }
+
+  return fallback;
+}
 
 /**
  * Represents a paragraph of lines in a chord sheet
@@ -73,7 +83,7 @@ class Paragraph {
     const startTag = this.lines[0].items.find((item: Item) => item instanceof Tag && item.isSectionDelimiter());
 
     if (startTag) {
-      return (startTag as Tag).value;
+      return (startTag as Tag).label;
     }
 
     return null;
@@ -82,17 +92,21 @@ class Paragraph {
   /**
    * Tries to determine the common type for all lines. If the types for all lines are equal, it returns that type.
    * If not, it returns {@link INDETERMINATE}
+   * For the possible values, see {@link Line.type}
    * @returns {string}
    */
-  get type(): LineType {
+  get type(): string {
     const types = this.lines.map((line) => line.type);
-    const uniqueTypes = [...new Set(types)];
+    return getCommonValue(types, INDETERMINATE) as string;
+  }
 
-    if (uniqueTypes.length === 1) {
-      return uniqueTypes[0];
-    }
+  get selector(): string | null {
+    const selectors =
+      this.lines
+        .map((line) => line.selector)
+        .filter((selector) => selector !== null);
 
-    return INDETERMINATE;
+    return getCommonValue(selectors, null);
   }
 
   /**

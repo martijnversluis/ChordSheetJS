@@ -37,6 +37,7 @@ import {
   PdfConstructor,
   PdfDoc,
 } from './pdf_formatter/types';
+
 import {
   NimbusSansLBolBold,
   NimbusSansLBolItaBoldItalic,
@@ -553,7 +554,11 @@ class PdfFormatter extends Formatter {
           return items.flatMap((i): MeasuredItem[] => this.measureItem(i, nextItem, line));
         }
 
-        if ((isTag(item) && (isComment(item as Tag) || (item as Tag).isSectionDelimiter()))) {
+        const itemIsTag = isTag(item);
+        const itemIsComment = itemIsTag && isComment(item as Tag);
+        const itemIsSectionDelimiter = itemIsTag && (item as Tag).isSectionDelimiter();
+
+        if (isTag(item) && (itemIsComment || itemIsSectionDelimiter)) {
           return this.measureTag(item as Tag);
         }
 
@@ -937,7 +942,7 @@ class PdfFormatter extends Formatter {
             // Column break already handled at the beginning, so we don't need `continue`.
 
           } else if (item.isSectionDelimiter()) {
-            this.formatSectionLabel(item.value, x, yOffset);
+            this.formatSectionLabel(item.label, x, yOffset);
             x += width;
           } else if (isComment(item)) {
             this.formatComment(item.value, x, yOffset);
@@ -1454,7 +1459,7 @@ class PdfFormatter extends Formatter {
     const columnWidth = this.columnAvailableWidth();
     let tagLines: string[] = [];
     this.withFontConfiguration(font, () => {
-      tagLines = this.doc.splitTextToSize(item.value, columnWidth);
+      tagLines = this.doc.splitTextToSize(item.label, columnWidth);
     });
 
     return tagLines.map((line) => ({

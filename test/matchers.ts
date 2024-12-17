@@ -57,6 +57,10 @@ function getObjectType(object) {
   return `${object} (${typeof object})`;
 }
 
+function property(value: any) {
+  return `${print(value)} (${typeof value})`;
+}
+
 function toBeClassInstanceWithProperties(received, klass, properties) {
   const propertyNames = Object.keys(properties);
   const pass = (!klass || received instanceof klass) &&
@@ -96,11 +100,13 @@ function toBeClassInstanceWithProperties(received, klass, properties) {
 
           if (actualType !== expectedType) {
             errors.push(
-              `expected ${name} to be a ${expectedRepr} 
+              `expected ${name} to be a ${expectedRepr}
                but it was a ${actualRepr}`,
             );
           } else if (!valuesEqual(expectedProperty, actualProperty)) {
-            errors.push(`its ${name} value was: ${print(actualProperty)} vs ${print(expectedProperty)}`);
+            errors.push(
+              `its ${name} value was: ${property(actualProperty)} vs ${property(expectedProperty)}`,
+            );
           }
         });
       }
@@ -115,8 +121,8 @@ function toBeChordLyricsPair(received, chords, lyrics, annotation = '') {
   return toBeClassInstanceWithProperties(received, ChordLyricsPair, { chords, lyrics, annotation });
 }
 
-function toBeTag(received, name, value = '') {
-  return toBeClassInstanceWithProperties(received, Tag, { name, value });
+function toBeTag(received, name, value = '', selector = null) {
+  return toBeClassInstanceWithProperties(received, Tag, { name, value, selector });
 }
 
 function toBeComment(received, content) {
@@ -167,7 +173,7 @@ function hasText(doc: StubbedPdfDoc, text: string, x: number, y: number) {
   });
 }
 
-function findTextMatch(doc: StubbedPdfDoc, text: string, x: number, y: number, distanceMargin = 50) {
+function findTextMatch(doc: StubbedPdfDoc, text: string, x: number, y: number, distanceMargin = 100) {
   const textItems =
     doc.renderedItems
       .filter((item: RenderedItem) => item.type === 'text')

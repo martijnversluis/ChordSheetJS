@@ -66,13 +66,13 @@ function initializeKeyAndCapoSelectors(songKey) {
   // Initialize capo selector
   const capoPositions = getCapos(songKey);
   capoSelect.innerHTML = '';
-  
+
   // Add 'None' option first
   const noneOption = document.createElement('option');
   noneOption.value = 'none';
   noneOption.textContent = 'None';
   capoSelect.appendChild(noneOption);
-  
+
   // Add capo positions with their resulting keys
   Object.entries(capoPositions).forEach(([position, resultingKey]) => {
     const option = document.createElement('option');
@@ -88,7 +88,7 @@ const updatePDF = async (key, capo) => {
   if (!chordProText.trim() || !configText.trim()) {
     return;
   }
-  
+
   let configJson;
   try {
     configJson = JSON.parse(configText);
@@ -96,27 +96,27 @@ const updatePDF = async (key, capo) => {
     console.error('Invalid JSON in config editor:', e);
     return;
   }
-  
+
   try {
     let song = new ChordProParser().parse(chordProText, { softLineBreaks: true });
-    
+
     // If this is the first load or selectors haven't been initialized
     if (!keySelect.options.length) {
       initializeKeyAndCapoSelectors(song.key);
     }
-    
+
     // Use either the provided key/capo or the current selector values
     const initialKey = key || keySelect.value;
     const capoPosition = capo || capoSelect.value;
-    
+
     // Set the key first
     song = song.changeKey(initialKey);
-    
+
     // Apply capo if it's not 'none'
     if (capoPosition !== 'none') {
       song = song.setCapo(parseInt(capoPosition));
     }
-    
+
     const formatter = new PdfFormatter();
     const configuration = {
       key: initialKey,
@@ -180,7 +180,7 @@ function initialize() {
   // Set default selections
   chordproSelect.value = 0;
   configSelect.value = 0;
-  
+
   // Initial loading of examples
   loadChordproExample(chordproSelect.value);
   loadConfigExample(configSelect.value);

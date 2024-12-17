@@ -10,7 +10,9 @@ import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
 import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
-const { main, types, bundle } = packageJSON;
+const {
+  main, types, bundle,
+} = packageJSON;
 
 interface BuildOptions {
   force: boolean;
@@ -64,12 +66,28 @@ unibuild((u: Builder) => {
   });
 
   const chordProParser = u.asset('chordProParser', {
-    input: ['src/parser/chord_pro/grammar.pegjs', sectionsGrammar],
+    input: [
+      'src/parser/chord_pro/grammar.pegjs',
+      'src/parser/chord_definition/grammar.pegjs',
+      sectionsGrammar,
+      'src/parser/whitespace_grammar.pegjs',
+    ],
     outfile: 'src/parser/chord_pro/peg_parser.ts',
-    build: ({ release }: BuildOptions, baseGrammar: string, sections: string) => {
-      const parserSource = peggyGenerate(`${baseGrammar}\n\n${sections}`, release);
+    build: ({ release }: BuildOptions, ...grammars: string[]) => {
+      const parserSource = peggyGenerate(grammars.join('\n\n'), release);
       return `import * as helpers from './helpers';\n\n${parserSource}`;
     },
+  });
+
+  const chordDefinitionParser = u.asset('chordDefinitionParser', {
+    input: [
+      'src/parser/chord_definition/grammar.pegjs',
+      'src/parser/whitespace_grammar.pegjs',
+    ],
+    outfile: 'src/parser/chord_definition/peg_parser.ts',
+    build: ({ release }: BuildOptions, ...grammars: string[]) => (
+      peggyGenerate(grammars.join('\n\n'), release)
+    ),
   });
 
   const chordsOverWordsParser = u.asset('chordsOverWordsParser', {
@@ -92,12 +110,13 @@ unibuild((u: Builder) => {
     chordParser,
     chordProParser,
     chordsOverWordsParser,
+    chordDefinitionParser,
   ];
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
     outfile: main,
-    command: 'parcel build',
+    command: 'parcel build --no-cache',
     releaseOnly: true,
   });
 
@@ -118,14 +137,6 @@ unibuild((u: Builder) => {
       '--minify-whitespace --minify-identifiers --minify-syntax'
     ),
     releaseOnly: true,
-  });
-
-  u.asset('readme', {
-    input: ['doc/README.hbs', './jsdoc2md.json', 'src/'],
-    outfile: 'README.md',
-    command: ({ input: [template, config], outfile }) => (
-      `jsdoc2md -f src/**/*.ts -f src/*.ts --configure ${config} --template ${template} > ${outfile}`
-    ),
   });
 
   u.lint('checkTypes', {

@@ -69,8 +69,14 @@ export function createChordLyricsPair(chords, lyrics) {
   return new ChordLyricsPair(chords, lyrics);
 }
 
-export function createTag(name: string, value = '', chordDefinition: ChordDefinition | null = null): Tag {
-  const newTag = new Tag(name, value);
+export function createTag(
+  name: string,
+  value = '',
+  chordDefinition: ChordDefinition | null = null,
+  selector: string | null = null,
+  isNegated = false,
+): Tag {
+  const newTag = new Tag(name, value, null, {}, selector, isNegated);
   if (chordDefinition) newTag.chordDefinition = chordDefinition;
   return newTag;
 }
@@ -103,8 +109,13 @@ export function createSongFromAst(lines: SerializedItem[][]): Song {
   return new ChordSheetSerializer().deserialize(serializedSong);
 }
 
-export function tag(name: string, value = ''): SerializedTag {
-  return { type: 'tag', name, value };
+export function tag(name: string, value = '', attributes: Record<string, string> = {}): SerializedTag {
+  return {
+    type: 'tag',
+    name,
+    value,
+    attributes,
+  };
 }
 
 function splitContent(content: string | string[]): string[] {
@@ -114,12 +125,13 @@ function splitContent(content: string | string[]): string[] {
 export function section(
   sectionType: ContentType,
   tagValue: string,
+  attributes: Record<string, string>,
   content: string[] | string,
   startTag: SerializedTag | null = null,
   endTag: SerializedTag | null = null,
 ): SerializedItem[][] {
   return [
-    [startTag || tag(`start_of_${sectionType}`, tagValue)],
+    [startTag || tag(`start_of_${sectionType}`, tagValue, attributes)],
     ...splitContent(content).map((line) => [line]),
     [endTag || tag(`end_of_${sectionType}`)],
   ];

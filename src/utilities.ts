@@ -8,26 +8,33 @@ import {
   ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
 } from './constants';
 
-export const hasChordContents = (line: Line): boolean => (
-  line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords)
-);
+export function hasChordContents(line: Line): boolean {
+  return line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords);
+}
 
-export const hasRemarkContents = (line: Line): boolean => (
-  line.items.some((item) => (item instanceof ChordLyricsPair) && (item.chords || item.annotation))
-);
+export function hasRemarkContents(line: Line): boolean {
+  return line.items.some((item) => (item instanceof ChordLyricsPair) && (item.chords || item.annotation));
+}
 
-export const isEvaluatable = (item: Item): boolean => ('evaluate' in item) && (typeof item.evaluate === 'function');
+export function isEvaluatable(item: Item): boolean {
+  return ('evaluate' in item) && (typeof item.evaluate === 'function');
+}
 
-export const padLeft = (string: string, length: number): string => {
+export function padLeft(string: string, length: number): string {
   let paddedString = string;
   for (let l = string.length; l < length; l += 1, paddedString += ' ');
   return paddedString;
-};
+}
 
 type ObjectWithLength = any[] | string | null;
 
-export const isPresent = (object: ObjectWithLength): boolean => !!object && object.length > 0;
-export const isString = (obj: any): boolean => (typeof obj === 'string');
+export function isPresent(object: ObjectWithLength): boolean {
+  return !!object && object.length > 0;
+}
+
+export function isString(obj: any): boolean {
+  return typeof obj === 'string';
+}
 
 function dasherize(string: string): string {
   return string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
@@ -134,32 +141,30 @@ function determineKey({
   return new GradeSet(grades).determineGrade(modifier, preferredModifier, grade);
 }
 
-export function gradeToKey(
-  {
-    type,
-    modifier,
-    preferredModifier,
-    grade,
-    minor,
-  }: {
-    type: ChordType,
-    modifier: ModifierMaybe | null,
-    preferredModifier: Modifier | null,
-    grade: number,
-    minor: boolean,
-  },
-): string {
+export function gradeToKey({
+  type,
+  modifier,
+  preferredModifier,
+  grade,
+  minor,
+}: {
+  type: ChordType,
+  modifier: ModifierMaybe | null,
+  preferredModifier: Modifier | null,
+  grade: number,
+  minor: boolean,
+}): string {
   let key = determineKey({
     type, modifier, preferredModifier, grade, minor,
   });
 
   if (!key) {
     throw new Error(
-      `Could not resolve 
-      type=${type} 
-      modifier=${modifier} 
-      grade=${grade} 
-      preferredModifier=${preferredModifier} 
+      `Could not resolve
+      type=${type}
+      modifier=${modifier}
+      grade=${grade}
+      preferredModifier=${preferredModifier}
       minor=${minor}
 to a key`,
     );

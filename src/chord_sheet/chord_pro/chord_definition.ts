@@ -1,4 +1,5 @@
 import { Fret } from '../../constants';
+import { parse } from '../../parser/chord_definition/peg_parser';
 
 /**
  * Represents a chord definition.
@@ -51,8 +52,27 @@ class ChordDefinition {
     this.fingers = fingers || [];
   }
 
+  /**
+   * Parses a chord definition in the form of:
+   * - <name> base-fret <offset> frets <pos> <pos> … <pos>
+   * - <name> base-fret <offset> frets <pos> <pos> … <pos> fingers <pos> <pos> … <pos>
+   * @param chordDefinition
+   * @returns {ChordDefinition}
+   * @see https://chordpro.org/chordpro/directives-define/#common-usage
+   */
+  static parse(chordDefinition: string): ChordDefinition {
+    const {
+      name,
+      baseFret,
+      frets,
+      fingers,
+    } = parse(chordDefinition.trim());
+
+    return new ChordDefinition(name, baseFret, frets, fingers);
+  }
+
   clone(): ChordDefinition {
-    return new ChordDefinition(this.name, this.baseFret, this.frets, this.fingers);
+    return new ChordDefinition(this.name, this.baseFret, [...this.frets], [...this.fingers]);
   }
 }
 
