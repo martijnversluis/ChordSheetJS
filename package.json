@@ -36,7 +36,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^27.4.1",
     "@types/js-levenshtein": "^1",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.10.2",
     "@types/path-browserify": "^1",
     "concat-md": "^0.5.1",
     "detect-newline": "^4.0.1",
