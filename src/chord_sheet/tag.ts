@@ -4,7 +4,7 @@
  */
 import AstComponent from './ast_component';
 import TraceInfo from './trace_info';
-import ChordDefinition from './chord_pro/chord_definition';
+import ChordDefinition from '../chord_definition/chord_definition';
 
 import {
   ABC, BRIDGE, GRID, LILYPOND, TAB, VERSE,

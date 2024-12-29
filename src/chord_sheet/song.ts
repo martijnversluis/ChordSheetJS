@@ -16,10 +16,11 @@ import Tag, {
   START_OF_CHORUS,
 } from './tag';
 import SongBuilder from '../song_builder';
-import ChordDefinition from './chord_pro/chord_definition';
+import ChordDefinition from '../chord_definition/chord_definition';
 import Chord from '../chord';
 import FormattingContext from '../formatter/formatting_context';
 import { testSelector } from '../helpers';
+import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -477,6 +478,10 @@ Or set the song key before changing key:
     });
 
     return chordDefinitions;
+  }
+
+  get chordDefinitions(): ChordDefinitionSet {
+    return new ChordDefinitionSet(this.getChordDefinitions());
   }
 
   /**

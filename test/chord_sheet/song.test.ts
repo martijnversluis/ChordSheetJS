@@ -417,4 +417,24 @@ describe('Song', () => {
       expect(song.getChordDefinitions({ configuration, metadata })).toEqual({ Dm: dm });
     });
   });
+
+  describe('#chordDefinitions', () => {
+    it('returns the unique chord definitions in a song', () => {
+      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
+
+      const song = createSong([
+        createLine([
+          createTag('chord', 'CM7', cm7),
+        ]),
+        createLine([]),
+        createLine([
+          createTag('define', 'Dm', dm),
+        ]),
+      ]);
+
+      expect(song.chordDefinitions.get('CM7')).toEqual(cm7);
+      expect(song.chordDefinitions.get('Dm')).toEqual(dm);
+    });
+  });
 });
