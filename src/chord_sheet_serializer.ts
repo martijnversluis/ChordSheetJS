@@ -22,7 +22,7 @@ import {
 } from './serialized_types';
 import SoftLineBreak from './chord_sheet/soft_line_break';
 import { warn } from './utilities';
-import ChordDefinition from './chord_sheet/chord_pro/chord_definition';
+import ChordDefinition from './chord_definition/chord_definition';
 import SongBuilder from './song_builder';
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
