@@ -11,7 +11,7 @@ import Item from '../src/chord_sheet/item';
 import { ChordType, Fret, Modifier } from '../src/constants';
 import Key from '../src/key';
 import ChordSheetSerializer from '../src/chord_sheet_serializer';
-import ChordDefinition from '../src/chord_sheet/chord_pro/chord_definition';
+import ChordDefinition from '../src/chord_definition/chord_definition';
 
 import {
   ContentType,

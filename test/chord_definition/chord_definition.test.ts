@@ -1,6 +1,6 @@
-import { ChordDefinition } from '../../../src';
-import { Fret } from '../../../src/constants';
-import SUFFIX_MAPPING from '../../../src/normalize_mappings/suffix-normalize-mapping';
+import { ChordDefinition } from '../../src';
+import { Fret } from '../../src/constants';
+import SUFFIX_MAPPING from '../../src/normalize_mappings/suffix-normalize-mapping';
 
 describe('ChordDefinition', () => {
   describe('#clone', () => {

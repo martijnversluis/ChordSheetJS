@@ -64,7 +64,7 @@ Fret
     }
 
 FretNumber
-  = number:[1-9] {
+  = number:[0-9] {
       return parseInt(number, 10);
     }
 
