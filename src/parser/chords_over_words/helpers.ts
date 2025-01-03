@@ -1,4 +1,4 @@
-import { chopFirstWord } from '../parser_helpers';
+import { chopFirstWord as chopFirstWordFunc } from '../parser_helpers';
 
 import {
   SerializedChord,
@@ -66,13 +66,14 @@ function chordProperties(chord: Chord): ChordProperties {
 function constructChordLyricsPairs(
   chords: Chord[],
   lyrics: string,
+  chopFirstWord: boolean,
 ): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] {
   return chords.map((chord, i) => {
     const nextChord = chords[i + 1];
     const start = chord.column - 1;
     const end = nextChord ? nextChord.column - 1 : lyrics.length;
     const pairLyrics = lyrics.substring(start, end);
-    const [firstWord, rest] = chopFirstWord(pairLyrics);
+    const [firstWord, rest] = chopFirstWord ? chopFirstWordFunc(pairLyrics) : [pairLyrics, null];
     const chordData = (chord.type === 'chord') ? { chord: chordProperties(chord) } : { chords: chord.value };
 
     if (rest) {
@@ -86,11 +87,15 @@ function constructChordLyricsPairs(
   }).flat();
 }
 
-function pairChordsWithLyrics(chordsLine: ChordsLine, lyricsLine: LyricsLine): SerializedLine {
+function pairChordsWithLyrics(
+  chordsLine: ChordsLine,
+  lyricsLine: LyricsLine,
+  chopFirstWord: boolean,
+): SerializedLine {
   const { content: lyrics } = lyricsLine;
 
   const chords = chordsLine.items as Chord[];
-  const chordLyricsPairs = constructChordLyricsPairs(chords, lyrics);
+  const chordLyricsPairs = constructChordLyricsPairs(chords, lyrics, chopFirstWord);
   const firstChord = chords[0];
 
   if (firstChord && firstChord.column > 1) {
@@ -151,21 +156,25 @@ function lyricsToLine(lyricsLine: LyricsLine): SerializedLine {
   return { type: 'line', items: [] };
 }
 
-function buildLine(chordSheetLine: ChordSheetLine, nextLine: ChordSheetLine): [SerializedLine, boolean] {
+function buildLine(
+  chordSheetLine: ChordSheetLine,
+  nextLine: ChordSheetLine,
+  chopFirstWord: boolean,
+): [SerializedLine, boolean] {
   const { type } = chordSheetLine;
 
   if (type === 'lyricsLine') {
     return [lyricsToLine(chordSheetLine), false];
   } if (type === 'chordsLine') {
     if (nextLine && nextLine.type === 'lyricsLine' && nextLine.content && nextLine.content.length > 0) {
-      return [pairChordsWithLyrics(chordSheetLine, nextLine), true];
+      return [pairChordsWithLyrics(chordSheetLine, nextLine, chopFirstWord), true];
     }
     return [chordsToLine(chordSheetLine), false];
   }
   return [chordSheetLine, false];
 }
 
-function arrangeChordSheetLines(chordSheetLines: ChordSheetLine[]): SerializedLine[] {
+function arrangeChordSheetLines(chordSheetLines: ChordSheetLine[], chopFirstWord: boolean): SerializedLine[] {
   const arrangedLines: SerializedLine[] = [];
   let lineIndex = 0;
   const lastLineIndex = chordSheetLines.length - 1;
@@ -173,7 +182,7 @@ function arrangeChordSheetLines(chordSheetLines: ChordSheetLine[]): SerializedLi
   while (lineIndex <= lastLineIndex) {
     const chordSheetLine = chordSheetLines[lineIndex];
     const nextLine = chordSheetLines[lineIndex + 1];
-    const [arrangedLine, skipNextLine] = buildLine(chordSheetLine, nextLine);
+    const [arrangedLine, skipNextLine] = buildLine(chordSheetLine, nextLine, chopFirstWord);
     arrangedLines.push(arrangedLine);
     lineIndex += (skipNextLine ? 2 : 1);
   }
@@ -185,7 +194,8 @@ export function composeChordSheetContents(
   newLine: NewLine | null,
   lines: ChordSheetLine[],
   trailingLine: ChordSheetLine | null,
+  chopFirstWord: boolean,
 ) {
   const allLines = combineChordSheetLines(newLine, lines, trailingLine);
-  return arrangeChordSheetLines(allLines);
+  return arrangeChordSheetLines(allLines, chopFirstWord);
 }

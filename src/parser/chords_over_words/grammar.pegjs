@@ -11,7 +11,7 @@ ChordSheet
 
 ChordSheetContents
   = newLine:NewLine? lines:ChordSheetLineWithNewLine* trailingLine:ChordSheetLine? {
-    return helpers.composeChordSheetContents(newLine, lines, trailingLine);
+    return helpers.composeChordSheetContents(newLine, lines, trailingLine, options.chopFirstWord !== false);
   }
 
 ChordSheetLineWithNewLine
