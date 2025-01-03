@@ -565,7 +565,7 @@ describe('HtmlDivFormatter', () => {
     expect(typeof cssObject).toEqual('object');
   });
 
-  it('applies the correct normalization when a capo is active', () => {
+  it('applies the correct normalization when a capo is active and decapo is on', () => {
     const songWithCapo = new ChordSheetSerializer().deserialize({
       type: 'chordSheet',
       lines: [
@@ -607,6 +607,58 @@ describe('HtmlDivFormatter', () => {
             </div>
             <div class="column">
               <div class="chord">E</div>
+              <div class="lyrics">more</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlDivFormatter({ decapo: true }).format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('does not apply normalization for capo when decapo is off', () => {
+    const songWithCapo = new ChordSheetSerializer().deserialize({
+      type: 'chordSheet',
+      lines: [
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'key', value: 'F' }],
+        },
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'capo', value: '1' }],
+        },
+        {
+          type: 'line',
+          items: [
+            { type: 'chordLyricsPair', chords: '', lyrics: 'My ' },
+            { type: 'chordLyricsPair', chords: 'Dm7', lyrics: 'heart has always ' },
+            { type: 'chordLyricsPair', chords: 'C/E', lyrics: 'longed for something ' },
+            { type: 'chordLyricsPair', chords: 'F', lyrics: 'more' },
+          ],
+        },
+      ],
+    });
+
+    const expectedChordSheet = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="column">
+              <div class="chord"></div>
+              <div class="lyrics">My </div>
+            </div>
+            <div class="column">
+              <div class="chord">Dm7</div>
+              <div class="lyrics">heart has always </div>
+            </div>
+            <div class="column">
+              <div class="chord">C/E</div>
+              <div class="lyrics">longed for something </div>
+            </div>
+            <div class="column">
+              <div class="chord">F</div>
               <div class="lyrics">more</div>
             </div>
           </div>

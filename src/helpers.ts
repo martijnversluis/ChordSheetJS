@@ -58,8 +58,21 @@ interface RenderChordOptions {
   renderKey?: Key | null;
   useUnicodeModifier?: boolean;
   normalizeChords?: boolean;
+  decapo?: boolean;
 }
 
+/**
+ * Renders a chord in the context of a line and song and taking into account some options
+ * @param chordString The chord to render
+ * @param line The line the chord is in
+ * @param song The song the line is in
+ * @param renderKey The key to render the chord in. If not provided, the line key will be used,
+ * or the song key if the line key is not provided.
+ * @param useUnicodeModifier Whether to use unicode modifiers ('\u266f'/'\u266d') or plain text ('#'/'b').
+ * Default `false`.
+ * @param normalizeChords Whether to normalize the chord to the key (default `true`)
+ * @param decapo Whether to transpose all chords to eliminate the capo (default `false`)
+ */
 export function renderChord(
   chordString: string,
   line: Line,
@@ -68,12 +81,13 @@ export function renderChord(
     renderKey = null,
     useUnicodeModifier = false,
     normalizeChords = true,
+    decapo = false,
   }: RenderChordOptions = {},
 ): string {
   const chord = Chord.parse(chordString);
   const songKey = song.key;
   const capoString = song.metadata.getSingle(CAPO);
-  const capo = capoString ? parseInt(capoString, 10) : null;
+  const capo = (decapo && capoString) ? parseInt(capoString, 10) : null;
   const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
   if (!chord) {

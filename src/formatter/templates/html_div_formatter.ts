@@ -68,6 +68,7 @@ export default (
                               renderKey: key,
                               useUnicodeModifier: configuration.useUnicodeModifiers,
                               normalizeChords: configuration.normalizeChords,
+                              decapo: configuration.decapo,
                             },
                           ) }
                         </div>

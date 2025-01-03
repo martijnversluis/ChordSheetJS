@@ -615,7 +615,7 @@ describe('HtmlTableFormatter', () => {
     expect(typeof cssObject).toEqual('object');
   });
 
-  it('applies the correct normalization when a capo is active', () => {
+  it('applies the correct normalization when a capo is active and decapo is on', () => {
     const songWithCapo = new ChordSheetSerializer().deserialize({
       type: 'chordSheet',
       lines: [
@@ -648,6 +648,54 @@ describe('HtmlTableFormatter', () => {
               <td class="chord">C#m7</td>
               <td class="chord">B/D#</td>
               <td class="chord">E</td>
+            </tr>
+            <tr>
+              <td class="lyrics">My </td>
+              <td class="lyrics">heart has always </td>
+              <td class="lyrics">longed for something </td>
+              <td class="lyrics">more</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `);
+
+    expect(new HtmlTableFormatter({ decapo: true }).format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('does not apply normalization for capo when decapo is off', () => {
+    const songWithCapo = new ChordSheetSerializer().deserialize({
+      type: 'chordSheet',
+      lines: [
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'key', value: 'F' }],
+        },
+        {
+          type: 'line',
+          items: [{ type: 'tag', name: 'capo', value: '1' }],
+        },
+        {
+          type: 'line',
+          items: [
+            { type: 'chordLyricsPair', chords: '', lyrics: 'My ' },
+            { type: 'chordLyricsPair', chords: 'Dm7', lyrics: 'heart has always ' },
+            { type: 'chordLyricsPair', chords: 'C/E', lyrics: 'longed for something ' },
+            { type: 'chordLyricsPair', chords: 'F', lyrics: 'more' },
+          ],
+        },
+      ],
+    });
+
+    const expectedChordSheet = stripHTML(`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="chord"></td>
+              <td class="chord">Dm7</td>
+              <td class="chord">C/E</td>
+              <td class="chord">F</td>
             </tr>
             <tr>
               <td class="lyrics">My </td>

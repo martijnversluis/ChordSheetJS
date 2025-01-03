@@ -124,7 +124,7 @@ Let it be, let it be, let it be, let it be`;
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
   });
 
-  it('applies the correct normalization when a capo is active', () => {
+  it('applies the correct normalization when a capo is active and decapo is on', () => {
     const songWithCapo = createSongFromAst([
       [tag('key', 'F')],
       [tag('capo', '1')],
@@ -138,6 +138,25 @@ Let it be, let it be, let it be, let it be`;
 
     const expectedChordSheet = heredoc`
          C#m7             B/D#                 E
+      My heart has always longed for something more`;
+
+    expect(new TextFormatter({ decapo: true }).format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('does not apply normalization for capo when decapo is off', () => {
+    const songWithCapo = createSongFromAst([
+      [tag('key', 'F')],
+      [tag('capo', '1')],
+      [
+        chordLyricsPair('', 'My '),
+        chordLyricsPair('Dm7', 'heart has always '),
+        chordLyricsPair('C/E', 'longed for something '),
+        chordLyricsPair('F', 'more'),
+      ],
+    ]);
+
+    const expectedChordSheet = heredoc`
+         Dm7              C/E                  F
       My heart has always longed for something more`;
 
     expect(new TextFormatter().format(songWithCapo)).toEqual(expectedChordSheet);

@@ -22,6 +22,7 @@ export type ConfigurationProperties = Record<string, any> & {
   delegates: Partial<Record<ContentType, Delegate>>;
   instrument?: InstrumentConfigurationProperties;
   user?: UserConfigurationProperties;
+  decapo?: boolean;
 };
 
 export const defaultConfiguration: ConfigurationProperties = {
@@ -58,6 +59,8 @@ class Configuration {
 
   user?: UserConfiguration;
 
+  decapo?: boolean;
+
   get metadataSeparator(): string {
     return this.metadata.separator ?? '';
   }
@@ -73,6 +76,7 @@ class Configuration {
     this.delegates = { ...defaultConfiguration.delegates, ...configuration.delegates };
     this.instrument = configuration.instrument ? new InstrumentConfiguration(configuration.instrument) : undefined;
     this.user = configuration.user ? new UserConfiguration(configuration.user) : undefined;
+    this.decapo = !!configuration.decapo;
   }
 }
 

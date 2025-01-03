@@ -119,6 +119,7 @@ class ChordsOverWordsFormatter extends Formatter {
       {
         renderKey: this.configuration.key,
         normalizeChords: this.configuration.normalizeChords,
+        decapo: this.configuration.decapo,
       },
     );
   }
