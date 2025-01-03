@@ -594,4 +594,21 @@ describe('ChordsOverWordsParser', () => {
       expect(lineItems[8]).toBeChordLyricsPair('C', 'be');
     });
   });
+
+  describe('with options chopFirstWord=false', () => {
+    it('does not chop the first word', () => {
+      const chordOverWords = heredoc`
+               Am         C/G
+        Let it be, let it be`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords, { chopFirstWord: false });
+      const { lines } = song;
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('', 'Let it ');
+      expect(linePairs[1]).toBeChordLyricsPair('Am', 'be, let it ');
+      expect(linePairs[2]).toBeChordLyricsPair('C/G', 'be');
+    });
+  });
 });

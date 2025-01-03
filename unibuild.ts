@@ -95,6 +95,7 @@ unibuild((u: Builder) => {
       'src/parser/chords_over_words/grammar.pegjs',
       'src/parser/chord/base_grammar.pegjs',
       chordSuffixGrammar,
+      'src/parser/whitespace_grammar.pegjs',
     ],
     outfile: 'src/parser/chords_over_words/peg_parser.ts',
     build: ({ release }: BuildOptions, ...grammars: string[]) => {

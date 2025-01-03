@@ -11,7 +11,7 @@ ChordSheet
 
 ChordSheetContents
   = newLine:NewLine? lines:ChordSheetLineWithNewLine* trailingLine:ChordSheetLine? {
-    return helpers.composeChordSheetContents(newLine, lines, trailingLine);
+    return helpers.composeChordSheetContents(newLine, lines, trailingLine, options.chopFirstWord !== false);
   }
 
 ChordSheetLineWithNewLine
@@ -39,7 +39,7 @@ ChordsLine
     }
 
 RhythmSymbolWithSpacing
-  = _ symbol:RhythmSymbol _ {
+  = _S_ symbol:RhythmSymbol _S_ {
       return symbol;
     }
 
@@ -64,12 +64,12 @@ NonEmptyLyrics
   = $(WordChar+)
 
 ChordWithSpacing
-  = _ chord:Chord _ {
+  = _S_ chord:Chord _S_ {
       return chord;
     }
 
 DirectionLine
-  = line:$(_ keyword:Keyword _ WordChar* _) {
+  = line:$(_S_ keyword:Keyword _S_ WordChar* _S_) {
       return {
         type: "line",
         items: [
@@ -103,7 +103,7 @@ Metadata
     }
 
 InlineMetadata
-  = key:$(MetadataKey) _ Colon _ value:$(MetadataValue) {
+  = key:$(MetadataKey) _S_ Colon _S_ value:$(MetadataValue) {
       return {
         type: "line",
         items: [
@@ -121,12 +121,12 @@ MetadataPair
   = MetadataPairWithBrackets / MetadataPairWithoutBrackets
 
 MetadataPairWithBrackets
-  = "{" _ pair:MetadataPairWithoutBrackets _ "}" {
+  = "{" _S_ pair:MetadataPairWithoutBrackets _S_ "}" {
     return pair;
   }
 
 MetadataPairWithoutBrackets
-  = key:$(MetadataKey) _ Colon _ value:$(MetadataValue) {
+  = key:$(MetadataKey) _S_ Colon _S_ value:$(MetadataValue) {
     return [key, value];
   }
 
@@ -142,17 +142,5 @@ MetadataValue
 MetadataSeparator
   = "---" NewLine
 
-_ "whitespace"
+_S_ "whitespace"
   = [ \t]*
-
-NewLine
-  = CarriageReturn / LineFeed / CarriageReturnLineFeed
-
-CarriageReturnLineFeed
-  = CarriageReturn LineFeed
-
-LineFeed
-  = "\n"
-
-CarriageReturn
-  = "\r"

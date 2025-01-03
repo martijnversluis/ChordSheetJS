@@ -7,7 +7,8 @@ import esbuild from 'esbuild';
 
 const parserName = process.argv[2];
 const args = process.argv.slice(3);
-const skipChordGrammar = args.includes('--skip-chord-grammar');
+const includeChordGrammar = args.includes('--include-chord-grammar');
+const includeSectionsGrammar = args.includes('--include-sections-grammar');
 
 const parserFolder = `./src/parser/${parserName}`;
 const grammarFile = `${parserFolder}/grammar.pegjs`;
@@ -19,10 +20,10 @@ const sectionsGrammarFile = './src/parser/chord_pro/sections_grammar.pegjs';
 const chordDefinitionGrammarFile = './src/parser/chord_definition/grammar.pegjs';
 
 const parserGrammar = fs.readFileSync(grammarFile, 'utf8');
-const chordGrammar = skipChordGrammar ? '' : fs.readFileSync(chordGrammarFile);
+const chordGrammar = includeChordGrammar ? fs.readFileSync(chordGrammarFile) : '';
 const chordSuffixGrammar = fs.readFileSync(chordSuffixGrammarFile);
 const whitespaceGrammar = fs.readFileSync(whitespaceGrammarFile);
-const sectionsGrammar = fs.readFileSync(sectionsGrammarFile);
+const sectionsGrammar = includeSectionsGrammar ? fs.readFileSync(sectionsGrammarFile) : '';
 const chordDefinitionGrammar = fs.readFileSync(chordDefinitionGrammarFile);
 
 const result = esbuild.buildSync({
