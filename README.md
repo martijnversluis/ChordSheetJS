@@ -6,6 +6,7 @@ A JavaScript library for parsing and formatting chord sheets
 
 - [Installation](#installation)
 - [How to ...?](#how-to-)
+- [Try it online](https://martijnversluis.github.io/ChordFiddle/)
 - [Supported ChordPro directives](#supported-chordpro-directives)
 - [Project board](https://github.com/users/martijnversluis/projects/4/views/1)
 - [API docs](https://martijnversluis.github.io/ChordSheetJS/)
