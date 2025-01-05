@@ -36,7 +36,7 @@ describe('renderChord helper', () => {
       25 | "G"     | 3    |         | "A"              | "F"       | true   | "C#m7"  |
       26 | "G"     | 3    | "Bb"    |                  | "F"       | true   | "Bm7"   |
       27 | "G"     | 3    | "Bb"    | "A"              |           | true   | "Ebm7"  |
-      28 | "G"     | 3    | "Bb"    | "A"              | "F"       | true   | "C#m7"  |
+      28 | "G"     | 3    | "Bb"    | "A"              | "F"       | true   | "Dbm7"  |
       29 |         | 3    |         |                  |           | false  | "Em7"   |
       30 |         | 3    |         |                  | "F"       | false  | "Em7"   |
       31 |         | 3    |         | "A"              |           | false  | "Em7"   |
@@ -45,7 +45,7 @@ describe('renderChord helper', () => {
       34 |         | 3    | "Bb"    |                  | "F"       | false  | "Em7"   |
       35 |         | 3    | "Bb"    | "A"              |           | false  | "Em7"   |
       36 |         | 3    | "Bb"    | "A"              | "F"       | false  | "Em7"   |
-      37 | "G"     | 3    |         |                  |           | false  | "Em7"  |
+      37 | "G"     | 3    |         |                  |           | false  | "Em7"   |
       38 | "G"     | 3    |         |                  | "F"       | false  | "Dm7"   |
       39 | "G"     | 3    |         | "A"              |           | false  | "F#m7"  |
       40 | "G"     | 3    |         | "A"              | "F"       | false  | "Em7"   |
@@ -65,6 +65,34 @@ describe('renderChord helper', () => {
 
       const renderedChord = renderChord('Em7', line, song, { renderKey: Key.wrap(renderKey), decapo });
       expect(renderedChord).toEqual(outcome);
+    });
+
+    it('respects a higher # rendering key', () => {
+      const song = new Song();
+      song.metadata.add('key', 'A');
+      const renderedChord = renderChord('A', new Line(), song, { renderKey: Key.parse('A#') });
+      expect(renderedChord).toEqual('A#');
+    });
+
+    it('respects a lower # rendering key', () => {
+      const song = new Song();
+      song.metadata.add('key', 'A');
+      const renderedChord = renderChord('A', new Line(), song, { renderKey: Key.parse('G#') });
+      expect(renderedChord).toEqual('G#');
+    });
+
+    it('respects a higher b rendering key', () => {
+      const song = new Song();
+      song.metadata.add('key', 'A');
+      const renderedChord = renderChord('A', new Line(), song, { renderKey: Key.parse('Bb') });
+      expect(renderedChord).toEqual('Bb');
+    });
+
+    it('respects a lower b rendering key', () => {
+      const song = new Song();
+      song.metadata.add('key', 'A');
+      const renderedChord = renderChord('A', new Line(), song, { renderKey: Key.parse('Ab') });
+      expect(renderedChord).toEqual('Ab');
     });
   });
 
@@ -99,7 +127,7 @@ describe('renderChord helper', () => {
       25 | "Sol"     | 3    |         | "La"             | "Fa"      | true   | "Do#m7"  |
       26 | "Sol"     | 3    | "Sib"   |                  | "Fa"      | true   | "Sim7"   |
       27 | "Sol"     | 3    | "Sib"   | "La"             |           | true   | "Mibm7"  |
-      28 | "Sol"     | 3    | "Sib"   | "La"             | "Fa"      | true   | "Do#m7"  |
+      28 | "Sol"     | 3    | "Sib"   | "La"             | "Fa"      | true   | "Rebm7"  |
       29 |           | 3    |         |                  |           | false  | "Mim7"   |
       30 |           | 3    |         |                  | "Fa"      | false  | "Mim7"   |
       31 |           | 3    |         | "La"             |           | false  | "Mim7"   |

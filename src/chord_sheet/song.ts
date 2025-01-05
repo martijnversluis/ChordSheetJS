@@ -252,18 +252,33 @@ class Song extends MetadataAccessors {
    * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transpose(delta: number, { normalizeChordSuffix = false } = {}): Song {
+  transpose(
+    delta: number,
+    { modifier, normalizeChordSuffix = false }:
+      { modifier?: Modifier | null, normalizeChordSuffix?: boolean } = {},
+  ): Song {
     let transposedKey: Key | null = null;
     const song = (this as Song);
 
     return song.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         transposedKey = Key.wrapOrFail(item.value).transpose(delta);
+
+        if (modifier) {
+          transposedKey = transposedKey.useModifier(modifier);
+        }
+
         return item.set({ value: transposedKey.toString() });
       }
 
       if (item instanceof ChordLyricsPair) {
-        return item.transpose(delta, transposedKey, { normalizeChordSuffix });
+        let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
+
+        if (modifier) {
+          chord = chord.useModifier(modifier);
+        }
+
+        return chord;
       }
 
       return item;
@@ -308,7 +323,7 @@ class Song extends MetadataAccessors {
     const currentKey = this.requireCurrentKey();
     const targetKey = Key.wrapOrFail(newKey);
     const delta = currentKey.distanceTo(targetKey);
-    const transposedSong = this.transpose(delta);
+    const transposedSong = this.transpose(delta, { modifier: targetKey.modifier });
 
     if (targetKey.modifier) {
       return transposedSong.useModifier(targetKey.modifier);
