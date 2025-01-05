@@ -64,6 +64,7 @@
     "build": "yarn unibuild",
     "build:release": "yarn unibuild --force --release",
     "ci": "yarn install && yarn unibuild ci",
+    "debug:chord": "yarn build && tsx script/debug_parser.ts chord",
     "debug:chordpro": "yarn build && tsx script/debug_parser.ts chord_pro",
     "debug:chords-over-words": "yarn build && tsx script/debug_parser.ts chords_over_words --include-chord-grammar",
     "eslint": "node_modules/.bin/eslint",
