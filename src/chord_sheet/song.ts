@@ -334,6 +334,14 @@ class Song extends MetadataAccessors {
 
   /**
    * Returns a copy of the song with all chords changed to the specified modifier.
+   *
+   * Examples:
+   *
+   * ```js
+   * song.useModifier('#');
+   * song.useModifier('b');
+   * ```
+   *
    * @param {Modifier} modifier the new modifier
    * @returns {Song} the changed song
    */
