@@ -62,7 +62,7 @@
     "tsc": "^2.0.4",
     "tsx": "^4.10.5",
     "typedoc": "^0.27.6",
-    "typescript": "^5.6.2",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.19.1"
   },
   "scripts": {
