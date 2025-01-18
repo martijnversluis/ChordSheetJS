@@ -14,7 +14,7 @@ function splitSectionContent(content: string): string[] {
     .split('\n');
 }
 
-export function buildLine(items: SerializedItem[]): SerializedLine {
+export function buildLine(items: any[]): SerializedLine {
   return {
     type: 'line',
     items,
@@ -98,4 +98,43 @@ export function breakChordLyricsPairOnSoftLineBreak(
   }
 
   return [addedLeadingChord, first || null, ...rest].filter((item) => item !== null);
+}
+
+function isChordLyricsPair(item: SerializedItem): boolean {
+  return typeof item !== 'string' && item.type === 'chordLyricsPair';
+}
+
+function combinableChordLyricsPairs(itemA: SerializedItem, itemB: SerializedItem): boolean {
+  return (
+    isChordLyricsPair(itemA) &&
+    isChordLyricsPair(itemB) &&
+    (itemA as SerializedChordLyricsPair).chords.length > 0 &&
+    (itemB as SerializedChordLyricsPair).chords.length === 0
+  );
+}
+
+export function combineChordLyricsPairs(items: SerializedItem[], chopFirstWord?: boolean): SerializedItem[] {
+  if (chopFirstWord !== false) {
+    return items;
+  }
+
+  const combinedItems: SerializedItem[] = [];
+
+  for (let i = 0, { length } = items; i < length; i += 1) {
+    if (combinableChordLyricsPairs(items[i], items[i + 1])) {
+      const item = items[i] as SerializedChordLyricsPair;
+      const nextItem = items[i + 1] as SerializedChordLyricsPair;
+
+      combinedItems.push({
+        ...item,
+        lyrics: `${item.lyrics}${nextItem.lyrics}`,
+      });
+
+      i += 1;
+    } else {
+      combinedItems.push(items[i]);
+    }
+  }
+
+  return combinedItems;
 }
