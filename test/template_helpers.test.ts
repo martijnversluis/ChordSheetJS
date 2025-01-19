@@ -12,7 +12,7 @@ import {
   Ternary,
 } from '../src';
 
-import Configuration from '../src/formatter/configuration/configuration';
+import { configure } from '../src/formatter/configuration';
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
 import { newlinesToBreaks, renderSection } from '../src/template_helpers';
@@ -311,7 +311,7 @@ describe('template_helpers', () => {
     it('evaluates the item', () => {
       const item = new Ternary({ variable: 'composer' });
       const metadata = new Metadata({ composer: ['John', 'Mary'] });
-      const configuration = new Configuration({ metadata: { separator: ' and ' } });
+      const configuration = configure({ metadata: { separator: ' and ' } });
 
       expect(evaluate(item, metadata, configuration)).toEqual('John and Mary');
     });
@@ -346,13 +346,11 @@ describe('template_helpers', () => {
         createLine([createLiteral('hello world')], ABC),
       ]);
 
-      const configuration = new Configuration(
-        {
-          delegates: {
-            abc: (string: string) => string.toUpperCase(),
-          },
+      const configuration = configure({
+        delegates: {
+          abc: (string: string) => string.toUpperCase(),
         },
-      );
+      });
 
       expect(renderSection(paragraph, configuration)).toEqual('HELLO WORLD');
     });

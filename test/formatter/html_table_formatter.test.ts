@@ -1,18 +1,25 @@
-import {
-  ABC, HtmlTableFormatter, LILYPOND, TAB,
-} from '../../src';
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 import { ContentType } from '../../src/serialized_types';
+import { GRID } from '../../src/constants';
 
 import {
-  chordLyricsPair, createSongFromAst, heredoc, html, section,
+  ABC,
+  HtmlTableFormatter,
+  LILYPOND,
+  TAB,
+} from '../../src';
+
+import {
+  chordLyricsPair,
+  createSongFromAst,
+  heredoc,
+  html,
+  section,
 } from '../utilities';
-import Configuration from '../../src/formatter/configuration/configuration';
-import { GRID } from '../../src/constants';
 
 describe('HtmlTableFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
@@ -1070,11 +1077,11 @@ describe('HtmlTableFormatter', () => {
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration({
+          const configuration = {
             delegates: {
               [type]: (content: string) => content.toUpperCase(),
             },
-          });
+          };
 
           const expectedOutput = html`
             <div class="chord-sheet">
@@ -1107,7 +1114,7 @@ describe('HtmlTableFormatter', () => {
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration();
+          const configuration = {};
 
           const expectedOutput = html`
             <div class="chord-sheet">
@@ -1132,7 +1139,7 @@ describe('HtmlTableFormatter', () => {
             </div>
           `;
 
-          expect(new HtmlTableFormatter({ configuration }).format(song)).toEqual(expectedOutput);
+          expect(new HtmlTableFormatter(configuration).format(song)).toEqual(expectedOutput);
         });
       });
     });

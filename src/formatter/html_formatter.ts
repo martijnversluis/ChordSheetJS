@@ -1,5 +1,5 @@
 import Formatter from './formatter';
-import Configuration from './configuration/configuration';
+import Configuration from './configuration';
 import Song from '../chord_sheet/song';
 import { scopeCss } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';

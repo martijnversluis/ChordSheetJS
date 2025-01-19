@@ -6,7 +6,7 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import Paragraph from './chord_sheet/paragraph';
 import Metadata from './chord_sheet/metadata';
-import Configuration, { defaultDelegate, Delegate } from './formatter/configuration/configuration';
+import Configuration, { defaultDelegate, Delegate } from './formatter/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import { renderChord } from './helpers';
@@ -94,7 +94,7 @@ export function paragraphClasses(paragraph: Paragraph): string {
 }
 
 export function evaluate(item: Evaluatable, metadata: Metadata, configuration: Configuration): string {
-  return item.evaluate(metadata, configuration.metadataSeparator);
+  return item.evaluate(metadata, configuration.metadata.separator);
 }
 
 export function fontStyleTag(font: Font): string {
