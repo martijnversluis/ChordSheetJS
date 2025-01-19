@@ -40,6 +40,13 @@ function dasherize(string: string): string {
   return string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 }
 
+function scopeSelector(selector: string, scope: string): string {
+  return selector
+    .split(',')
+    .map((s) => `${scope} ${s.trim()}`.trim())
+    .join(',\n');
+}
+
 type CssObject = Record<string, Record<string, string>>;
 
 export function scopeCss(css: CssObject, scope = ''): string {
@@ -51,7 +58,7 @@ export function scopeCss(css: CssObject, scope = ''): string {
         .map(([property, value]) => `${dasherize(property)}: ${value};`)
         .join('\n  ');
 
-      const scopedSelector = `${scope} ${selector}`.trim();
+      const scopedSelector = scopeSelector(selector, scope);
 
       return `
 ${scopedSelector} {
