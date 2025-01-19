@@ -23,10 +23,10 @@ Line
   = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
       return helpers.buildLine([
           lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
-          ...tokens.flat(),
+          ...helpers.combineChordLyricsPairs(tokens.flat(), options.chopFirstWord),
           chords ? { type: 'chordLyricsPair', chords, lyrics: '' } : null,
           comment ? { type: 'comment', comment } : null,
-        ].filter(x => x),
+        ].filter(x => x !== null),
       );
     }
 

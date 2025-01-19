@@ -3606,10 +3606,9 @@ __metadata:
     ts-jest: "npm:^29.2.3"
     ts-node: "npm:^10.9.2"
     ts-pegjs: "npm:^3.0.0"
-    tsc: "npm:^2.0.4"
     tsx: "npm:^4.10.5"
     typedoc: "npm:^0.27.1"
-    typescript: "npm:^5.6.2"
+    typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
@@ -9263,15 +9262,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsc@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "tsc@npm:2.0.4"
-  bin:
-    tsc: bin/tsc
-  checksum: 10c0/4651d344891d995e62ab7ca64ce0a8597bbdc2d392886c9956d15caab4dc9bfe86e759d3385b3f97c49fb5294194a161d6812673e3f51e46357c82482f32c3ab
-  languageName: node
-  linkType: hard
-
 "tslib@npm:^2.0.1, tslib@npm:^2.8.0":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
@@ -9460,7 +9450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.6.2":
+"typescript@npm:^5.7.3":
   version: 5.7.3
   resolution: "typescript@npm:5.7.3"
   bin:
@@ -9470,7 +9460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.6.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>":
   version: 5.7.3
   resolution: "typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>::version=5.7.3&hash=b45daf"
   bin:

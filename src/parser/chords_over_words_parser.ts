@@ -66,7 +66,7 @@ class ChordsOverWordsParser {
    * @param {ChordsOverWordsParserOptions} options Parser options.
    * @param {ChordsOverWordsParserOptions.softLineBreaks} options.softLineBreaks=false If true, a backslash
    * followed by a space is treated as a soft line break
-   * @param {ChordsOverWordsParserOptions.chopFirstWord} options.chopFirstWord=false If true, only the first lyric
+   * @param {ChordsOverWordsParserOptions.chopFirstWord} options.chopFirstWord=true If true, only the first lyric
    * word is paired with the chord, the rest of the lyric is put in a separate chord lyric pair
    * @see https://peggyjs.org/documentation.html#using-the-parser
    * @returns {Song} The parsed song
