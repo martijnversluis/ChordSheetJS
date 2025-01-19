@@ -1,4 +1,4 @@
-import Configuration, { ConfigurationProperties } from './configuration/configuration';
+import Configuration, { ConfigurationProperties, configure } from './configuration';
 
 /**
  * Base class for all formatters, taking care of receiving a configuration wrapping that inside a Configuration object
@@ -23,8 +23,8 @@ class Formatter {
      * symbols.
      * @param {boolean} [configuration.normalizeChords=true] Whether or not to automatically normalize chords
      */
-  constructor(configuration: Partial<ConfigurationProperties> = {}) {
-    this.configuration = new Configuration(configuration || {});
+  constructor(configuration: ConfigurationProperties = {}) {
+    this.configuration = configure(configuration);
   }
 }
 

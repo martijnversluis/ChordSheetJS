@@ -1,4 +1,4 @@
-import Configuration from './configuration/configuration';
+import Configuration from './configuration';
 import Metadata from '../chord_sheet/metadata';
 
 interface FormattingContext {

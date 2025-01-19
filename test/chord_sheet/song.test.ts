@@ -11,7 +11,7 @@ import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
 import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
 import Song from '../../src/chord_sheet/song';
-import Configuration from '../../src/formatter/configuration/configuration';
+import { configure } from '../../src/formatter/configuration';
 import Metadata from '../../src/chord_sheet/metadata';
 
 const createLineStub = ({ renderable }) => (
@@ -381,7 +381,7 @@ describe('Song', () => {
       const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
-      const configuration = new Configuration({ instrument: { type: 'ukulele' } });
+      const configuration = configure({ instrument: { type: 'ukulele' } });
       const metadata = new Metadata();
 
       const song = createSong([
@@ -401,7 +401,7 @@ describe('Song', () => {
       const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
-      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const configuration = configure({ instrument: { type: 'guitar' } });
       const metadata = new Metadata();
 
       const song = createSong([

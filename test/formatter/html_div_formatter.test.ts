@@ -6,7 +6,6 @@ import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 import { ContentType } from '../../src/serialized_types';
 import { GRID } from '../../src/constants';
-import Configuration from '../../src/formatter/configuration/configuration';
 
 import {
   ABC, HtmlDivFormatter, LILYPOND, TAB,
@@ -1131,7 +1130,8 @@ describe('HtmlDivFormatter', () => {
         </div>
       `);
 
-      const formatter = new HtmlDivFormatter({ renderBlankLines: false, useUnicodeModifiers: true });
+      const configuration = { renderBlankLines: false, useUnicodeModifiers: true };
+      const formatter = new HtmlDivFormatter(configuration);
 
       expect(formatter.format(songWithFlats)).toEqual(expectedChordSheet);
     });
@@ -1189,11 +1189,11 @@ describe('HtmlDivFormatter', () => {
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration({
+          const configuration = {
             delegates: {
               [type]: (content: string) => content.toUpperCase(),
             },
-          });
+          };
 
           const expectedOutput = html`
             <div class="chord-sheet">
@@ -1220,7 +1220,7 @@ describe('HtmlDivFormatter', () => {
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration();
+          const configuration = {};
 
           const expectedOutput = html`
             <div class="chord-sheet">

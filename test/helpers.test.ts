@@ -3,7 +3,7 @@ import { createLine } from './utilities';
 import { renderChord, testSelector } from '../src/helpers';
 import Key from '../src/key';
 import Metadata from '../src/chord_sheet/metadata';
-import Configuration from '../src/formatter/configuration/configuration';
+import { configure } from '../src/formatter/configuration';
 
 describe('renderChord', () => {
   it('correctly normalizes when a capo is set and decapo is enabled', () => {
@@ -43,7 +43,7 @@ describe('renderChord', () => {
 
 describe('testSelector', () => {
   it('returns true when the selector matches the configured instrument type', () => {
-    const configuration = new Configuration({ instrument: { type: 'guitar' } });
+    const configuration = configure({ instrument: { type: 'guitar' } });
     const metadata = new Metadata();
 
     expect(
@@ -55,7 +55,7 @@ describe('testSelector', () => {
   });
 
   it('returns false when the selector does not match the configured instrument type', () => {
-    const configuration = new Configuration({ instrument: { type: 'guitar' } });
+    const configuration = configure({ instrument: { type: 'guitar' } });
     const metadata = new Metadata();
 
     expect(
@@ -67,7 +67,7 @@ describe('testSelector', () => {
   });
 
   it('return true when the selector matches the configured user name', () => {
-    const configuration = new Configuration({ user: { name: 'john' } });
+    const configuration = configure({ user: { name: 'john' } });
     const metadata = new Metadata();
 
     expect(
@@ -79,7 +79,7 @@ describe('testSelector', () => {
   });
 
   it('returns false when the selector does not match the configured user name', () => {
-    const configuration = new Configuration({ user: { name: 'john' } });
+    const configuration = configure({ user: { name: 'john' } });
     const metadata = new Metadata();
 
     expect(
@@ -91,7 +91,7 @@ describe('testSelector', () => {
   });
 
   it('returns true when the selector matches a truthy metadata value', () => {
-    const configuration = new Configuration();
+    const configuration = configure({});
     const metadata = new Metadata({ 'horns': 'true' });
 
     expect(
@@ -103,7 +103,7 @@ describe('testSelector', () => {
   });
 
   it('returns false when the selector matches an empty metadata value', () => {
-    const configuration = new Configuration();
+    const configuration = configure({});
     const metadata = new Metadata({ 'horns': '' });
 
     expect(
@@ -115,7 +115,7 @@ describe('testSelector', () => {
   });
 
   it('returns false when the selector does not match a metadata value', () => {
-    const configuration = new Configuration();
+    const configuration = configure({});
     const metadata = new Metadata();
 
     expect(
@@ -128,7 +128,7 @@ describe('testSelector', () => {
 
   describe('when negated', () => {
     it('returns false when the selector matches the configured instrument type', () => {
-      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const configuration = configure({ instrument: { type: 'guitar' } });
       const metadata = new Metadata();
 
       expect(
@@ -140,7 +140,7 @@ describe('testSelector', () => {
     });
 
     it('returns true when the selector does not match the configured instrument type', () => {
-      const configuration = new Configuration({ instrument: { type: 'guitar' } });
+      const configuration = configure({ instrument: { type: 'guitar' } });
       const metadata = new Metadata();
 
       expect(
@@ -152,7 +152,7 @@ describe('testSelector', () => {
     });
 
     it('returns false when the selector matches the configured user name', () => {
-      const configuration = new Configuration({ user: { name: 'john' } });
+      const configuration = configure({ user: { name: 'john' } });
       const metadata = new Metadata();
 
       expect(
@@ -164,7 +164,7 @@ describe('testSelector', () => {
     });
 
     it('returns true when the selector does not match the configured user name', () => {
-      const configuration = new Configuration({ user: { name: 'john' } });
+      const configuration = configure({ user: { name: 'john' } });
       const metadata = new Metadata();
 
       expect(
@@ -176,7 +176,7 @@ describe('testSelector', () => {
     });
 
     it('returns false when the selector matches a truthy metadata value', () => {
-      const configuration = new Configuration();
+      const configuration = configure({});
       const metadata = new Metadata({ 'horns': 'true' });
 
       expect(
@@ -188,7 +188,7 @@ describe('testSelector', () => {
     });
 
     it('returns true when the selector matches an empty metadata value', () => {
-      const configuration = new Configuration();
+      const configuration = configure({});
       const metadata = new Metadata({ 'horns': '' });
 
       expect(
@@ -200,7 +200,7 @@ describe('testSelector', () => {
     });
 
     it('returns true when the selector does not match a metadata value', () => {
-      const configuration = new Configuration();
+      const configuration = configure({});
       const metadata = new Metadata();
 
       expect(
