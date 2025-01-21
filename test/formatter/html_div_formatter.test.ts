@@ -1,7 +1,6 @@
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
-import { scopedCss } from '../../src/formatter/html_div_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 import { ContentType } from '../../src/serialized_types';
@@ -18,8 +17,8 @@ import {
 describe('HtmlDivFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <div class="row">
@@ -232,8 +231,8 @@ describe('HtmlDivFormatter', () => {
 
   it('formats a solfege song to a html chord sheet correctly', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <div class="row">
@@ -440,6 +439,241 @@ describe('HtmlDivFormatter', () => {
     expect(new HtmlDivFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
 
+  it('applies custom css classes', () => {
+    const expectedChordSheet = stripHTML(`
+      <h1 class="TITLE">Let it be</h1>
+      <h2 class="SUBTITLE">ChordSheetJS example version</h2>
+      <div class="CHORD-SHEET">
+        <div class="PARAGRAPH">
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD"></div>
+              <div class="LYRICS">Written by: </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD"></div>
+              <div class="LYRICS">John Lennon,Paul McCartney</div>
+            </div>
+          </div>
+        </div>
+        <div class="PARAGRAPH verse">
+          <div class="ROW">
+            <h3 class="LABEL">Verse 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD"></div>
+              <div class="LYRICS">Let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">Am</div>
+              <div class="LYRICS">be, </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD"></div>
+              <div class="LYRICS">let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">C/G</div>
+              <div class="LYRICS">be, let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">F</div>
+              <div class="LYRICS">be, let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">C</div>
+              <div class="LYRICS">be</div>
+            </div>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD">D</div>
+              <div class="LYRICS">Whisper </div>
+            </div>
+            <div class="COLUMN">
+              <div class="ANNOTATION">strong</div>
+              <div class="LYRICS">words of </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS">wis</div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">A</div>
+              <div class="LYRICS">dom, let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS">be </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">D/F#</div>
+              <div class="LYRICS"> </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">Em</div>
+              <div class="LYRICS"> </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">D</div>
+              <div class="LYRICS"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH chorus">
+          <div class="ROW">
+            <div class="COMMENT">Breakdown</div>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD">Em</div>
+              <div class="LYRICS">Whisper words of </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">F</div>
+              <div class="LYRICS">wisdom, let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">C</div>
+              <div class="LYRICS">be </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH chorus">
+          <div class="ROW">
+            <h3 class="LABEL">Chorus 2</h3>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS">Whisper words of </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">F</div>
+              <div class="LYRICS">wisdom, let it </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">C</div>
+              <div class="LYRICS">be </div>
+            </div>
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH solo">
+          <div class="ROW">
+            <h3 class="LABEL">Solo 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD">G</div>
+              <div class="LYRICS">Solo line 1</div>
+            </div>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD">C</div>
+              <div class="LYRICS">Solo line 2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH tab">
+          <div class="ROW">
+            <h3 class="LABEL">Tab 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="LITERAL">
+              Tab line 1<br>
+              Tab line 2
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH abc">
+          <div class="ROW">
+            <h3 class="LABEL">ABC 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="LITERAL">
+              ABC line 1<br>
+              ABC line 2
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH ly">
+          <div class="ROW">
+            <h3 class="LABEL">LY 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="LITERAL">
+              LY line 1<br>
+              LY line 2
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH bridge">
+          <div class="ROW">
+            <h3 class="LABEL">Bridge 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="COLUMN">
+              <div class="CHORD"></div>
+              <div class="LYRICS">Bridge line</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH grid">
+          <div class="ROW">
+            <h3 class="LABEL">Grid 1</h3>
+          </div>
+          <div class="ROW">
+            <div class="LITERAL">
+              Grid line 1<br>
+              Grid line 2
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    const formatter = new HtmlDivFormatter({
+      cssClasses: {
+        annotation: 'ANNOTATION',
+        chord: 'CHORD',
+        chordSheet: 'CHORD-SHEET',
+        column: 'COLUMN',
+        comment: 'COMMENT',
+        emptyLine: 'EMPTY-LINE',
+        label: 'LABEL',
+        labelWrapper: 'LABEL-WRAPPER',
+        line: 'LINE',
+        literal: 'LITERAL',
+        literalContents: 'CONTENTS',
+        lyrics: 'LYRICS',
+        paragraph: 'PARAGRAPH',
+        row: 'ROW',
+        subtitle: 'SUBTITLE',
+        title: 'TITLE',
+      },
+    });
+
+    expect(formatter.format(exampleSongSymbol)).toEqual(expectedChordSheet);
+  });
+
   describe('with option renderBlankLines:false', () => {
     it('does not include HTML for blank lines', () => {
       const songWithBlankLine = createSongFromAst([
@@ -530,32 +764,6 @@ describe('HtmlDivFormatter', () => {
       }`;
 
     const actualCss = new HtmlDivFormatter().cssString('.someScope');
-    expect(actualCss).toEqual(expectedCss);
-  });
-
-  it('generates a scoped CSS string with the exposed function', () => {
-    const expectedCss = heredoc`
-      .someScope .chord:not(:last-child) {
-        padding-right: 10px;
-      }
-
-      .someScope .paragraph {
-        margin-bottom: 1em;
-      }
-
-      .someScope .row {
-        display: flex;
-      }
-
-      .someScope .chord:after {
-        content: '\\200b';
-      }
-
-      .someScope .lyrics:after {
-        content: '\\200b';
-      }`;
-
-    const actualCss = scopedCss('.someScope');
     expect(actualCss).toEqual(expectedCss);
   });
 
@@ -670,8 +878,8 @@ describe('HtmlDivFormatter', () => {
 
   it('can render in a different key (symbol chords)', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <div class="row">
@@ -885,8 +1093,8 @@ describe('HtmlDivFormatter', () => {
 
   it('can render in a different key (solfege chords)', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <div class="row">

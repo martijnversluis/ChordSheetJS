@@ -1,6 +1,5 @@
 import '../matchers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
-import { scopedCss } from '../../src/formatter/html_table_formatter';
 import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 import { ContentType } from '../../src/serialized_types';
@@ -24,8 +23,8 @@ import {
 describe('HtmlTableFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <table class="row">
@@ -38,7 +37,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Verse 1</h3>
               </td>
             </tr>
@@ -110,7 +109,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Chorus 2</h3>
               </td>
             </tr>
@@ -134,7 +133,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph solo">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Solo 1</h3>
               </td>
             </tr>
@@ -160,7 +159,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph tab">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Tab 1</h3>
               </td>
             </tr>
@@ -179,7 +178,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph abc">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">ABC 1</h3>
               </td>
             </tr>
@@ -198,7 +197,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph ly">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">LY 1</h3>
               </td>
             </tr>
@@ -217,7 +216,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph bridge">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Bridge 1</h3>
               </td>
             </tr>
@@ -232,7 +231,7 @@ describe('HtmlTableFormatter', () => {
       <div class="paragraph grid">
         <table class="row">
           <tr>
-            <td>
+            <td class="label-wrapper">
               <h3 class="label">Grid 1</h3>
             </td>
           </tr>
@@ -254,8 +253,8 @@ describe('HtmlTableFormatter', () => {
 
   it('formats a solfege song to a html chord sheet correctly', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <table class="row">
@@ -268,7 +267,9 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td><h3 class="label">Verse 1</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Verse 1</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -336,7 +337,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Chorus 2</h3>
               </td>
             </tr>
@@ -360,7 +361,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph solo">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Solo 1</h3>
               </td>
             </tr>
@@ -386,7 +387,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph tab">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Tab 1</h3>
               </td>
             </tr>
@@ -405,7 +406,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph abc">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">ABC 1</h3>
               </td>
             </tr>
@@ -424,7 +425,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph ly">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">LY 1</h3>
               </td>
             </tr>
@@ -443,7 +444,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph bridge">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Bridge 1</h3>
               </td>
             </tr>
@@ -458,7 +459,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph grid">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Grid 1</h3>
               </td>
             </tr>
@@ -477,6 +478,256 @@ describe('HtmlTableFormatter', () => {
     `);
 
     expect(new HtmlTableFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
+  });
+
+  it('applies custom css classes', () => {
+    const expectedChordSheet = stripHTML(`
+      <h1 class="TITLE">Let it be</h1>
+      <h2 class="SUBTITLE">ChordSheetJS example version</h2>
+      <div class="CHORD-SHEET">
+        <div class="PARAGRAPH">
+          <table class="ROW">
+            <tr>
+              <td class="LYRICS">Written by: </td>
+              <td class="LYRICS">John Lennon,Paul McCartney</td>
+            </tr>
+          </table>
+        </div>
+        <div class="PARAGRAPH verse">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">Verse 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD"></td>
+              <td class="CHORD">Am</td>
+              <td class="CHORD"></td>
+              <td class="CHORD">C/G</td>
+              <td class="CHORD">F</td>
+              <td class="CHORD">C</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Let it </td>
+              <td class="LYRICS">be, </td>
+              <td class="LYRICS">let it </td>
+              <td class="LYRICS">be, let it </td>
+              <td class="LYRICS">be, let it </td>
+              <td class="LYRICS">be</td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD">D</td>
+              <td class="ANNOTATION">strong</td>
+              <td class="CHORD">G</td>
+              <td class="CHORD">A</td>
+              <td class="CHORD">G</td>
+              <td class="CHORD">D/F#</td>
+              <td class="CHORD">Em</td>
+              <td class="CHORD">D</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Whisper </td>
+              <td class="LYRICS">words of </td>
+              <td class="LYRICS">wis</td>
+              <td class="LYRICS">dom, let it </td>
+              <td class="LYRICS">be </td>
+              <td class="LYRICS"> </td>
+              <td class="LYRICS"> </td>
+              <td class="LYRICS"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH chorus">
+          <table class="ROW">
+            <tr>
+              <td class="COMMENT">Breakdown</td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD">Em</td>
+              <td class="CHORD">F</td>
+              <td class="CHORD">C</td>
+              <td class="CHORD">G</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Whisper words of </td>
+              <td class="LYRICS">wisdom, let it </td>
+              <td class="LYRICS">be </td>
+              <td class="LYRICS"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH chorus">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">Chorus 2</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD">G</td>
+              <td class="CHORD">F</td>
+              <td class="CHORD">C</td>
+              <td class="CHORD">G</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Whisper words of </td>
+              <td class="LYRICS">wisdom, let it </td>
+              <td class="LYRICS">be </td>
+              <td class="LYRICS"></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH solo">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">Solo 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD">G</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Solo line 1</td>
+            </tr>
+          </table>
+          <table class="ROW">
+            <tr>
+              <td class="CHORD">C</td>
+            </tr>
+            <tr>
+              <td class="LYRICS">Solo line 2</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH tab">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">Tab 1</h3>
+              </td>
+            </tr>
+          </table>
+
+          <table class="LITERAL">
+            <tr>
+              <td class="CONTENTS">
+                Tab line 1<br>
+                Tab line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH abc">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">ABC 1</h3>
+              </td>
+            </tr>
+          </table>
+
+          <table class="LITERAL">
+            <tr>
+              <td class="CONTENTS">
+                ABC line 1<br>
+                ABC line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH ly">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">LY 1</h3>
+              </td>
+            </tr>
+          </table>
+
+          <table class="LITERAL">
+            <tr>
+              <td class="CONTENTS">
+                LY line 1<br>
+                LY line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="PARAGRAPH bridge">
+          <table class="ROW">
+            <tr>
+              <td class="LABEL-WRAPPER">
+                <h3 class="LABEL">Bridge 1</h3>
+              </td>
+            </tr>
+          </table>
+          <table class="ROW">
+          <tr>
+            <td class="LYRICS">Bridge line</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="PARAGRAPH grid">
+        <table class="ROW">
+          <tr>
+            <td class="LABEL-WRAPPER">
+              <h3 class="LABEL">Grid 1</h3>
+            </td>
+          </tr>
+        </table>
+
+        <table class="LITERAL">
+          <tr>
+            <td class="CONTENTS">
+              Grid line 1<br>
+              Grid line 2
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>`);
+
+    const formatter = new HtmlTableFormatter({
+      cssClasses: {
+        annotation: 'ANNOTATION',
+        chord: 'CHORD',
+        chordSheet: 'CHORD-SHEET',
+        column: 'COLUMN',
+        comment: 'COMMENT',
+        emptyLine: 'EMPTY-LINE',
+        label: 'LABEL',
+        labelWrapper: 'LABEL-WRAPPER',
+        line: 'LINE',
+        literal: 'LITERAL',
+        literalContents: 'CONTENTS',
+        lyrics: 'LYRICS',
+        paragraph: 'PARAGRAPH',
+        row: 'ROW',
+        subtitle: 'SUBTITLE',
+        title: 'TITLE',
+      },
+    });
+    expect(formatter.format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
 
   describe('with option renderBlankLines:false', () => {
@@ -526,20 +777,28 @@ describe('HtmlTableFormatter', () => {
 
   it('generates a CSS string', () => {
     const expectedCss = heredoc`
-      h1 {
+      .title {
         font-size: 1.5em;
       }
 
-      h2 {
+      .subtitle {
         font-size: 1.1em;
       }
 
-      table {
+      .row,
+      .line,
+      .literal {
         border-spacing: 0;
         color: inherit;
       }
 
-      td {
+      .annotation,
+      .chord,
+      .comment,
+      .contents,
+      .label-wrapper,
+      .literal,
+      .lyrics {
         padding: 3px 0;
       }
 
@@ -557,20 +816,28 @@ describe('HtmlTableFormatter', () => {
 
   it('generates a scoped CSS string from the instance method', () => {
     const expectedCss = heredoc`
-      .someScope h1 {
+      .someScope .title {
         font-size: 1.5em;
       }
 
-      .someScope h2 {
+      .someScope .subtitle {
         font-size: 1.1em;
       }
 
-      .someScope table {
+      .someScope .row,
+      .someScope .line,
+      .someScope .literal {
         border-spacing: 0;
         color: inherit;
       }
 
-      .someScope td {
+      .someScope .annotation,
+      .someScope .chord,
+      .someScope .comment,
+      .someScope .contents,
+      .someScope .label-wrapper,
+      .someScope .literal,
+      .someScope .lyrics {
         padding: 3px 0;
       }
 
@@ -583,37 +850,6 @@ describe('HtmlTableFormatter', () => {
       }`;
 
     const actualCss = new HtmlTableFormatter().cssString('.someScope');
-    expect(actualCss).toEqual(expectedCss);
-  });
-
-  it('generates a scoped CSS string from the exposed function', () => {
-    const expectedCss = heredoc`
-      .someScope h1 {
-        font-size: 1.5em;
-      }
-
-      .someScope h2 {
-        font-size: 1.1em;
-      }
-
-      .someScope table {
-        border-spacing: 0;
-        color: inherit;
-      }
-
-      .someScope td {
-        padding: 3px 0;
-      }
-
-      .someScope .chord:not(:last-child) {
-        padding-right: 10px;
-      }
-
-      .someScope .paragraph {
-        margin-bottom: 1em;
-      }`;
-
-    const actualCss = scopedCss('.someScope');
     expect(actualCss).toEqual(expectedCss);
   });
 
@@ -720,8 +956,8 @@ describe('HtmlTableFormatter', () => {
 
   it('can render in a different key', () => {
     const expectedChordSheet = stripHTML(`
-      <h1>Let it be</h1>
-      <h2>ChordSheetJS example version</h2>
+      <h1 class="title">Let it be</h1>
+      <h2 class="subtitle">ChordSheetJS example version</h2>
       <div class="chord-sheet">
         <div class="paragraph">
           <table class="row">
@@ -734,7 +970,9 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td><h3 class="label">Verse 1</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Verse 1</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -804,7 +1042,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Chorus 2</h3>
               </td>
             </tr>
@@ -828,7 +1066,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph solo">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Solo 1</h3>
               </td>
             </tr>
@@ -854,7 +1092,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph tab">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Tab 1</h3>
               </td>
             </tr>
@@ -873,7 +1111,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph abc">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">ABC 1</h3>
               </td>
             </tr>
@@ -892,7 +1130,7 @@ describe('HtmlTableFormatter', () => {
         <div class="paragraph ly">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">LY 1</h3>
               </td>
             </tr>
@@ -910,7 +1148,7 @@ describe('HtmlTableFormatter', () => {
           <div class="paragraph bridge">
             <table class="row">
               <tr>
-                <td>
+                <td class="label-wrapper">
                   <h3 class="label">Bridge 1</h3>
                 </td>
               </tr>
@@ -925,7 +1163,7 @@ describe('HtmlTableFormatter', () => {
           <div class="paragraph grid">
             <table class="row">
               <tr>
-                <td>
+                <td class="label-wrapper">
                   <h3 class="label">Grid 1</h3>
                 </td>
               </tr>
@@ -1088,7 +1326,7 @@ describe('HtmlTableFormatter', () => {
               <div class="paragraph ${type}">
                 <table class="row">
                   <tr>
-                    <td>
+                    <td class="label-wrapper">
                       <h3 class="label">${type} section</h3>
                     </td>
                   </tr>
@@ -1121,7 +1359,7 @@ describe('HtmlTableFormatter', () => {
               <div class="paragraph ${type}">
                 <table class="row">
                   <tr>
-                    <td>
+                    <td class="label-wrapper">
                       <h3 class="label">${type} section</h3>
                     </td>
                   </tr>

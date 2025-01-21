@@ -13,6 +13,7 @@ import { renderChord } from './helpers';
 import When from './template_helpers/when';
 import { Literal } from './index';
 import WhenCallback from './template_helpers/when_callback';
+import { HtmlTemplateCssClasses } from './formatter/html_formatter';
 
 type EachCallback = (_item: any) => string;
 
@@ -73,18 +74,18 @@ export function hasTextContents(line: Line): boolean {
   ));
 }
 
-export function lineClasses(line: Line): string {
-  const classes = ['row'];
+export function lineClasses(line: Line, cssClasses: HtmlTemplateCssClasses): string {
+  const classes = [cssClasses.row];
 
   if (!lineHasContents(line)) {
-    classes.push('empty-line');
+    classes.push(cssClasses.emptyLine);
   }
 
   return classes.join(' ');
 }
 
-export function paragraphClasses(paragraph: Paragraph): string {
-  const classes = ['paragraph'];
+export function paragraphClasses(paragraph: Paragraph, cssClasses: HtmlTemplateCssClasses): string {
+  const classes = [cssClasses.paragraph];
 
   if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
     classes.push(paragraph.type);
