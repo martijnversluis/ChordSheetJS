@@ -5,6 +5,7 @@ import {
   ChordLyricsPair, Comment, Line, SoftLineBreak, Tag,
 } from '../../index';
 import Item from '../../chord_sheet/item';
+import { ParagraphType } from '../../constants';
 
 type FontSection = 'title' | 'subtitle' | 'metadata' | 'text' | 'chord' | 'comment' | 'annotation' | 'sectionLabel';
 export type LayoutSection = 'header' | 'footer';
@@ -19,14 +20,11 @@ and?: Condition[];
 or?: Condition[];
 } | SingleCondition;
 
-export interface FontConfiguration {
-  name: string;
-  style: string;
-  weight?: string | number;
-  size: number;
-  lineHeight?: number;
-  color: string | number;
-  underline?: boolean;
+export interface Margins {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
 }
 
 interface Position {
@@ -47,6 +45,52 @@ interface ILayoutContentItem {
   type: string,
   position: Position,
   condition?: Condition,
+}
+
+export interface FontConfiguration {
+  name: string;
+  style: string;
+  weight?: string | number;
+  size: number;
+  lineHeight?: number;
+  color: string | number;
+  underline?: boolean;
+  inherit?: string;
+}
+
+export type FontConfigurations = Record<FontSection, FontConfiguration>;
+
+export interface SectionDisplay {
+  labelStyle?: 'uppercase';
+  showLabel?: boolean;
+  lyricsOnly?: boolean;
+  indent?: number;
+  compact?: boolean;
+}
+
+export interface SectionTypeConfig {
+  fonts?: FontConfigurations;
+  display?: SectionDisplay;
+  overrides?: {
+    condition: Condition;
+    display: Partial<SectionDisplay>;
+  }[];
+}
+
+export interface SectionsConfig {
+  global: {
+    columnCount: number;
+    columnWidth: number;
+    columnSpacing: number;
+    spacingBottom?: number;
+    spacingAfter?: number;
+    chordLyricSpacing: number;
+    linePadding: number;
+    paragraphSpacing?: number;
+    chordSpacing: number;
+  };
+  base: SectionTypeConfig;
+  types?: Record<ParagraphType, SectionTypeConfig | undefined>;
 }
 
 export interface LayoutContentItemWithText extends ILayoutContentItem {
@@ -101,6 +145,15 @@ export interface LayoutItem {
   content: LayoutContentItem[],
 }
 
+export interface LayoutConfig {
+  global: {
+    margins: Margins;
+  };
+  header: LayoutItem;
+  footer: LayoutItem;
+  sections: SectionsConfig;
+}
+
 export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
@@ -117,20 +170,9 @@ export interface LineLayout {
 }
 
 export interface PDFConfiguration {
-  fonts: Record<FontSection, FontConfiguration>,
-  margintop: number,
-  marginbottom: number,
-  marginleft: number,
-  marginright: number,
-  paragraphSpacing: number,
-  chordLyricSpacing: number,
-  linePadding: number,
-  chordSpacing: number,
-  columnCount: number,
-  columnWidth: number,
-  columnSpacing: number,
-  lyricsOnly?: boolean,
-  layout: Record<LayoutSection, LayoutItem>,
+  version?: string;
+  fonts: FontConfigurations;
+  layout: LayoutConfig;
 }
 
 export interface PdfDoc {

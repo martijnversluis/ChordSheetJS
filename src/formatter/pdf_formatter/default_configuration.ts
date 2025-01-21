@@ -28,20 +28,15 @@ const defaultConfiguration: PDFConfiguration = {
       name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 'black',
     },
   },
-  // Layout settings
-  margintop: 35,
-  marginbottom: 10,
-  marginleft: 45,
-  marginright: 45,
-  paragraphSpacing: 10,
-  linePadding: 4,
-  chordLyricSpacing: 2,
-  chordSpacing: 2,
-  columnCount: 2,
-  columnWidth: 0,
-  columnSpacing: 25,
-  lyricsOnly: false,
   layout: {
+    global: {
+      margins: {
+        top: 35,
+        bottom: 10,
+        left: 45,
+        right: 45,
+      },
+    },
     header: {
       height: 60,
       content: [
@@ -83,6 +78,22 @@ const defaultConfiguration: PDFConfiguration = {
           position: { x: 'left', y: 0 },
         },
       ],
+    },
+    sections: {
+      global: {
+        paragraphSpacing: 10,
+        linePadding: 4,
+        chordLyricSpacing: 2,
+        chordSpacing: 2,
+        columnCount: 2,
+        columnWidth: 0,
+        columnSpacing: 25,
+      },
+      base: {
+        display: {
+          lyricsOnly: false,
+        },
+      },
     },
   },
 };
