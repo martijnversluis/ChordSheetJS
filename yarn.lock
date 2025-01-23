@@ -820,7 +820,7 @@ __metadata:
     "@types/eslint__js": "npm:^8.42.3"
     "@types/jest": "npm:^27.4.1"
     "@types/js-levenshtein": "npm:^1"
-    "@types/node": "npm:^22.10.7"
+    "@types/node": "npm:^22.10.9"
     "@types/path-browserify": "npm:^1"
     concat-md: "npm:^0.5.1"
     detect-newline: "npm:^4.0.1"
@@ -3160,12 +3160,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.10.7":
-  version: 22.10.7
-  resolution: "@types/node@npm:22.10.7"
+"@types/node@npm:^22.10.9":
+  version: 22.10.9
+  resolution: "@types/node@npm:22.10.9"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/c941b4689dfc4044b64a5f601306cbcb0c7210be853ba378a5dd44137898c45accedd796ee002ad9407024cac7ecaf5049304951cb1d80ce3d7cebbbae56f20e
+  checksum: 10c0/ed2d7b2cf20ce520e04711eab48e9cd7d6a835d2859fbdc5d9a8c5e00a97c1f872a409f789783c473062b29beaf1cddf4b1c7ad03ae3fe433b072b7cf9fff741
   languageName: node
   linkType: hard
 
