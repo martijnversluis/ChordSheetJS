@@ -1,5 +1,5 @@
-import { Fret } from '../../constants';
-import { parse } from '../../parser/chord_definition/peg_parser';
+import { Fret } from '../constants';
+import { parse } from '../parser/chord_definition/peg_parser';
 
 /**
  * Represents a chord definition.

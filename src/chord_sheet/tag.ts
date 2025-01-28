@@ -4,11 +4,8 @@
  */
 import AstComponent from './ast_component';
 import TraceInfo from './trace_info';
-import ChordDefinition from './chord_pro/chord_definition';
-
-import {
-  ABC, BRIDGE, GRID, LILYPOND, TAB, VERSE,
-} from '../constants';
+import ChordDefinition from '../chord_definition/chord_definition';
+import TagInterpreter from './tag_interpreter';
 
 export const ALBUM = 'album';
 
@@ -97,6 +94,12 @@ export const END_OF_TAB = 'end_of_tab';
 export const END_OF_VERSE = 'end_of_verse';
 
 /**
+ * End of part directive.
+ * @type {string}
+ */
+export const END_OF_PART = 'end_of_part';
+
+/**
  * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
  * @type {string}
  */
@@ -162,6 +165,12 @@ export const START_OF_TAB = 'start_of_tab';
  * @type {string}
  */
 export const START_OF_VERSE = 'start_of_verse';
+
+/**
+ * Start of part
+ * @type {string}
+ */
+export const START_OF_PART = 'start_of_part';
 
 /**
  * Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
@@ -283,16 +292,20 @@ const END_OF_CHORUS_SHORT = 'eoc';
 const END_OF_GRID_SHORT = 'eog';
 const END_OF_TAB_SHORT = 'eot';
 const END_OF_VERSE_SHORT = 'eov';
+const END_OF_PART_SHORT = 'eop';
 const NEW_KEY_SHORT = 'nk';
 const START_OF_BRIDGE_SHORT = 'sob';
 const START_OF_CHORUS_SHORT = 'soc';
 const START_OF_GRID_SHORT = 'sog';
 const START_OF_TAB_SHORT = 'sot';
 const START_OF_VERSE_SHORT = 'sov';
+const START_OF_PART_SHORT = 'sop';
 const SUBTITLE_SHORT = 'st';
 const TEXTFONT_SHORT = 'tf';
 const TEXTSIZE_SHORT = 'ts';
 const TITLE_SHORT = 't';
+const START_OF_PART_SHORTER = 'p';
+const END_OF_PART_SHORTER = 'ep';
 
 const RENDERABLE_TAGS = [COMMENT];
 
@@ -328,6 +341,14 @@ const INLINE_FONT_TAGS = [
 
 const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   CHORUS,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_TAB,
+  START_OF_VERSE,
+  START_OF_PART,
 ];
 
 const ALIASES: Record<string, string> = {
@@ -339,12 +360,16 @@ const ALIASES: Record<string, string> = {
   [END_OF_GRID_SHORT]: END_OF_GRID,
   [END_OF_TAB_SHORT]: END_OF_TAB,
   [END_OF_VERSE_SHORT]: END_OF_VERSE,
+  [END_OF_PART_SHORT]: END_OF_PART,
+  [END_OF_PART_SHORTER]: END_OF_PART,
   [NEW_KEY_SHORT]: NEW_KEY,
   [START_OF_BRIDGE_SHORT]: START_OF_BRIDGE,
   [START_OF_CHORUS_SHORT]: START_OF_CHORUS,
   [START_OF_GRID_SHORT]: START_OF_GRID,
   [START_OF_TAB_SHORT]: START_OF_TAB,
   [START_OF_VERSE_SHORT]: START_OF_VERSE,
+  [START_OF_PART_SHORT]: START_OF_PART,
+  [START_OF_PART_SHORTER]: START_OF_PART,
   [SUBTITLE_SHORT]: SUBTITLE,
   [TEXTFONT_SHORT]: TEXTFONT,
   [TEXTSIZE_SHORT]: TEXTSIZE,
@@ -354,30 +379,9 @@ const ALIASES: Record<string, string> = {
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
-const START_TAG_TO_SECTION_TYPE = {
-  [START_OF_ABC]: ABC,
-  [START_OF_BRIDGE]: BRIDGE,
-  [START_OF_CHORUS]: CHORUS,
-  [START_OF_GRID]: GRID,
-  [START_OF_LY]: LILYPOND,
-  [START_OF_TAB]: TAB,
-  [START_OF_VERSE]: VERSE,
-};
-
-const END_TAG_TO_SECTION_TYPE = {
-  [END_OF_ABC]: ABC,
-  [END_OF_BRIDGE]: BRIDGE,
-  [END_OF_CHORUS]: CHORUS,
-  [END_OF_GRID]: GRID,
-  [END_OF_LY]: LILYPOND,
-  [END_OF_TAB]: TAB,
-  [END_OF_VERSE]: VERSE,
-};
-
 export const START_TAG = 'start_tag';
 export const END_TAG = 'end_tag';
-const SECTION_START_REGEX = /^start_of_(.+)$/;
-const SECTION_END_REGEX = /^end_of_(.+)$/;
+export const AUTO = 'auto';
 
 export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
@@ -485,28 +489,8 @@ class Tag extends AstComponent {
     return parsed;
   }
 
-  static recognizeSectionTag(tagName: string): [string | null, string | null] {
-    if (tagName in START_TAG_TO_SECTION_TYPE) {
-      return [START_TAG, START_TAG_TO_SECTION_TYPE[tagName]];
-    }
-
-    if (tagName in END_TAG_TO_SECTION_TYPE) {
-      return [END_TAG, END_TAG_TO_SECTION_TYPE[tagName]];
-    }
-
-    const parseStartResult = SECTION_START_REGEX.exec(tagName);
-
-    if (parseStartResult) {
-      return [START_TAG, parseStartResult[1]];
-    }
-
-    const parseEndResult = SECTION_END_REGEX.exec(tagName);
-
-    if (parseEndResult) {
-      return [END_TAG, parseEndResult[1]];
-    }
-
-    return [null, null];
+  static recognizeSectionTag(tag: Tag): [string | null, string | null] {
+    return TagInterpreter.interpret(tag.name, tag.value);
   }
 
   get label() {
@@ -524,12 +508,12 @@ class Tag extends AstComponent {
   }
 
   isSectionStart(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this.name);
+    const [tagType] = Tag.recognizeSectionTag(this);
     return tagType === START_TAG;
   }
 
   isSectionEnd(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this.name);
+    const [tagType] = Tag.recognizeSectionTag(this);
     return tagType === END_TAG;
   }
 

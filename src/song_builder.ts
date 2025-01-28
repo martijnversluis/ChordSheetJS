@@ -1,8 +1,9 @@
-import { NONE } from './constants';
+import { NONE, PART } from './constants';
 
 import Line, { LineType } from './chord_sheet/line';
 
 import Tag, {
+  AUTO,
   END_TAG,
   KEY,
   NEW_KEY,
@@ -138,7 +139,7 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    const [tagType, sectionType] = Tag.recognizeSectionTag(tag.name);
+    const [tagType, sectionType] = Tag.recognizeSectionTag(tag);
 
     if (!sectionType) {
       return;
@@ -147,14 +148,20 @@ class SongBuilder {
     if (tagType === START_TAG) {
       this.startSection(sectionType, tag);
     } else if (tagType === END_TAG) {
-      this.endSection(sectionType, tag);
+      this.endSection(sectionType === AUTO ? this.sectionType : sectionType, tag);
     }
   }
 
   startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
-    this.sectionType = sectionType;
     this.selector = tag.selector;
+
+    if (sectionType === PART && tag.value) {
+      this.sectionType = tag.value.split(' ')[0].toLowerCase();
+    } else {
+      this.sectionType = sectionType;
+    }
+
     this.setCurrentProperties(sectionType, tag.selector);
   }
 
@@ -165,7 +172,7 @@ class SongBuilder {
   }
 
   checkCurrentSectionType(sectionType: string, tag: Tag): void {
-    if (this.sectionType !== sectionType) {
+    if (this.sectionType !== sectionType && !(sectionType === 'part' && tag.name === 'end_of_part')) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }
