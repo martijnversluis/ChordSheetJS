@@ -1,5 +1,5 @@
 import Chord from './chord';
-import ChordDefinition from './chord_sheet/chord_pro/chord_definition';
+import ChordDefinition from './chord_definition/chord_definition';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import ChordProFormatter from './formatter/chord_pro_formatter';
 import ChordProParser from './parser/chord_pro_parser';
@@ -46,10 +46,11 @@ import {
   NONE,
   TAB,
   VERSE,
+  PART,
 } from './constants';
 
 export { default as Chord } from './chord';
-export { default as ChordDefinition } from './chord_sheet/chord_pro/chord_definition';
+export { default as ChordDefinition } from './chord_definition/chord_definition';
 export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
 export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
 export { default as ChordProParser } from './parser/chord_pro_parser';
@@ -87,6 +88,7 @@ export {
   SYMBOL,
   TAB,
   VERSE,
+  PART,
   NUMERAL,
 } from './constants';
 
@@ -111,6 +113,7 @@ export default {
   Metadata,
   NONE,
   Paragraph,
+  PART,
   SoftLineBreak,
   Song,
   TAB,
