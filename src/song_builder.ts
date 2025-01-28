@@ -139,7 +139,7 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    const [tagType, sectionType] = Tag.recognizeSectionTag(tag.name, tag.value);
+    const [tagType, sectionType] = Tag.recognizeSectionTag(tag);
 
     if (!sectionType) {
       return;
