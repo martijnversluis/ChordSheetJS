@@ -12,11 +12,12 @@ import {
   Ternary,
 } from '../src';
 
-import Configuration from '../src/formatter/configuration/configuration';
+import { configure } from '../src/formatter/configuration';
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
 import { newlinesToBreaks, renderSection } from '../src/template_helpers';
 import { createLine, createLiteral, createParagraph } from './utilities';
+import { defaultCssClasses } from '../src/formatter/html_formatter';
 
 const {
   isChordLyricsPair,
@@ -270,7 +271,7 @@ describe('template_helpers', () => {
         items: [],
       });
 
-      expect(lineClasses(line)).toEqual('row empty-line');
+      expect(lineClasses(line, defaultCssClasses)).toEqual('row empty-line');
     });
 
     it('returns [row] when the line has contents', () => {
@@ -279,7 +280,7 @@ describe('template_helpers', () => {
         items: [new ChordLyricsPair('A', 'hello')],
       });
 
-      expect(lineClasses(line)).toEqual('row');
+      expect(lineClasses(line, defaultCssClasses)).toEqual('row');
     });
   });
 
@@ -289,7 +290,7 @@ describe('template_helpers', () => {
       const paragraph = new Paragraph();
       paragraph.addLine(line);
 
-      expect(paragraphClasses(paragraph)).toEqual('paragraph chorus');
+      expect(paragraphClasses(paragraph, defaultCssClasses)).toEqual('paragraph chorus');
     });
 
     it('returns [paragraph] when the paragraph type is NONE', () => {
@@ -297,13 +298,13 @@ describe('template_helpers', () => {
       const paragraph = new Paragraph();
       paragraph.addLine(line);
 
-      expect(paragraphClasses(paragraph)).toEqual('paragraph');
+      expect(paragraphClasses(paragraph, defaultCssClasses)).toEqual('paragraph');
     });
 
     it('returns [paragraph] when the paragraph type is INDETERMINATE', () => {
       const paragraph = new Paragraph();
 
-      expect(paragraphClasses(paragraph)).toEqual('paragraph');
+      expect(paragraphClasses(paragraph, defaultCssClasses)).toEqual('paragraph');
     });
   });
 
@@ -311,7 +312,7 @@ describe('template_helpers', () => {
     it('evaluates the item', () => {
       const item = new Ternary({ variable: 'composer' });
       const metadata = new Metadata({ composer: ['John', 'Mary'] });
-      const configuration = new Configuration({ metadata: { separator: ' and ' } });
+      const configuration = configure({ metadata: { separator: ' and ' } });
 
       expect(evaluate(item, metadata, configuration)).toEqual('John and Mary');
     });
@@ -346,13 +347,11 @@ describe('template_helpers', () => {
         createLine([createLiteral('hello world')], ABC),
       ]);
 
-      const configuration = new Configuration(
-        {
-          delegates: {
-            abc: (string: string) => string.toUpperCase(),
-          },
+      const configuration = configure({
+        delegates: {
+          abc: (string: string) => string.toUpperCase(),
         },
-      );
+      });
 
       expect(renderSection(paragraph, configuration)).toEqual('HELLO WORLD');
     });

@@ -5,6 +5,7 @@ import Song from './chord_sheet/song';
 import { CAPO, CHORD_STYLE, ChordType } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
 import FormattingContext from './formatter/formatting_context';
+import { Modifier } from './constants';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -58,8 +59,57 @@ interface RenderChordOptions {
   renderKey?: Key | null;
   useUnicodeModifier?: boolean;
   normalizeChords?: boolean;
+  decapo?: boolean;
 }
 
+function effectiveModifier(renderKey: Key | null, contextKey: Key | null): Modifier | null {
+  if (renderKey?.modifier) {
+    return renderKey.modifier;
+  }
+
+  if (contextKey?.modifier) {
+    return contextKey.modifier;
+  }
+
+  return null;
+}
+
+function shapeChord(
+  {
+    chord,
+    effectiveTransposeDistance,
+    modifier,
+    normalizeChords,
+    effectiveKey,
+    chordStyle,
+  } : {
+    chord: Chord,
+    effectiveTransposeDistance: number,
+    modifier: Modifier | null,
+    normalizeChords: boolean,
+    effectiveKey: Key | null,
+    chordStyle: ChordType,
+  },
+) {
+  const transposedChord = chord.transpose(effectiveTransposeDistance);
+  const correctedChord = modifier ? transposedChord.useModifier(modifier) : transposedChord;
+  const normalizedChord = (normalizeChords ? correctedChord.normalize(effectiveKey) : transposedChord);
+
+  return changeChordType(normalizedChord, chordStyle, effectiveKey);
+}
+
+/**
+ * Renders a chord in the context of a line and song and taking into account some options
+ * @param chordString The chord to render
+ * @param line The line the chord is in
+ * @param song The song the line is in
+ * @param renderKey The key to render the chord in. If not provided, the line key will be used,
+ * or the song key if the line key is not provided.
+ * @param useUnicodeModifier Whether to use unicode modifiers ('\u266f'/'\u266d') or plain text ('#'/'b').
+ * Default `false`.
+ * @param normalizeChords Whether to normalize the chord to the key (default `true`)
+ * @param decapo Whether to transpose all chords to eliminate the capo (default `false`)
+ */
 export function renderChord(
   chordString: string,
   line: Line,
@@ -68,24 +118,34 @@ export function renderChord(
     renderKey = null,
     useUnicodeModifier = false,
     normalizeChords = true,
+    decapo = false,
   }: RenderChordOptions = {},
 ): string {
   const chord = Chord.parse(chordString);
-  const songKey = song.key;
-  const capoString = song.metadata.getSingle(CAPO);
-  const capo = capoString ? parseInt(capoString, 10) : null;
-  const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
   if (!chord) {
     return chordString;
   }
 
-  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey, renderKey);
-  const effectiveKey = renderKey || Key.wrap(line.key || song.key)?.transpose(effectiveTransposeDistance) || null;
-  const transposedChord = chord.transpose(effectiveTransposeDistance);
-  const normalizedChord = (normalizeChords ? transposedChord.normalize(effectiveKey) : transposedChord);
+  const songKey = song.key;
+  const capoString = song.metadata.getSingle(CAPO);
+  const capo = (decapo && capoString) ? parseInt(capoString, 10) : null;
+  const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
-  return changeChordType(normalizedChord, chordStyle, effectiveKey).toString({ useUnicodeModifier });
+  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey, renderKey);
+  const contextKey = Key.wrap(line.key || song.key);
+  const modifier = effectiveModifier(renderKey, contextKey);
+  const effectiveKey = renderKey || contextKey?.transpose(effectiveTransposeDistance) || null;
+
+  return shapeChord({
+    chord,
+    effectiveTransposeDistance,
+    modifier,
+    normalizeChords,
+    effectiveKey,
+    chordStyle,
+  })
+    .toString({ useUnicodeModifier });
 }
 
 export function stringSplitReplace(

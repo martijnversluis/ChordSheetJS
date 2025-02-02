@@ -3,12 +3,12 @@ import { exampleSongSymbol } from '../fixtures/song';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import defaultConfiguration from '../../src/formatter/pdf_formatter/default_configuration';
 import StubbedPdfDoc from './stubbed_pdf_doc';
-import Configuration from '../../src/formatter/configuration/configuration';
+import { configure } from '../../src/formatter/configuration';
 
 describe('PdfFormatter', () => {
   it('correctly formats a basic song', () => {
     const formatter = new PdfFormatter();
-    const config = new Configuration();
+    const config = configure({});
     formatter.format(exampleSongSymbol, config, defaultConfiguration, StubbedPdfDoc);
     const doc = formatter.doc as StubbedPdfDoc;
 

@@ -15,7 +15,7 @@ describe('chordpro to HTML with TABLEs', () => {
       %{title|title is set and c is %{c|set|unset}|title is unset}`;
 
     const expectedChordSheet = stripHTML(`
-      <h1>A</h1>
+      <h1 class="title">A</h1>
       <div class="chord-sheet">
         <div class="paragraph">
           <table class="row">
@@ -162,7 +162,7 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Verse 1</h3>
               </td>
             </tr>
@@ -181,7 +181,7 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Chorus 2</h3>
               </td>
             </tr>
@@ -201,7 +201,7 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph bridge">
           <table class="row">
             <tr>
-              <td>
+              <td class="label-wrapper">
                 <h3 class="label">Bridge 3</h3>
               </td>
             </tr>
@@ -251,7 +251,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td><h3 class="label">Chorus 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Chorus 1:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -268,7 +270,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td><h3 class="label">Verse 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Verse 1:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -285,7 +289,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 1:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -302,7 +308,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td><h3 class="label">Chorus 2:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Chorus 2:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -319,7 +327,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 2:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 2:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -336,7 +346,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 2 again:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 2 again:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -384,7 +396,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td><h3 class="label">Chorus 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Chorus 1:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -401,7 +415,9 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph verse">
           <table class="row">
             <tr>
-              <td><h3 class="label">Verse 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Verse 1:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -418,14 +434,18 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 1:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 1:</h3>
+              </td>
             </tr>
           </table>
         </div>
         <div class="paragraph chorus">
           <table class="row">
             <tr>
-              <td><h3 class="label">Chorus 2:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Chorus 2:</h3>
+              </td>
             </tr>
           </table>
           <table class="row">
@@ -442,14 +462,18 @@ describe('chordpro to HTML with TABLEs', () => {
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 2:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 2:</h3>
+              </td>
             </tr>
           </table>
         </div>
         <div class="paragraph">
           <table class="row">
             <tr>
-              <td><h3 class="label">Repeat chorus 2 again:</h3></td>
+              <td class="label-wrapper">
+                <h3 class="label">Repeat chorus 2 again:</h3>
+              </td>
             </tr>
           </table>
         </div>

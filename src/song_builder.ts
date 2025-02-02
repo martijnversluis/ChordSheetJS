@@ -1,4 +1,5 @@
 import { NONE, PART } from './constants';
+
 import Line, { LineType } from './chord_sheet/line';
 
 import Tag, {
@@ -138,7 +139,7 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    const [tagType, sectionType] = Tag.recognizeSectionTag(tag.name, tag.value);
+    const [tagType, sectionType] = Tag.recognizeSectionTag(tag);
 
     if (!sectionType) {
       return;
@@ -153,6 +154,7 @@ class SongBuilder {
 
   startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
+    this.selector = tag.selector;
 
     if (sectionType === PART && tag.value) {
       this.sectionType = tag.value.split(' ')[0].toLowerCase();
@@ -171,7 +173,7 @@ class SongBuilder {
   }
 
   checkCurrentSectionType(sectionType: string, tag: Tag): void {
-    if (this.sectionType !== sectionType) {
+    if (this.sectionType !== sectionType && !(sectionType === 'part' && tag.name === 'end_of_part')) {
       this.addWarning(`Unexpected tag {${tag.originalName}}, current section is: ${this.sectionType}`, tag);
     }
   }

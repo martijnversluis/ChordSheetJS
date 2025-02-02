@@ -6,13 +6,14 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import Paragraph from './chord_sheet/paragraph';
 import Metadata from './chord_sheet/metadata';
-import Configuration, { defaultDelegate, Delegate } from './formatter/configuration/configuration';
+import Configuration, { defaultDelegate, Delegate } from './formatter/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import { renderChord } from './helpers';
 import When from './template_helpers/when';
 import { Literal, SoftLineBreak } from './index';
 import WhenCallback from './template_helpers/when_callback';
+import { HtmlTemplateCssClasses } from './formatter/html_formatter';
 
 type EachCallback = (_item: any) => string;
 
@@ -39,9 +40,13 @@ export function isComment(item: Tag): boolean {
   return item.name === 'comment';
 }
 
-export const isColumnBreak = (item: Item): boolean => item instanceof Tag && item.name === 'column_break';
+export function isColumnBreak(item: Item): boolean {
+  return item instanceof Tag && item.name === 'column_break';
+}
 
-export const isSoftLineBreak = (item: Item): boolean => item instanceof SoftLineBreak;
+export function isSoftLineBreak(item: Item): boolean {
+  return item instanceof SoftLineBreak;
+}
 
 export function stripHTML(string: string): string {
   return string
@@ -77,18 +82,18 @@ export function hasTextContents(line: Line): boolean {
   ));
 }
 
-export function lineClasses(line: Line): string {
-  const classes = ['row'];
+export function lineClasses(line: Line, cssClasses: HtmlTemplateCssClasses): string {
+  const classes = [cssClasses.row];
 
   if (!lineHasContents(line)) {
-    classes.push('empty-line');
+    classes.push(cssClasses.emptyLine);
   }
 
   return classes.join(' ');
 }
 
-export function paragraphClasses(paragraph: Paragraph): string {
-  const classes = ['paragraph'];
+export function paragraphClasses(paragraph: Paragraph, cssClasses: HtmlTemplateCssClasses): string {
+  const classes = [cssClasses.paragraph];
 
   if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
     classes.push(paragraph.type);
@@ -98,7 +103,7 @@ export function paragraphClasses(paragraph: Paragraph): string {
 }
 
 export function evaluate(item: Evaluatable, metadata: Metadata, configuration: Configuration): string {
-  return item.evaluate(metadata, configuration.metadataSeparator);
+  return item.evaluate(metadata, configuration.metadata.separator);
 }
 
 export function fontStyleTag(font: Font): string {

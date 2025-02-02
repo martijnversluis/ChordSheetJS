@@ -4,7 +4,6 @@ import songWithIntro from '../fixtures/song_with_intro';
 
 import { GRID } from '../../src/constants';
 import { ContentType } from '../../src/serialized_types';
-import Configuration from '../../src/formatter/configuration/configuration';
 
 import {
   ABC, LILYPOND, TAB, TextFormatter,
@@ -124,7 +123,7 @@ Let it be, let it be, let it be, let it be`;
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
   });
 
-  it('applies the correct normalization when a capo is active', () => {
+  it('applies the correct normalization when a capo is active and decapo is on', () => {
     const songWithCapo = createSongFromAst([
       [tag('key', 'F')],
       [tag('capo', '1')],
@@ -138,6 +137,25 @@ Let it be, let it be, let it be, let it be`;
 
     const expectedChordSheet = heredoc`
          C#m7             B/D#                 E
+      My heart has always longed for something more`;
+
+    expect(new TextFormatter({ decapo: true }).format(songWithCapo)).toEqual(expectedChordSheet);
+  });
+
+  it('does not apply normalization for capo when decapo is off', () => {
+    const songWithCapo = createSongFromAst([
+      [tag('key', 'F')],
+      [tag('capo', '1')],
+      [
+        chordLyricsPair('', 'My '),
+        chordLyricsPair('Dm7', 'heart has always '),
+        chordLyricsPair('C/E', 'longed for something '),
+        chordLyricsPair('F', 'more'),
+      ],
+    ]);
+
+    const expectedChordSheet = heredoc`
+         Dm7              C/E                  F
       My heart has always longed for something more`;
 
     expect(new TextFormatter().format(songWithCapo)).toEqual(expectedChordSheet);
@@ -227,11 +245,11 @@ Let it be, let it be, let it be, let it be`;
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration({
+          const configuration = {
             delegates: {
               [type]: (content: string) => content.toUpperCase(),
             },
-          });
+          };
 
           const expectedOutput = heredoc`
             ${type} section
@@ -247,7 +265,7 @@ Let it be, let it be, let it be, let it be`;
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration();
+          const configuration = {};
 
           const expectedOutput = heredoc`
             ${type} section
@@ -255,7 +273,7 @@ Let it be, let it be, let it be, let it be`;
             ${type} line 2
           `;
 
-          expect(new TextFormatter({ configuration }).format(song)).toEqual(expectedOutput);
+          expect(new TextFormatter(configuration).format(song)).toEqual(expectedOutput);
         });
       });
     });

@@ -4,7 +4,6 @@ import songWithIntro from '../fixtures/song_with_intro';
 
 import { GRID } from '../../src/constants';
 import { ContentType } from '../../src/serialized_types';
-import Configuration from '../../src/formatter/configuration/configuration';
 
 import {
   ABC, ChordsOverWordsFormatter, LILYPOND, TAB,
@@ -157,11 +156,11 @@ Grid line 2`;
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration({
+          const configuration = {
             delegates: {
               [type]: (content: string) => content.toUpperCase(),
             },
-          });
+          };
 
           const expectedOutput = heredoc`
             ${type} section
@@ -177,7 +176,7 @@ Grid line 2`;
             ...section(type as ContentType, `${type} section`, {}, `${type} line 1\n${type} line 2`),
           ]);
 
-          const configuration = new Configuration();
+          const configuration = {};
 
           const expectedOutput = heredoc`
             ${type} section

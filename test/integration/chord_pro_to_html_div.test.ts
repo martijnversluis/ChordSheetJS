@@ -15,7 +15,7 @@ describe('chordpro to HTML with DIVs', () => {
       %{title|title is set and c is %{c|set|unset}|title is unset}`;
 
     const expectedChordSheet = stripHTML(`
-      <h1>A</h1>
+      <h1 class="title">A</h1>
       <div class="chord-sheet">
         <div class="paragraph">
           <div class="row">

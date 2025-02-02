@@ -451,6 +451,15 @@ This part is [G]key
     expect(song.lines[0].items[0]).toBeChordLyricsPair('', '|: Let it be :|');
   });
 
+  it('does not chop off the first word when chopFirstWord is false', () => {
+    const chordSheet = '[Am]Whisper words of ';
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet, { chopFirstWord: false });
+
+    expect(song.lines[0].items[0]).toBeChordLyricsPair('Am', 'Whisper words of ');
+  });
+
   describe('it is forgiving to syntax errors', () => {
     it('allows dangling ]', () => {
       const chordSheetWithError = `

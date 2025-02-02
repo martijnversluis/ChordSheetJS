@@ -31,35 +31,36 @@ export default (
       metadata,
     },
     bodyParagraphs,
+    cssClasses: c,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
-  ${ when(title, () => `<h1>${ title }</h1>`) }
-  ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }
+  ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
+  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
 
-  <div class="chord-sheet">
+  <div class="${ c.chordSheet }">
     ${ each(bodyParagraphs, (paragraph) => `
-      <div class="${ paragraphClasses(paragraph) }">
+      <div class="${ paragraphClasses(paragraph, c) }">
         ${ when(paragraph.isLiteral(), () => `
           ${ when(isPresent(paragraph.label), () => `
-            <div class="row">
-              <h3 class="label">${ paragraph.label }</h3>
+            <div class="${ c.row }">
+              <h3 class="${ c.label }">${ paragraph.label }</h3>
             </div>
           `) }
 
-          <div class="row">
-            <div class="literal">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</div>
+          <div class="${ c.row }">
+            <div class="${ c.literal }">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</div>
           </div>
         `).else(() => `
           ${ each(paragraph.lines, (line) => `
             ${ when(renderBlankLines || lineHasContents(line), () => `
-              <div class="${ lineClasses(line) }">
+              <div class="${ lineClasses(line, c) }">
                 ${ each(line.items, (item) => `
                   ${ when(isChordLyricsPair(item), () => `
-                    <div class="column">
+                    <div class="${ c.column }">
                      ${ when(item.annotation).then(() => `
-                       <div class="annotation"${ fontStyleTag(line.chordFont) }>${ item.annotation }</div>
+                       <div class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</div>
                      `).else(() => `
-                        <div class="chord"${ fontStyleTag(line.chordFont) }>
+                        <div class="${ c.chord }"${ fontStyleTag(line.chordFont) }>
                           ${ renderChord(
                             item.chords,
                             line,
@@ -68,24 +69,25 @@ export default (
                               renderKey: key,
                               useUnicodeModifier: configuration.useUnicodeModifiers,
                               normalizeChords: configuration.normalizeChords,
+                              decapo: configuration.decapo,
                             },
                           ) }
                         </div>
                      `) }
-                      <div class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
+                      <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
                     </div>
                   `).elseWhen(isTag(item), () => `
                     ${ when(isComment(item), () => `
-                      <div class="comment">${ item.value }</div>
+                      <div class="${ c.comment }">${ item.value }</div>
                     `) }
 
                     ${ when(item.hasRenderableLabel(), () => `
-                      <h3 class="label">${ item.label }</h3>
+                      <h3 class="${ c.label }">${ item.label }</h3>
                     `) }
                   `).elseWhen(isEvaluatable(item), () => `
-                    <div class="column">
-                      <div class="chord"></div>
-                      <div class="lyrics"${ fontStyleTag(line.textFont) }>
+                    <div class="${ c.column }">
+                      <div class="${ c.chord }"></div>
+                      <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
                         ${ evaluate(item, metadata, configuration) }
                       </div>
                     </div>

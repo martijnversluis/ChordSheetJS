@@ -19,7 +19,7 @@ import {
 } from '../index';
 import Item from '../chord_sheet/item';
 import jsPDF from 'jspdf';
-import defaultConfiguration from './pdf_formatter/default_configuration';
+import defaultPDFConfiguration from './pdf_formatter/default_configuration';
 
 import {
   Alignment,
@@ -48,7 +48,7 @@ import {
 
 import { Performance } from 'perf_hooks';
 import { Blob } from 'buffer';
-import Configuration from './configuration/configuration';
+import Configuration, { defaultConfiguration } from './configuration';
 import { getCapos } from '../helpers';
 declare const performance: Performance;
 
@@ -73,19 +73,19 @@ class PdfFormatter extends Formatter {
 
   columnWidth = 0;
 
-  configuration: Configuration = new Configuration();
+  configuration: Configuration = defaultConfiguration;
 
-  pdfConfiguration: PDFConfiguration = defaultConfiguration;
+  pdfConfiguration: PDFConfiguration = defaultPDFConfiguration;
 
-  fontConfiguration: FontConfiguration = defaultConfiguration.fonts.text;
+  fontConfiguration: FontConfiguration = defaultPDFConfiguration.fonts.text;
 
-  margins: Margins = defaultConfiguration.layout.global.margins;
+  margins: Margins = defaultPDFConfiguration.layout.global.margins;
 
   // Main function to format and save the song as a PDF
   format(
     song: Song,
     configuration: Configuration,
-    pdfConfiguration: PDFConfiguration = defaultConfiguration,
+    pdfConfiguration: PDFConfiguration = defaultPDFConfiguration,
     docConstructor: PdfConstructor = jsPDF,
   ): void {
     this.startTime = performance.now();

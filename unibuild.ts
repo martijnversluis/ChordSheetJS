@@ -52,7 +52,7 @@ unibuild((u: Builder) => {
   });
 
   const chordParser = u.asset('chordParser', {
-    input: ['src/parser/chord/base_grammar.pegjs', chordSuffixGrammar],
+    input: ['src/parser/chord/base_grammar.pegjs', 'src/parser/chord/simple_suffix_grammar.pegjs'],
     outfile: 'src/parser/chord/peg_parser.ts',
     build: ({ release }: BuildOptions, baseGrammar: string, suffixGrammar: string) => (
       peggyGenerate(`${baseGrammar}\n\n${suffixGrammar}`, release)
@@ -95,6 +95,7 @@ unibuild((u: Builder) => {
       'src/parser/chords_over_words/grammar.pegjs',
       'src/parser/chord/base_grammar.pegjs',
       chordSuffixGrammar,
+      'src/parser/whitespace_grammar.pegjs',
     ],
     outfile: 'src/parser/chords_over_words/peg_parser.ts',
     build: ({ release }: BuildOptions, ...grammars: string[]) => {

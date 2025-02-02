@@ -5,10 +5,7 @@
 import AstComponent from './ast_component';
 import TraceInfo from './trace_info';
 import ChordDefinition from '../chord_definition/chord_definition';
-
-import {
-  ABC, BRIDGE, GRID, LILYPOND, TAB, VERSE,
-} from '../constants';
+import TagInterpreter from './tag_interpreter';
 
 export const ALBUM = 'album';
 
@@ -345,6 +342,14 @@ const INLINE_FONT_TAGS = [
 
 const DIRECTIVES_WITH_RENDERABLE_LABEL = [
   CHORUS,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_TAB,
+  START_OF_VERSE,
+  START_OF_PART,
 ];
 
 const ALIASES: Record<string, string> = {
@@ -375,31 +380,9 @@ const ALIASES: Record<string, string> = {
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
-const START_TAG_TO_SECTION_TYPE = {
-  [START_OF_ABC]: ABC,
-  [START_OF_BRIDGE]: BRIDGE,
-  [START_OF_CHORUS]: CHORUS,
-  [START_OF_GRID]: GRID,
-  [START_OF_LY]: LILYPOND,
-  [START_OF_TAB]: TAB,
-  [START_OF_VERSE]: VERSE,
-};
-
-const END_TAG_TO_SECTION_TYPE = {
-  [END_OF_ABC]: ABC,
-  [END_OF_BRIDGE]: BRIDGE,
-  [END_OF_CHORUS]: CHORUS,
-  [END_OF_GRID]: GRID,
-  [END_OF_LY]: LILYPOND,
-  [END_OF_TAB]: TAB,
-  [END_OF_VERSE]: VERSE,
-};
-
 export const START_TAG = 'start_tag';
 export const END_TAG = 'end_tag';
 export const AUTO = 'auto';
-const SECTION_START_REGEX = /^start_of_(.+)$/;
-const SECTION_END_REGEX = /^end_of_(.+)$/;
 
 export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
@@ -507,36 +490,8 @@ class Tag extends AstComponent {
     return parsed;
   }
 
-  static recognizeSectionTag(tagName: string, tagValue: string | null = null): [string | null, string | null] {
-    if (tagName === START_OF_PART && tagValue) {
-      return [START_TAG, tagValue.split(' ')[0].toLowerCase()];
-    }
-
-    if (tagName === END_OF_PART) {
-      return [END_TAG, AUTO];
-    }
-
-    if (tagName in START_TAG_TO_SECTION_TYPE) {
-      return [START_TAG, START_TAG_TO_SECTION_TYPE[tagName]];
-    }
-
-    if (tagName in END_TAG_TO_SECTION_TYPE) {
-      return [END_TAG, END_TAG_TO_SECTION_TYPE[tagName]];
-    }
-
-    const parseStartResult = SECTION_START_REGEX.exec(tagName);
-
-    if (parseStartResult) {
-      return [START_TAG, parseStartResult[1]];
-    }
-
-    const parseEndResult = SECTION_END_REGEX.exec(tagName);
-
-    if (parseEndResult) {
-      return [END_TAG, parseEndResult[1]];
-    }
-
-    return [null, null];
+  static recognizeSectionTag(tag: Tag): [string | null, string | null] {
+    return TagInterpreter.interpret(tag.name, tag.value);
   }
 
   get label() {
@@ -554,12 +509,12 @@ class Tag extends AstComponent {
   }
 
   isSectionStart(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this.name, this.value);
+    const [tagType] = Tag.recognizeSectionTag(this);
     return tagType === START_TAG;
   }
 
   isSectionEnd(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this.name);
+    const [tagType] = Tag.recognizeSectionTag(this);
     return tagType === END_TAG;
   }
 

@@ -32,43 +32,44 @@ export default (
       metadata,
     },
     bodyParagraphs,
+    cssClasses: c,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
-  ${ when(title, () => `<h1>${ title }</h1>`) }
-  ${ when(subtitle, () => `<h2>${ subtitle }</h2>`) }
+  ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
+  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
 
   ${ when(bodyLines.length > 0, () => `
-    <div class="chord-sheet">
+    <div class="${ c.chordSheet }">
       ${ each(bodyParagraphs, (paragraph) => `
-        <div class="${ paragraphClasses(paragraph) }">
+        <div class="${ paragraphClasses(paragraph, c) }">
           ${ when(paragraph.isLiteral(), () => `
             ${ when(isPresent(paragraph.label), () => `
-              <table class="row">
+              <table class="${ c.row }">
                 <tr>
-                  <td>
-                    <h3 class="label">${ paragraph.label }</h3>
+                  <td class="${ c.labelWrapper }">
+                    <h3 class="${ c.label }">${ paragraph.label }</h3>
                   </td>
                 </tr>
               </table>
             `) }
 
-            <table class="literal">
+            <table class="${ c.literal }">
               <tr>
-                <td class="contents">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
+                <td class="${ c.literalContents }">${ newlinesToBreaks(renderSection(paragraph, configuration)) }</td>
               </tr>
             </table>
           `).else(() => `
             ${ each(paragraph.lines, (line) => `
               ${ when(renderBlankLines || lineHasContents(line), () => `
-                <table class="${ lineClasses(line) }">
+                <table class="${ lineClasses(line, c) }">
                   ${ when(hasChordContents(line), () => `
                     <tr>
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
                           ${ when(item.annotation).then(() => `
-                            <td class="annotation"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
+                            <td class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
                           `).else(() => `
-                            <td class="chord"${ fontStyleTag(line.chordFont) }>${
+                            <td class="${ c.chord }"${ fontStyleTag(line.chordFont) }>${
                               renderChord(
                                 item.chords,
                                 line,
@@ -77,6 +78,7 @@ export default (
                                   renderKey: key,
                                   useUnicodeModifier: configuration.useUnicodeModifiers,
                                   normalizeChords: configuration.normalizeChords,
+                                  decapo: configuration.decapo,
                                 },
                               )
                             }</td>
@@ -89,19 +91,21 @@ export default (
                     <tr>
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
-                          <td class="lyrics"${ fontStyleTag(line.textFont) }>${ item.lyrics }</td>
+                          <td class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>${ item.lyrics }</td>
                         `).elseWhen(isTag(item), () => `
                           ${ when(isComment(item), () => `
-                            <td class="comment"${ fontStyleTag(line.textFont) }>${ item.value }</td>
+                            <td class="${ c.comment }"${ fontStyleTag(line.textFont) }>${ item.value }</td>
                           `) }
 
                           ${ when(item.hasRenderableLabel(), () => `
-                            <td><h3 class="label"${ fontStyleTag(line.textFont) }>${ item.label }</h3></td>
+                            <td class="${ c.labelWrapper }">
+                              <h3 class="${ c.label }"${ fontStyleTag(line.textFont) }>${ item.label }</h3>
+                            </td>
                           `) }
                         `).elseWhen(isLiteral(item), () => `
-                          <td class="literal">${ item.string }</td>
+                          <td class="${ c.literal }">${ item.string }</td>
                         `).elseWhen(isEvaluatable(item), () => `
-                          <td class="lyrics"${ fontStyleTag(line.textFont) }>
+                          <td class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
                             ${ evaluate(item, metadata, configuration) }
                           </td>
                         `) }

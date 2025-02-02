@@ -125,6 +125,7 @@ class TextFormatter extends Formatter {
         renderKey: this.configuration.key,
         useUnicodeModifier: this.configuration.useUnicodeModifiers,
         normalizeChords: this.configuration.normalizeChords,
+        decapo: this.configuration.decapo,
       },
     );
     return chords;
