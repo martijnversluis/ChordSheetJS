@@ -1,288 +1,50 @@
-/**
- * Album meta directive. See https://www.chordpro.org/chordpro/directives-album/
- * @type {string}
- */
 import AstComponent from './ast_component';
 import TraceInfo from './trace_info';
 import ChordDefinition from '../chord_definition/chord_definition';
+import {
+  _KEY,
+  ALBUM,
+  ARRANGER,
+  ARTIST,
+  CAPO,
+  CHORD_STYLE,
+  CHORDCOLOUR,
+  CHORDFONT,
+  CHORDSIZE,
+  CHORUS,
+  COMMENT,
+  COMPOSER,
+  COPYRIGHT,
+  DURATION,
+  END_OF_BRIDGE,
+  END_OF_CHORUS,
+  END_OF_GRID,
+  END_OF_PART,
+  END_OF_TAB,
+  END_OF_VERSE,
+  KEY,
+  LYRICIST, NEW_KEY,
+  SORTTITLE,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_PART,
+  START_OF_TAB,
+  START_OF_VERSE,
+  SUBTITLE,
+  TEMPO,
+  TEXTCOLOUR,
+  TEXTFONT,
+  TEXTSIZE,
+  TIME,
+  TITLE,
+  YEAR,
+} from './tags';
+
 import TagInterpreter from './tag_interpreter';
-
-export const ALBUM = 'album';
-
-/**
- * Arranger meta directive. See https://chordpro.org/chordpro/directives-arranger/
- * @type {string}
- */
-export const ARRANGER = 'arranger';
-
-/**
- * Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
- * @type {string}
- */
-export const ARTIST = 'artist';
-
-/**
- * Capo meta directive. See https://www.chordpro.org/chordpro/directives-capo/
- * @type {string}
- */
-export const CAPO = 'capo';
-
-/**
- * Comment directive. See https://www.chordpro.org/chordpro/directives-comment/
- * @type {string}
- */
-export const COMMENT = 'comment';
-
-/**
- * Composer meta directive. See https://www.chordpro.org/chordpro/directives-composer/
- * @type {string}
- */
-export const COMPOSER = 'composer';
-
-/**
- * Copyright meta directive. See https://www.chordpro.org/chordpro/directives-copyright/
- * @type {string}
- */
-export const COPYRIGHT = 'copyright';
-
-/**
- * Duration meta directive. See https://www.chordpro.org/chordpro/directives-duration/
- * @type {string}
- */
-export const DURATION = 'duration';
-
-/**
- * End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/
- * @type {string}
- */
-export const END_OF_ABC = 'end_of_abc';
-
-/**
- * End of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
- * @type {string}
- */
-export const END_OF_BRIDGE = 'end_of_bridge';
-
-/**
- * End of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
- * @type {string}
- */
-export const END_OF_CHORUS = 'end_of_chorus';
-
-/**
- * End of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/
- * @type {string}
- */
-export const END_OF_GRID = 'end_of_grid';
-
-/**
- * End of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/
- * @type {string}
- */
-export const END_OF_LY = 'end_of_ly';
-
-/**
- * End of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
- * @type {string}
- */
-export const END_OF_TAB = 'end_of_tab';
-
-/**
- * End of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
- * @type {string}
- */
-export const END_OF_VERSE = 'end_of_verse';
-
-/**
- * End of part directive.
- * @type {string}
- */
-export const END_OF_PART = 'end_of_part';
-
-/**
- * Key meta directive. See https://www.chordpro.org/chordpro/directives-key/
- * @type {string}
- */
-export const KEY = 'key';
-
-/**
- * _Key meta directive. Reflects the key as transposed by the capo value
- * See https://www.chordpro.org/chordpro/directives-key/
- * @type {string}
- */
-export const _KEY = '_key';
-
-/**
- * Lyricist meta directive. See https://www.chordpro.org/chordpro/directives-lyricist/
- * @type {string}
- */
-export const LYRICIST = 'lyricist';
-
-/**
- * Sorttitle meta directive. See https://chordpro.org/chordpro/directives-sorttitle/
- * @type {string}
- */
-export const SORTTITLE = 'sorttitle';
-
-/**
- * Start of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/
- * @type {string}
- */
-export const START_OF_ABC = 'start_of_abc';
-
-/**
- * Start of bridge directive. See https://chordpro.org/chordpro/directives-env_bridge/
- * @type {string}
- */
-export const START_OF_BRIDGE = 'start_of_bridge';
-
-/**
- * Start of chorus directive. See https://www.chordpro.org/chordpro/directives-env_chorus/
- * @type {string}
- */
-export const START_OF_CHORUS = 'start_of_chorus';
-
-/**
- * Start of grid directive. See https://www.chordpro.org/chordpro/directives-env_grid/
- * @type {string}
- */
-export const START_OF_GRID = 'start_of_grid';
-
-/**
- * Start of Lilypond music notation section See https://chordpro.org/chordpro/directives-env_ly/
- * @type {string}
- */
-export const START_OF_LY = 'start_of_ly';
-
-/**
- * Start of tab directive. See https://www.chordpro.org/chordpro/directives-env_tab/
- * @type {string}
- */
-export const START_OF_TAB = 'start_of_tab';
-
-/**
- * Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
- * @type {string}
- */
-export const START_OF_VERSE = 'start_of_verse';
-
-/**
- * Start of part
- * @type {string}
- */
-export const START_OF_PART = 'start_of_part';
-
-/**
- * Subtitle meta directive. See https://www.chordpro.org/chordpro/directives-subtitle/
- * @type {string}
- */
-export const SUBTITLE = 'subtitle';
-
-/**
- * Tempo meta directive. See https://www.chordpro.org/chordpro/directives-tempo/
- * @type {string}
- */
-export const TEMPO = 'tempo';
-
-/**
- * Time meta directive. See https://www.chordpro.org/chordpro/directives-time/
- * @type {string}
- */
-export const TIME = 'time';
-
-/**
- * Title meta directive. See https://www.chordpro.org/chordpro/directives-title/
- * @type {string}
- */
-export const TITLE = 'title';
-
-/**
- * Transpose meta directive. See: https://www.chordpro.org/chordpro/directives-transpose/
- * @type {string}
- */
-export const TRANSPOSE = 'transpose';
-/**
- * New Key meta directive. See: https://github.com/PraiseCharts/ChordChartJS/issues/53
- * @type {string}
- */
-export const NEW_KEY = 'new_key';
-
-/**
- * Year meta directive. See https://www.chordpro.org/chordpro/directives-year/
- * @type {string}
- */
-export const YEAR = 'year';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
- * @type {string}
- */
-export const CHORDFONT = 'chordfont';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
- * @type {string}
- */
-export const CHORDSIZE = 'chordsize';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_chord_legacy/
- * @type {string}
- */
-export const CHORDCOLOUR = 'chordcolour';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
- * @type {string}
- */
-export const TEXTFONT = 'textfont';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
- * @type {string}
- */
-export const TEXTSIZE = 'textsize';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_text_legacy/
- * @type {string}
- */
-export const TEXTCOLOUR = 'textcolour';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
- * @type {string}
- */
-export const TITLEFONT = 'titlefont';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
- * @type {string}
- */
-export const TITLESIZE = 'titlesize';
-
-/**
- * Chordfont directive. See https://www.chordpro.org/chordpro/directives-props_title_legacy/
- * @type {string}
- */
-export const TITLECOLOUR = 'titlecolour';
-
-/**
- * Chorus directive. Support repeating an earlier defined section.
- * See https://www.chordpro.org/chordpro/directives-env_chorus/
- * @type {string}
- */
-export const CHORUS = 'chorus';
-
-/**
- * Chord type directive. Determines the type of chords used in the rendered chord sheet.
- * Possible values are 'solfege', 'symbol', 'numeral' and 'number'
- * @see https://github.com/bettermusic/ChordSheetJS/issues/352
- * @type {string}
- */
-export const CHORD_STYLE = 'chord_style';
-
-export type ChordType = 'symbol' | 'numeral' | 'number' | 'solfege' | null;
+import { END_TAG, START_TAG } from '../constants';
 
 const CHORDFONT_SHORT = 'cf';
 const CHORDSIZE_SHORT = 'cs';
@@ -378,10 +140,6 @@ const ALIASES: Record<string, string> = {
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
-
-export const START_TAG = 'start_tag';
-export const END_TAG = 'end_tag';
-export const AUTO = 'auto';
 
 export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
@@ -489,10 +247,6 @@ class Tag extends AstComponent {
     return parsed;
   }
 
-  static recognizeSectionTag(tag: Tag): [string | null, string | null] {
-    return TagInterpreter.interpret(tag.name, tag.value);
-  }
-
   get label() {
     const labelAttribute = this.attributes.label;
 
@@ -508,12 +262,12 @@ class Tag extends AstComponent {
   }
 
   isSectionStart(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this);
+    const [tagType] = TagInterpreter.interpret(this.name, this.value);
     return tagType === START_TAG;
   }
 
   isSectionEnd(): boolean {
-    const [tagType] = Tag.recognizeSectionTag(this);
+    const [tagType] = TagInterpreter.interpret(this.name, this.value);
     return tagType === END_TAG;
   }
 

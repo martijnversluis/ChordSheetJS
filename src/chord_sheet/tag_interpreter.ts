@@ -1,5 +1,16 @@
 import {
+  ABC,
   AUTO,
+  BRIDGE,
+  END_TAG,
+  GRID,
+  LILYPOND,
+  START_TAG,
+  TAB,
+  VERSE,
+} from '../constants';
+
+import {
   CHORUS,
   END_OF_ABC,
   END_OF_BRIDGE,
@@ -9,21 +20,13 @@ import {
   END_OF_PART,
   END_OF_TAB,
   END_OF_VERSE,
-  END_TAG,
   START_OF_ABC,
   START_OF_BRIDGE,
   START_OF_CHORUS,
   START_OF_GRID,
-  START_OF_LY,
-  START_OF_PART,
-  START_OF_TAB,
-  START_OF_VERSE,
-  START_TAG,
-} from './tag';
-
-import {
-  ABC, BRIDGE, GRID, LILYPOND, TAB, VERSE,
-} from '../constants';
+  START_OF_LY, START_OF_PART,
+  START_OF_TAB, START_OF_VERSE,
+} from './tags';
 
 const START_TAG_TO_SECTION_TYPE = {
   [START_OF_ABC]: ABC,
