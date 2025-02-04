@@ -7,20 +7,16 @@ import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
 import Item from './item';
 import { CHORUS, Modifier } from '../constants';
-
-import Tag, {
-  CAPO,
-  CHORUS as CHORUS_TAG,
-  END_OF_CHORUS,
-  KEY,
-  START_OF_CHORUS,
-} from './tag';
 import SongBuilder from '../song_builder';
 import ChordDefinition from '../chord_definition/chord_definition';
 import Chord from '../chord';
 import FormattingContext from '../formatter/formatting_context';
 import { testSelector } from '../helpers';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
+import Tag from './tag';
+import {
+  CAPO, END_OF_CHORUS, KEY, START_OF_CHORUS,
+} from './tags';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -99,7 +95,7 @@ class Song extends MetadataAccessors {
 
   private expandLine(line: Line): Line[] {
     const expandedLines = line.items.flatMap((item: Item) => {
-      if (item instanceof Tag && item.name === CHORUS_TAG) {
+      if (item instanceof Tag && item.name === CHORUS) {
         return this.getLastChorusBefore(line.lineNumber);
       }
 

@@ -1,22 +1,16 @@
-import { NONE, PART } from './constants';
-
+import {
+  AUTO, END_TAG, NONE, PART, START_TAG,
+} from './constants';
 import Line, { LineType } from './chord_sheet/line';
-
-import Tag, {
-  AUTO,
-  END_TAG,
-  KEY,
-  NEW_KEY,
-  START_TAG,
-  TRANSPOSE,
-} from './chord_sheet/tag';
-
 import Metadata from './chord_sheet/metadata';
 import FontStack from './chord_sheet/font_stack';
 import Item from './chord_sheet/item';
 import TraceInfo from './chord_sheet/trace_info';
 import ParserWarning from './parser/parser_warning';
 import Song from './chord_sheet/song';
+import TagInterpreter from './chord_sheet/tag_interpreter';
+import { KEY, NEW_KEY, TRANSPOSE } from './chord_sheet/tags';
+import Tag from './chord_sheet/tag';
 
 class SongBuilder {
   currentKey: string | null = null;
@@ -139,7 +133,7 @@ class SongBuilder {
   }
 
   setSectionTypeFromTag(tag: Tag): void {
-    const [tagType, sectionType] = Tag.recognizeSectionTag(tag);
+    const [tagType, sectionType] = TagInterpreter.interpret(tag.name, tag.value);
 
     if (!sectionType) {
       return;

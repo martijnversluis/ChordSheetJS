@@ -12,7 +12,7 @@ import {
   TIME,
   TITLE,
   YEAR,
-} from './tag';
+} from './tags';
 
 abstract class MetadataAccessors {
   abstract getMetadata(_name: string): string | string[] | null;

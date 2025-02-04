@@ -2,10 +2,10 @@ import Chord from './chord';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
-import { CAPO, CHORD_STYLE, ChordType } from './chord_sheet/tag';
 import Line from './chord_sheet/line';
 import FormattingContext from './formatter/formatting_context';
-import { Modifier } from './constants';
+import { ChordType, Modifier } from './constants';
+import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
 
 export function transposeDistance(transposeKey: string, songKey: string): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -48,7 +48,7 @@ function changeChordType(
       return chord.toChordSolfege(referenceKey);
     case 'numeral':
       return chord.toNumeral(referenceKey);
-    case 'number':
+    case 'numeric':
       return chord.toNumeric(referenceKey);
     default:
       return chord;
