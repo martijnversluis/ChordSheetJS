@@ -13,7 +13,7 @@ import {
   START_OF_GRID,
   START_OF_LY,
   START_OF_TAB, START_OF_VERSE,
-} from '../../src/chord_sheet/tag';
+} from '../../src/chord_sheet/tags';
 
 describe('Tag', () => {
   const expectedAliases = {

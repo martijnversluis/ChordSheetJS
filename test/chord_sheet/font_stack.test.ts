@@ -1,7 +1,9 @@
 import FontStack from '../../src/chord_sheet/font_stack';
-import Tag, {
+import Tag from '../../src/chord_sheet/tag';
+
+import {
   CHORDCOLOUR, CHORDFONT, TEXTCOLOUR, TEXTFONT, TEXTSIZE,
-} from '../../src/chord_sheet/tag';
+} from '../../src/chord_sheet/tags';
 
 describe('FontStack', () => {
   describe('textfont', () => {

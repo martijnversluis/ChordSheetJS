@@ -107,3 +107,7 @@ type OpenFret = '0';
 type NonSoundingString = '-1' | 'N' | 'x';
 
 export type Fret = FretNumber | OpenFret | NonSoundingString;
+
+export const START_TAG = 'start_tag';
+export const END_TAG = 'end_tag';
+export const AUTO = 'auto';

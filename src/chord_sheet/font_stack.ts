@@ -1,9 +1,15 @@
 import Font from './font';
 import FontSize from './font_size';
+import Tag from './tag';
 
-import Tag, {
-  CHORDCOLOUR, CHORDFONT, CHORDSIZE, TEXTCOLOUR, TEXTFONT, TEXTSIZE,
-} from './tag';
+import {
+  CHORDCOLOUR,
+  CHORDFONT,
+  CHORDSIZE,
+  TEXTCOLOUR,
+  TEXTFONT,
+  TEXTSIZE,
+} from './tags';
 
 class FontStack {
   fontAndColourStacks: Record<string, string[]> = {

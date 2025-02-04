@@ -1,13 +1,9 @@
 import { CHORUS, NONE, VERSE } from '../constants';
 import ChordSheetParser from './chord_sheet_parser';
-
-import Tag, {
-  COMMENT,
-  END_OF_CHORUS,
-  END_OF_VERSE,
-  START_OF_CHORUS,
-  START_OF_VERSE,
-} from '../chord_sheet/tag';
+import {
+  COMMENT, END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE,
+} from '../chord_sheet/tags';
+import Tag from '../chord_sheet/tag';
 
 const VERSE_LINE_REGEX = /^\[(Verse.*)]/i;
 const CHORUS_LINE_REGEX = /^\[(Chorus)]/i;
