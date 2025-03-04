@@ -437,4 +437,48 @@ describe('Song', () => {
       expect(song.chordDefinitions.get('Dm')).toEqual(dm);
     });
   });
+
+  describe('#normalizeChords', () => {
+    it('normalizes the chords in a song', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('G/Cb', 'let it'),
+          createChordLyricsPair('E#/G', 'it'),
+        ]),
+      ]);
+
+      const normalizedSong = song.normalizeChords();
+
+      expect((normalizedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('G/B');
+      expect((normalizedSong.paragraphs[0].lines[0].items[1] as ChordLyricsPair).chords).toEqual('F/G');
+    });
+
+    it('normalizes the chords in a song against a specific key', () => {
+      const song = createSong(
+        [
+          createLine([
+            createChordLyricsPair('Fb', 'let it'),
+          ]),
+        ],
+        { key: 'Gb' },
+      );
+
+      const normalizedSong = song.normalizeChords('F#');
+      expect((normalizedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('E');
+    });
+
+    it('optionally normalizes the suffix', () => {
+      const song = createSong(
+        [
+          createLine([
+            createChordLyricsPair('Fbadd9', 'let it'),
+          ]),
+        ],
+        { key: 'Gb' },
+      );
+
+      const normalizedSong = song.normalizeChords('F#', { normalizeSuffix: true });
+      expect((normalizedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('E(9)');
+    });
+  });
 });

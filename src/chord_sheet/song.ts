@@ -343,13 +343,34 @@ class Song extends MetadataAccessors {
    * @returns {Song} the changed song
    */
   useModifier(modifier: Modifier): Song {
+    return this.mapChordLyricsPairs((pair) => pair.useModifier(modifier));
+  }
+
+  /**
+   * Returns a copy of the song with all chords normalized to the specified key. See {@link Chord#normalize}.
+   * @param key the key to normalize to
+   * @param options options
+   * @param options.normalizeSuffix whether to normalize the chord suffixes
+   */
+  normalizeChords(
+    key: Key | string | null = null,
+    { normalizeSuffix = true }: { normalizeSuffix?: boolean; } = {},
+  ): Song {
+    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }));
+  }
+
+  mapChordLyricsPairs(func: (pair: ChordLyricsPair) => ChordLyricsPair): Song {
     return this.mapItems((item) => {
       if (item instanceof ChordLyricsPair) {
-        return (item as ChordLyricsPair).useModifier(modifier);
+        return func(item);
       }
 
       return item;
     });
+  }
+
+  changeChords(func: (chord: Chord) => Chord): Song {
+    return this.mapChordLyricsPairs((pair) => pair.changeChord(func));
   }
 
   requireCurrentKey(): Key {
