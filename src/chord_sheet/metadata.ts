@@ -21,10 +21,12 @@ function appendValue(array: string[], value: string): void {
 class Metadata extends MetadataAccessors {
   metadata: Record<string, string | string[]> = {};
 
-  constructor(metadata: Record<string, string | string[]> = {}) {
+  constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
 
-    if (metadata) {
+    if (metadata instanceof Metadata) {
+      this.assign(metadata.metadata);
+    } else {
       this.assign(metadata);
     }
   }

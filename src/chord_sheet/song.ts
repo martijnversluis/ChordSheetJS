@@ -49,9 +49,9 @@ class Song extends MetadataAccessors {
 
   /**
    * Creates a new {Song} instance
-   * @param metadata {Object|Metadata} predefined metadata
+   * @param metadata {Record<string, string | string[]>|Metadata} predefined metadata
    */
-  constructor(metadata = {}) {
+  constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
     this.metadata = new Metadata(metadata);
   }
@@ -129,7 +129,7 @@ class Song extends MetadataAccessors {
     return lines;
   }
 
-  private filterChorusStartEndDirectives(line: Line) {
+  private filterChorusStartEndDirectives(line: Line): Line {
     return line.mapItems((item: Item) => {
       if (item instanceof Tag) {
         if (item.name === START_OF_CHORUS || item.name === END_OF_CHORUS) {
@@ -161,7 +161,7 @@ class Song extends MetadataAccessors {
     ) as Paragraph[];
   }
 
-  linesToParagraphs(lines: Line[]) {
+  linesToParagraphs(lines: Line[]): Paragraph[] {
     let currentParagraph = new Paragraph();
     const paragraphs = [currentParagraph];
 
@@ -291,7 +291,7 @@ class Song extends MetadataAccessors {
    * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeUp({ normalizeChordSuffix = false } = {}): Song {
+  transposeUp({ normalizeChordSuffix = false }: { normalizeChordSuffix?: boolean; } = {}): Song {
     return this.transpose(1, { normalizeChordSuffix });
   }
 
@@ -304,7 +304,7 @@ class Song extends MetadataAccessors {
    * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeDown({ normalizeChordSuffix = false } = {}): Song {
+  transposeDown({ normalizeChordSuffix = false }: { normalizeChordSuffix?: boolean; } = {}): Song {
     return this.transpose(-1, { normalizeChordSuffix });
   }
 
@@ -342,7 +342,7 @@ class Song extends MetadataAccessors {
    * @param {Modifier} modifier the new modifier
    * @returns {Song} the changed song
    */
-  useModifier(modifier: Modifier) {
+  useModifier(modifier: Modifier): Song {
     return this.mapItems((item) => {
       if (item instanceof ChordLyricsPair) {
         return (item as ChordLyricsPair).useModifier(modifier);
