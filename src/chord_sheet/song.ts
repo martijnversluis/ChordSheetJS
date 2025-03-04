@@ -49,9 +49,9 @@ class Song extends MetadataAccessors {
 
   /**
    * Creates a new {Song} instance
-   * @param metadata {Object|Metadata} predefined metadata
+   * @param metadata {Record<string, string | string[]>|Metadata} predefined metadata
    */
-  constructor(metadata = {}) {
+  constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
     this.metadata = new Metadata(metadata);
   }
@@ -129,7 +129,7 @@ class Song extends MetadataAccessors {
     return lines;
   }
 
-  private filterChorusStartEndDirectives(line: Line) {
+  private filterChorusStartEndDirectives(line: Line): Line {
     return line.mapItems((item: Item) => {
       if (item instanceof Tag) {
         if (item.name === START_OF_CHORUS || item.name === END_OF_CHORUS) {
@@ -161,7 +161,7 @@ class Song extends MetadataAccessors {
     ) as Paragraph[];
   }
 
-  linesToParagraphs(lines: Line[]) {
+  linesToParagraphs(lines: Line[]): Paragraph[] {
     let currentParagraph = new Paragraph();
     const paragraphs = [currentParagraph];
 
@@ -291,7 +291,7 @@ class Song extends MetadataAccessors {
    * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeUp({ normalizeChordSuffix = false } = {}): Song {
+  transposeUp({ normalizeChordSuffix = false }: { normalizeChordSuffix?: boolean; } = {}): Song {
     return this.transpose(1, { normalizeChordSuffix });
   }
 
@@ -304,7 +304,7 @@ class Song extends MetadataAccessors {
    * @param {boolean} [options.normalizeChordSuffix=false] whether to normalize the chord suffixes after transposing
    * @returns {Song} The transposed song
    */
-  transposeDown({ normalizeChordSuffix = false } = {}): Song {
+  transposeDown({ normalizeChordSuffix = false }: { normalizeChordSuffix?: boolean; } = {}): Song {
     return this.transpose(-1, { normalizeChordSuffix });
   }
 
@@ -342,14 +342,35 @@ class Song extends MetadataAccessors {
    * @param {Modifier} modifier the new modifier
    * @returns {Song} the changed song
    */
-  useModifier(modifier: Modifier) {
+  useModifier(modifier: Modifier): Song {
+    return this.mapChordLyricsPairs((pair) => pair.useModifier(modifier));
+  }
+
+  /**
+   * Returns a copy of the song with all chords normalized to the specified key. See {@link Chord#normalize}.
+   * @param key the key to normalize to
+   * @param options options
+   * @param options.normalizeSuffix whether to normalize the chord suffixes
+   */
+  normalizeChords(
+    key: Key | string | null = null,
+    { normalizeSuffix = true }: { normalizeSuffix?: boolean; } = {},
+  ): Song {
+    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }));
+  }
+
+  mapChordLyricsPairs(func: (pair: ChordLyricsPair) => ChordLyricsPair): Song {
     return this.mapItems((item) => {
       if (item instanceof ChordLyricsPair) {
-        return (item as ChordLyricsPair).useModifier(modifier);
+        return func(item);
       }
 
       return item;
     });
+  }
+
+  changeChords(func: (chord: Chord) => Chord): Song {
+    return this.mapChordLyricsPairs((pair) => pair.changeChord(func));
   }
 
   requireCurrentKey(): Key {

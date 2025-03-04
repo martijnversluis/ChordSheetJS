@@ -291,7 +291,7 @@ class Chord implements ChordProperties {
    * @param {boolean} [options.normalizeSuffix=true] whether to normalize the chord suffix after transposing
    * @returns {Chord} the normalized chord
    */
-  normalize(key: Key | string | null = null, { normalizeSuffix = true } = {}): Chord {
+  normalize(key: Key | string | null = null, { normalizeSuffix = true }: { normalizeSuffix?: boolean; } = {}): Chord {
     const suffix = normalizeSuffix ? normalizeChordSuffix(this.suffix) : this.suffix;
     let normalizedRoot = this.root;
 
