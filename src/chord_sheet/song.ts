@@ -343,7 +343,14 @@ class Song extends MetadataAccessors {
    * @returns {Song} the changed song
    */
   useModifier(modifier: Modifier): Song {
-    return this.mapChordLyricsPairs((pair) => pair.useModifier(modifier));
+    const { currentKey } = this;
+    let changedSong = this.mapChordLyricsPairs((pair) => pair.useModifier(modifier));
+
+    if (currentKey && currentKey.modifier !== modifier) {
+      changedSong = changedSong.changeKey(currentKey.useModifier(modifier));
+    }
+
+    return changedSong;
   }
 
   /**
@@ -373,10 +380,14 @@ class Song extends MetadataAccessors {
     return this.mapChordLyricsPairs((pair) => pair.changeChord(func));
   }
 
-  requireCurrentKey(): Key {
-    const wrappedKey = Key.wrap(this.key);
+  get currentKey(): Key | null {
+    return Key.wrap(this.key);
+  }
 
-    if (!wrappedKey) {
+  requireCurrentKey(): Key {
+    const { currentKey } = this;
+
+    if (!currentKey) {
       throw new Error(`
 Cannot change song key, the original key is unknown.
 
@@ -387,7 +398,7 @@ Or set the song key before changing key:
   \`song.setKey('C');\``.substring(1));
     }
 
-    return wrappedKey;
+    return currentKey;
   }
 
   /**

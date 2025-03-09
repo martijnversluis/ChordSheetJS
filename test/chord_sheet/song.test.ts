@@ -1,10 +1,14 @@
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
 
 import {
+  chordLyricsPair,
   createChordDefinition,
   createChordLyricsPair,
   createLine,
-  createSong, createTag,
+  createSong,
+  createSongFromAst,
+  createTag,
+  tag,
 } from '../utilities';
 
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
@@ -479,6 +483,32 @@ describe('Song', () => {
 
       const normalizedSong = song.normalizeChords('F#', { normalizeSuffix: true });
       expect((normalizedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('E(9)');
+    });
+  });
+
+  describe('#useModifier', () => {
+    it('changes the modifier of the chords in a song', () => {
+      const song = createSongFromAst([
+        [
+          chordLyricsPair('G#', 'let it'),
+          chordLyricsPair('F#', 'it'),
+        ],
+      ]);
+
+      const modifiedSong = song.useModifier('b');
+
+      expect((modifiedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('Ab');
+      expect((modifiedSong.paragraphs[0].lines[0].items[1] as ChordLyricsPair).chords).toEqual('Gb');
+    });
+
+    it('updates the key of the song', () => {
+      const song = createSongFromAst([
+        [tag('key', 'F#')],
+      ]);
+
+      const modifiedSong = song.useModifier('b');
+
+      expect(modifiedSong.key).toEqual('Gb');
     });
   });
 });
