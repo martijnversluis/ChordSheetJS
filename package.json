@@ -68,6 +68,7 @@
     "debug:chords-over-words": "yarn build && tsx script/debug_parser.ts chords_over_words --include-chord-grammar",
     "eslint": "node_modules/.bin/eslint",
     "lint": "yarn unibuild lint",
+    "lint:fix": "yarn unibuild lint --fix",
     "prepare": "yarn install && yarn build",
     "release": "yarn unibuild release",
     "test": "yarn unibuild lint && yarn unibuild test",
