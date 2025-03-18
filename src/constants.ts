@@ -96,6 +96,8 @@ export type NoModifier = 'NM';
 export type ModifierMaybe = Modifier | NoModifier;
 
 export type ChordType = 'symbol' | 'solfege' | 'numeric' | 'numeral';
+export type ChordStyle = 'symbol' | 'solfege' | 'number' | 'numeral';
+export type NullableChordStyle = ChordStyle | null;
 
 export const MINOR = 'm';
 export const MAJOR = 'M';
