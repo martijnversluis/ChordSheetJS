@@ -6,7 +6,7 @@ import Metadata from './metadata';
 import ParserWarning from '../parser/parser_warning';
 import MetadataAccessors from './metadata_accessors';
 import Item from './item';
-import { CHORUS, Modifier } from '../constants';
+import { Modifier } from '../constants';
 import SongBuilder from '../song_builder';
 import ChordDefinition from '../chord_definition/chord_definition';
 import Chord from '../chord';
@@ -14,9 +14,8 @@ import FormattingContext from '../formatter/formatting_context';
 import { testSelector } from '../helpers';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import Tag from './tag';
-import {
-  CAPO, END_OF_CHORUS, KEY, START_OF_CHORUS,
-} from './tags';
+import { CAPO, KEY } from './tags';
+import LineExpander from './line_expander';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -93,54 +92,6 @@ class Song extends MetadataAccessors {
     return copy;
   }
 
-  private expandLine(line: Line): Line[] {
-    const expandedLines = line.items.flatMap((item: Item) => {
-      if (item instanceof Tag && item.name === CHORUS) {
-        return this.getLastChorusBefore(line.lineNumber);
-      }
-
-      return [];
-    });
-
-    return [line, ...expandedLines];
-  }
-
-  private getLastChorusBefore(lineNumber: number | null): Line[] {
-    const lines: Line[] = [];
-
-    if (!lineNumber) {
-      return lines;
-    }
-
-    for (let i = lineNumber - 1; i >= 0; i -= 1) {
-      const line = this.lines[i];
-
-      if (line.type === CHORUS) {
-        const filteredLine = this.filterChorusStartEndDirectives(line);
-
-        if (!(line.isNotEmpty() && filteredLine.isEmpty())) {
-          lines.unshift(line);
-        }
-      } else if (lines.length > 0) {
-        break;
-      }
-    }
-
-    return lines;
-  }
-
-  private filterChorusStartEndDirectives(line: Line): Line {
-    return line.mapItems((item: Item) => {
-      if (item instanceof Tag) {
-        if (item.name === START_OF_CHORUS || item.name === END_OF_CHORUS) {
-          return null;
-        }
-      }
-
-      return item;
-    });
-  }
-
   /**
    * The {@link Paragraph} items of which the song consists
    * @member {Paragraph[]}
@@ -156,7 +107,7 @@ class Song extends MetadataAccessors {
   get expandedBodyParagraphs(): Paragraph[] {
     return this.selectRenderableItems(
       this.linesToParagraphs(
-        this.lines.flatMap((line: Line) => this.expandLine(line)),
+        this.lines.flatMap((line: Line) => LineExpander.expand(line, this)),
       ),
     ) as Paragraph[];
   }
