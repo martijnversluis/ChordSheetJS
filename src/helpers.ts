@@ -1,13 +1,13 @@
-import Chord from './chord';
 import Key from './key';
 import { capos, majorKeys, minorKeys } from './key_config';
 import Song from './chord_sheet/song';
 import Line from './chord_sheet/line';
 import FormattingContext from './formatter/formatting_context';
-import { Modifier } from './constants';
 import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
+import ChordRenderer from './formatter/chord_renderer';
+import { NullableChordStyle } from './constants';
 
-export function transposeDistance(transposeKey: string, songKey: string): number {
+export function transposeDistance(transposeKey: string, songKey: string | Key): number {
   if (/^\d+$/.test(transposeKey)) {
     return parseInt(transposeKey, 10);
   }
@@ -15,89 +15,11 @@ export function transposeDistance(transposeKey: string, songKey: string): number
   return Key.distance(songKey, transposeKey);
 }
 
-function chordTransposeDistance(
-  capo: number | null,
-  transposeKey: string | null,
-  songKey: string | null,
-  renderKey: Key | null | undefined,
-) {
-  let transpose = -1 * (capo || 0);
-
-  if (songKey) {
-    if (transposeKey) {
-      transpose += transposeDistance(transposeKey, songKey);
-    }
-
-    if (renderKey) {
-      transpose += Key.distance(songKey, renderKey);
-    }
-  }
-
-  return transpose;
-}
-
-export type ChordType = 'symbol' | 'numeral' | 'number' | 'solfege' | null;
-
-function changeChordType(
-  chord: Chord,
-  type: ChordType,
-  referenceKey: Key | null,
-): Chord {
-  switch (type) {
-    case 'symbol':
-      return chord.toChordSymbol(referenceKey);
-    case 'solfege':
-      return chord.toChordSolfege(referenceKey);
-    case 'numeral':
-      return chord.toNumeral(referenceKey);
-    case 'number':
-      return chord.toNumeric(referenceKey);
-    default:
-      return chord;
-  }
-}
-
 interface RenderChordOptions {
   renderKey?: Key | null;
   useUnicodeModifier?: boolean;
   normalizeChords?: boolean;
   decapo?: boolean;
-}
-
-function effectiveModifier(renderKey: Key | null, contextKey: Key | null): Modifier | null {
-  if (renderKey?.modifier) {
-    return renderKey.modifier;
-  }
-
-  if (contextKey?.modifier) {
-    return contextKey.modifier;
-  }
-
-  return null;
-}
-
-function shapeChord(
-  {
-    chord,
-    effectiveTransposeDistance,
-    modifier,
-    normalizeChords,
-    effectiveKey,
-    chordStyle,
-  } : {
-    chord: Chord,
-    effectiveTransposeDistance: number,
-    modifier: Modifier | null,
-    normalizeChords: boolean,
-    effectiveKey: Key | null,
-    chordStyle: ChordType,
-  },
-) {
-  const transposedChord = chord.transpose(effectiveTransposeDistance);
-  const correctedChord = modifier ? transposedChord.useModifier(modifier) : transposedChord;
-  const normalizedChord = (normalizeChords ? correctedChord.normalize(effectiveKey) : transposedChord);
-
-  return changeChordType(normalizedChord, chordStyle, effectiveKey);
 }
 
 /**
@@ -123,31 +45,20 @@ export function renderChord(
     decapo = false,
   }: RenderChordOptions = {},
 ): string {
-  const chord = Chord.parse(chordString);
-
-  if (!chord) {
-    return chordString;
-  }
-
-  const songKey = song.key;
   const capoString = song.metadata.getSingle(CAPO);
-  const capo = (decapo && capoString) ? parseInt(capoString, 10) : null;
-  const chordStyle = song.metadata.getSingle(CHORD_STYLE) as ChordType;
 
-  const effectiveTransposeDistance = chordTransposeDistance(capo, line.transposeKey, songKey, renderKey);
-  const contextKey = Key.wrap(line.key || song.key);
-  const modifier = effectiveModifier(renderKey, contextKey);
-  const effectiveKey = renderKey || contextKey?.transpose(effectiveTransposeDistance) || null;
-
-  return shapeChord({
-    chord,
-    effectiveTransposeDistance,
-    modifier,
+  return new ChordRenderer({
+    capo: capoString ? parseInt(capoString, 10) : 0,
+    contextKey: Key.wrap(line.key || song.key),
+    decapo,
     normalizeChords,
-    effectiveKey,
-    chordStyle,
+    renderKey,
+    songKey: Key.wrap(song.key),
+    style: song.metadata.getSingle(CHORD_STYLE) as NullableChordStyle,
+    transposeKey: line.transposeKey,
+    useUnicodeModifier,
   })
-    .toString({ useUnicodeModifier });
+    .render(chordString);
 }
 
 /**

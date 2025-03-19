@@ -8,6 +8,10 @@ import {
   ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
 } from './constants';
 
+export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
+  return functions.reduce((acc, fn) => fn(acc), value);
+}
+
 export function hasChordContents(line: Line): boolean {
   return line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords);
 }
