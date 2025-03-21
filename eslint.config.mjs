@@ -45,6 +45,7 @@ export default tseslint.config(
       'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
       'max-depth': ['error', 2],
       'max-len': ['error', { code: 120, ignoreUrls: true }],
+      'max-lines': ['error', 700],
       'no-underscore-dangle': 'off',
       'no-unused-vars': 'off',
       'object-curly-spacing': ['error', 'always'],
@@ -86,6 +87,13 @@ export default tseslint.config(
       'jest/no-disabled-tests': 'off',
       'jest/no-standalone-expect': 'off',
       'jest/prefer-expect-assertions': 'off',
+      'max-lines': 'off',
+    },
+  },
+  {
+    files: ['test/fixtures/**/*.ts'],
+    rules: {
+      'max-lines': 'off',
     },
   },
   {
