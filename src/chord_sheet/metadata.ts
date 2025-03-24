@@ -51,6 +51,10 @@ class Metadata extends MetadataAccessors {
       return;
     }
 
+    this.appendValue(key, value);
+  }
+
+  appendValue(key: string, value: string): void {
     const currentValue = this.metadata[key];
 
     if (currentValue === value) {

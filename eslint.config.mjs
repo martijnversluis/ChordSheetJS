@@ -46,6 +46,7 @@ export default tseslint.config(
       'max-depth': ['error', 2],
       'max-len': ['error', { code: 120, ignoreUrls: true }],
       'max-lines': ['error', 700],
+      'max-statements': ['error', 10],
       'no-underscore-dangle': 'off',
       'no-unused-vars': 'off',
       'object-curly-spacing': ['error', 'always'],
@@ -88,6 +89,7 @@ export default tseslint.config(
       'jest/no-standalone-expect': 'off',
       'jest/prefer-expect-assertions': 'off',
       'max-lines': 'off',
+      'max-statements': 'off',
     },
   },
   {
@@ -97,9 +99,10 @@ export default tseslint.config(
     },
   },
   {
-    files: ['test/utilities.ts'],
+    files: ['test/matchers.ts', 'test/utilities.ts', 'unibuild.ts'],
     rules: {
       'jest/no-export': 'off',
+      'max-statements': 'off',
     },
   },
   {

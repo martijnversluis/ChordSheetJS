@@ -1,4 +1,5 @@
 import Note from '../../src/note';
+import { NUMERIC } from '../../src';
 
 describe('Note', () => {
   describe('#toNumeric', () => {
@@ -6,7 +7,7 @@ describe('Note', () => {
       const numeral = Note.parse('VI');
       const numeric = numeral.toNumeric();
 
-      expect(numeric.isNumeric()).toBe(true);
+      expect(numeric.is(NUMERIC)).toBe(true);
       expect(numeric.note).toEqual(6);
     });
 

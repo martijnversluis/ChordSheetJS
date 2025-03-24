@@ -1,10 +1,5 @@
 import {
-  ChordType,
-  NUMERAL,
-  NUMERIC,
-  ROMAN_NUMERALS,
-  SOLFEGE,
-  SYMBOL,
+  ChordType, NUMERAL, NUMERIC, ROMAN_NUMERALS, SOLFEGE, SYMBOL,
 } from './constants';
 
 const A = 'A'.charCodeAt(0);
@@ -87,37 +82,72 @@ class Note implements NoteProperties {
   static parse(note: string | number): Note {
     const noteString = note.toString();
 
+    const parsedNote =
+      this.parseSolfege(noteString) ||
+      this.parseSymbol(noteString) ||
+      this.parseNumeric(noteString) ||
+      this.parseNumeral(noteString);
+
+    if (parsedNote) {
+      return parsedNote;
+    }
+
+    throw new Error(`Invalid note ${note}`);
+  }
+
+  static parseSolfege(noteString: string): Note | null {
     if (/^Do|Re|Mi|Fa|Sol|La|Si$/i.test(noteString)) {
-      return new Note({ note: noteString.charAt(0).toUpperCase() + noteString.slice(1).toLowerCase(), type: SOLFEGE });
+      return new Note({
+        note: noteString.charAt(0).toUpperCase() + noteString.slice(1).toLowerCase(),
+        type: SOLFEGE,
+      });
     }
 
+    return null;
+  }
+
+  static parseSymbol(noteString: string): Note | null {
     if (/^[A-Ga-g]$/.test(noteString)) {
-      return new Note({ note: noteString.toUpperCase(), type: SYMBOL });
+      return new Note({
+        note: noteString.toUpperCase(),
+        type: SYMBOL,
+      });
     }
 
+    return null;
+  }
+
+  static parseNumeric(noteString: string): Note | null {
     if (/^[1-7]$/.test(noteString)) {
-      return new Note({ note: parseInt(noteString, 10), type: NUMERIC });
+      return new Note({
+        note: parseInt(noteString, 10),
+        type: NUMERIC,
+      });
     }
 
+    return null;
+  }
+
+  static parseNumeral(noteString: string): Note | null {
     const romanNumeralValue = numeralToNumber(noteString);
 
     if (romanNumeralValue) {
       return new Note({
         note: romanNumeralValue,
         type: NUMERAL,
-        minor: (noteString.toLowerCase() === note),
+        minor: (noteString.toLowerCase() === noteString),
       });
     }
 
-    throw new Error(`Invalid note ${note}`);
+    return null;
   }
 
   toNumeral(): Note {
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       return this.clone();
     }
 
-    if (this.isNumeric()) {
+    if (this.is(NUMERIC)) {
       return this.set({ type: NUMERAL });
     }
 
@@ -125,11 +155,11 @@ class Note implements NoteProperties {
   }
 
   toNumeric(): Note {
-    if (this.isNumeric()) {
+    if (this.is(NUMERIC)) {
       return this.clone();
     }
 
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       return this.set({ type: NUMERIC });
     }
 
@@ -149,31 +179,15 @@ class Note implements NoteProperties {
   }
 
   up(): Note {
-    return this.change(1);
+    return this.transpose(1);
   }
 
   down(): Note {
-    return this.change(-1);
+    return this.transpose(-1);
   }
 
   isOneOf(...options: AtomicNote[]): boolean {
     return options.includes(this._note);
-  }
-
-  isNumeric(): boolean {
-    return this.is(NUMERIC);
-  }
-
-  isChordSymbol(): boolean {
-    return this.is(SYMBOL);
-  }
-
-  isChordSolfege(): boolean {
-    return this.is(SOLFEGE);
-  }
-
-  isNumeral(): boolean {
-    return this.is(NUMERAL);
   }
 
   is(noteType: ChordType): boolean {
@@ -194,21 +208,13 @@ class Note implements NoteProperties {
     return 0;
   }
 
-  change(delta: number): Note {
-    if (this.isChordSolfege()) {
-      const solfegeNote = this._note as string;
-      const currentIndex = solfegeNotes.indexOf(solfegeNote);
-
-      return this.set({ note: solfegeNotes[(currentIndex + delta) % 7] });
+  transpose(delta: number): Note {
+    if (this.is(SOLFEGE)) {
+      return this.transposeSolfege(delta);
     }
 
-    if (this.isChordSymbol()) {
-      let charCode;
-      charCode = keyToCharCode(this._note as string);
-      charCode += delta;
-      charCode = clamp(charCode, A, G);
-
-      return this.set({ note: String.fromCharCode(charCode) });
+    if (this.is(SYMBOL)) {
+      return this.transposeSymbol(delta);
     }
 
     let newNote = clamp((this._note as number) + delta, 1, 7);
@@ -222,8 +228,24 @@ class Note implements NoteProperties {
     return this.set({ note: newNote });
   }
 
+  private transposeSymbol(delta: number): Note {
+    let charCode;
+    charCode = keyToCharCode(this._note as string);
+    charCode += delta;
+    charCode = clamp(charCode, A, G);
+
+    return this.set({ note: String.fromCharCode(charCode) });
+  }
+
+  private transposeSolfege(delta: number): Note {
+    const solfegeNote = this._note as string;
+    const currentIndex = solfegeNotes.indexOf(solfegeNote);
+
+    return this.set({ note: solfegeNotes[(currentIndex + delta) % 7] });
+  }
+
   get note(): string | number {
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       const numeral = numberToNumeral(this._note as number);
 
       if (this.isMinor()) {

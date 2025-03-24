@@ -14,7 +14,7 @@ describe('Note', () => {
           const to = notes[start + delta + i];
 
           it(`converts ${from} with delta ${delta} to ${to}`, () => {
-            expect(Note.parse(from).change(delta).note).toEqual(to);
+            expect(Note.parse(from).transpose(delta).note).toEqual(to);
           });
         }
       }
@@ -31,7 +31,7 @@ describe('Note', () => {
           const to = notes[start + delta + i];
 
           it(`converts ${from} with delta ${delta} to ${to}`, () => {
-            expect(Note.parse(from).change(delta).note).toEqual(to);
+            expect(Note.parse(from).transpose(delta).note).toEqual(to);
           });
         }
       }
@@ -48,11 +48,11 @@ describe('Note', () => {
           const to = notes[start + delta + i];
 
           it(`converts ${from} with delta ${delta} to ${to}`, () => {
-            expect(Note.parse(from).change(delta).note).toEqual(to);
+            expect(Note.parse(from).transpose(delta).note).toEqual(to);
           });
 
           it(`converts ${from.toLowerCase()} with delta ${delta} to ${to.toLowerCase()}`, () => {
-            expect(Note.parse(from.toLowerCase()).change(delta).note).toEqual(to.toLowerCase());
+            expect(Note.parse(from.toLowerCase()).transpose(delta).note).toEqual(to.toLowerCase());
           });
         }
       }
@@ -69,11 +69,11 @@ describe('Note', () => {
           const to = notes[start + delta + i];
 
           it(`converts ${from} with delta ${delta} to ${to}`, () => {
-            expect(Note.parse(from).change(delta).note).toEqual(to);
+            expect(Note.parse(from).transpose(delta).note).toEqual(to);
           });
 
           it(`converts ${from.toLowerCase()} with delta ${delta} to ${to.toLowerCase()}`, () => {
-            expect(Note.parse(from.toLowerCase()).change(delta).note).toEqual(to.toLowerCase());
+            expect(Note.parse(from.toLowerCase()).transpose(delta).note).toEqual(to.toLowerCase());
           });
         }
       }
