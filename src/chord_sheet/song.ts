@@ -220,17 +220,42 @@ class Song extends MetadataAccessors {
       }
 
       if (item instanceof ChordLyricsPair) {
-        let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
-
-        if (modifier) {
-          chord = chord.useModifier(modifier);
-        }
-
-        return chord;
+        return Song.transposeChordLyricsPair({
+          item,
+          delta,
+          transposedKey,
+          normalizeChordSuffix,
+          modifier: modifier || null,
+        });
       }
 
       return item;
     });
+  }
+
+  private static transposeChordLyricsPair(
+    {
+      item,
+      delta,
+      transposedKey,
+      normalizeChordSuffix,
+      modifier,
+    }:
+    {
+      item: ChordLyricsPair,
+      delta: number,
+      transposedKey: Key | null,
+      normalizeChordSuffix: boolean,
+      modifier: Modifier | null
+    },
+  ) {
+    let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
+
+    if (modifier) {
+      chord = chord.useModifier(modifier);
+    }
+
+    return chord;
   }
 
   /**

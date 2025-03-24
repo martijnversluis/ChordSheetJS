@@ -61,31 +61,25 @@ class ChordSheetSerializer {
   }
 
   serializeItem(item: AstType): SerializedComponent {
-    if (item instanceof Tag) {
-      return this.serializeTag(item) as SerializedComponent;
+    type constructor = any;
+    type handler = any;
+
+    const serializers = new Map<constructor, handler>([
+      [Tag, this.serializeTag.bind(this)],
+      [ChordLyricsPair, this.serializeChordLyricsPair.bind(this)],
+      [Ternary, this.serializeTernary.bind(this)],
+      [Literal, this.serializeLiteral.bind(this)],
+      [Comment, this.serializeComment.bind(this)],
+      [SoftLineBreak, () => ({ type: SOFT_LINE_BREAK })],
+    ]);
+
+    const serializer = serializers.get(item.constructor);
+
+    if (!serializer) {
+      throw new Error(`Don't know how to serialize ${item.constructor.name}`);
     }
 
-    if (item instanceof ChordLyricsPair) {
-      return this.serializeChordLyricsPair(item) as SerializedComponent;
-    }
-
-    if (item instanceof Ternary) {
-      return this.serializeTernary(item) as SerializedComponent;
-    }
-
-    if (item instanceof Literal) {
-      return this.serializeLiteral(item);
-    }
-
-    if (item instanceof Comment) {
-      return this.serializeComment(item);
-    }
-
-    if (item instanceof SoftLineBreak) {
-      return { type: SOFT_LINE_BREAK };
-    }
-
-    throw new Error(`Don't know how to serialize ${item.constructor.name}`);
+    return serializer(item);
   }
 
   serializeChordDefinition(chordDefinition: ChordDefinition): SerializedChordDefinition {
@@ -112,7 +106,7 @@ class ChordSheetSerializer {
     return serializedTag;
   }
 
-  serializeChordLyricsPair(chordLyricsPair: ChordLyricsPair) {
+  serializeChordLyricsPair(chordLyricsPair: ChordLyricsPair): SerializedChordLyricsPair {
     return {
       type: CHORD_LYRICS_PAIR,
       chords: chordLyricsPair.chords,

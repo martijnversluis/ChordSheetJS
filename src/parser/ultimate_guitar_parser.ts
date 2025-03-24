@@ -1,9 +1,10 @@
 import { CHORUS, NONE, VERSE } from '../constants';
 import ChordSheetParser from './chord_sheet_parser';
+import Tag from '../chord_sheet/tag';
+
 import {
   COMMENT, END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE,
 } from '../chord_sheet/tags';
-import Tag from '../chord_sheet/tag';
 
 const VERSE_LINE_REGEX = /^\[(Verse.*)]/i;
 const CHORUS_LINE_REGEX = /^\[(Chorus)]/i;
@@ -35,34 +36,60 @@ class UltimateGuitarParser extends ChordSheetParser {
     super({ preserveWhitespace }, false);
   }
 
-  parseLine(line): void {
+  parseLine(line: string): void {
     if (this.isSectionEnd()) {
       this.endSection();
     }
 
-    if (VERSE_LINE_REGEX.test(line)) {
-      this.startNewLine();
-      const label = line.match(VERSE_LINE_REGEX)[1];
-      this.startSection(VERSE, label);
-    } else if (CHORUS_LINE_REGEX.test(line)) {
-      this.startNewLine();
-      const label = line.match(CHORUS_LINE_REGEX)[1];
-      this.startSection(CHORUS, label);
-    } else if (OTHER_METADATA_LINE_REGEX.test(line)) {
-      this.parseMetadataLine(line);
-    } else {
+    if (!(
+      this.parseVerseDirective(line) ||
+      this.parseChorusDirective(line) ||
+      this.parseMetadata(line)
+    )) {
       super.parseLine(line);
     }
   }
 
-  private parseMetadataLine(line) {
+  parseVerseDirective(line: string): boolean {
+    const match = line.match(VERSE_LINE_REGEX);
+
+    if (!match) {
+      return false;
+    }
+
+    this.startNewLine();
+    const label = match[1];
+    this.startSection(VERSE, label);
+    return true;
+  }
+
+  parseChorusDirective(line: string): boolean {
+    const match = line.match(CHORUS_LINE_REGEX);
+
+    if (!match) {
+      return false;
+    }
+
+    this.startNewLine();
+    const label = match[1];
+    this.startSection(CHORUS, label);
+    return true;
+  }
+
+  parseMetadata(line: string): boolean {
+    const match = line.match(OTHER_METADATA_LINE_REGEX);
+
+    if (!match) {
+      return false;
+    }
+
     this.startNewLine();
     this.endSection();
-    const comment = line.match(OTHER_METADATA_LINE_REGEX)[1];
-
     if (!this.songLine) throw new Error('Expected this.songLine to be present');
 
-    this.songLine.addTag(new Tag(COMMENT, comment));
+    this.songLine.addTag(new Tag(COMMENT, match[1]));
+
+    return true;
   }
 
   isSectionEnd(): boolean {

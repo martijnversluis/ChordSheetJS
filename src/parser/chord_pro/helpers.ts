@@ -113,6 +113,13 @@ function combinableChordLyricsPairs(itemA: SerializedItem, itemB: SerializedItem
   );
 }
 
+function combineLyrics(pairA: SerializedChordLyricsPair, pairB: SerializedChordLyricsPair): SerializedChordLyricsPair {
+  return {
+    ...pairA,
+    lyrics: `${pairA.lyrics}${pairB.lyrics}`,
+  };
+}
+
 export function combineChordLyricsPairs(items: SerializedItem[], chopFirstWord?: boolean): SerializedItem[] {
   if (chopFirstWord !== false) {
     return items;
@@ -122,13 +129,12 @@ export function combineChordLyricsPairs(items: SerializedItem[], chopFirstWord?:
 
   for (let i = 0, { length } = items; i < length; i += 1) {
     if (combinableChordLyricsPairs(items[i], items[i + 1])) {
-      const item = items[i] as SerializedChordLyricsPair;
-      const nextItem = items[i + 1] as SerializedChordLyricsPair;
-
-      combinedItems.push({
-        ...item,
-        lyrics: `${item.lyrics}${nextItem.lyrics}`,
-      });
+      combinedItems.push(
+        combineLyrics(
+          items[i] as SerializedChordLyricsPair as SerializedChordLyricsPair,
+          items[i + 1] as SerializedChordLyricsPair as SerializedChordLyricsPair,
+        ),
+      );
 
       i += 1;
     } else {

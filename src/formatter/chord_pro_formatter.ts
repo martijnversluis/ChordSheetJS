@@ -36,20 +36,20 @@ class ChordProFormatter extends Formatter {
   }
 
   formatItem(item: Item, metadata: Metadata): string {
-    if (item instanceof Tag) {
-      return this.formatTag(item);
-    }
+    type constructor = any;
+    type handlerFunc = any;
 
-    if (item instanceof ChordLyricsPair) {
-      return this.formatChordLyricsPair(item);
-    }
+    const handlers = new Map<constructor, handlerFunc>([
+      [Tag, (i: Item) => this.formatTag(i as Tag)],
+      [ChordLyricsPair, (i: Item) => this.formatChordLyricsPair(i as ChordLyricsPair)],
+      [Comment, (i: Item) => this.formatComment(i as Comment)],
+      [SoftLineBreak, (_i: Item) => '\\ '],
+    ]);
 
-    if (item instanceof Comment) {
-      return this.formatComment(item);
-    }
+    const handler = handlers.get(item.constructor);
 
-    if (item instanceof SoftLineBreak) {
-      return '\\ ';
+    if (handler) {
+      return handler(item);
     }
 
     if ('evaluate' in item) {
