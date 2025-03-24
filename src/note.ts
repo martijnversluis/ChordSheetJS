@@ -1,10 +1,5 @@
 import {
-  ChordType,
-  NUMERAL,
-  NUMERIC,
-  ROMAN_NUMERALS,
-  SOLFEGE,
-  SYMBOL,
+  ChordType, NUMERAL, NUMERIC, ROMAN_NUMERALS, SOLFEGE, SYMBOL,
 } from './constants';
 
 const A = 'A'.charCodeAt(0);
@@ -148,11 +143,11 @@ class Note implements NoteProperties {
   }
 
   toNumeral(): Note {
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       return this.clone();
     }
 
-    if (this.isNumeric()) {
+    if (this.is(NUMERIC)) {
       return this.set({ type: NUMERAL });
     }
 
@@ -160,11 +155,11 @@ class Note implements NoteProperties {
   }
 
   toNumeric(): Note {
-    if (this.isNumeric()) {
+    if (this.is(NUMERIC)) {
       return this.clone();
     }
 
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       return this.set({ type: NUMERIC });
     }
 
@@ -195,22 +190,6 @@ class Note implements NoteProperties {
     return options.includes(this._note);
   }
 
-  isNumeric(): boolean {
-    return this.is(NUMERIC);
-  }
-
-  isChordSymbol(): boolean {
-    return this.is(SYMBOL);
-  }
-
-  isChordSolfege(): boolean {
-    return this.is(SOLFEGE);
-  }
-
-  isNumeral(): boolean {
-    return this.is(NUMERAL);
-  }
-
   is(noteType: ChordType): boolean {
     return this.type === noteType;
   }
@@ -230,11 +209,11 @@ class Note implements NoteProperties {
   }
 
   transpose(delta: number): Note {
-    if (this.isChordSolfege()) {
+    if (this.is(SOLFEGE)) {
       return this.transposeSolfege(delta);
     }
 
-    if (this.isChordSymbol()) {
+    if (this.is(SYMBOL)) {
       return this.transposeSymbol(delta);
     }
 
@@ -266,7 +245,7 @@ class Note implements NoteProperties {
   }
 
   get note(): string | number {
-    if (this.isNumeral()) {
+    if (this.is(NUMERAL)) {
       const numeral = numberToNumeral(this._note as number);
 
       if (this.isMinor()) {
