@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+echo "🔍 Checking for deprecated packages..."
+
+packages=$(yarn info --all --json)
+
+if [[ -z "$packages" ]]; then
+  echo "❌ Error: Could not retrieve package info."
+  exit 1
+fi
+
+deprecated_packages=()
+deprecated_messages=()
+
+while IFS= read -r package_info; do
+  if [[ -n "$package_info" ]]; then
+    package_name=$(echo "$package_info" | jq -r '.value')
+    deprecation_msg=$(yarn npm info --json "$package_name" | jq -r '.deprecated // empty' 2>/dev/null)
+
+    if [[ -n "$deprecation_msg" ]]; then
+      deprecated_packages+=("$package_name")
+      deprecated_messages+=("$deprecation_msg")
+    fi
+  fi
+done <<< "$packages"
+
+if [[ ${#deprecated_packages[@]} -gt 0 ]]; then
+  echo "⚠️  Deprecated packages found:"
+  for i in "${!deprecated_packages[@]}"; do
+    echo "  - ${deprecated_packages[$i]}: ${deprecated_messages[$i]}"
+  done
+  exit 1
+else
+  echo "✅ No deprecated packages found."
+  exit 0
+fi
