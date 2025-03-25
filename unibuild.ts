@@ -117,7 +117,7 @@ unibuild((u: Builder) => {
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
     outfile: main,
-    command: 'parcel build --no-cache',
+    command: 'rm -rf .parcel-cache && parcel build',
     releaseOnly: true,
   });
 
@@ -155,7 +155,4 @@ unibuild((u: Builder) => {
     requires: codeGeneratedAssets,
     command: 'yarn jest',
   });
-
-  // ci = install, build, lint, test, buildRelease
-  // release = build, lint, test, buildRelease, publish
 });
