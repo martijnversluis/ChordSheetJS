@@ -41,6 +41,16 @@ jobs:
       - name: Check trailing whitespace
         run: git ls-files | yarn tsx script/check_trailing_whitespace.ts
 
+  check-deprecated-packages:
+    runs-on: ubuntu-latest
+    name: Check deprecated packages
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Check deprecated packages
+        run: bin/check_deprecated_packages
+
   build-windows:
     continue-on-error: true
     runs-on: windows-latest
