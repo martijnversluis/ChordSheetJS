@@ -296,13 +296,7 @@ class Song extends MetadataAccessors {
     const currentKey = this.requireCurrentKey();
     const targetKey = Key.wrapOrFail(newKey);
     const delta = currentKey.distanceTo(targetKey);
-    const transposedSong = this.transpose(delta, { modifier: targetKey.modifier });
-
-    if (targetKey.modifier) {
-      return transposedSong.useModifier(targetKey.modifier);
-    }
-
-    return transposedSong;
+    return this.transpose(delta, { modifier: targetKey.modifier });
   }
 
   /**

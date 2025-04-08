@@ -1,1 +1,3 @@
-global.console = console;
+import nodeConsole from 'console';
+
+global.console = nodeConsole;
