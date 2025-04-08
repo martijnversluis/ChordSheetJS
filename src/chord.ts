@@ -17,6 +17,17 @@ interface ChordProperties {
   bass?: Key | null;
 }
 
+export interface ChordConstructorOptions {
+  base?: string | number | null;
+  modifier?: Modifier | null;
+  suffix?: string | null;
+  bassBase?: string | number | null;
+  bassModifier?: Modifier | null;
+  root?: Key | null;
+  bass?: Key | null;
+  chordType?: ChordType | null;
+}
+
 /**
  * Represents a Chord, consisting of a root, suffix (quality) and bass
  */
@@ -351,16 +362,7 @@ class Chord implements ChordProperties {
       root = null,
       bass = null,
       chordType = null,
-    }: {
-      base?: string | number | null,
-      modifier?: Modifier | null,
-      suffix?: string | null,
-      bassBase?: string | number | null,
-      bassModifier?: Modifier | null,
-      root?: Key | null,
-      bass?: Key | null,
-      chordType?: ChordType | null,
-    },
+    }: ChordConstructorOptions,
   ) {
     this.suffix = suffix || null;
     this.root = Chord.determineRoot({

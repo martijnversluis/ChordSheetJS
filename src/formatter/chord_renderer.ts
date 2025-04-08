@@ -4,6 +4,30 @@ import { NullableChordStyle } from '../constants';
 import { transposeDistance } from '../helpers';
 import { callChain } from '../utilities';
 
+interface ConstructorOptions {
+  capo: number;
+  contextKey: Key | null;
+  decapo: boolean;
+  normalizeChords: boolean;
+  renderKey: Key | null;
+  songKey: Key | null;
+  style: NullableChordStyle;
+  transposeKey: string | null;
+  useUnicodeModifier: boolean;
+}
+
+const defaultConstructorOptions = {
+  capo: 0,
+  contextKey: null,
+  decapo: false,
+  normalizeChords: true,
+  renderKey: null,
+  songKey: null,
+  style: null,
+  transposeKey: null,
+  useUnicodeModifier: false,
+};
+
 class ChordRenderer {
   capo: number;
 
@@ -21,47 +45,17 @@ class ChordRenderer {
 
   useUnicodeModifier: boolean;
 
-  constructor(
-    {
-      capo,
-      contextKey,
-      decapo,
-      normalizeChords,
-      renderKey,
-      songKey,
-      style,
-      transposeKey,
-      useUnicodeModifier,
-    }: {
-      capo: number,
-      contextKey: Key | null,
-      decapo: boolean,
-      normalizeChords: boolean,
-      renderKey: Key | null,
-      songKey: Key | null,
-      style: NullableChordStyle,
-      transposeKey: string | null,
-      useUnicodeModifier: boolean,
-    } = {
-      capo: 0,
-      contextKey: null,
-      decapo: false,
-      normalizeChords: true,
-      renderKey: null,
-      songKey: null,
-      style: null,
-      transposeKey: null,
-      useUnicodeModifier: false,
-    },
-  ) {
-    this.capo = decapo ? capo : 0;
-    this.contextKey = contextKey;
-    this.normalizeChords = normalizeChords;
-    this.renderKey = renderKey;
-    this.songKey = songKey;
-    this.style = style;
-    this.transposeKey = transposeKey;
-    this.useUnicodeModifier = useUnicodeModifier;
+  constructor(options: Partial<ConstructorOptions> = {}) {
+    const config: ConstructorOptions = { ...defaultConstructorOptions, ...options };
+
+    this.capo = config.decapo ? config.capo : 0;
+    this.contextKey = config.contextKey;
+    this.normalizeChords = config.normalizeChords;
+    this.renderKey = config.renderKey;
+    this.songKey = config.songKey;
+    this.style = config.style;
+    this.transposeKey = config.transposeKey;
+    this.useUnicodeModifier = config.useUnicodeModifier;
   }
 
   render(chordString: string): string {
