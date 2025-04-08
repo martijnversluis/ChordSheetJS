@@ -1,6 +1,7 @@
 import HtmlFormatter, { Template, CSS, HtmlTemplateCssClasses } from './html_formatter';
 import template from './templates/html_table_formatter';
 
+/* eslint-disable-next-line max-lines-per-function */
 function defaultCss(cssClasses: HtmlTemplateCssClasses): CSS {
   const {
     annotation,

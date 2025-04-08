@@ -42,6 +42,17 @@ const NO_FLAT_NUMBERS = [1, 4];
 const NO_SHARP_GRADES = [5, 0];
 const NO_SHARP_NUMBERS = [3, 7];
 
+interface ConstructorOptions {
+  grade?: number | null;
+  number?: number | null;
+  minor: boolean;
+  type: ChordType;
+  modifier: Modifier | null;
+  referenceKeyGrade?: number | null;
+  originalKeyString?: string | null;
+  preferredModifier: Modifier | null;
+}
+
 /**
  * Represents a key, such as Eb (symbol), #3 (numeric) or VII (numeral).
  *
@@ -105,6 +116,7 @@ class Key implements KeyProperties {
     });
   }
 
+  /* eslint-disable-next-line max-lines-per-function */
   static resolve(
     {
       key,
@@ -256,16 +268,7 @@ class Key implements KeyProperties {
       referenceKeyGrade = null,
       originalKeyString = null,
       preferredModifier = null,
-    }: {
-      grade?: number | null,
-      number?: number | null,
-      minor: boolean,
-      type: ChordType,
-      modifier: Modifier | null,
-      referenceKeyGrade?: number | null,
-      originalKeyString?: string | null,
-      preferredModifier: Modifier | null,
-    },
+    }: ConstructorOptions,
   ) {
     this.grade = grade;
     this.number = number;

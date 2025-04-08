@@ -152,33 +152,27 @@ function determineKey({
   return new GradeSet(grades).determineGrade(modifier, preferredModifier, grade);
 }
 
-export function gradeToKey({
-  type,
-  modifier,
-  preferredModifier,
-  grade,
-  minor,
-}: {
+export function gradeToKey(options: {
   type: ChordType,
   modifier: ModifierMaybe | null,
   preferredModifier: Modifier | null,
   grade: number,
   minor: boolean,
 }): string {
+  const {
+    type,
+    modifier,
+    preferredModifier,
+    grade,
+    minor,
+  } = options;
+
   let key = determineKey({
     type, modifier, preferredModifier, grade, minor,
   });
 
   if (!key) {
-    throw new Error(
-      `Could not resolve
-      type=${type}
-      modifier=${modifier}
-      grade=${grade}
-      preferredModifier=${preferredModifier}
-      minor=${minor}
-to a key`,
-    );
+    throw new Error(`Could not resolve ${options} to a key`);
   }
 
   if (minor && type === NUMERAL) {
