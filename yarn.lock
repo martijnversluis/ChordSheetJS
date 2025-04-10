@@ -2130,9 +2130,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@puppeteer/browsers@npm:2.9.0":
-  version: 2.9.0
-  resolution: "@puppeteer/browsers@npm:2.9.0"
+"@puppeteer/browsers@npm:2.10.0":
+  version: 2.10.0
+  resolution: "@puppeteer/browsers@npm:2.10.0"
   dependencies:
     debug: "npm:^4.4.0"
     extract-zip: "npm:^2.0.1"
@@ -2143,7 +2143,7 @@ __metadata:
     yargs: "npm:^17.7.2"
   bin:
     browsers: lib/cjs/main-cli.js
-  checksum: 10c0/a72b887d7529a1afb5f6efae7a2a761ee8c64a2f19737a92d98239442c8549723e1e80e80754d1d50a2b68e23f3311a863affd18ee3b299b930d7513e1e52ed7
+  checksum: 10c0/4777a3b11b08f87ce4a3baf76b172fec7d71630bfa24a8ad51ca8c6be01966540f69ff536408a2951e8a9b1b98d4dd182dfcbf6e60556a4fdbe391c002c762f2
   languageName: node
   linkType: hard
 
@@ -8038,33 +8038,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:24.6.0":
-  version: 24.6.0
-  resolution: "puppeteer-core@npm:24.6.0"
+"puppeteer-core@npm:24.6.1":
+  version: 24.6.1
+  resolution: "puppeteer-core@npm:24.6.1"
   dependencies:
-    "@puppeteer/browsers": "npm:2.9.0"
+    "@puppeteer/browsers": "npm:2.10.0"
     chromium-bidi: "npm:3.0.0"
     debug: "npm:^4.4.0"
     devtools-protocol: "npm:0.0.1425554"
     typed-query-selector: "npm:^2.12.0"
     ws: "npm:^8.18.1"
-  checksum: 10c0/4e9b6bd2a95a72eecde773b9b961ba87e0ce663d60ff560518ad38a2f431d9720342ba17b515ee2d1342b65d82a4598778a7cc93372bf56833e28c30d9639c84
+  checksum: 10c0/d59b84f4cced919b29e09ced43ee67efd2f782edf10704c4591b6cd49338ef109effd5123cbebd11871ed2989e78876251cff37d8a893e353f78069864898a5c
   languageName: node
   linkType: hard
 
 "puppeteer@npm:^24.0.0":
-  version: 24.6.0
-  resolution: "puppeteer@npm:24.6.0"
+  version: 24.6.1
+  resolution: "puppeteer@npm:24.6.1"
   dependencies:
-    "@puppeteer/browsers": "npm:2.9.0"
+    "@puppeteer/browsers": "npm:2.10.0"
     chromium-bidi: "npm:3.0.0"
     cosmiconfig: "npm:^9.0.0"
     devtools-protocol: "npm:0.0.1425554"
-    puppeteer-core: "npm:24.6.0"
+    puppeteer-core: "npm:24.6.1"
     typed-query-selector: "npm:^2.12.0"
   bin:
     puppeteer: lib/cjs/puppeteer/node/cli.js
-  checksum: 10c0/ce63f65801bd158d169dc87f311793eddb6f34124738d2f01a19b6d51ca92c6697cfcfc0c0ada55ddc152f162653ed256a2c5290eb87dc841b2624997182d4e7
+  checksum: 10c0/693a27ef113e99a5204dac28f9568817c98b3f660112de5ad254efa75062a5b85468d3b9230dca97aa85b74f78f2c06f14bcfa0e22de7e5f83a955a7c11422d4
   languageName: node
   linkType: hard
 
