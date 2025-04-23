@@ -7,32 +7,35 @@ import ChordSheetJS, {
   ChordSheetParser,
   ChordSheetSerializer,
   ChordsOverWordsParser,
+  CHORUS,
   Comment,
   Composite,
   Formatter,
-  HtmlFormatter,
   HtmlDivFormatter,
+  HtmlFormatter,
   HtmlTableFormatter,
+  INDETERMINATE,
   Key,
   Line,
   Literal,
   Metadata,
+  NONE,
+  NUMERIC,
   Paragraph,
+  SOLFEGE,
   Song,
+  SYMBOL,
+  TAB,
   Tag,
+  templateHelpers,
   Ternary,
   TextFormatter,
   UltimateGuitarParser,
-  CHORUS,
-  INDETERMINATE,
-  NONE,
-  NUMERIC,
-  SOLFEGE,
-  SYMBOL,
-  TAB,
   VERSE,
-  templateHelpers,
+  version,
 } from '../src';
+
+import packageJSON from '../package.json';
 
 const {
   isEvaluatable,
@@ -87,6 +90,7 @@ describe('exports', () => {
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
     expect(templateHelpers).toBeDefined();
+    expect(version).toEqual(packageJSON.version);
   });
 
   it('supplies all template helpers', () => {
@@ -133,6 +137,7 @@ describe('exports', () => {
     expect(ChordSheetJS.NONE).toBeDefined();
     expect(ChordSheetJS.TAB).toBeDefined();
     expect(ChordSheetJS.VERSE).toBeDefined();
+    expect(ChordSheetJS.version).toEqual(packageJSON.version);
   });
 
   it('supplies template helpers on the default export', () => {

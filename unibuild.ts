@@ -1,3 +1,4 @@
+import os from 'os';
 import peggy from 'peggy';
 import process from 'process';
 import tspegjs from 'ts-pegjs';
@@ -11,7 +12,7 @@ import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 
 const {
-  main, types, bundle,
+  main, types, bundle, version,
 } = packageJSON;
 
 interface BuildOptions {
@@ -113,6 +114,12 @@ unibuild((u: Builder) => {
     chordsOverWordsParser,
     chordDefinitionParser,
   ];
+
+  u.asset('versionFile', {
+    input: 'package.json',
+    outfile: 'src/version.ts',
+    build: () => `export default '${version}';${os.EOL}`,
+  });
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
