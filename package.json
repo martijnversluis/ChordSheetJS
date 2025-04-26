@@ -71,7 +71,8 @@
     "prepare": "yarn install && yarn build",
     "release": "yarn unibuild release",
     "test": "yarn unibuild lint && yarn unibuild test",
-    "unibuild": "tsx ./unibuild.ts"
+    "unibuild": "tsx ./unibuild.ts",
+    "version": "yarn build versionFile && git add src/version.ts"
   },
   "packageManager": "yarn@4.2.2"
 }
