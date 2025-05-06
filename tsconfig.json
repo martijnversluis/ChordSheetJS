@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "outDir": "./lib",
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2018",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "lib": ["es2018", "es2019", "dom"],
     "types": ["node", "jest"],
     "downlevelIteration": true,
