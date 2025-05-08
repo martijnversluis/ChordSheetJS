@@ -44,7 +44,7 @@
     "globals": "^16.0.0",
     "jest": "^27.0.1",
     "parcel": "^2.14.4",
-    "peggy": "^4.0.2",
+    "peggy": "^5.0.2",
     "pegjs-backtrace": "^0.2.1",
     "print": "^1.2.0",
     "puppeteer": "^24.0.0",
