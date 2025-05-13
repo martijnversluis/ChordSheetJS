@@ -139,12 +139,12 @@ class Song extends MetadataAccessors {
     return clone;
   }
 
-  getMetadata(name: string): string | string[] | null {
-    return this.metadata.getMetadata(name);
+  getMetadataValue(name: string): string | string[] | null {
+    return this.metadata.getMetadataValue(name);
   }
 
-  getSingleMetadata(name: string): string | null {
-    return this.metadata.getSingleMetadata(name);
+  getSingleMetadataValue(name: string): string | null {
+    return this.metadata.getSingleMetadataValue(name);
   }
 
   /**
