@@ -16,12 +16,8 @@ import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import Tag from './tag';
 import { CAPO, KEY } from './tags';
 import LineExpander from './line_expander';
-
-type EachItemCallback = (_item: Item) => void;
-
-type MapItemsCallback = (_item: Item) => Item | null;
-
-type MapLinesCallback = (_line: Line) => Line | null;
+import SongMapper, { MapItemsCallback } from './song_mapper';
+import { filterObject } from '../utilities';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -135,11 +131,11 @@ class Song extends MetadataAccessors {
    * @returns {Song} The cloned song
    */
   clone(): Song {
-    return this.mapItems((item) => item);
-  }
-
-  setMetadata(name: string, value: string): void {
-    this.metadata.add(name, value);
+    const clone = new Song();
+    clone.metadata = this.metadata.clone();
+    clone.warnings = [...this.warnings];
+    clone.lines = this.lines.map((line) => line.clone());
+    return clone;
   }
 
   getMetadata(name: string): string | string[] | null {
@@ -178,16 +174,64 @@ class Song extends MetadataAccessors {
     return this.changeMetadata(CAPO, strCapo);
   }
 
-  private setDirective(name: string, value: string | null): Song {
-    if (value === null) {
-      return this.removeItem((item: Item) => item instanceof Tag && item.name === name);
-    }
+  private updateDirectives(metadata: Record<string, string | string[] | null>): Song {
+    const updates = { ...metadata };
 
-    return this.updateItem(
-      (item: Item) => item instanceof Tag && item.name === name,
-      (item: Item) => (('set' in item) ? item.set({ value }) : item),
-      (song: Song) => song.insertDirective(name, value),
-    );
+    const newMetadata: Record<string, string | string[] | null> =
+      filterObject<string | string[] | null>(updates, (key, value) => (
+        value !== null && !this.metadata.contains(key)
+      ));
+
+    const updatedSong = this.changeOrDeleteDirectives(updates);
+    updatedSong.insertDirectives(newMetadata);
+    return updatedSong;
+  }
+
+  private changeOrDeleteDirectives(updates: Record<string, string | string[] | null>) {
+    const pendingUpdates = { ...updates };
+
+    return this.mapItems((item: Item) => {
+      if (!(item instanceof Tag)) {
+        return item;
+      }
+
+      const tag = item as Tag;
+
+      if (!(tag.name in pendingUpdates && tag.isMetaTag())) {
+        return item;
+      }
+
+      const replacementValue = pendingUpdates[tag.name];
+
+      if (replacementValue === null) {
+        return null;
+      }
+
+      pendingUpdates[tag.name] = null;
+
+      return [replacementValue].flat().map((value) => new Tag(tag.name, value));
+    });
+  }
+
+  private insertDirectives(metadata: Record<string, string | string[] | null>, { after = null } = {}): void {
+    const insertIndex = this.lines.findIndex((line) => (
+      line.items.some((item) => (
+        !(item instanceof Tag) || (after && item.name === after)
+      ))
+    ));
+
+    const newLines = Object.keys(metadata).flatMap((name) => {
+      const values = [metadata[name]].flat();
+
+      return values.flatMap((value) => {
+        const line = new Line();
+        line.addTag(name, value);
+        return line;
+      });
+    });
+
+    const { lines } = this;
+    this.lines = [...lines.slice(0, insertIndex), ...newLines, ...lines.slice(insertIndex)];
   }
 
   /**
@@ -372,30 +416,52 @@ Or set the song key before changing key:
    * - when there is a matching directive in the song, it will update the directive
    * - when there is no matching directive, it will be inserted
    * If `value` is `null` it will act as a delete, any directive matching `name` will be removed.
-   * @param {string} name The directive name
-   * @param {string | null} value The value to set, or `null` to remove the directive
+   *
+   * @example
+   * ```javascript
+   * song.changeMetadata('author', 'John');
+   * song.changeMetadata('composer', ['Jane', 'John']);
+   * song.changeMetadata('key', null); // Remove key directive
+   * ```
+   * @param name The directive name
+   * @param {string | string[] | null} value The value to set, or `null` to remove the directive
+   * @return {Song} The changed song
    */
-  changeMetadata(name: string, value: string | null): Song {
-    const updatedSong = this.setDirective(name, value);
-    updatedSong.metadata.set(name, value);
+  changeMetadata(name: string, value: string | string[] | null): Song;
+
+  /**
+   * Returns a copy of the song with the metadata changed. It will:
+   * - update the metadata
+   * - update any existing directive matching the metadata key
+   * - insert a new directive if it does not exist
+   * @example
+   * ```javascript
+   * song.changeMetadata({
+   *   author: 'John',
+   *   composer: ['Jane', 'John'],
+   *   key: null, // Remove key directive
+   * });
+   * ```
+   * @param {Record<string, string | string[] | null>} metadata The metadata to change
+   * @returns {Song} The changed song
+   */
+  changeMetadata(metadata: Record<string, string | string[] | null>): Song;
+
+  changeMetadata(
+    nameOrData: string | Record<string, string | string[] | null>,
+    value?: string | string[] | null,
+  ): Song {
+    if (typeof nameOrData === 'string') {
+      if (typeof value === 'undefined') {
+        throw new Error('Value is required when name is a string');
+      }
+
+      return this.changeMetadata({ [nameOrData]: value });
+    }
+
+    const updatedSong = this.updateDirectives(nameOrData);
+    updatedSong.metadata.assign(nameOrData);
     return updatedSong;
-  }
-
-  private insertDirective(name: string, value: string, { after = null } = {}): Song {
-    const insertIndex = this.lines.findIndex((line) => (
-      line.items.some((item) => (
-        !(item instanceof Tag) || (after && item.name === after)
-      ))
-    ));
-
-    const newLine = new Line();
-    newLine.addTag(name, value);
-
-    const clonedSong = this.clone();
-    const { lines } = clonedSong;
-    clonedSong.lines = [...lines.slice(0, insertIndex), newLine, ...lines.slice(insertIndex)];
-
-    return clonedSong;
   }
 
   addLine(line: Line) {
@@ -417,25 +483,10 @@ Or set the song key before changing key:
    * @returns {Song} the changed song
    */
   mapItems(func: MapItemsCallback): Song {
-    const clonedSong = new Song();
-    const builder = new SongBuilder(clonedSong);
-
-    this.lines.forEach((line) => {
-      builder.addLine();
-
-      line.items.forEach((item) => {
-        const changedItem = func(item);
-
-        if (changedItem) {
-          builder.addItem(changedItem);
-        }
-      });
-    });
-
-    return clonedSong;
+    return new SongMapper(this).mapItems(func);
   }
 
-  foreachItem(func: EachItemCallback): void {
+  foreachItem(func: (_item: Item) => void): void {
     this.lines.forEach((line) => {
       line.items.forEach(func);
     });
@@ -515,7 +566,7 @@ Or set the song key before changing key:
    * @param {MapLinesCallback} func the callback function
    * @returns {Song} the changed song
    */
-  mapLines(func: MapLinesCallback): Song {
+  mapLines(func: (_line: Line) => Line | null): Song {
     const clonedSong = new Song();
     const builder = new SongBuilder(clonedSong);
 

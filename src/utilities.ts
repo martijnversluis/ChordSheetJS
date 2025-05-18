@@ -36,10 +36,6 @@ export function isPresent(object: ObjectWithLength): boolean {
   return !!object && object.length > 0;
 }
 
-export function isString(obj: any): boolean {
-  return typeof obj === 'string';
-}
-
 function dasherize(string: string): string {
   return string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 }
@@ -194,6 +190,11 @@ export function normalizeChordSuffix(suffix: string | null): string | null {
   return SUFFIX_MAPPING[suffix] || suffix;
 }
 
-export function capitalize(string: string) {
-  return `${string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()}`;
+export function filterObject<T>(
+  object: Record<string, T>,
+  predicate: (key: string, value: T) => boolean,
+): Record<string, T> {
+  return Object.fromEntries(
+    Object.entries(object).filter(([key, value]) => predicate(key, value)),
+  );
 }
