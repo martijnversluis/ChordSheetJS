@@ -138,10 +138,6 @@ class Song extends MetadataAccessors {
     return this.mapItems((item) => item);
   }
 
-  setMetadata(name: string, value: string): void {
-    this.metadata.add(name, value);
-  }
-
   getMetadata(name: string): string | string[] | null {
     return this.metadata.getMetadata(name);
   }
