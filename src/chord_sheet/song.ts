@@ -16,6 +16,7 @@ import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import Tag from './tag';
 import { CAPO, KEY } from './tags';
 import LineExpander from './line_expander';
+import Configuration from '../formatter/configuration';
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -33,18 +34,13 @@ class Song extends MetadataAccessors {
    */
   lines: Line[] = [];
 
-  /**
-   * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
-   * an array containing all unique values for the entry.
-   * @type {Metadata}
-   */
-  metadata: Metadata;
-
   _bodyLines: Line[] | null = null;
 
   _bodyParagraphs: Paragraph[] | null = null;
 
   warnings: ParserWarning[] = [];
+
+  _metadata: Metadata | null = null;
 
   /**
    * Creates a new {Song} instance
@@ -52,7 +48,7 @@ class Song extends MetadataAccessors {
    */
   constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
-    this.metadata = new Metadata(metadata);
+    this._metadata = new Metadata(metadata);
   }
 
   /**
@@ -495,6 +491,45 @@ Or set the song key before changing key:
     });
 
     return chordDefinitions;
+  }
+
+  /**
+   * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
+   * an array containing all unique values for the entry.
+   * @type {Metadata}
+   */
+  get metadata(): Metadata {
+    if (!this._metadata) {
+      this._metadata = this.getMetadata();
+    }
+
+    return this._metadata;
+  }
+
+  getMetadata(configuration?: Configuration): Metadata {
+    const metadata = new Metadata();
+
+    this.foreachItem((item: Item) => {
+      if (!(item instanceof Tag)) {
+        return;
+      }
+
+      const tag = item as Tag;
+
+      if (!tag.isMetaTag()) {
+        return;
+      }
+
+      const { selector, isNegated } = tag;
+
+      if (selector && configuration && !testSelector({ selector, isNegated }, { metadata, configuration })) {
+        return;
+      }
+
+      metadata.add(item.name, item.value);
+    });
+
+    return metadata;
   }
 
   get chordDefinitions(): ChordDefinitionSet {
