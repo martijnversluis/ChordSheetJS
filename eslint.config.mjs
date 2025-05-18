@@ -116,6 +116,7 @@ export default tseslint.config(
       'lib/**/*',
       'src/normalize_mappings/suffix-normalize-mapping.ts',
       'src/parser/*/peg_parser.ts',
+      'tmp/**/*',
     ],
   },
 );
