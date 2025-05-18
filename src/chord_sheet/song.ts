@@ -2,6 +2,7 @@ import Chord from '../chord';
 import ChordDefinition from '../chord_definition/chord_definition';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import ChordLyricsPair from './chord_lyrics_pair';
+import Configuration from '../formatter/configuration';
 import FormattingContext from '../formatter/formatting_context';
 import Item from './item';
 import Key from '../key';
@@ -12,13 +13,15 @@ import MetadataAccessors from './metadata_accessors';
 import Paragraph from './paragraph';
 import ParserWarning from '../parser/parser_warning';
 import SongBuilder from '../song_builder';
+import SongMapper from './song_mapper';
 import Tag from './tag';
 
 import { Modifier } from '../constants';
 import { filterObject } from '../utilities';
 import { testSelector } from '../helpers';
 import { CAPO, KEY } from './tags';
-import SongMapper, { MapItemsCallback } from './song_mapper';
+
+type MapItemsCallback = (_item: Item) => Item | Item[] | null;
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -30,26 +33,24 @@ class Song extends MetadataAccessors {
    */
   lines: Line[] = [];
 
-  /**
-   * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
-   * an array containing all unique values for the entry.
-   * @type {Metadata}
-   */
-  metadata: Metadata;
-
   _bodyLines: Line[] | null = null;
 
   _bodyParagraphs: Paragraph[] | null = null;
 
   warnings: ParserWarning[] = [];
 
+  _metadata: Metadata | null = null;
+
   /**
    * Creates a new {Song} instance
    * @param metadata {Record<string, string | string[]>|Metadata} predefined metadata
    */
-  constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
+  constructor(metadata: Record<string, string | string[]> | Metadata | null = null) {
     super();
-    this.metadata = new Metadata(metadata);
+
+    if (metadata) {
+      this._metadata = new Metadata(metadata);
+    }
   }
 
   /**
@@ -133,7 +134,6 @@ class Song extends MetadataAccessors {
    */
   clone(): Song {
     const clone = new Song();
-    clone.metadata = this.metadata.clone();
     clone.warnings = [...this.warnings];
     clone.lines = this.lines.map((line) => line.clone());
     return clone;
@@ -547,6 +547,45 @@ Or set the song key before changing key:
     });
 
     return chordDefinitions;
+  }
+
+  /**
+   * The song's metadata. When there is only one value for an entry, the value is a string. Else, the value is
+   * an array containing all unique values for the entry.
+   * @type {Metadata}
+   */
+  get metadata(): Metadata {
+    if (!this._metadata) {
+      this._metadata = this.getMetadata();
+    }
+
+    return this._metadata;
+  }
+
+  getMetadata(configuration?: Configuration): Metadata {
+    const metadata = new Metadata();
+
+    this.foreachItem((item: Item) => {
+      if (!(item instanceof Tag)) {
+        return;
+      }
+
+      const tag = item as Tag;
+
+      if (!tag.isMetaTag()) {
+        return;
+      }
+
+      const { selector, isNegated } = tag;
+
+      if (selector && configuration && !testSelector({ selector, isNegated }, { metadata, configuration })) {
+        return;
+      }
+
+      metadata.add(item.name, item.value);
+    });
+
+    return metadata;
   }
 
   get chordDefinitions(): ChordDefinitionSet {

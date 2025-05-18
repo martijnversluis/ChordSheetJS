@@ -76,11 +76,11 @@ class Metadata extends MetadataAccessors {
     }
   }
 
-  getMetadata(name: string): string | string[] | null {
+  getMetadataValue(name: string): string | string[] | null {
     return this.get(name);
   }
 
-  getSingleMetadata(name: string): string | null {
+  getSingleMetadataValue(name: string): string | null {
     return this.getSingle(name);
   }
 
