@@ -197,3 +197,15 @@ export function normalizeChordSuffix(suffix: string | null): string | null {
 export function capitalize(string: string) {
   return `${string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()}`;
 }
+
+export function findAllIndices<T>(
+  array: T[],
+  predicate: (value: T, index: number, arr : T[]) => boolean,
+): number[] {
+  return array.reduce((indices: number[], element, index) => {
+    if (predicate(element, index, array)) {
+      indices.push(index);
+    }
+    return indices;
+  }, []);
+}

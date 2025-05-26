@@ -16,6 +16,7 @@ import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import Tag from './tag';
 import { CAPO, KEY } from './tags';
 import LineExpander from './line_expander';
+import {findAllIndices} from "../utilities";
 
 type EachItemCallback = (_item: Item) => void;
 
@@ -174,16 +175,13 @@ class Song extends MetadataAccessors {
     return this.changeMetadata(CAPO, strCapo);
   }
 
-  private setDirective(name: string, value: string | null): Song {
-    if (value === null) {
-      return this.removeItem((item: Item) => item instanceof Tag && item.name === name);
-    }
-
-    return this.updateItem(
-      (item: Item) => item instanceof Tag && item.name === name,
-      (item: Item) => (('set' in item) ? item.set({ value }) : item),
-      (song: Song) => song.insertDirective(name, value),
+  private updateDirectives(metadata: Record<string, string | string[] | null>): Song {
+    const keysToBeDeleted = Object.keys(metadata).filter((key) => metadata[key] === null);
+    const metadataToBeUpdated = Object.fromEntries(
+      Object.entries(metadata).filter(([_key, value]) => value !== null),
     );
+
+    const updatedSong = this.removeItem((item: Item) => item instanceof Tag && keysToBeDeleted.includes(item.name));
   }
 
   /**
@@ -369,16 +367,48 @@ Or set the song key before changing key:
    * - when there is no matching directive, it will be inserted
    * If `value` is `null` it will act as a delete, any directive matching `name` will be removed.
    * @param {string} name The directive name
-   * @param {string | null} value The value to set, or `null` to remove the directive
+   * @param {string | string[] | null} value The value to set, or `null` to remove the directive
    */
-  changeMetadata(name: string, value: string | null): Song {
-    const updatedSong = this.setDirective(name, value);
-    updatedSong.metadata.set(name, value);
+  changeMetadata(name: string, value: string | string[] | null): Song;
+
+  changeMetadata(metadata: Record<string, string | string[] | null>): Song;
+
+  changeMetadata(
+    nameOrData: string | Record<string, string | string[] | null>,
+    value?: string | string[] | null,
+  ): Song {
+    if (typeof nameOrData === 'string') {
+      if (typeof value === 'undefined') {
+        throw new Error('Value is required when name is a string');
+      }
+
+      return this.changeMetadata({ [nameOrData]: value });
+    }
+
+    const updatedSong = this.updateDirectives(nameOrData);
+    updatedSong.metadata.assign(nameOrData);
     return updatedSong;
   }
 
   private insertDirective(name: string, value: string, { after = null } = {}): Song {
     const insertIndex = this.lines.findIndex((line) => (
+      line.items.some((item) => (
+        !(item instanceof Tag) || (after && item.name === after)
+      ))
+    ));
+
+    const newLine = new Line();
+    newLine.addTag(name, value);
+
+    const clonedSong = this.clone();
+    const { lines } = clonedSong;
+    clonedSong.lines = [...lines.slice(0, insertIndex), newLine, ...lines.slice(insertIndex)];
+
+    return clonedSong;
+  }
+
+  private replaceDirective(name: string, value: string, { after = null } = {}): Song {
+    const existingIndices = findAllIndices(this.lines, (line) => (
       line.items.some((item) => (
         !(item instanceof Tag) || (after && item.name === after)
       ))
