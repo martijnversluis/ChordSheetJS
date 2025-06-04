@@ -36,7 +36,6 @@ class SongBuilder {
   constructor(song: Song) {
     this.song = song;
     this.song.lines = this.lines;
-    this.song.metadata = this.metadata;
     this.song.warnings = this.warnings;
   }
 
@@ -109,9 +108,7 @@ class SongBuilder {
   }
 
   private applyTagOnSong(tag: Tag) {
-    if (tag.isMetaTag()) {
-      this.setMetadata(tag.name, tag.value || '');
-    } else if (tag.name === TRANSPOSE) {
+    if (tag.name === TRANSPOSE) {
       this.transposeKey = tag.value;
     } else if (tag.name === NEW_KEY) {
       this.currentKey = tag.value;
@@ -126,10 +123,6 @@ class SongBuilder {
     this.ensureLine();
     if (!this.currentLine) throw new Error('Expected this.currentLine to be present');
     this.currentLine.addTag(tag);
-  }
-
-  setMetadata(name: string, value: string): void {
-    this.metadata.add(name, value);
   }
 
   setSectionTypeFromTag(tag: Tag): void {

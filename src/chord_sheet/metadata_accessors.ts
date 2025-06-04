@@ -15,35 +15,35 @@ import {
 } from './tags';
 
 abstract class MetadataAccessors {
-  abstract getMetadata(_name: string): string | string[] | null;
+  abstract getMetadataValue(_name: string): string | string[] | null;
 
-  abstract getSingleMetadata(_name: string): string | null;
+  abstract getSingleMetadataValue(_name: string): string | null;
 
-  get key(): string | null { return this.getSingleMetadata(KEY); }
+  get key(): string | null { return this.getSingleMetadataValue(KEY); }
 
-  get title(): string | null { return this.getSingleMetadata(TITLE); }
+  get title(): string | null { return this.getSingleMetadataValue(TITLE); }
 
-  get subtitle(): string | null { return this.getSingleMetadata(SUBTITLE); }
+  get subtitle(): string | null { return this.getSingleMetadataValue(SUBTITLE); }
 
-  get capo(): string | string[] | null { return this.getMetadata(CAPO); }
+  get capo(): string | string[] | null { return this.getMetadataValue(CAPO); }
 
-  get duration(): string | null { return this.getSingleMetadata(DURATION); }
+  get duration(): string | null { return this.getSingleMetadataValue(DURATION); }
 
-  get tempo(): string | null { return this.getSingleMetadata(TEMPO); }
+  get tempo(): string | null { return this.getSingleMetadataValue(TEMPO); }
 
-  get time(): string | string[] | null { return this.getMetadata(TIME); }
+  get time(): string | string[] | null { return this.getMetadataValue(TIME); }
 
-  get year(): string | null { return this.getSingleMetadata(YEAR); }
+  get year(): string | null { return this.getSingleMetadataValue(YEAR); }
 
-  get album(): string | string[] | null { return this.getMetadata(ALBUM); }
+  get album(): string | string[] | null { return this.getMetadataValue(ALBUM); }
 
-  get copyright(): string | null { return this.getSingleMetadata(COPYRIGHT); }
+  get copyright(): string | null { return this.getSingleMetadataValue(COPYRIGHT); }
 
-  get lyricist(): string | string[] | null { return this.getMetadata(LYRICIST); }
+  get lyricist(): string | string[] | null { return this.getMetadataValue(LYRICIST); }
 
-  get artist(): string | string[] | null { return this.getMetadata(ARTIST); }
+  get artist(): string | string[] | null { return this.getMetadataValue(ARTIST); }
 
-  get composer(): string | string[] | null { return this.getMetadata(COMPOSER); }
+  get composer(): string | string[] | null { return this.getMetadataValue(COMPOSER); }
 }
 
 export default MetadataAccessors;
