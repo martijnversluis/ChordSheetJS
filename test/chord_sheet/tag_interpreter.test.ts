@@ -1,4 +1,5 @@
 import TagInterpreter from '../../src/chord_sheet/tag_interpreter';
+
 import { ABC } from '../../src';
 import { AUTO, END_TAG, START_TAG } from '../../src/constants';
 

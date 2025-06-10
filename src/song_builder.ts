@@ -1,16 +1,18 @@
+import FontStack from './chord_sheet/font_stack';
+import Item from './chord_sheet/item';
+import Metadata from './chord_sheet/metadata';
+import ParserWarning from './parser/parser_warning';
+import Song from './chord_sheet/song';
+import Tag from './chord_sheet/tag';
+import TagInterpreter from './chord_sheet/tag_interpreter';
+import TraceInfo from './chord_sheet/trace_info';
+
+import { KEY, NEW_KEY, TRANSPOSE } from './chord_sheet/tags';
+import Line, { LineType } from './chord_sheet/line';
+
 import {
   AUTO, END_TAG, NONE, PART, START_TAG,
 } from './constants';
-import Line, { LineType } from './chord_sheet/line';
-import Metadata from './chord_sheet/metadata';
-import FontStack from './chord_sheet/font_stack';
-import Item from './chord_sheet/item';
-import TraceInfo from './chord_sheet/trace_info';
-import ParserWarning from './parser/parser_warning';
-import Song from './chord_sheet/song';
-import TagInterpreter from './chord_sheet/tag_interpreter';
-import { KEY, NEW_KEY, TRANSPOSE } from './chord_sheet/tags';
-import Tag from './chord_sheet/tag';
 
 class SongBuilder {
   currentKey: string | null = null;

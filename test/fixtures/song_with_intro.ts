@@ -1,4 +1,4 @@
-import { createSongFromAst, chordLyricsPair } from '../utilities';
+import { chordLyricsPair, createSongFromAst } from '../utilities';
 
 // Mimic the following chord sheet:
 // [Intro: ][C]

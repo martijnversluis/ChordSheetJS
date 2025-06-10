@@ -1,4 +1,5 @@
 import ChordSheetJS, {
+  CHORUS,
   Chord,
   ChordDefinition,
   ChordLyricsPair,
@@ -7,7 +8,6 @@ import ChordSheetJS, {
   ChordSheetParser,
   ChordSheetSerializer,
   ChordsOverWordsParser,
-  CHORUS,
   Comment,
   Composite,
   Formatter,
@@ -23,15 +23,15 @@ import ChordSheetJS, {
   NUMERIC,
   Paragraph,
   SOLFEGE,
-  Song,
   SYMBOL,
+  Song,
   TAB,
   Tag,
-  templateHelpers,
   Ternary,
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  templateHelpers,
   version,
 } from '../src';
 

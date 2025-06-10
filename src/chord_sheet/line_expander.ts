@@ -1,7 +1,8 @@
+import Item from './item';
 import Line from './line';
 import Song from './song';
-import Item from './item';
 import Tag from './tag';
+
 import { CHORUS } from '../constants';
 import { END_OF_CHORUS, START_OF_CHORUS } from './tags';
 

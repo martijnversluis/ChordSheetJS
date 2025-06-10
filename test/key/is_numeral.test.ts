@@ -1,6 +1,6 @@
-import { NUMERIC, SYMBOL } from '../../src';
-import { buildKey } from '../utilities';
 import { NUMERAL } from '../../src/constants';
+import { buildKey } from '../utilities';
+import { NUMERIC, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('isNumeral', () => {

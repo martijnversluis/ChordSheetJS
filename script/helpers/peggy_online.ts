@@ -1,5 +1,5 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
 import process from 'process';
+import puppeteer, { Browser, Page } from 'puppeteer';
 
 class PeggyOnline {
   parserSource: string;

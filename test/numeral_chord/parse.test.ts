@@ -1,7 +1,8 @@
 /* eslint quote-props: 0 */
 
-import { Chord } from '../../src';
 import '../matchers';
+
+import { Chord } from '../../src';
 import { NUMERAL } from '../../src/constants';
 
 describe('Chord', () => {

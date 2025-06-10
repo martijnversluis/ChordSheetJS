@@ -1,7 +1,7 @@
 import Item from './item';
+import Line from './line';
 import Song from './song';
 import SongBuilder from '../song_builder';
-import Line from './line';
 
 export type MapItemsCallback = (_item: Item) => Item | Item[] | null;
 

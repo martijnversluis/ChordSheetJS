@@ -1,10 +1,11 @@
 import '../matchers';
-import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
-import { stripHTML } from '../../src/template_helpers';
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
+
 import { ContentType } from '../../src/serialized_types';
 import { GRID } from '../../src/constants';
+import { stripHTML } from '../../src/template_helpers';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
   ABC, HtmlDivFormatter, LILYPOND, TAB,

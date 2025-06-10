@@ -1,8 +1,7 @@
-import MetadataAccessors from './metadata_accessors';
-
-import { isReadonlyTag } from './tag';
 import Key from '../key';
-import { _KEY, CAPO, KEY } from './tags';
+import MetadataAccessors from './metadata_accessors';
+import { isReadonlyTag } from './tag';
+import { CAPO, KEY, _KEY } from './tags';
 
 function appendValue(array: string[], value: string): void {
   if (!array.includes(value)) {

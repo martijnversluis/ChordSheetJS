@@ -1,8 +1,9 @@
 import Formatter from './formatter';
-import Configuration, { ConfigurationProperties } from './configuration';
-import Song from '../chord_sheet/song';
-import { scopeCss } from '../utilities';
 import Paragraph from '../chord_sheet/paragraph';
+import Song from '../chord_sheet/song';
+
+import { scopeCss } from '../utilities';
+import Configuration, { ConfigurationProperties } from './configuration';
 
 export interface HtmlTemplateCssClasses {
   annotation: string,

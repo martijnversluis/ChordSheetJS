@@ -1,3 +1,5 @@
+import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
+
 import {
   ChordType,
   FLAT,
@@ -15,7 +17,6 @@ import {
 } from './constants';
 
 import { KEY_TO_GRADE } from './scales';
-import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 import { gradeToKey } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {

@@ -1,8 +1,8 @@
 import Chord from '../chord';
 import Key from '../key';
 import { NullableChordStyle } from '../constants';
-import { transposeDistance } from '../helpers';
 import { callChain } from '../utilities';
+import { transposeDistance } from '../helpers';
 
 interface ConstructorOptions {
   capo: number;

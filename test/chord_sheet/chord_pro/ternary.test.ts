@@ -1,7 +1,7 @@
 import {
+  Literal,
   Metadata,
   Ternary,
-  Literal,
 } from '../../../src';
 
 describe('Ternary', () => {

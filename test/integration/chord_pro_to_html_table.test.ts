@@ -1,6 +1,6 @@
-import { ChordProParser, HtmlTableFormatter } from '../../src';
-import { stripHTML } from '../../src/template_helpers';
 import { heredoc } from '../utilities';
+import { stripHTML } from '../../src/template_helpers';
+import { ChordProParser, HtmlTableFormatter } from '../../src';
 
 describe('chordpro to HTML with TABLEs', () => {
   it('correctly parses and formats meta expressions', () => {

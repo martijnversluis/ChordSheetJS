@@ -1,5 +1,5 @@
-import WhenClause from './when_clause';
 import WhenCallback from './when_callback';
+import WhenClause from './when_clause';
 
 class When {
   condition = false;

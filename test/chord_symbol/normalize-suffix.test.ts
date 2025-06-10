@@ -1,5 +1,6 @@
-import { Chord } from '../../src';
 import '../matchers';
+
+import { Chord } from '../../src';
 
 describe('Chord', () => {
   describe('normalize suffix', () => {

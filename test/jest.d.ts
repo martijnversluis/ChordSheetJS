@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import { ContentType } from '../src/serialized_types';
+import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 
 declare global {
   namespace jest {

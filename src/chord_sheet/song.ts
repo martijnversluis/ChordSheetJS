@@ -1,23 +1,24 @@
-import Line from './line';
-import Paragraph from './paragraph';
-import Key from '../key';
-import ChordLyricsPair from './chord_lyrics_pair';
-import Metadata from './metadata';
-import ParserWarning from '../parser/parser_warning';
-import MetadataAccessors from './metadata_accessors';
-import Item from './item';
-import { Modifier } from '../constants';
-import SongBuilder from '../song_builder';
-import ChordDefinition from '../chord_definition/chord_definition';
 import Chord from '../chord';
-import FormattingContext from '../formatter/formatting_context';
-import { testSelector } from '../helpers';
+import ChordDefinition from '../chord_definition/chord_definition';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
-import Tag from './tag';
-import { CAPO, KEY } from './tags';
+import ChordLyricsPair from './chord_lyrics_pair';
+import FormattingContext from '../formatter/formatting_context';
+import Item from './item';
+import Key from '../key';
+import Line from './line';
 import LineExpander from './line_expander';
-import SongMapper, { MapItemsCallback } from './song_mapper';
+import Metadata from './metadata';
+import MetadataAccessors from './metadata_accessors';
+import Paragraph from './paragraph';
+import ParserWarning from '../parser/parser_warning';
+import SongBuilder from '../song_builder';
+import Tag from './tag';
+
+import { Modifier } from '../constants';
 import { filterObject } from '../utilities';
+import { testSelector } from '../helpers';
+import { CAPO, KEY } from './tags';
+import SongMapper, { MapItemsCallback } from './song_mapper';
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.

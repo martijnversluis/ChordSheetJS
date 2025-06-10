@@ -1,8 +1,8 @@
 import { INDETERMINATE } from '../constants';
+import Item from './item';
 import Line from './line';
 import Literal from './chord_pro/literal';
 import Tag from './tag';
-import Item from './item';
 
 function getCommonValue(values: string[], fallback: string | null): string | null {
   const uniqueValues = [...new Set(values)];

@@ -54,6 +54,17 @@ export default tseslint.config(
       'operator-linebreak': ['error', 'after'],
       'quotes': ['error', 'single'],
       'quote-props': ['error', 'consistent'],
+      'sort-imports': [
+        'error',
+        {
+          allowSeparatedGroups: true,
+          memberSyntaxSortOrder: [
+            'none',
+            'all',
+            'single',
+            'multiple',
+          ],
+        }],
 
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-explicit-any': 'off',

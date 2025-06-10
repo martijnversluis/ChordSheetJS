@@ -1,5 +1,5 @@
-import { breakChordLyricsPairOnSoftLineBreak, stringSplitReplace } from '../../../src/parser/chord_pro/helpers';
 import { SerializedChordLyricsPair, SerializedSoftLineBreak } from '../../../src/serialized_types';
+import { breakChordLyricsPairOnSoftLineBreak, stringSplitReplace } from '../../../src/parser/chord_pro/helpers';
 
 describe('stringSplitReplace', () => {
   it('should replace all instances of a match', () => {

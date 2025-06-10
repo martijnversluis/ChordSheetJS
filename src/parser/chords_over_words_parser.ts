@@ -1,9 +1,10 @@
-import Song from '../chord_sheet/song';
-import ParserWarning from './parser_warning';
-import { parse, ParseOptions } from './chords_over_words/peg_parser';
-import { normalizeLineEndings } from '../utilities';
 import ChordSheetSerializer from '../chord_sheet_serializer';
 import NullTracer from './null_tracer';
+import ParserWarning from './parser_warning';
+import Song from '../chord_sheet/song';
+
+import { normalizeLineEndings } from '../utilities';
+import { ParseOptions, parse } from './chords_over_words/peg_parser';
 
 export type ChordsOverWordsParserOptions = ParseOptions & {
   softLineBreaks?: boolean;

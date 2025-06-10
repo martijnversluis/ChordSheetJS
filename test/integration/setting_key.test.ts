@@ -1,5 +1,5 @@
-import { ChordProFormatter, ChordProParser } from '../../src';
 import { heredoc } from '../utilities';
+import { ChordProFormatter, ChordProParser } from '../../src';
 
 describe('setting the key of an existing song', () => {
   it('updates the key directive', () => {

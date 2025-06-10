@@ -45,9 +45,9 @@ import {
   CHORUS,
   INDETERMINATE,
   NONE,
+  PART,
   TAB,
   VERSE,
-  PART,
 } from './constants';
 
 export { default as Chord } from './chord';

@@ -1,5 +1,5 @@
-import { ChordProFormatter, ChordProParser, TextFormatter } from '../../src';
 import { heredoc } from '../utilities';
+import { ChordProFormatter, ChordProParser, TextFormatter } from '../../src';
 
 describe('changing the key of an existing song (symbol chords)', () => {
   it('updates the key directive and transposes the chords', () => {

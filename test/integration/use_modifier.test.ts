@@ -1,5 +1,5 @@
-import { ChordProParser, TextFormatter } from '../../src';
 import { heredoc } from '../utilities';
+import { ChordProParser, TextFormatter } from '../../src';
 
 describe('changing the song modifiers', () => {
   it('can change to #', () => {

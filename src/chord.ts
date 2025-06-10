@@ -1,14 +1,15 @@
-import { parse } from './parser/chord/peg_parser';
-import Key from './key';
-import { isMinor, normalizeChordSuffix } from './utilities';
 import ChordParsingError from './chord_parsing_error';
+import Key from './key';
+import { parse } from './parser/chord/peg_parser';
+import { isMinor, normalizeChordSuffix } from './utilities';
+
 import {
   ChordType,
   Modifier,
   NUMERAL,
   NUMERIC,
-  SYMBOL,
   SOLFEGE,
+  SYMBOL,
 } from './constants';
 
 interface ChordProperties {

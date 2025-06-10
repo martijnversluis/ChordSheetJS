@@ -1,8 +1,8 @@
 import {
-  Metadata,
-  Ternary,
   Composite,
   Literal,
+  Metadata,
+  Ternary,
 } from '../../../src';
 
 describe('Composite', () => {

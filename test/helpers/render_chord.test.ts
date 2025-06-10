@@ -1,8 +1,9 @@
-import Song from '../../src/chord_sheet/song';
 import Line from '../../src/chord_sheet/line';
-import { renderChord } from '../../src/helpers';
-import { eachTestCase } from '../utilities';
+import Song from '../../src/chord_sheet/song';
+
 import { Key } from '../../src';
+import { eachTestCase } from '../utilities';
+import { renderChord } from '../../src/helpers';
 
 describe('renderChord helper', () => {
   describe('chord transposition symbol', () => {

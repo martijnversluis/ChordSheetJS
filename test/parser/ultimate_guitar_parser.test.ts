@@ -1,9 +1,9 @@
 import fs from 'fs';
-import '../matchers';
 
-import { ChordProFormatter, UltimateGuitarParser } from '../../src';
+import '../matchers';
 import { heredoc } from '../utilities';
 import { normalizeLineEndings } from '../../src/utilities';
+import { ChordProFormatter, UltimateGuitarParser } from '../../src';
 
 describe('UltimateGuitarParser', () => {
   it('starts and ends a single verse tag correctly', () => {

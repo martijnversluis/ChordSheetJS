@@ -1,9 +1,9 @@
-import EvaluationError from './evaluation_error';
-import { isEmptyString } from '../../utilities';
 import Composite from './composite';
-import TraceInfo from '../trace_info';
 import Evaluatable from './evaluatable';
+import EvaluationError from './evaluation_error';
 import Metadata from '../metadata';
+import TraceInfo from '../trace_info';
+import { isEmptyString } from '../../utilities';
 
 export type TernaryProperties = TraceInfo & {
   variable?: string | null;

@@ -1,5 +1,6 @@
-import { Chord, SYMBOL } from '../../src';
 import '../matchers';
+
+import { Chord, SYMBOL } from '../../src';
 
 describe('Chord', () => {
   describe('chord symbol', () => {

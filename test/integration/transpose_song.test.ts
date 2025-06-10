@@ -1,7 +1,11 @@
-import {
-  ChordProFormatter, ChordProParser, ChordSheetParser, TextFormatter,
-} from '../../src';
 import { heredoc } from '../utilities';
+
+import {
+  ChordProFormatter,
+  ChordProParser,
+  ChordSheetParser,
+  TextFormatter,
+} from '../../src';
 
 describe('transposing a song', () => {
   it('transposes with a delta', () => {

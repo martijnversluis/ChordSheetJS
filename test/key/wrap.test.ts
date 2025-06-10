@@ -1,5 +1,5 @@
-import { Key, SOLFEGE, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
+import { Key, SOLFEGE, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('wrap symbol', () => {

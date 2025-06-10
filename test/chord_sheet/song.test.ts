@@ -1,4 +1,11 @@
+import Metadata from '../../src/chord_sheet/metadata';
+import Song from '../../src/chord_sheet/song';
+
+import { configure } from '../../src/formatter/configuration';
 import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
+import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
+import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
 
 import {
   chordLyricsPair,
@@ -10,13 +17,6 @@ import {
   createTag,
   tag,
 } from '../utilities';
-
-import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
-import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
-import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
-import Song from '../../src/chord_sheet/song';
-import { configure } from '../../src/formatter/configuration';
-import Metadata from '../../src/chord_sheet/metadata';
 
 const createLineStub = ({ renderable }) => (
   {

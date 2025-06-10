@@ -1,5 +1,5 @@
-import { ChordProFormatter, ChordProParser } from '../../src';
 import { heredoc } from '../utilities';
+import { ChordProFormatter, ChordProParser } from '../../src';
 
 describe('changing the capo of an existing song (symbol chords)', () => {
   it('updates the capo directive', () => {
