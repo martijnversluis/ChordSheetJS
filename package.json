@@ -42,7 +42,7 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-jest": "^28.8.3",
     "globals": "^16.0.0",
-    "jest": "^27.0.1",
+    "jest": "^30.0.0",
     "parcel": "^2.15.2",
     "peggy": "^5.0.2",
     "pegjs-backtrace": "^0.2.1",
