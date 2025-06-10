@@ -1,9 +1,10 @@
-import Song from '../src/chord_sheet/song';
-import { createLine } from './utilities';
-import { renderChord, testSelector } from '../src/helpers';
 import Key from '../src/key';
 import Metadata from '../src/chord_sheet/metadata';
+import Song from '../src/chord_sheet/song';
+
 import { configure } from '../src/formatter/configuration';
+import { createLine } from './utilities';
+import { renderChord, testSelector } from '../src/helpers';
 
 describe('renderChord', () => {
   it('correctly normalizes when a capo is set and decapo is enabled', () => {

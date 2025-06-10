@@ -1,7 +1,7 @@
 import { ChordProFormatter } from '../../src';
-import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
-import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
 import { chordLyricsPair, createSongFromAst } from '../utilities';
+import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 describe('ChordProFormatter', () => {
   it('formats a symbol song to a chord pro sheet correctly', () => {

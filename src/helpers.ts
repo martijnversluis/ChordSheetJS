@@ -1,11 +1,12 @@
-import Key from './key';
-import { capos, majorKeys, minorKeys } from './key_config';
-import Song from './chord_sheet/song';
-import Line from './chord_sheet/line';
-import FormattingContext from './formatter/formatting_context';
-import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
 import ChordRenderer from './formatter/chord_renderer';
+import FormattingContext from './formatter/formatting_context';
+import Key from './key';
+import Line from './chord_sheet/line';
+import Song from './chord_sheet/song';
+
 import { NullableChordStyle } from './constants';
+import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
+import { capos, majorKeys, minorKeys } from './key_config';
 
 export function transposeDistance(transposeKey: string, songKey: string | Key): number {
   if (/^\d+$/.test(transposeKey)) {

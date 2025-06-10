@@ -1,5 +1,5 @@
-import { NUMERIC, SOLFEGE } from '../../src';
 import { buildKey } from '../utilities';
+import { NUMERIC, SOLFEGE } from '../../src';
 
 describe('Key', () => {
   describe('toChordSolfegeString', () => {

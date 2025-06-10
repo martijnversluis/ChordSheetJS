@@ -1,6 +1,6 @@
-import { NUMERIC, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
 import { NUMERAL, SOLFEGE } from '../../src/constants';
+import { NUMERIC, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('isNumeric', () => {

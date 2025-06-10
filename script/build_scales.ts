@@ -10,8 +10,8 @@ import {
   NUMERAL,
   NUMERIC,
   SHARP,
-  SYMBOL,
   SOLFEGE,
+  SYMBOL,
 } from '../src/constants';
 
 interface BuildOptions {

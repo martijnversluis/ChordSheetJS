@@ -1,8 +1,9 @@
-import Line from './chord_sheet/line';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Item from './chord_sheet/item';
-import { GRADE_TO_KEY } from './scales';
+import Line from './chord_sheet/line';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
+
+import { GRADE_TO_KEY } from './scales';
 
 import {
   ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,

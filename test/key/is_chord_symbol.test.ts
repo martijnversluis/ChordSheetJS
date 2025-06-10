@@ -1,5 +1,5 @@
-import { NUMERIC, SOLFEGE, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
+import { NUMERIC, SOLFEGE, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('isChordSymbol', () => {

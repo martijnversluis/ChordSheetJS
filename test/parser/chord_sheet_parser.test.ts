@@ -1,5 +1,6 @@
-import { ChordSheetParser } from '../../src';
 import '../matchers';
+
+import { ChordSheetParser } from '../../src';
 import { heredoc } from '../utilities';
 
 const defaultChordSheet = heredoc`

@@ -1,6 +1,6 @@
-import { ChordProParser, HtmlDivFormatter } from '../../src';
-import { stripHTML } from '../../src/template_helpers';
 import { heredoc } from '../utilities';
+import { stripHTML } from '../../src/template_helpers';
+import { ChordProParser, HtmlDivFormatter } from '../../src';
 
 describe('chordpro to HTML with DIVs', () => {
   it('correctly parses and formats meta expressions', () => {

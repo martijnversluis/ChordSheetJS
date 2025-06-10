@@ -1,5 +1,5 @@
-import { buildKey } from '../utilities';
 import { NUMERAL } from '../../src/constants';
+import { buildKey } from '../utilities';
 
 describe('Key', () => {
   describe('toNumeralString', () => {

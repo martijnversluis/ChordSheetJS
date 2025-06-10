@@ -7,17 +7,17 @@
 
 import {
   ChordType,
-  Mode,
-  ModifierMaybe,
   FLAT,
   MAJOR,
   MINOR,
+  Mode,
+  ModifierMaybe,
   NO_MODIFIER,
   NUMERAL,
   NUMERIC,
   SHARP,
-  SYMBOL,
   SOLFEGE,
+  SYMBOL,
 } from './constants';
 
 export const KEY_TO_GRADE: Record<ChordType, Record<Mode, Record<ModifierMaybe, Record<string, number>>>> = {

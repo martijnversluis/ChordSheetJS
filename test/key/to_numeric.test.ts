@@ -1,7 +1,7 @@
 /* eslint quote-props: 0 */
 
-import { Key, NUMERIC } from '../../src';
 import { FLAT, SHARP } from '../../src/constants';
+import { Key, NUMERIC } from '../../src';
 
 const examples = {
   'C': {

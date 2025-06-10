@@ -1,6 +1,6 @@
 import { buildKey } from '../utilities';
-import { NUMERIC, SYMBOL } from '../../src';
 import { NUMERAL, SOLFEGE } from '../../src/constants';
+import { NUMERIC, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('useModifier', () => {

@@ -1,5 +1,6 @@
-import { Chord, SOLFEGE } from '../../src';
 import '../matchers';
+
+import { Chord, SOLFEGE } from '../../src';
 
 describe('Chord', () => {
   describe('chord solfege', () => {

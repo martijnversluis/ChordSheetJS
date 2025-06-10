@@ -1,7 +1,12 @@
+import '../matchers';
+
+import { PART } from '../../src/constants';
+import { heredoc } from '../utilities';
+
 import {
   ABC,
-  ChordProParser,
   CHORUS,
+  ChordProParser,
   LILYPOND,
   NONE,
   TAB,
@@ -9,10 +14,6 @@ import {
   Ternary,
   VERSE,
 } from '../../src';
-import { PART } from '../../src/constants';
-
-import '../matchers';
-import { heredoc } from '../utilities';
 
 describe('ChordProParser', () => {
   it('parses a ChordPro chord sheet correctly', () => {

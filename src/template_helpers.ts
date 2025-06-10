@@ -1,19 +1,21 @@
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
-import Tag from './chord_sheet/tag';
-import { INDETERMINATE, NONE } from './constants';
-import { hasChordContents, isEmptyString, isEvaluatable } from './utilities';
-import Item from './chord_sheet/item';
-import Line from './chord_sheet/line';
-import Paragraph from './chord_sheet/paragraph';
-import Metadata from './chord_sheet/metadata';
-import Configuration, { defaultDelegate, Delegate } from './formatter/configuration';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
-import { renderChord } from './helpers';
+import Item from './chord_sheet/item';
+import Line from './chord_sheet/line';
+import Metadata from './chord_sheet/metadata';
+import Paragraph from './chord_sheet/paragraph';
+import Tag from './chord_sheet/tag';
 import When from './template_helpers/when';
-import { Literal } from './index';
 import WhenCallback from './template_helpers/when_callback';
+
+import Configuration, { Delegate, defaultDelegate } from './formatter/configuration';
+
 import { HtmlTemplateCssClasses } from './formatter/html_formatter';
+import { Literal } from './index';
+import { renderChord } from './helpers';
+import { INDETERMINATE, NONE } from './constants';
+import { hasChordContents, isEmptyString, isEvaluatable } from './utilities';
 
 type EachCallback = (_item: any) => string;
 

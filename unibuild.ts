@@ -3,13 +3,13 @@ import peggy from 'peggy';
 import process from 'process';
 import tspegjs from 'ts-pegjs';
 
-import unibuild, { Asset, Builder } from '@martijnversluis/unibuild';
 import packageJSON from './package.json';
+import unibuild, { Asset, Builder } from '@martijnversluis/unibuild';
 
-import buildChordSuffixNormalizeMapping from './script/build_chord_suffix_normalize_mapping';
-import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
-import buildScales from './script/build_scales';
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
+import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
+import buildChordSuffixNormalizeMapping from './script/build_chord_suffix_normalize_mapping';
+import buildScales from './script/build_scales';
 
 const {
   main, types, bundle, version,

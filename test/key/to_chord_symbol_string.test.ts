@@ -1,5 +1,5 @@
-import { NUMERIC, SYMBOL } from '../../src';
 import { buildKey } from '../utilities';
+import { NUMERIC, SYMBOL } from '../../src';
 
 describe('Key', () => {
   describe('toChordSymbolString', () => {

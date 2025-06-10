@@ -1,7 +1,8 @@
 import fs from 'fs';
-import { ChordProFormatter, ChordsOverWordsParser } from '../../src';
+
 import { heredoc } from '../utilities';
 import { normalizeLineEndings } from '../../src/utilities';
+import { ChordProFormatter, ChordsOverWordsParser } from '../../src';
 
 describe('chords over words to chordpro', () => {
   it('correctly parses and converts the song structure', () => {

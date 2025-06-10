@@ -1,6 +1,7 @@
 import process from 'process';
-import PeggyOnline from './helpers/peggy_online';
+
 import ParserBuilder from './helpers/parser_builder';
+import PeggyOnline from './helpers/peggy_online';
 
 const parserSource = new ParserBuilder(process.argv[2]).build();
 

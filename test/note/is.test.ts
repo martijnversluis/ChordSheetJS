@@ -1,6 +1,7 @@
 import Note from '../../src/note';
-import { SYMBOL } from '../../src';
+
 import { NUMERAL } from '../../src/constants';
+import { SYMBOL } from '../../src';
 
 describe('Note', () => {
   describe('#is', () => {

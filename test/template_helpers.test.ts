@@ -1,23 +1,24 @@
+import Font from '../src/chord_sheet/font';
+import FontSize from '../src/chord_sheet/font_size';
+
+import { configure } from '../src/formatter/configuration';
+import { defaultCssClasses } from '../src/formatter/html_formatter';
+import { createLine, createLiteral, createParagraph } from './utilities';
+import { newlinesToBreaks, renderSection } from '../src/template_helpers';
+
 import {
   ABC,
-  ChordLyricsPair,
   CHORUS,
+  ChordLyricsPair,
   Comment,
   Line,
   Metadata,
   NONE,
   Paragraph,
   Tag,
-  templateHelpers,
   Ternary,
+  templateHelpers,
 } from '../src';
-
-import { configure } from '../src/formatter/configuration';
-import Font from '../src/chord_sheet/font';
-import FontSize from '../src/chord_sheet/font_size';
-import { newlinesToBreaks, renderSection } from '../src/template_helpers';
-import { createLine, createLiteral, createParagraph } from './utilities';
-import { defaultCssClasses } from '../src/formatter/html_formatter';
 
 const {
   isChordLyricsPair,

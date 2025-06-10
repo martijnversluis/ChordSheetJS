@@ -1,6 +1,6 @@
 import {
-  Line,
   ChordLyricsPair,
+  Line,
   Tag, VERSE,
 } from '../../src';
 

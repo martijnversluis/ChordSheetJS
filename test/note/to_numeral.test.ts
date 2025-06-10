@@ -1,4 +1,5 @@
 import Note from '../../src/note';
+
 import { NUMERAL } from '../../src';
 
 describe('Note', () => {

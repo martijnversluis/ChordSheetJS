@@ -1,9 +1,10 @@
 import '../matchers';
-import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
+
 import songWithIntro from '../fixtures/song_with_intro';
 
-import { GRID } from '../../src/constants';
 import { ContentType } from '../../src/serialized_types';
+import { GRID } from '../../src/constants';
+import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
   ABC, ChordProParser, LILYPOND, TAB, TextFormatter,

@@ -1,4 +1,5 @@
 import Key from '../key';
+
 import { ContentType } from '../serialized_types';
 
 export type Delegate = (_string: string) => string;
