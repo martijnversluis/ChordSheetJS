@@ -194,7 +194,7 @@ class Metadata extends MetadataAccessors {
     return null;
   }
 
-  private assign(metadata: Record<string, string | string[]>): void {
+  assign(metadata: Record<string, string | string[] | null>): void {
     Object
       .keys(metadata)
       .filter((key) => !isReadonlyTag(key))
@@ -203,6 +203,8 @@ class Metadata extends MetadataAccessors {
 
         if (value instanceof Array) {
           this.metadata[key] = [...value];
+        } else if (value === null) {
+          delete this.metadata[key];
         } else {
           this.metadata[key] = value;
         }

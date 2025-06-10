@@ -86,10 +86,6 @@ class Line {
     return this.items.length === 0;
   }
 
-  isNotEmpty(): boolean {
-    return !this.isEmpty();
-  }
-
   /**
    * Adds an item ({@link ChordLyricsPair} or {@link Tag}) to the line
    * @param {ChordLyricsPair|Tag} item The item to be added
