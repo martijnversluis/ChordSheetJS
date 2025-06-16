@@ -33,7 +33,7 @@
     "@martijnversluis/unibuild": "^1.4.0",
     "@parcel/packager-ts": "^2.15.2",
     "@parcel/transformer-typescript-types": "^2.15.2",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "concat-md": "^0.5.1",
     "detect-newline": "^4.0.1",
