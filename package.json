@@ -40,7 +40,7 @@
     "esbuild": "^0.25.0",
     "eslint": "^9.11.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-jest": "^28.8.3",
+    "eslint-plugin-jest": "^29.0.0",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "parcel": "^2.15.2",
