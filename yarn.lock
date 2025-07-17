@@ -2419,20 +2419,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@puppeteer/browsers@npm:2.10.5":
-  version: 2.10.5
-  resolution: "@puppeteer/browsers@npm:2.10.5"
+"@puppeteer/browsers@npm:2.10.6":
+  version: 2.10.6
+  resolution: "@puppeteer/browsers@npm:2.10.6"
   dependencies:
     debug: "npm:^4.4.1"
     extract-zip: "npm:^2.0.1"
     progress: "npm:^2.0.3"
     proxy-agent: "npm:^6.5.0"
     semver: "npm:^7.7.2"
-    tar-fs: "npm:^3.0.8"
+    tar-fs: "npm:^3.1.0"
     yargs: "npm:^17.7.2"
   bin:
     browsers: lib/cjs/main-cli.js
-  checksum: 10c0/2634b9d6a654406b1012379f8df71f917b463aff687d97aeb4ea3142c041a4edf5b01efe8cdc9e63086ed6593023667f94657c1a7c0472760ffe1d26d4a2c218
+  checksum: 10c0/fad48fe9cf159bf2b054e66a8b1ef0567480332777c55bac591de6ba94007716c363fe1caf9f315269e8a2b61ea46c50f77acf6245fc90dfb07251a57e0f6774
   languageName: node
   linkType: hard
 
@@ -3894,15 +3894,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromium-bidi@npm:7.1.0":
-  version: 7.1.0
-  resolution: "chromium-bidi@npm:7.1.0"
+"chromium-bidi@npm:7.1.1":
+  version: 7.1.1
+  resolution: "chromium-bidi@npm:7.1.1"
   dependencies:
     mitt: "npm:^3.0.1"
     zod: "npm:^3.24.1"
   peerDependencies:
     devtools-protocol: "*"
-  checksum: 10c0/b87723ca8d7b86095abad16a93dc755c791d220c4cac2ab03a34e19233fe14498cb6a2e9577508698e0f446ce0633c8a8d4cf9b2934607e6da4c0eb9b1779bf4
+  checksum: 10c0/ccfe949fa0a6bb47618e19da57f65a315e22dac127c2a20d216e0bd9b47d7c153c1c73337b67857dc54518723a58104312693f0b8c6466da958a192b21a39fb7
   languageName: node
   linkType: hard
 
@@ -8150,33 +8150,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:24.13.0":
-  version: 24.13.0
-  resolution: "puppeteer-core@npm:24.13.0"
+"puppeteer-core@npm:24.14.0":
+  version: 24.14.0
+  resolution: "puppeteer-core@npm:24.14.0"
   dependencies:
-    "@puppeteer/browsers": "npm:2.10.5"
-    chromium-bidi: "npm:7.1.0"
+    "@puppeteer/browsers": "npm:2.10.6"
+    chromium-bidi: "npm:7.1.1"
     debug: "npm:^4.4.1"
     devtools-protocol: "npm:0.0.1464554"
     typed-query-selector: "npm:^2.12.0"
     ws: "npm:^8.18.3"
-  checksum: 10c0/11132f86a32c0bda510f3c067e514c5ca97fd2a996b72a35d332978f117c01fed43424030b6785e23d8a7bbf41e4b1729e7cfc8ee2497be2b420defc75209782
+  checksum: 10c0/13099460fd1d04f628153edc7e3ce83ae9a3279ef74bfea3a2a095e8faf604c414e7be69ef29f16052f971b02bc60397330982e4d1a83f9636c2161bddc617f6
   languageName: node
   linkType: hard
 
 "puppeteer@npm:^24.0.0":
-  version: 24.13.0
-  resolution: "puppeteer@npm:24.13.0"
+  version: 24.14.0
+  resolution: "puppeteer@npm:24.14.0"
   dependencies:
-    "@puppeteer/browsers": "npm:2.10.5"
-    chromium-bidi: "npm:7.1.0"
+    "@puppeteer/browsers": "npm:2.10.6"
+    chromium-bidi: "npm:7.1.1"
     cosmiconfig: "npm:^9.0.0"
     devtools-protocol: "npm:0.0.1464554"
-    puppeteer-core: "npm:24.13.0"
+    puppeteer-core: "npm:24.14.0"
     typed-query-selector: "npm:^2.12.0"
   bin:
     puppeteer: lib/cjs/puppeteer/node/cli.js
-  checksum: 10c0/a18a0adf452f1ab1c57b165962650e4b885c9b5b81f77a795ae65abc03195734b8edd42399ca9ef84cd26e81ae247b1b581a27e5896bd2df6e4cdb90590565e3
+  checksum: 10c0/ce58c829a3e73a8fa13e256601595fa76769de59baa844b3067282636c417e4f29c2c060f1639fef4a9c995dc71ece989db0a47af673316441f6fea8aee95c6f
   languageName: node
   linkType: hard
 
@@ -8920,9 +8920,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-fs@npm:^3.0.8":
-  version: 3.0.9
-  resolution: "tar-fs@npm:3.0.9"
+"tar-fs@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "tar-fs@npm:3.1.0"
   dependencies:
     bare-fs: "npm:^4.0.1"
     bare-path: "npm:^3.0.0"
@@ -8933,7 +8933,7 @@ __metadata:
       optional: true
     bare-path:
       optional: true
-  checksum: 10c0/e7c6c8b7d1bf342bab0e94e0a2d96dc73c18d0cc6b59ee7b57f919adb08f5cee7f417cb4baee8322789292dc51ae67028cfd5d73f3559c919723ec7d71aa8959
+  checksum: 10c0/760309677543c03fbc253b5ef1ab4bb2ceafb554471b6cbe4930d1633f35662ec26a1414c66fa6754f5aa7e8c65003f73849242f624c322d3dcba7a8888a6915
   languageName: node
   linkType: hard
 
