@@ -35,7 +35,6 @@
     "@parcel/transformer-typescript-types": "^2.15.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
-    "detect-newline": "^4.0.1",
     "esbuild": "^0.25.0",
     "eslint": "^9.11.0",
     "eslint-config-airbnb": "^19.0.4",

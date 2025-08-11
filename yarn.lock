@@ -3681,7 +3681,6 @@ __metadata:
     "@parcel/transformer-typescript-types": "npm:^2.15.4"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^24.0.0"
-    detect-newline: "npm:^4.0.1"
     esbuild: "npm:^0.25.0"
     eslint: "npm:^9.11.0"
     eslint-config-airbnb: "npm:^19.0.4"
@@ -3972,13 +3971,6 @@ __metadata:
   version: 3.1.0
   resolution: "detect-newline@npm:3.1.0"
   checksum: 10c0/c38cfc8eeb9fda09febb44bcd85e467c970d4e3bf526095394e5a4f18bc26dd0cf6b22c69c1fa9969261521c593836db335c2795218f6d781a512aea2fb8209d
-  languageName: node
-  linkType: hard
-
-"detect-newline@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "detect-newline@npm:4.0.1"
-  checksum: 10c0/1cc1082e88ad477f30703ae9f23bd3e33816ea2db6a35333057e087d72d466f5a777809b71f560118ecff935d2c712f5b59e1008a8b56a900909d8fd4621c603
   languageName: node
   linkType: hard
 
