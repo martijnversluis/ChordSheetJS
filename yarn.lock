@@ -3878,15 +3878,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromium-bidi@npm:7.2.0":
-  version: 7.2.0
-  resolution: "chromium-bidi@npm:7.2.0"
+"chromium-bidi@npm:7.3.1":
+  version: 7.3.1
+  resolution: "chromium-bidi@npm:7.3.1"
   dependencies:
     mitt: "npm:^3.0.1"
     zod: "npm:^3.24.1"
   peerDependencies:
     devtools-protocol: "*"
-  checksum: 10c0/ec9432267613453a15ade213673ee39708c5022f0a3363f88ef8bb929353959d1902f3cf04b38007763602583e2c48a660524b1c85414554d2fbf786515bc325
+  checksum: 10c0/ba0c061f31dff2c1b2107b74a94658e6d611831745c0cf294daefa3a20c81c1dee5147253084f7fc425a77f1afc8498dc5b91f2691bb3053829f0c4f1f53827c
   languageName: node
   linkType: hard
 
@@ -8116,33 +8116,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:24.16.0":
-  version: 24.16.0
-  resolution: "puppeteer-core@npm:24.16.0"
+"puppeteer-core@npm:24.16.1":
+  version: 24.16.1
+  resolution: "puppeteer-core@npm:24.16.1"
   dependencies:
     "@puppeteer/browsers": "npm:2.10.6"
-    chromium-bidi: "npm:7.2.0"
+    chromium-bidi: "npm:7.3.1"
     debug: "npm:^4.4.1"
     devtools-protocol: "npm:0.0.1475386"
     typed-query-selector: "npm:^2.12.0"
     ws: "npm:^8.18.3"
-  checksum: 10c0/98fa1edf0f1346318bff326a13c40a82e82702a98eecc2f3968060bf3b8064881df0014639c03270dd2417819ea473e29ca9798aefb491a4175a85498d1cf12f
+  checksum: 10c0/c8361364d15ef5107f822f6906b04dbf9a93a6103f89c02d0db85151617b7c5b671d8b6123d0f84f28561312c6a19f9cf3ec2473d42cb36110fdd3330e856440
   languageName: node
   linkType: hard
 
 "puppeteer@npm:^24.0.0":
-  version: 24.16.0
-  resolution: "puppeteer@npm:24.16.0"
+  version: 24.16.1
+  resolution: "puppeteer@npm:24.16.1"
   dependencies:
     "@puppeteer/browsers": "npm:2.10.6"
-    chromium-bidi: "npm:7.2.0"
+    chromium-bidi: "npm:7.3.1"
     cosmiconfig: "npm:^9.0.0"
     devtools-protocol: "npm:0.0.1475386"
-    puppeteer-core: "npm:24.16.0"
+    puppeteer-core: "npm:24.16.1"
     typed-query-selector: "npm:^2.12.0"
   bin:
     puppeteer: lib/cjs/puppeteer/node/cli.js
-  checksum: 10c0/0b052bd44b8c2514691ff1274a1414970f1d518dee6d6733f39b77fee384e0c571123e134072b6737b4629a7d7efc836da84ac7f37a3f891271359e8e885ef66
+  checksum: 10c0/a6b2c55d5d5fe5b9d9b85f39d1021d2b68d5017bab729060be11dc574e44f8673f993b844c6cb8e2faf38c607863002850247646b9ab1b703f812e297e9ee27a
   languageName: node
   linkType: hard
 
