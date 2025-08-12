@@ -4,7 +4,7 @@ import process from 'process';
 import tspegjs from 'ts-pegjs';
 
 import packageJSON from './package.json';
-import unibuild, { Asset, Builder } from '@martijnversluis/unibuild';
+import unibuild, { Asset, Config } from '@martijnversluis/unibuild';
 
 import buildChordProSectionGrammar from './script/build_chord_pro_section_grammar';
 import buildChordSuffixGrammar from './script/build_chord_suffix_grammar';
@@ -32,7 +32,7 @@ function peggyGenerate(grammar: string, release: boolean): string {
   );
 }
 
-unibuild((u: Builder) => {
+export default unibuild((u: Config) => {
   const suffixNormalizeMapping = u.asset('suffixNormalizeMapping', {
     input: 'src/normalize_mappings/suffix-mapping.txt',
     outfile: 'src/normalize_mappings/suffix-normalize-mapping.ts',
