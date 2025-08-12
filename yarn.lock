@@ -2394,12 +2394,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@peggyjs/from-mem@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@peggyjs/from-mem@npm:2.0.1"
+"@peggyjs/from-mem@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@peggyjs/from-mem@npm:3.1.1"
   dependencies:
     semver: "npm:7.7.2"
-  checksum: 10c0/ded3d7c9f9708900a09bc4b822b1838468578aa0174e21026d8fa281d1b4fddf9b766a0038e78e2e8fac2755421d22e8673ec6d1139b986ff4543b93f09f556a
+  checksum: 10c0/7e4ee0e4d85396fe2d005c42663e1e879bc5cb4e8ca3fbee10af4a115a833b83b3f902aaae60fbc9c3c3a8e99a93f49af07eed9e18eee9eabeae9b34ac3e2dc9
   languageName: node
   linkType: hard
 
@@ -6683,15 +6683,15 @@ __metadata:
   linkType: hard
 
 "peggy@npm:^5.0.2":
-  version: 5.0.5
-  resolution: "peggy@npm:5.0.5"
+  version: 5.0.6
+  resolution: "peggy@npm:5.0.6"
   dependencies:
-    "@peggyjs/from-mem": "npm:2.0.1"
+    "@peggyjs/from-mem": "npm:3.1.1"
     commander: "npm:^14.0.0"
-    source-map-generator: "npm:2.0.1"
+    source-map-generator: "npm:2.0.2"
   bin:
     peggy: bin/peggy.js
-  checksum: 10c0/d357f2645e45d815b4235ad53e084c22a82d1f8da09d74e7974e579cea83df902e0c6fd1c386ba3e58986b4dc4db72ad52637fa0309cbf65b2dc3d030f4d5d4b
+  checksum: 10c0/c5c92b9a9c11371542e5608840884e1e27ab0202cbec379730338ca01ee074471c931494e0aaadd70e4fdb332f712567767f838375d38fe622a7695b225e28d5
   languageName: node
   linkType: hard
 
@@ -7123,10 +7123,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-generator@npm:2.0.1":
-  version: 2.0.1
-  resolution: "source-map-generator@npm:2.0.1"
-  checksum: 10c0/095a5dbeda6d61836629e00634555f98714660114ccfdab2fafde3a13b30073023c0e0a715a0ead5238925001ea2950b7476d0ba729eed53a342ec6909f2e388
+"source-map-generator@npm:2.0.2":
+  version: 2.0.2
+  resolution: "source-map-generator@npm:2.0.2"
+  checksum: 10c0/32bc325ea32d5979a21d8d3b076d87193b32b5b7cfdd07f3c04a503b6adda2d931282a4b28e12400755b8396f50c65b0340f5183babcee5f33cc9e0d63ce54e9
   languageName: node
   linkType: hard
 
