@@ -1280,13 +1280,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@martijnversluis/unibuild@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@martijnversluis/unibuild@npm:1.4.0"
+"@martijnversluis/unibuild@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@martijnversluis/unibuild@npm:2.0.1"
   dependencies:
+    "@eslint/core": "npm:^0.15.0"
+    "@eslint/js": "npm:^9.11.0"
     chalk: "npm:^5.3.0"
     commander: "npm:^12.1.0"
-  checksum: 10c0/09c71d3d006fa311c83be1a70b784f843acaf735eeb5fa7d69af3541852c22aabc59c79192cfefb1f56abfc339233359652a4a6b0e41e0468ab781138f3cae1d
+    eslint: "npm:^9.11.0"
+    eslint-config-airbnb: "npm:^19.0.4"
+    eslint-plugin-jest: "npm:^29.0.0"
+    tsx: "npm:^4.10.5"
+    typescript: "npm:^5.7.3"
+    typescript-eslint: "npm:^8.6.0"
+  bin:
+    unibuild: ./bin/unibuild.js
+  checksum: 10c0/131366ac4ead2730134212ede5ed60f90106b87ecf980423f9af51a4b4f53a6537204f6c0668ee9aba77f7b261b2fe2364527c6bb262bdbde22e443e554d9a3e
   languageName: node
   linkType: hard
 
@@ -3676,7 +3686,7 @@ __metadata:
   dependencies:
     "@eslint/core": "npm:^0.15.0"
     "@eslint/js": "npm:^9.11.0"
-    "@martijnversluis/unibuild": "npm:^1.4.0"
+    "@martijnversluis/unibuild": "npm:^2.0.1"
     "@parcel/packager-ts": "npm:^2.15.4"
     "@parcel/transformer-typescript-types": "npm:^2.15.4"
     "@types/jest": "npm:^30.0.0"
