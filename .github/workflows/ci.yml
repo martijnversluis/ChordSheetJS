@@ -62,6 +62,8 @@ jobs:
       - uses: actions/checkout@v5
       - name: Enable Corepack
         run: corepack enable
+      - name: Prepare Yarn
+        run: corepack prepare $(cat package.json | jq ".packageManager") --activate
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
