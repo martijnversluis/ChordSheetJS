@@ -18,12 +18,12 @@ jobs:
     name: Ubuntu NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v5
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install node modules
         run: yarn install
       - name: Run tests
@@ -60,12 +60,12 @@ jobs:
     name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v5
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install node modules
         run: yarn install
       - name: Run tests
@@ -79,12 +79,12 @@ jobs:
     name: Generate typedoc
     steps:
       - uses: actions/checkout@v5
+      - name: Enable Corepack
+        run: corepack enable
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Enable Corepack
-        run: corepack enable
       - name: Install node modules
         run: yarn install
       - name: Build
