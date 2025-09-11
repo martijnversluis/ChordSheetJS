@@ -60,14 +60,18 @@ jobs:
     name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v5
-      - name: Enable Corepack
-        run: corepack enable
-      - name: Prepare Yarn
-        run: corepack prepare $(cat package.json | jq ".packageManager") --activate
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: corepack enable
+      - run: corepack prepare $(cat package.json | jq ".packageManager") --activate
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: yarn
       - name: Install node modules
         run: yarn install
       - name: Run tests
