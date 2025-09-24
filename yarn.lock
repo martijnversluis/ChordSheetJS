@@ -6872,9 +6872,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer-core@npm:24.22.1":
-  version: 24.22.1
-  resolution: "puppeteer-core@npm:24.22.1"
+"puppeteer-core@npm:24.22.2":
+  version: 24.22.2
+  resolution: "puppeteer-core@npm:24.22.2"
   dependencies:
     "@puppeteer/browsers": "npm:2.10.10"
     chromium-bidi: "npm:8.0.0"
@@ -6883,23 +6883,23 @@ __metadata:
     typed-query-selector: "npm:^2.12.0"
     webdriver-bidi-protocol: "npm:0.2.11"
     ws: "npm:^8.18.3"
-  checksum: 10c0/ae367e268df3344735f73244648293fae7ab176179fdd8fc2d387188a1fa8c3da40ea83e3183caa1dc947be1d543e68b2d268bfe7fcf2bf5696d19f6105f489d
+  checksum: 10c0/a47a3c96d20ebe5d599b009b06b3fb925fe7eacd2616d800fd68f381707337213c93e62f759555fd91e53b376bad54f41c7ff68df4beaf9e5ea925f54b6c1998
   languageName: node
   linkType: hard
 
 "puppeteer@npm:^24.0.0":
-  version: 24.22.1
-  resolution: "puppeteer@npm:24.22.1"
+  version: 24.22.2
+  resolution: "puppeteer@npm:24.22.2"
   dependencies:
     "@puppeteer/browsers": "npm:2.10.10"
     chromium-bidi: "npm:8.0.0"
     cosmiconfig: "npm:^9.0.0"
     devtools-protocol: "npm:0.0.1495869"
-    puppeteer-core: "npm:24.22.1"
+    puppeteer-core: "npm:24.22.2"
     typed-query-selector: "npm:^2.12.0"
   bin:
     puppeteer: lib/cjs/puppeteer/node/cli.js
-  checksum: 10c0/f1fb43ff11ccceffd157933ec99bea96877436784aa48dddc6748cbdd552b548a97ed2181d7a25374e57e2a093bda75114a16ca0cf39018d7f6a273285bd6527
+  checksum: 10c0/29d2a2cef3c6d66a2b11f5e9552418a8ec63f9f0767e2e8038707a1b212d31dfe2049a78f6d9de2371489f7f8b6577decf9df7410a7df688d6d9eb266c300e03
   languageName: node
   linkType: hard
 
