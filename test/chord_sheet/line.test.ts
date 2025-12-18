@@ -8,7 +8,7 @@ import {
   createChordLyricsPair,
   createLine,
   createTag,
-} from '../utilities';
+} from '../util/utilities';
 
 describe('Line', () => {
   describe('#clone', () => {

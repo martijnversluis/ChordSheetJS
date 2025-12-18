@@ -7,10 +7,10 @@ import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 
-import { Ternary } from '../index';
 import { renderChord } from '../helpers';
+import { SoftLineBreak, Ternary } from '../index';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
-import { hasTextContents, renderSection } from '../template_helpers';
+import { hasTextContents, processMetadata, renderSection } from '../template_helpers';
 
 /**
  * Formats a song into a plain text chord sheet
@@ -26,15 +26,40 @@ class ChordsOverWordsFormatter extends Formatter {
   format(song: Song): string {
     this.song = song;
 
-    return [
-      this.formatHeader(),
-      this.formatParagraphs(),
-    ].join('');
+    const header = this.formatHeader();
+    const paragraphs = this.formatParagraphs();
+
+    // Only add separator if both header and paragraphs exist and first paragraph isn't empty
+    if (header && paragraphs) {
+      // Check if first paragraph has content
+      const firstParagraph = this.song.bodyParagraphs[0];
+      const firstLine = firstParagraph?.lines[0];
+      const shouldReduceNewlines = firstLine && firstLine.isEmpty();
+
+      if (shouldReduceNewlines) {
+        // Remove one newline from header to avoid triple newlines
+        const trimmedHeader = header.replace(/\n\n$/, '\n');
+        return trimmedHeader + paragraphs;
+      }
+    }
+
+    return header + paragraphs;
   }
 
   formatHeader(): string {
-    const metadata = Object.keys(this.song.metadata.metadata)
-      .map((key) => `${key}: ${this.song.metadata[key]}`)
+    // Process metadata according to configuration
+    const orderedMetadata = processMetadata(this.song.metadata.all(), this.configuration.metadata);
+
+    const metadata = orderedMetadata
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return `${key}: ${value.join(',')}`;
+        }
+        if (typeof value === 'undefined' || value === null || value === '') {
+          return `${key}:`;
+        }
+        return `${key}: ${value}`;
+      })
       .join('\n');
 
     return metadata ? `${metadata}\n\n` : '';
@@ -109,6 +134,10 @@ class ChordsOverWordsFormatter extends Formatter {
       return padLeft(content, this.chordLyricsPairLength(item, line));
     }
 
+    if (item instanceof SoftLineBreak) {
+      return '  ';
+    }
+
     return '';
   }
 
@@ -161,11 +190,15 @@ class ChordsOverWordsFormatter extends Formatter {
       return this.formatEvaluatable(item as Ternary, metadata);
     }
 
+    if (item instanceof SoftLineBreak) {
+      return '\\ ';
+    }
+
     return '';
   }
 
   private formatEvaluatable(item: Ternary, metadata: Metadata) {
-    return item.evaluate(metadata, this.configuration.metadataSeparator);
+    return item.evaluate(metadata, this.configuration.metadata.separator);
   }
 
   private formatChordLyricsPair(item: ChordLyricsPair, line: Line) {

@@ -1,0 +1,6 @@
+{
+  "jest.jestPath": "node_modules/.bin/jest",
+  "jest.configPath": "jest.config.ts",
+  "jest.enableInlineErrorMessages": true,
+  "jest.runAllTestsFirst": true
+}

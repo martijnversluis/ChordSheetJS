@@ -3,16 +3,16 @@
 import Tracer from 'pegjs-backtrace';
 import theredoc from 'theredoc';
 
-import ChordDefinition from '../src/chord_definition/chord_definition';
-import ChordSheetSerializer from '../src/chord_sheet_serializer';
-import Item from '../src/chord_sheet/item';
-import Key from '../src/key';
-import Metadata from '../src/chord_sheet/metadata';
+import ChordDefinition from '../../src/chord_definition/chord_definition';
+import ChordSheetSerializer from '../../src/chord_sheet_serializer';
+import Item from '../../src/chord_sheet/item';
+import Key from '../../src/key';
+import Metadata from '../../src/chord_sheet/metadata';
 
-import { LineType } from '../src/chord_sheet/line';
-import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
-import { stripHTML } from '../src/template_helpers';
-import { Accidental, ChordType, Fret } from '../src/constants';
+import { LineType } from '../../src/chord_sheet/line';
+import { TernaryProperties } from '../../src/chord_sheet/chord_pro/ternary';
+import { stripHTML } from '../../src/template_helpers';
+import { Accidental, ChordType, Fret } from '../../src/constants';
 
 import {
   ContentType,
@@ -23,11 +23,11 @@ import {
   SerializedSong,
   SerializedTag,
   SerializedTernary,
-} from '../src/serialized_types';
+} from '../../src/serialized_types';
 
 import {
   ChordLyricsPair, Composite, Line, Literal, NONE, Paragraph, Song, Tag, Ternary,
-} from '../src';
+} from '../../src';
 
 export function heredoc(strings: TemplateStringsArray, ...values: any[]): string {
   return theredoc(strings, ...values);

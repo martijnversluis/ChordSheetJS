@@ -191,6 +191,80 @@ export function normalizeChordSuffix(suffix: string | null): string | null {
   return SUFFIX_MAPPING[suffix] || suffix;
 }
 
+let mergeConfigs: <T>(target: T, source: any) => T;
+
+function mergeObjects<T>(target: T, source: any) {
+  const result: any = { ...target };
+
+  // Merge all keys from source
+  Object.keys(source).forEach((key) => {
+    const targetValue = (target as any)[key];
+    const sourceValue = source[key];
+
+    // If both values are objects and not arrays, recursively merge them
+    if (
+      targetValue && typeof targetValue === 'object' && !Array.isArray(targetValue) &&
+      sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue)
+    ) {
+      result[key] = mergeConfigs(targetValue, sourceValue);
+    } else {
+      // Otherwise, use the source value (includes array replacement)
+      result[key] = sourceValue;
+    }
+  });
+
+  return result;
+}
+
+/**
+ * Deep merges two configuration objects with special handling for arrays
+ *
+ * This function performs a deep merge of configuration objects with the following behavior:
+ * - Objects are deep merged recursively
+ * - Arrays from source completely replace arrays in target (no concatenation)
+ * - Primitive values from source replace values in target
+ * - Handles null/undefined cases appropriately
+ *
+ * This is specifically designed for chordsheet configuration merging where
+ * certain array properties (like layout.header.content) should not be merged
+ * but replaced entirely when overridden.
+ *
+ * @param target The target configuration object to merge into
+ * @param source The source configuration object with overrides
+ * @returns A new object with merged configuration
+ */
+mergeConfigs = <T>(target: T, source: any): T => {
+  // Handle null/undefined cases
+  if (source === null || source === undefined) {
+    return target as T;
+  }
+  if (target === null || target === undefined) {
+    return source as T;
+  }
+
+  // Handle primitive types or different types
+  if (typeof target !== 'object' || typeof source !== 'object') {
+    return source as T;
+  }
+
+  // Handle arrays - replace target array with source array (no merging)
+  if (Array.isArray(source)) {
+    return source as unknown as T;
+  }
+
+  // For objects, create a new object to avoid mutating the originals
+  return mergeObjects(target, source);
+};
+
+export { mergeConfigs };
+
+/**
+ * Utility type that creates a deep partial type
+ * This makes all properties optional recursively through the entire object
+ */
+export type DeepPartial<T> = T extends object ? {
+  [P in keyof T]?: DeepPartial<T[P]>;
+} : T;
 export function filterObject<T>(
   object: Record<string, T>,
   predicate: (key: string, value: T) => boolean,

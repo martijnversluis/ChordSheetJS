@@ -1,5 +1,5 @@
 import { chopFirstWord } from '../../src/parser/parser_helpers';
-import { eachTestCase } from '../utilities';
+import { eachTestCase } from '../util/utilities';
 
 describe('parser helpers', () => {
   describe('chopFirstWord', () => {

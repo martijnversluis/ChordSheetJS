@@ -1,5 +1,30 @@
-import { Fret } from '../constants';
 import { parse } from '../parser/chord_definition/peg_parser';
+
+import {
+  Fret,
+  NonSoundingString,
+  OpenFret,
+  nonSoundingString,
+  openFret,
+} from '../constants';
+
+/**
+ * Checks whether the given fret is an open fret (unfingered, open string).
+ * @param fret - The fret to check.
+ * @returns `true` if the fret is an open fret, `false` otherwise.
+ */
+export function isOpenFret(fret: Fret): fret is OpenFret {
+  return fret === openFret;
+}
+
+/**
+ * Checks whether the given fret represents a non-sounding (muted/damped) string.
+ * @param fret - The fret to check.
+ * @returns `true` if the fret represents a non-sounding string, `false` otherwise.
+ */
+export function isNonSoundingString(fret: Fret): fret is NonSoundingString {
+  return nonSoundingString.includes(fret as NonSoundingString);
+}
 
 /**
  * Represents a chord definition.

@@ -3,7 +3,7 @@ import Metadata from '../src/chord_sheet/metadata';
 import Song from '../src/chord_sheet/song';
 
 import { configure } from '../src/formatter/configuration';
-import { createLine } from './utilities';
+import { createLine } from './util/utilities';
 import { renderChord, testSelector } from '../src/helpers';
 
 describe('renderChord', () => {

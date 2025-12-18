@@ -1,6 +1,6 @@
 /* eslint quote-props: 0 */
 
-import '../matchers';
+import '../util/matchers';
 
 import { Chord } from '../../src';
 import { NUMERAL } from '../../src/constants';

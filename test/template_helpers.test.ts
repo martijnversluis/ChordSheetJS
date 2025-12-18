@@ -1,9 +1,8 @@
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
 
-import { configure } from '../src/formatter/configuration';
-import { defaultCssClasses } from '../src/formatter/html_formatter';
-import { createLine, createLiteral, createParagraph } from './utilities';
+import { configure, defaultCssClasses } from '../src/formatter/configuration';
+import { createLine, createLiteral, createParagraph } from './util/utilities';
 import { newlinesToBreaks, renderSection } from '../src/template_helpers';
 
 import {

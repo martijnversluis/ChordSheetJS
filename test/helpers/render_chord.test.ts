@@ -2,7 +2,7 @@ import Line from '../../src/chord_sheet/line';
 import Song from '../../src/chord_sheet/song';
 
 import { Key } from '../../src';
-import { eachTestCase } from '../utilities';
+import { eachTestCase } from '../util/utilities';
 import { renderChord } from '../../src/helpers';
 
 describe('renderChord helper', () => {

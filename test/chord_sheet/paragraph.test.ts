@@ -1,7 +1,7 @@
 import { CHORUS, INDETERMINATE, VERSE } from '../../src';
 import {
   createLine, createLiteral, createParagraph, createTag,
-} from '../utilities';
+} from '../util/utilities';
 
 describe('Paragraph', () => {
   describe('#type', () => {

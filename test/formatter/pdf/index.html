@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chordsheet Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/json/json.min.js"></script>
+    <style>
+        /* Existing styles from your HTML */
+        #editors {
+            height: 98vh;
+            width: 49%;
+            float: left;
+        }
+
+        #viewer {
+            height: 98vh;
+            width: 49%;
+            float: right;
+            overflow: auto;
+        }
+
+        #editor,
+        #configEditor {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+
+        .dropdown-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .key-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #textViewer {
+            display: none; /* This will be toggled by JavaScript */
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #textContent {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .chord-sheet-element {
+            /* border: 1px solid red; */
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+</head>
+
+<body style="height: 100%;">
+    <div id="editors">
+        <div class="dropdown-container">
+            <label for="formatterSelect">Formatter: </label>
+            <select id="formatterSelect">
+                <option value="PdfFormatter">PDF</option>
+                <option value="MeasuredHtmlFormatter">MeasuredHtml</option>
+                <option value="HtmlDivFormatter">HTML Div</option>
+                <option value="HtmlTableFormatter">HTML Table</option>
+                <option value="TextFormatter">Text</option>
+                <option value="ChordProFormatter">ChordPro</option>
+                <option value="ChordsOverWordsFormatter">Chords Over Words</option>
+            </select>
+        </div>
+        <div id="chordproEditorContainer">
+            <div class="dropdown-container">
+                <label for="chordproSelect">ChordPro File: </label>
+                <select id="chordproSelect"></select>
+                <div class="key-controls">
+                    <label for="keySelect">Key: </label>
+                    <select id="keySelect"></select>
+                    <label for="capoSelect">Capo: </label>
+                    <select id="capoSelect">
+                        <option value="none">None</option>
+                    </select>
+                </div>
+            </div>
+            <div id="editor" class="readonly"></div>
+        </div>
+        <div id="configEditorContainer">
+            <div class="dropdown-container">
+                <label for="configSelect">Config File: </label>
+                <select id="configSelect"></select>
+            </div>
+            <div id="configEditor" class="readonly"></div>
+        </div>
+    </div>
+    <div id="viewer">
+        <iframe id="pdfViewer" style="width: 100%; height: 100%; display: none;"></iframe>
+        <div id="textViewer" style="display: none;">
+            <div id="textContent" style="height: 100%; width: 100%"></div>
+        </div>
+    </div>
+    <script type="module" src="./pdf-dev.js"></script>
+</body>
+</html>

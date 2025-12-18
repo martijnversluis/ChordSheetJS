@@ -41,7 +41,6 @@ class PeggyOnline {
 
   async addGrammar(page: Page) {
     await page.evaluate((grammar) => {
-      // eslint-disable-next-line no-undef
       const textarea = document.getElementById('grammar');
       if (!textarea) return;
 

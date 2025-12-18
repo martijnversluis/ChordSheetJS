@@ -1,4 +1,4 @@
-import { buildKey } from '../utilities';
+import { buildKey } from '../util/utilities';
 import { NUMERIC, SOLFEGE, SYMBOL } from '../../src';
 
 describe('Key', () => {

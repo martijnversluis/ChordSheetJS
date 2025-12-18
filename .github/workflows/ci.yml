@@ -117,4 +117,4 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
       - name: Verify install
-        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false npm install "https://github.com/martijnversluis/ChordSheetJS/tree/$GITHUB_SHA"
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false npm install "https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA"

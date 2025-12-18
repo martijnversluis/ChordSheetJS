@@ -16,7 +16,7 @@ import {
   createSongFromAst,
   createTag,
   tag,
-} from '../utilities';
+} from '../util/utilities';
 
 const createLineStub = ({ renderable }) => (
   {
@@ -348,7 +348,7 @@ describe('Song', () => {
 
   describe('#getChordDefinitions', () => {
     it('returns the unique chord definitions in a song', () => {
-      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
       const song = createSong([
@@ -382,7 +382,7 @@ describe('Song', () => {
     });
 
     it('leaves out chord definitions with non-matching selector', () => {
-      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
       const configuration = configure({ instrument: { type: 'ukulele' } });
@@ -402,7 +402,7 @@ describe('Song', () => {
     });
 
     it('leaves out chord definitions with a negated matching selector', () => {
-      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
       const configuration = configure({ instrument: { type: 'guitar' } });
@@ -424,7 +424,7 @@ describe('Song', () => {
 
   describe('#chordDefinitions', () => {
     it('returns the unique chord definitions in a song', () => {
-      const cm7 = createChordDefinition('CM7', 3, ['x', '0', 1]);
+      const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
       const dm = createChordDefinition('Dm', 3, ['x', 3, 5]);
 
       const song = createSong([

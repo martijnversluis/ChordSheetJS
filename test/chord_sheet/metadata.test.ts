@@ -125,4 +125,25 @@ describe('Metadata', () => {
       expect(merged.get('_key')).toEqual('B');
     });
   });
+
+  describe('iterating', () => {
+    it('returns all entries', () => {
+      const metadata = new Metadata({ artist: 'Bill', composer: 'John' });
+
+      expect([...metadata]).toEqual([
+        ['artist', 'Bill'],
+        ['composer', 'John'],
+      ]);
+    });
+
+    it('includes _key when key and capo are defined', () => {
+      const metadata = new Metadata({ key: 'Bb', capo: '2' });
+
+      expect([...metadata]).toEqual([
+        ['key', 'Bb'],
+        ['capo', '2'],
+        ['_key', 'C'],
+      ]);
+    });
+  });
 });

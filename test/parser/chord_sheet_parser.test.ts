@@ -1,7 +1,7 @@
-import '../matchers';
+import '../util/matchers';
 
 import { ChordSheetParser } from '../../src';
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 
 const defaultChordSheet = heredoc`
        Am         C/G        F          C

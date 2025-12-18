@@ -3,5 +3,6 @@
   "entryPoints": ["./src/index.ts"],
   "out": "tmp/docs",
   "excludeNotDocumented": true,
-  "logLevel": "Error"
+  "logLevel": "Error",
+  "tsconfig": "./tsconfig.typedoc.json"
 }

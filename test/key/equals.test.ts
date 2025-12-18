@@ -1,5 +1,5 @@
 import { NUMERIC } from '../../src';
-import { buildKey } from '../utilities';
+import { buildKey } from '../util/utilities';
 
 describe('Key', () => {
   describe('#equals', () => {

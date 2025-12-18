@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 import { normalizeLineEndings } from '../../src/utilities';
 import { ChordProFormatter, ChordsOverWordsParser } from '../../src';
 

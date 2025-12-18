@@ -1,4 +1,4 @@
-import { buildKey } from '../utilities';
+import { buildKey } from '../util/utilities';
 import { NUMERAL, SOLFEGE } from '../../src/constants';
 import { NUMERIC, SYMBOL } from '../../src';
 

@@ -22,6 +22,7 @@ export default (
     configuration,
     configuration: {
       key,
+      cssClasses: c,
     },
     song,
     renderBlankLines = false,
@@ -31,7 +32,6 @@ export default (
       metadata,
     },
     bodyParagraphs,
-    cssClasses: c,
   }: HtmlTemplateArgs,
 ): string => stripHTML(`
   ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }

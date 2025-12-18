@@ -77,7 +77,6 @@ class ChordsOverWordsParser {
       normalizeLineEndings(chordSheet),
       { tracer: new NullTracer(), ...options },
     );
-
     this.song = new ChordSheetSerializer().deserialize(ast);
     return this.song;
   }

@@ -1,4 +1,4 @@
-import '../matchers';
+import '../util/matchers';
 
 import { Chord, Key } from '../../src';
 

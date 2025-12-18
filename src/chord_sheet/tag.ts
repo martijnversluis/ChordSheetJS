@@ -72,23 +72,24 @@ const END_OF_PART_SHORTER = 'ep';
 
 const RENDERABLE_TAGS = [COMMENT];
 
+// Order of these tags is the default rendering order
 export const META_TAGS = [
-  ALBUM,
-  ARRANGER,
+  TITLE,
+  SUBTITLE,
   ARTIST,
+  ALBUM,
+  YEAR,
+  COMPOSER,
+  LYRICIST,
+  KEY,
   CAPO,
   CHORD_STYLE,
-  COMPOSER,
-  COPYRIGHT,
-  DURATION,
-  KEY,
-  LYRICIST,
-  SORTTITLE,
-  SUBTITLE,
   TEMPO,
   TIME,
-  TITLE,
-  YEAR,
+  ARRANGER,
+  COPYRIGHT,
+  DURATION,
+  SORTTITLE,
 ];
 
 export const READ_ONLY_TAGS = [_KEY];
@@ -274,6 +275,13 @@ class Tag extends AstComponent {
 
   isInlineFontTag(): boolean {
     return INLINE_FONT_TAGS.includes(this.name);
+  }
+
+  /**
+   * Checks whether the tag is a comment tag ({comment} or {c}).
+   */
+  isComment(): boolean {
+    return this.name === COMMENT || this.name === COMMENT_SHORT;
   }
 
   set name(name) {

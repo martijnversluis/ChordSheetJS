@@ -33,6 +33,7 @@ interface KeyProperties {
   minor?: boolean;
   accidental?: Accidental | null;
   referenceKeyGrade?: number | null;
+  referenceKeyMode?: string | null;
   preferredAccidental?: Accidental | null,
 }
 
@@ -42,6 +43,7 @@ const NO_FLAT_GRADES = [4, 11];
 const NO_FLAT_NUMBERS = [1, 4];
 const NO_SHARP_GRADES = [5, 0];
 const NO_SHARP_NUMBERS = [3, 7];
+const PREFERS_FLAT_NUMBERS = [2, 3, 10];
 
 interface ConstructorOptions {
   grade?: number | null;
@@ -50,6 +52,7 @@ interface ConstructorOptions {
   type: ChordType;
   accidental: Accidental | null;
   referenceKeyGrade?: number | null;
+  referenceKeyMode?: string | null;
   originalKeyString?: string | null;
   preferredAccidental: Accidental | null;
 }
@@ -100,6 +103,8 @@ class Key implements KeyProperties {
   minor = false;
 
   referenceKeyGrade: number | null = null;
+
+  referenceKeyMode: string | null = null;
 
   originalKeyString: string | null = null;
 
@@ -291,6 +296,7 @@ class Key implements KeyProperties {
       type,
       accidental,
       referenceKeyGrade = null,
+      referenceKeyMode = null,
       originalKeyString = null,
       preferredAccidental = null,
     }: ConstructorOptions,
@@ -302,6 +308,7 @@ class Key implements KeyProperties {
     this.accidental = accidental;
     this.preferredAccidental = preferredAccidental;
     this.referenceKeyGrade = referenceKeyGrade;
+    this.referenceKeyMode = referenceKeyMode;
     this.originalKeyString = originalKeyString;
   }
 
@@ -367,44 +374,43 @@ class Key implements KeyProperties {
     this.number = null;
   }
 
-  toChordSymbol(key: Key | string): Key {
+  toChordSymbol(key: Key | string | null, referenceKeyWasMinor = false): Key {
     if (this.isChordSymbol()) return this.clone();
+    return this.convertToChordType(key, SYMBOL, referenceKeyWasMinor);
+  }
 
+  toChordSolfege(key: Key | string | null, referenceKeyWasMinor = false): Key {
+    if (this.isChordSolfege()) return this.clone();
+    return this.convertToChordType(key, SOLFEGE, referenceKeyWasMinor);
+  }
+
+  private convertToChordType(key: Key | string | null, type: ChordType, referenceKeyWasMinor: boolean): Key {
     const { accidental } = this;
-
     this.ensureGrade();
-
     const keyObj = Key.wrapOrFail(key);
-    const chordSymbol = this.set({
+
+    const minorResult = this.handleMinorKeyConversion(keyObj, referenceKeyWasMinor);
+    if (minorResult) return minorResult;
+
+    const converted = this.set({
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
-      type: SYMBOL,
+      type,
       accidental: null,
       preferredAccidental: accidental || keyObj.accidental,
     });
 
-    const normalized = chordSymbol.normalizeEnharmonics(keyObj);
+    const normalized = converted.normalizeEnharmonics(keyObj);
     return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
   }
 
-  toChordSolfege(key: Key | string): Key {
-    if (this.isChordSolfege()) return this.clone();
-
-    const { accidental } = this;
-
-    this.ensureGrade();
-
-    const keyObj = Key.wrapOrFail(key);
-    const chordSolfege = this.set({
-      referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
-      grade: 0,
-      type: SOLFEGE,
-      accidental: null,
-      preferredAccidental: accidental || keyObj.accidental,
-    });
-
-    const normalized = chordSolfege.normalizeEnharmonics(keyObj);
-    return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
+  private handleMinorKeyConversion(keyObj: Key, referenceKeyWasMinor: boolean): Key | null {
+    if (!(this.isNumeral() || this.isNumeric()) || !referenceKeyWasMinor) return null;
+    // In minor keys, degree 6 with 'm' quality maps to the tonic (i)
+    if (this.grade === 8) return keyObj.relativeMinor;
+    if (this.grade === 7) return keyObj.relativeMinor.changeGrade(-1);
+    if (this.grade === 9) return keyObj.relativeMinor.changeGrade(+1);
+    return null;
   }
 
   toChordSymbolString(key: Key): string {
@@ -467,13 +473,21 @@ class Key implements KeyProperties {
 
     const referenceKey = Key.wrapOrFail(key);
     const referenceKeyGrade = referenceKey.effectiveGrade;
+    const referenceKeyMode = referenceKey.minor ? MINOR : MAJOR;
+    const grade = Key.shiftGrade(this.effectiveGrade - referenceKeyGrade);
+    let preferredAccidental = referenceKey.accidental;
+
+    if (PREFERS_FLAT_NUMBERS.includes(grade)) {
+      preferredAccidental = FLAT;
+    }
 
     return this.set({
       type: NUMERIC,
       grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
       referenceKeyGrade: 0,
       accidental: null,
-      preferredAccidental: referenceKey.accidental,
+      preferredAccidental,
+      referenceKeyMode,
     });
   }
 
@@ -492,12 +506,21 @@ class Key implements KeyProperties {
 
     const referenceKey = Key.wrapOrFail(key);
     const referenceKeyGrade = referenceKey.effectiveGrade;
+    const referenceKeyMode = referenceKey.minor ? MINOR : MAJOR;
+    const grade = Key.shiftGrade(this.effectiveGrade - referenceKeyGrade);
+    let preferredAccidental = referenceKey.accidental;
+
+    if (PREFERS_FLAT_NUMBERS.includes(grade)) {
+      preferredAccidental = FLAT;
+    }
+
     return this.set({
       type: NUMERAL,
       grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
       referenceKeyGrade: 0,
       accidental: null,
-      preferredAccidental: referenceKey.accidental || this.accidental,
+      preferredAccidental,
+      referenceKeyMode,
     });
   }
 
@@ -524,12 +547,18 @@ class Key implements KeyProperties {
       throw new Error('Not possible, reference key grade is null');
     }
 
+    let { minor } = this;
+
+    if (this.referenceKeyMode) {
+      minor = this.referenceKeyMode === MINOR;
+    }
+
     return gradeToKey({
       type: this.type,
       accidental: this.accidental,
       preferredAccidental: this.preferredAccidental,
       grade: this.effectiveGrade,
-      minor: this.minor,
+      minor,
     });
   }
 
@@ -621,33 +650,21 @@ class Key implements KeyProperties {
   }
 
   canBeFlat() {
-    if (this.number !== null) {
-      return !NO_FLAT_NUMBERS.includes(this.number);
-    }
-
-    return !NO_FLAT_GRADES.includes(this.effectiveGrade);
+    const list = this.number !== null ? NO_FLAT_NUMBERS : NO_FLAT_GRADES;
+    const value = this.number ?? this.effectiveGrade;
+    return !list.includes(value);
   }
 
   canBeSharp() {
-    if (this.number !== null) {
-      return !NO_SHARP_NUMBERS.includes(this.number);
-    }
-
-    return !NO_SHARP_GRADES.includes(this.effectiveGrade);
+    const list = this.number !== null ? NO_SHARP_NUMBERS : NO_SHARP_GRADES;
+    const value = this.number ?? this.effectiveGrade;
+    return !list.includes(value);
   }
 
-  setGrade(newGrade: number): Key {
-    return this.set({
-      grade: Key.shiftGrade(newGrade),
-    });
-  }
+  setGrade(newGrade: number): Key { return this.set({ grade: Key.shiftGrade(newGrade) }); }
 
-  static shiftGrade(grade: number) {
-    if (grade < 0) {
-      return this.shiftGrade(grade + 12);
-    }
-
-    return grade % 12;
+  static shiftGrade(grade: number): number {
+    return grade < 0 ? this.shiftGrade(grade + 12) : grade % 12;
   }
 
   useAccidental(newAccidental: Accidental | null): Key {

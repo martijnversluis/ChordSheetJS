@@ -1,4 +1,4 @@
-import '../matchers';
+import '../util/matchers';
 
 import { Chord, SYMBOL } from '../../src';
 
@@ -319,6 +319,28 @@ describe('Chord', () => {
           });
 
           expect(chord?.toString()).toEqual('/B');
+        });
+      });
+
+      describe('optional chord', () => {
+        it('parses a optional chord surrounded by parantheses', () => {
+          const chord = Chord.parse('(B)');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              modifier: null,
+              type: SYMBOL,
+              minor: false,
+              referenceKeyGrade: 11,
+              originalKeyString: 'B',
+            },
+            bass: null,
+            suffix: null,
+            optional: true,
+          });
+
+          expect(chord?.toString()).toEqual('(B)');
         });
       });
     });

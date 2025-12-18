@@ -1,4 +1,4 @@
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 import { stripHTML } from '../../src/template_helpers';
 import { ChordProParser, HtmlDivFormatter } from '../../src';
 

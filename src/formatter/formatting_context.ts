@@ -1,8 +1,8 @@
-import Configuration from './configuration';
+import { BaseFormatterConfiguration } from './configuration';
 import Metadata from '../chord_sheet/metadata';
 
 interface FormattingContext {
-  configuration: Configuration;
+  configuration: BaseFormatterConfiguration;
   metadata: Metadata;
 }
 

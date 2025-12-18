@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chord Text Measurement: Canvas vs DOM Comparison with Timing</title>
+  <style>
+    @font-face {
+      font-family: 'ChordFont';
+      src: url('https://fonts.gstatic.com/s/robotomono/v22/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 14px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    button {
+      background-color: #4a6da7;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #3a5a8f;
+    }
+
+    input[type="range"] {
+      width: 150px;
+    }
+
+    .font-preview {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .font-preview-text {
+      font-family: var(--preview-font);
+      white-space: pre-wrap;
+    }
+
+    .results {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .result-container {
+      flex: 1;
+      min-width: 400px;
+    }
+
+    .result-container h3 {
+      margin-top: 0;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .visualization-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .visualization {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow-x: auto;
+      flex: 1;
+      min-width: 400px;
+    }
+
+    .paragraph {
+      margin-bottom: 20px;
+    }
+
+    .line {
+      position: relative;
+      margin-bottom: 8px;
+      white-space: pre;
+      height: 40px;
+    }
+
+    .item {
+      display: inline-block;
+      position: relative;
+    }
+
+    .chord {
+      position: absolute;
+      top: -1.5em;
+      font-weight: bold;
+      font-family: var(--chord-font);
+      color: #2c3e50;
+      white-space: pre;
+
+    }
+
+    .lyric {
+      font-family: var(--lyric-font);
+      white-space: pre;
+
+    }
+
+    .measurement-box {
+      position: absolute;
+      border: 1px dashed rgba(255, 0, 0, 0.5);
+      height: 1.2em;
+      top: 0;
+      pointer-events: none;
+    }
+
+    .chord-measurement-box {
+      position: absolute;
+      border: 1px dashed rgba(0, 0, 255, 0.5);
+      height: 1.2em;
+      top: -1.5em;
+      pointer-events: none;
+    }
+
+    .container-width-line {
+      width: 100%;
+      border-bottom: 2px solid #999;
+      margin-bottom: 60px;
+      position: relative;
+    }
+
+    .width-marker {
+      position: absolute;
+      top: 2px;
+      width: 1px;
+      height: 10px;
+      background-color: #333;
+    }
+
+    .width-marker::after {
+      content: attr(data-width);
+      position: absolute;
+      top: 12px;
+      left: -15px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .diff-highlight {
+      background-color: #ffeb3b;
+      font-weight: bold;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      background-color: #f5f5f5;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .comparison-table .diff {
+      background-color: #fff9c4;
+    }
+
+    .method-switcher {
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .method-option {
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    .method-option input {
+      margin-right: 5px;
+    }
+
+    .timing-badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 2px 6px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      font-size: 0.8em;
+      color: #333;
+    }
+
+    .timing-badge.fast {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+
+    .timing-badge.slow {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chord Text Measurement: Canvas vs DOM Comparison with Timing</h1>
+
+  <div class="method-switcher">
+    <label class="method-option">
+      <input type="radio" name="measure-method" value="both" checked> Compare Both Methods
+    </label>
+    <label class="method-option">
+      <input type="radio" name="measure-method" value="canvas"> Canvas API Only
+    </label>
+    <label class="method-option">
+      <input type="radio" name="measure-method" value="dom"> DOM Element Only
+    </label>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label for="chord-font">Chord Font:</label>
+      <select id="chord-font">
+        <option value="'ChordFont', monospace">ChordFont (Roboto Mono)</option>
+        <option value="monospace">System Monospace</option>
+        <option value="serif">System Serif</option>
+        <option value="sans-serif">System Sans-serif</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="lyric-font">Lyric Font:</label>
+      <select id="lyric-font">
+        <option value="'ChordFont', monospace">ChordFont (Roboto Mono)</option>
+        <option value="monospace">System Monospace</option>
+        <option value="serif">System Serif</option>
+        <option value="sans-serif" selected>System Sans-serif</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label for="chord-size">Chord Size:</label>
+      <input type="range" id="chord-size" min="10" max="24" value="14">
+      <span id="chord-size-value">14px</span>
+    </div>
+
+    <div class="control-group">
+      <label for="lyric-size">Lyric Size:</label>
+      <input type="range" id="lyric-size" min="10" max="24" value="16">
+      <span id="lyric-size-value">16px</span>
+    </div>
+
+    <div class="control-group">
+      <label for="line-height">Line Height:</label>
+      <input type="range" id="line-height" min="10" max="30" value="15">
+      <span id="line-height-value">1.5</span>
+    </div>
+
+    <div class="control-group">
+      <label for="container-width">Container Width:</label>
+      <input type="range" id="container-width" min="300" max="1000" value="600">
+      <span id="container-width-value">600px</span>
+    </div>
+
+    <button id="measure-button">Measure Text</button>
+  </div>
+
+  <div class="font-preview">
+    <h3>Font Preview</h3>
+    <div id="chord-font-preview" class="font-preview-text" style="font-family: 'ChordFont', monospace; font-size: 14px">
+      Am7 Cmaj7 D7sus4 G Em7 Fsus2 Bb7 (Chord sample)
+    </div>
+    <div id="lyric-font-preview" class="font-preview-text" style="font-family: sans-serif; font-size: 16px">
+      In the forest deep and dark, whispers float and fire sparks (Lyric sample)
+    </div>
+  </div>
+
+  <h2>Visualization</h2>
+  <div class="visualization-container">
+    <div id="canvas-visualization" class="visualization" style="width: 600px">
+      <h3>Canvas API Measurement <span id="canvas-timing" class="timing-badge">0 ms</span></h3>
+      <div class="container-width-line">
+        <div class="width-marker" style="left: 25%" data-width="25%"></div>
+        <div class="width-marker" style="left: 50%" data-width="50%"></div>
+        <div class="width-marker" style="left: 75%" data-width="75%"></div>
+        <div class="width-marker" style="left: 100%" data-width="100%"></div>
+      </div>
+      <!-- Rendered preview will go here -->
+    </div>
+
+    <div id="dom-visualization" class="visualization" style="width: 600px">
+      <h3>DOM Element Measurement <span id="dom-timing" class="timing-badge">0 ms</span></h3>
+      <div class="container-width-line">
+        <div class="width-marker" style="left: 25%" data-width="25%"></div>
+        <div class="width-marker" style="left: 50%" data-width="50%"></div>
+        <div class="width-marker" style="left: 75%" data-width="75%"></div>
+        <div class="width-marker" style="left: 100%" data-width="100%"></div>
+      </div>
+      <!-- Rendered preview will go here -->
+    </div>
+  </div>
+
+  <h2>Measurement Results</h2>
+  <div id="comparison-summary"></div>
+
+  <div class="results">
+    <div class="result-container">
+      <h3>Canvas API Results <span id="canvas-results-timing" class="timing-badge">0 ms</span></h3>
+      <pre id="canvas-results">Click "Measure Text" to see results</pre>
+    </div>
+
+    <div class="result-container">
+      <h3>DOM Element Results <span id="dom-results-timing" class="timing-badge">0 ms</span></h3>
+      <pre id="dom-results">Click "Measure Text" to see results</pre>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Units-CSS implementation for unit parsing and conversion
+     */
+    const units = (function() {
+      // Simple units-css implementation
+      function parse(str) {
+        if (typeof str === "number") {
+          return { value: str, unit: "px" };
+        }
+
+        const match = String(str).match(/^(-?[\d.]+)([a-z%]*)$/i);
+        if (match) {
+          const value = parseFloat(match[1]);
+          const unit = match[2] || "";
+          return { value, unit };
+        }
+
+        return { value: 0, unit: "px" };
+      }
+
+      function convert(unit, targetUnit) {
+        if (unit.unit === targetUnit) {
+          return `${unit.value}${unit.unit}`;
+        }
+
+        // Basic conversion - in a real implementation, this would handle more unit types
+        if (unit.unit === "pt" && targetUnit === "px") {
+          return `${unit.value * 1.333}${targetUnit}`;
+        }
+
+        // For simplicity, just return the value in the original unit
+        return `${unit.value}${unit.unit}`;
+      }
+
+      return { parse, convert };
+    })();
+
+    // Constants
+    const DEFAULT_CANVAS = document.createElement("canvas");
+    const DEFAULT_FONT_WEIGHT = 400;
+    const DEFAULT_FONT_STYLE = "normal";
+
+    /**
+     * Measure the height of text based on font size and line height
+     */
+    const measureHeight = (size, lineHeight) => {
+      // If the line-height is unitless,
+      // multiply it by the font size.
+      if (!lineHeight.unit) {
+        return units.parse(
+          `${size.value * lineHeight.value}${size.unit}`
+        );
+      }
+
+      // units-css requires the user to provide
+      // DOM nodes for these units. We don't want
+      // to pollute our API with that for the time being.
+      const unitBlacklist = ["%", "ch", "cm", "em", "ex"];
+      if (unitBlacklist.indexOf(lineHeight.unit) !== -1) {
+        throw new Error(
+          `We do not currently support the unit ${lineHeight.unit}
+          from the provided line-height ${lineHeight.value}.
+          Unsupported units include ${unitBlacklist.join(", ")}.`
+        );
+      }
+
+      // Otherwise, the height is equivalent
+      // to the provided line height.
+      // Non-px units need conversion.
+      if (lineHeight.unit === "px") {
+        return lineHeight;
+      }
+
+      return units.parse(
+        units.convert(lineHeight, "px")
+      );
+    };
+
+    /**
+     * Measure text with Canvas API
+     */
+    const measureTextWithCanvas = ({
+      text,
+      fontFamily,
+      fontSize,
+      lineHeight,
+      fontWeight = DEFAULT_FONT_WEIGHT,
+      fontStyle = DEFAULT_FONT_STYLE,
+      canvas = DEFAULT_CANVAS
+    }) => {
+      const ctx = canvas.getContext("2d");
+      ctx.font = `${fontWeight} ${fontStyle} ${fontSize} ${fontFamily}`;
+
+      const measure = (line) => {
+        return {
+          text: line,
+          width: units.parse(`${ctx.measureText(line).width}px`),
+          height: measureHeight(
+            units.parse(fontSize),
+            units.parse(lineHeight)
+          )
+        };
+      };
+
+      // If multiline, measure the bounds
+      // of all of the lines combined
+      if (Array.isArray(text)) {
+        return text
+          .map(measure)
+          .reduce((prev, curr) => {
+            const width = curr.width.value > prev.width.value
+              ? curr.width : prev.width;
+            const height = units.parse(
+              `${prev.height.value + curr.height.value}${curr.height.unit}`
+            );
+            const longest = curr.text.length > prev.text.length
+              ? curr.text : prev.text;
+            return { width, height, text: longest };
+          });
+      }
+
+      return measure(text);
+    };
+
+    /**
+     * Measure text with DOM elements
+     */
+     const measureTextWithDOM = ({
+  text,
+  fontFamily,
+  fontSize,
+  lineHeight,
+  fontWeight = DEFAULT_FONT_WEIGHT,
+  fontStyle = DEFAULT_FONT_STYLE
+}) => {
+  // Create a temporary span with the exact styling
+  const span = document.createElement('span');
+
+  // Apply all the styling needed
+  Object.assign(span.style, {
+    fontFamily,
+    fontSize,
+    fontWeight,
+    fontStyle,
+    lineHeight,
+    position: 'absolute',
+    visibility: 'hidden', // Hide but still render
+    whiteSpace: 'pre',    // Changed from 'nowrap' to 'pre' to preserve ALL spaces
+    padding: '0',
+    margin: '0',
+    border: 'none',
+    left: '-1000px', // Position off-screen
+    top: '-1000px'
+  });
+
+  const measure = (line) => {
+    span.textContent = line;
+    document.body.appendChild(span);
+
+    // Get precise measurements including the height
+    const rect = span.getBoundingClientRect();
+    const width = units.parse(`${rect.width}px`);
+    const height = units.parse(`${rect.height}px`);
+
+    // Clean up
+    document.body.removeChild(span);
+
+    return {
+      text: line,
+      width,
+      height
+    };
+  };
+
+  // If multiline, measure the bounds
+  // of all of the lines combined
+  if (Array.isArray(text)) {
+    return text
+      .map(measure)
+      .reduce((prev, curr) => {
+        const width = curr.width.value > prev.width.value
+          ? curr.width : prev.width;
+        const height = units.parse(
+          `${prev.height.value + curr.height.value}${curr.height.unit}`
+        );
+        const longest = curr.text.length > prev.text.length
+          ? curr.text : prev.text;
+        return { width, height, text: longest };
+      });
+  }
+
+  return measure(text);
+};
+
+    /**
+     * TextMeasurer - A utility class for measuring text with different methods
+     */
+    class TextMeasurer {
+      constructor(method = 'canvas') {
+        this.canvas = document.createElement('canvas');
+        this.fontLoadPromise = document.fonts.ready;
+        this.measurementCache = {};
+        this.method = method; // 'canvas' or 'dom'
+        this.timings = {
+          canvas: 0,
+          dom: 0
+        };
+      }
+
+      /**
+       * Wait for all fonts to load before measuring
+       * @returns {Promise} Resolves when fonts are loaded
+       */
+      async ensureFontsLoaded() {
+        return this.fontLoadPromise;
+      }
+
+      /**
+       * Check if a specific font is loaded
+       * @param {string} font - Font to check
+       * @returns {Promise<boolean>} Whether the font is loaded
+       */
+      async isFontLoaded(font) {
+        return document.fonts.check(font);
+      }
+
+      /**
+       * Measure text with the specified method
+       * @param {string} text - Text to measure
+       * @param {string} fontFamily - Font family
+       * @param {number|string} fontSize - Font size (e.g., "16px")
+       * @param {number|string} lineHeight - Line height (e.g., 1.5 or "24px")
+       * @returns {object} Width and height measurements
+       */
+      measure(text, fontFamily, fontSize, lineHeight) {
+        const fontString = `${fontSize} ${fontFamily}`;
+        const cacheKey = `${this.method}|${text}|${fontString}|${lineHeight}`;
+
+        // Use cached measurements when available
+        if (this.measurementCache[cacheKey]) {
+          return this.measurementCache[cacheKey];
+        }
+
+        // Format fontSize as string with units if it's just a number
+        const formattedFontSize = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+        const formattedLineHeight = typeof lineHeight === 'number' ? `${lineHeight}` : lineHeight;
+
+        let result;
+        const startTime = performance.now();
+
+        if (this.method === 'canvas') {
+          result = measureTextWithCanvas({
+            text,
+            fontFamily,
+            fontSize: formattedFontSize,
+            lineHeight: formattedLineHeight,
+            canvas: this.canvas
+          });
+
+          this.timings.canvas = performance.now() - startTime;
+        } else if (this.method === 'dom') {
+          result = measureTextWithDOM({
+            text,
+            fontFamily,
+            fontSize: formattedFontSize,
+            lineHeight: formattedLineHeight
+          });
+
+          this.timings.dom = performance.now() - startTime;
+        }
+
+        // Cache this measurement
+        this.measurementCache[cacheKey] = result;
+
+        return result;
+      }
+
+      /**
+       * Convenience method to get just the width
+       * @param {string} text - Text to measure
+       * @param {string} fontFamily - Font family
+       * @param {number|string} fontSize - Font size (e.g., "16px")
+       * @returns {number} Width in pixels
+       */
+      getWidth(text, fontFamily, fontSize) {
+        const result = this.measure(text, fontFamily, fontSize, "1.2");
+        return result.width.value;
+      }
+
+      /**
+       * Get the timing information for the current method
+       * @returns {number} Time in milliseconds
+       */
+      getTiming() {
+        return this.method === 'canvas' ? this.timings.canvas : this.timings.dom;
+      }
+
+      /**
+       * Reset timing counters
+       */
+      resetTimings() {
+        this.timings = {
+          canvas: 0,
+          dom: 0
+        };
+      }
+
+      /**
+       * Set the measurement method
+       * @param {string} method - Measurement method ('canvas' or 'dom')
+       */
+      setMethod(method) {
+        if (method === 'canvas' || method === 'dom') {
+          this.method = method;
+          this.clearCache();
+        }
+      }
+
+      /**
+       * Clear the measurement cache
+       */
+      clearCache() {
+        this.measurementCache = {};
+      }
+    }
+
+    /**
+     * ChordTextAnalyzer - Analyzes chords and lyrics text sizing
+     */
+    class ChordTextAnalyzer {
+      constructor(method = 'canvas') {
+        this.measurer = new TextMeasurer(method);
+        this.method = method;
+        this.totalTime = 0;
+      }
+
+      /**
+       * Initialize the analyzer, ensuring fonts are loaded
+       */
+      async init() {
+        await this.measurer.ensureFontsLoaded();
+        return this;
+      }
+
+      /**
+       * Set the measurement method
+       * @param {string} method - Measurement method ('canvas' or 'dom')
+       */
+      setMethod(method) {
+        this.method = method;
+        this.measurer.setMethod(method);
+      }
+
+      /**
+       * Find all soft break points in a text
+       * @param {string} text - Text to analyze
+       * @returns {Array} Array of soft break positions
+       */
+      findSoftBreakPoints(text) {
+        const breakPoints = [];
+
+        // Look for commas
+        let pos = -1;
+        while ((pos = text.indexOf(',', pos + 1)) !== -1) {
+          breakPoints.push({
+            index: pos,
+            type: 'comma'
+          });
+        }
+
+        // Look for backslashes (explicit breaks)
+        pos = -1;
+        while ((pos = text.indexOf('\\', pos + 1)) !== -1) {
+          breakPoints.push({
+            index: pos,
+            type: 'backslash'
+          });
+        }
+
+        // Spaces are lower priority break points
+        pos = -1;
+        while ((pos = text.indexOf(' ', pos + 1)) !== -1) {
+          breakPoints.push({
+            index: pos,
+            type: 'space'
+          });
+        }
+
+        return breakPoints.sort((a, b) => a.index - b.index);
+      }
+
+      /**
+       * Analyze a song object, adding width and height measurements
+       * @param {object} song - Song object with paragraphs, lines, and items
+       * @param {object} options - Font options
+       * @returns {object} Song with width and height measurements added
+       */
+      analyzeSong(song, options) {
+        const startTime = performance.now();
+        this.measurer.resetTimings();
+
+        const {
+          chordFont,
+          lyricFont,
+          chordSize,
+          lyricSize,
+          lineHeight
+        } = options;
+
+        // Deep clone the song to avoid modifying the original
+        const analyzed = JSON.parse(JSON.stringify(song));
+
+        // Measure everything
+        analyzed.paragraphs.forEach(paragraph => {
+          paragraph.lines.forEach(line => {
+            // Track the current line width for line break analysis
+            let currentLineWidth = 0;
+            let maxLineHeight = 0;
+
+            line.items.forEach(item => {
+              // Measure lyrics
+              if (item.lyric) {
+                const lyricMeasurement = this.measurer.measure(
+                  item.lyric,
+                  lyricFont,
+                  lyricSize,
+                  lineHeight
+                );
+
+                item.lyric_width = lyricMeasurement.width.value;
+                item.lyric_height = lyricMeasurement.height.value;
+
+                // Update max line height if this item is taller
+                maxLineHeight = Math.max(maxLineHeight, item.lyric_height);
+
+                // Find potential soft break points
+                item.breakPoints = this.findSoftBreakPoints(item.lyric);
+
+                currentLineWidth += item.lyric_width;
+              }
+
+              // Measure chords
+              if (item.chord) {
+                const chordMeasurement = this.measurer.measure(
+                  item.chord,
+                  chordFont,
+                  chordSize,
+                  lineHeight
+                );
+
+                item.chord_width = chordMeasurement.width.value;
+                item.chord_height = chordMeasurement.height.value;
+
+                // Keep track of which is wider - chord or lyric
+                if (!item.lyric || item.chord_width > item.lyric_width) {
+                  // The chord is wider, so we need to add spacing
+                  const extraWidth = item.chord_width - (item.lyric_width || 0);
+                  currentLineWidth += extraWidth;
+                }
+              }
+
+              item.position_x = currentLineWidth - (item.lyric_width || 0);
+            });
+
+            // Add the total line width and height
+            line.total_width = currentLineWidth;
+            line.total_height = maxLineHeight;
+          });
+        });
+
+        this.totalTime = performance.now() - startTime;
+
+        return analyzed;
+      }
+
+      /**
+       * Calculate which lines need breaking based on container width
+       * @param {object} analyzed - Analyzed song with measurements
+       * @param {number} containerWidth - Available width
+       * @returns {object} Analysis of line breaks
+       */
+      calculateLineBreaks(analyzed, containerWidth) {
+        const breakAnalysis = [];
+
+        analyzed.paragraphs.forEach((paragraph, pIdx) => {
+          paragraph.lines.forEach((line, lIdx) => {
+            // Check if this line needs breaking
+            if (line.total_width > containerWidth) {
+              const lineAnalysis = {
+                paragraph: pIdx,
+                line: lIdx,
+                width: line.total_width,
+                height: line.total_height,
+                overBy: line.total_width - containerWidth,
+                items: line.items.length,
+                bestBreakPoints: []
+              };
+
+              // Find possible break points and calculate where to break
+              let runningWidth = 0;
+              let lastGoodBreakPoint = null;
+
+              for (let i = 0; i < line.items.length; i++) {
+                const item = line.items[i];
+
+                // Skip items without lyrics
+                if (!item.lyric) continue;
+
+                // Check for break points within this item
+                const textWidth = item.lyric_width;
+
+                if (item.breakPoints && item.breakPoints.length > 0) {
+                  // Analyze each break point
+                  for (const bp of item.breakPoints) {
+                    const beforeText = item.lyric.substring(0, bp.index);
+                    const afterText = item.lyric.substring(bp.index + 1);
+
+                    // Measure the width before the break point
+                    const beforeMeasurement = this.measurer.measure(
+                      beforeText,
+                      item.fontFamily || "",
+                      item.fontSize || "",
+                      item.lineHeight || ""
+                    );
+
+                    const breakPointPosition = runningWidth + beforeMeasurement.width.value;
+
+                    // Is this a good break point?
+                    if (breakPointPosition <= containerWidth) {
+                      lastGoodBreakPoint = {
+                        itemIndex: i,
+                        charIndex: bp.index,
+                        position: breakPointPosition,
+                        type: bp.type,
+                        beforeText,
+                        afterText
+                      };
+                    } else {
+                      // We've gone too far, use the last good break point
+                      if (lastGoodBreakPoint) {
+                        lineAnalysis.bestBreakPoints.push(lastGoodBreakPoint);
+                        lastGoodBreakPoint = null;
+                      }
+                    }
+                  }
+                }
+
+                runningWidth += textWidth;
+              }
+
+              // If we found good break points, add them
+              if (lastGoodBreakPoint) {
+                lineAnalysis.bestBreakPoints.push(lastGoodBreakPoint);
+              }
+
+              breakAnalysis.push(lineAnalysis);
+            }
+          });
+        });
+
+        return breakAnalysis;
+      }
+
+      /**
+       * Get the total time taken for analysis
+       * @returns {number} Time in milliseconds
+       */
+      getTotalTime() {
+        return this.totalTime;
+      }
+
+      /**
+       * Get individual measurement timings
+       * @returns {object} Timing information
+       */
+      getMeasurementTiming() {
+        return this.measurer.getTiming();
+      }
+    }
+
+    /**
+     * Utility for comparing measurement results
+     */
+    class MeasurementComparison {
+      constructor() {
+        this.differences = [];
+        this.timingDiff = 0;
+      }
+
+      /**
+       * Compare two analysis results
+       * @param {object} canvasResult - Canvas API measurement result
+       * @param {object} domResult - DOM Element measurement result
+       * @param {number} canvasTime - Time taken for Canvas measurement
+       * @param {number} domTime - Time taken for DOM measurement
+       * @returns {object} Comparison summary
+       */
+      compareResults(canvasResult, domResult, canvasTime, domTime) {
+        this.differences = [];
+        this.timingDiff = domTime - canvasTime;
+
+        const summary = {
+          totalItems: 0,
+          widthDifferences: 0,
+          heightDifferences: 0,
+          maxWidthDiff: 0,
+          maxHeightDiff: 0,
+          avgWidthDiff: 0,
+          avgHeightDiff: 0,
+          timings: {
+            canvas: canvasTime,
+            dom: domTime,
+            difference: this.timingDiff,
+            percentageDiff: (this.timingDiff / canvasTime * 100).toFixed(1)
+          },
+          differences: []
+        };
+
+        // Compare paragraphs
+        canvasResult.paragraphs.forEach((canvasParagraph, pIdx) => {
+          const domParagraph = domResult.paragraphs[pIdx];
+
+          // Compare lines
+          canvasParagraph.lines.forEach((canvasLine, lIdx) => {
+            const domLine = domParagraph.lines[lIdx];
+
+            // Track line differences
+            const lineDiff = Math.abs(canvasLine.total_width - domLine.total_width);
+            const lineHeightDiff = Math.abs(canvasLine.total_height - domLine.total_height);
+
+            if (lineDiff > 1 || lineHeightDiff > 1) {
+              summary.differences.push({
+                type: 'line',
+                paragraph: pIdx,
+                line: lIdx,
+                canvasWidth: canvasLine.total_width,
+                domWidth: domLine.total_width,
+                widthDiff: lineDiff,
+                canvasHeight: canvasLine.total_height,
+                domHeight: domLine.total_height,
+                heightDiff: lineHeightDiff
+              });
+            }
+
+            // Compare items
+            canvasLine.items.forEach((canvasItem, iIdx) => {
+              const domItem = domLine.items[iIdx];
+              summary.totalItems++;
+
+              // Compare text widths
+              if (canvasItem.lyric_width && domItem.lyric_width) {
+                const textDiff = Math.abs(canvasItem.lyric_width - domItem.lyric_width);
+                if (textDiff > 1) { // Ignore tiny differences
+                  summary.widthDifferences++;
+                  summary.maxWidthDiff = Math.max(summary.maxWidthDiff, textDiff);
+                  summary.avgWidthDiff += textDiff;
+
+                  // Track significant differences
+                  if (textDiff > 5) {
+                    summary.differences.push({
+                      type: 'lyric',
+                      paragraph: pIdx,
+                      line: lIdx,
+                      item: iIdx,
+                      text: canvasItem.text,
+                      canvasWidth: canvasItem.lyric_width,
+                      domWidth: domItem.lyric_width,
+                      diff: textDiff
+                    });
+                  }
+                }
+              }
+
+              // Compare text heights
+              if (canvasItem.lyric_height && domItem.lyric_height) {
+                const heightDiff = Math.abs(canvasItem.lyric_height - domItem.lyric_height);
+                if (heightDiff > 1) { // Ignore tiny differences
+                  summary.heightDifferences++;
+                  summary.maxHeightDiff = Math.max(summary.maxHeightDiff, heightDiff);
+                  summary.avgHeightDiff += heightDiff;
+                }
+              }
+
+              // Compare chord widths
+              if (canvasItem.chord_width && domItem.chord_width) {
+                const chordDiff = Math.abs(canvasItem.chord_width - domItem.chord_width);
+                if (chordDiff > 1) {
+                  summary.widthDifferences++;
+                  summary.maxWidthDiff = Math.max(summary.maxWidthDiff, chordDiff);
+                  summary.avgWidthDiff += chordDiff;
+
+                  // Track significant differences
+                  if (chordDiff > 5) {
+                    summary.differences.push({
+                      type: 'chord',
+                      paragraph: pIdx,
+                      line: lIdx,
+                      item: iIdx,
+                      chord: canvasItem.chord,
+                      canvasWidth: canvasItem.chord_width,
+                      domWidth: domItem.chord_width,
+                      diff: chordDiff
+                    });
+                  }
+                }
+              }
+
+              // Compare chord heights
+              if (canvasItem.chord_height && domItem.chord_height) {
+                const chordHeightDiff = Math.abs(canvasItem.chord_height - domItem.chord_height);
+                if (chordHeightDiff > 1) {
+                  summary.heightDifferences++;
+                  summary.maxHeightDiff = Math.max(summary.maxHeightDiff, chordHeightDiff);
+                  summary.avgHeightDiff += chordHeightDiff;
+                }
+              }
+            });
+          });
+        });
+
+        // Calculate averages
+        if (summary.widthDifferences > 0) {
+          summary.avgWidthDiff /= summary.widthDifferences;
+        }
+
+        if (summary.heightDifferences > 0) {
+          summary.avgHeightDiff /= summary.heightDifferences;
+        }
+
+        // Sort differences by magnitude
+        summary.differences.sort((a, b) => b.diff - a.diff);
+
+        return summary;
+      }
+
+      /**
+       * Generate HTML to display the comparison
+       * @param {object} summary - Comparison summary
+       * @returns {string} HTML content
+       */
+      generateComparisonHTML(summary) {
+        const canvasIsFaster = summary.timings.canvas < summary.timings.dom;
+
+        let html = `
+          <div style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 4px;">
+            <h3>Measurement Method Comparison Summary</h3>
+            <p>
+              <strong>Total Items Measured:</strong> ${summary.totalItems}<br>
+              <strong>Items with Width Differences:</strong> ${summary.widthDifferences} (${(summary.widthDifferences / summary.totalItems * 100).toFixed(1)}%)<br>
+              <strong>Items with Height Differences:</strong> ${summary.heightDifferences} (${(summary.heightDifferences / summary.totalItems * 100).toFixed(1)}%)<br>
+              <strong>Max Width Difference:</strong> ${summary.maxWidthDiff.toFixed(2)}px<br>
+              <strong>Max Height Difference:</strong> ${summary.maxHeightDiff.toFixed(2)}px<br>
+              <strong>Average Width Difference:</strong> ${summary.avgWidthDiff.toFixed(2)}px<br>
+              <strong>Average Height Difference:</strong> ${summary.avgHeightDiff.toFixed(2)}px
+            </p>
+
+            <h4>Performance Comparison</h4>
+            <p>
+              <strong>Canvas API:</strong> ${summary.timings.canvas.toFixed(2)}ms<br>
+              <strong>DOM Element:</strong> ${summary.timings.dom.toFixed(2)}ms<br>
+              <strong>Difference:</strong> ${Math.abs(summary.timings.difference).toFixed(2)}ms
+              (${canvasIsFaster ? 'Canvas is ' : 'DOM is '}
+              <span style="color: ${canvasIsFaster ? '#2e7d32' : '#c62828'}">
+                ${Math.abs(summary.timings.percentageDiff)}% ${canvasIsFaster ? 'faster' : 'faster'}
+              </span>)
+            </p>
+        `;
+
+        if (summary.differences.length > 0) {
+          html += `
+            <h4>Significant Differences</h4>
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Content</th>
+                  <th>Canvas Width</th>
+                  <th>DOM Width</th>
+                  <th>Difference</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          summary.differences.slice(0, 10).forEach(diff => {
+            html += `
+              <tr class="diff">
+                <td>${diff.type}</td>
+                <td>${diff.text || diff.chord || `Line ${diff.line + 1}`}</td>
+                <td>${diff.canvasWidth.toFixed(2)}px</td>
+                <td>${diff.domWidth.toFixed(2)}px</td>
+                <td>${diff.diff.toFixed(2)}px (${(diff.diff / diff.canvasWidth * 100).toFixed(1)}%)</td>
+              </tr>
+            `;
+          });
+
+          html += `
+              </tbody>
+            </table>
+          `;
+        }
+
+        html += '</div>';
+
+        return html;
+      }
+    }
+
+    // Sample song object
+    const sampleSong  = {
+  "title": "Echoes of the Valley",
+  "artist": "The Wandering Minstrels",
+  "paragraphs": [
+    // Verse 1
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Am", "lyric": "Morning " },
+            { "lyric": "light breaks through the " },
+            { "chord": "C", "lyric": "mist, " },
+            { "lyric": "golden rays the mountains kissed" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Valley " },
+            { "lyric": "floor starts to " },
+            { "chord": "D", "lyric": "glow, " },
+            { "lyric": "as the gentle breezes blow" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "F", "lyric": "Rivers " },
+            { "lyric": "flow with crystal " },
+            { "chord": "C", "lyric": "streams, " },
+            { "lyric": "waking from their winter dreams" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Em", "lyric": "Time " },
+            { "lyric": "moves slow in this " },
+            { "chord": "Am", "lyric": "place, " },
+            { "lyric": "touched by nature's gentle grace" }
+          ]
+        }
+      ]
+    },
+    // Chorus 1
+    {
+      "lines": [
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Echo " },
+            { "lyric": "through the " },
+            { "chord": "G", "lyric": "hills, " },
+            { "lyric": "ancient voices singing still" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "Am", "lyric": "Carry " },
+            { "lyric": "me on wings of " },
+            { "chord": "F", "lyric": "song, " },
+            { "lyric": "where I know that I belong" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Mountains " },
+            { "lyric": "reaching to the " },
+            { "chord": "G", "lyric": "sky, " },
+            { "lyric": "under endless azure high" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "F", "lyric": "This " },
+            { "lyric": "is where my spirit's " },
+            { "chord": "G", "lyric": "free, " },
+            { "lyric": "in the valley's harmony" }
+          ]
+        }
+      ]
+    },
+    // Verse 2
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Am", "lyric": "Forest " },
+            { "lyric": "trails with ancient " },
+            { "chord": "C", "lyric": "pines, " },
+            { "lyric": "stretching out in winding lines" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Shadows " },
+            { "lyric": "dance across the " },
+            { "chord": "D", "lyric": "ground, " },
+            { "lyric": "where the fallen leaves are found" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "F", "lyric": "Wildlife " },
+            { "lyric": "hidden in the " },
+            { "chord": "C", "lyric": "brush, " },
+            { "lyric": "silent in the evening hush" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Em", "lyric": "Stars " },
+            { "lyric": "appear as day grows " },
+            { "chord": "Am", "lyric": "dim, " },
+            { "lyric": "night approaches soft and slim" }
+          ]
+        }
+      ]
+    },
+    // Bridge
+    {
+      "lines": [
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "F", "lyric": "Whispers " },
+            { "lyric": "of the " },
+            { "chord": "G", "lyric": "past, " },
+            { "lyric": "memories that forever last" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "Em", "lyric": "Stories " },
+            { "lyric": "told from long " },
+            { "chord": "Am", "lyric": "ago, " },
+            { "lyric": "legends that the elders know" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "F", "lyric": "Sacred " },
+            { "lyric": "lands where spirits " },
+            { "chord": "G", "lyric": "dwell, " },
+            { "lyric": "casting their enchanted spell" }
+          ]
+        }
+      ]
+    },
+    // Verse 3
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Dm", "lyric": "Autumn " },
+            { "lyric": "leaves in crimson " },
+            { "chord": "F", "lyric": "dance, " },
+            { "lyric": "twirling in their graceful trance" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "C", "lyric": "Winter " },
+            { "lyric": "blankets pure and " },
+            { "chord": "G", "lyric": "white, " },
+            { "lyric": "glistening in the pale moonlight" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Bb", "lyric": "Spring " },
+            { "lyric": "brings life with vibrant " },
+            { "chord": "F", "lyric": "hues, " },
+            { "lyric": "refreshed by morning mountain dews" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Am", "lyric": "Summer " },
+            { "lyric": "warmth on gentle " },
+            { "chord": "G", "lyric": "days, " },
+            { "lyric": "as the valley sits ablaze" }
+          ]
+        }
+      ]
+    },
+    // Chorus 2
+    {
+      "lines": [
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Echo " },
+            { "lyric": "through the " },
+            { "chord": "G", "lyric": "hills, " },
+            { "lyric": "ancient voices singing still" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "Am", "lyric": "Carry " },
+            { "lyric": "me on wings of " },
+            { "chord": "F", "lyric": "song, " },
+            { "lyric": "where I know that I belong" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Mountains " },
+            { "lyric": "reaching to the " },
+            { "chord": "G", "lyric": "sky, " },
+            { "lyric": "under endless azure high" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "F", "lyric": "This " },
+            { "lyric": "is where my spirit's " },
+            { "chord": "G", "lyric": "free, " },
+            { "lyric": "in the valley's harmony" }
+          ]
+        }
+      ]
+    },
+    // Verse 4
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "A", "lyric": "Distant " },
+            { "lyric": "thunder rolls across the " },
+            { "chord": "E", "lyric": "plain, " },
+            { "lyric": "clouds are heavy with the rain" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "D", "lyric": "Lightning " },
+            { "lyric": "flashes in the " },
+            { "chord": "A", "lyric": "night, " },
+            { "lyric": "painting skies with brilliant light" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Bm", "lyric": "Storm " },
+            { "lyric": "passes with the break of " },
+            { "chord": "E", "lyric": "dawn, " },
+            { "lyric": "fresh new day is coming on" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "D", "lyric": "Raindrops " },
+            { "lyric": "glisten on the " },
+            { "chord": "A", "lyric": "leaves, " },
+            { "lyric": "diamond sparkles nature weaves" }
+          ]
+        }
+      ]
+    },
+    // Bridge 2
+    {
+      "lines": [
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "G", "lyric": "Far " },
+            { "lyric": "beyond the mountain " },
+            { "chord": "D", "lyric": "pass, " },
+            { "lyric": "where the clouds and eagles mass" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "Em", "lyric": "Lies " },
+            { "lyric": "a world I've yet to " },
+            { "chord": "C", "lyric": "see, " },
+            { "lyric": "calling out so strong to me" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "G", "lyric": "Some " },
+            { "lyric": "day soon I'll venture " },
+            { "chord": "D", "lyric": "forth, " },
+            { "lyric": "to discover unknown worth" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "C", "lyric": "But " },
+            { "lyric": "this valley holds my " },
+            { "chord": "D", "lyric": "heart, " },
+            { "lyric": "from its soul I'll never part" }
+          ]
+        }
+      ]
+    },
+    // Verse 5
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Em", "lyric": "Campfire " },
+            { "lyric": "crackles in the " },
+            { "chord": "C", "lyric": "night, " },
+            { "lyric": "casting warm and amber light" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Stories " },
+            { "lyric": "shared with friends so " },
+            { "chord": "D", "lyric": "dear, " },
+            { "lyric": "laughter ringing loud and clear" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Am", "lyric": "Music " },
+            { "lyric": "from an old " },
+            { "chord": "C", "lyric": "guitar, " },
+            { "lyric": "wishing on the evening star" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Memories " },
+            { "lyric": "formed that will " },
+            { "chord": "D", "lyric": "remain, " },
+            { "lyric": "cherished till we meet again" }
+          ]
+        }
+      ]
+    },
+    // Chorus 3
+    {
+      "lines": [
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Echo " },
+            { "lyric": "through the " },
+            { "chord": "G", "lyric": "hills, " },
+            { "lyric": "ancient voices singing still" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "Am", "lyric": "Carry " },
+            { "lyric": "me on wings of " },
+            { "chord": "F", "lyric": "song, " },
+            { "lyric": "where I know that I belong" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Mountains " },
+            { "lyric": "reaching to the " },
+            { "chord": "G", "lyric": "sky, " },
+            { "lyric": "under endless azure high" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "F", "lyric": "This " },
+            { "lyric": "is where my spirit's " },
+            { "chord": "G", "lyric": "free, " },
+            { "lyric": "in the valley's harmony" }
+          ]
+        }
+      ]
+    },
+    // Verse 6
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "D", "lyric": "Hawk " },
+            { "lyric": "soars on currents high " },
+            { "chord": "A", "lyric": "above, " },
+            { "lyric": "watching over lands we love" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Wolf " },
+            { "lyric": "howls across the " },
+            { "chord": "D", "lyric": "ridge, " },
+            { "lyric": "echoes bouncing off the bridge" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Bm", "lyric": "Deer " },
+            { "lyric": "drink from streams so " },
+            { "chord": "A", "lyric": "clear, " },
+            { "lyric": "alert for dangers lurking near" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "G", "lyric": "Life " },
+            { "lyric": "in balance, wild and " },
+            { "chord": "A", "lyric": "free, " },
+            { "lyric": "nature's perfect harmony" }
+          ]
+        }
+      ]
+    },
+    // Bridge 3
+    {
+      "lines": [
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "Em", "lyric": "Listen " },
+            { "lyric": "to the valley's " },
+            { "chord": "C", "lyric": "song, " },
+            { "lyric": "rhythms that have echoed long" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "G", "lyric": "Feel " },
+            { "lyric": "the pulse of earth " },
+            { "chord": "D", "lyric": "below, " },
+            { "lyric": "ancient heartbeat's steady flow" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "C", "lyric": "Breathe " },
+            { "lyric": "the air so crisp and " },
+            { "chord": "G", "lyric": "clean, " },
+            { "lyric": "carrying scents of evergreen" }
+          ]
+        },
+        {
+          "type": "bridge",
+          "items": [
+            { "chord": "Am", "lyric": "Touch " },
+            { "lyric": "the stones worn smooth with " },
+            { "chord": "D", "lyric": "time, " },
+            { "lyric": "witnesses to life sublime" }
+          ]
+        }
+      ]
+    },
+    // Verse 7
+    {
+      "lines": [
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Am", "lyric": "Cabin " },
+            { "lyric": "nestled in the " },
+            { "chord": "F", "lyric": "trees, " },
+            { "lyric": "smoke drifts gently on the breeze" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "C", "lyric": "Garden " },
+            { "lyric": "growing by the " },
+            { "chord": "G", "lyric": "door, " },
+            { "lyric": "roots dug deep in valley floor" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "F", "lyric": "Simple " },
+            { "lyric": "life with humble " },
+            { "chord": "C", "lyric": "joys, " },
+            { "lyric": "far from city crowds and noise" }
+          ]
+        },
+        {
+          "type": "verse",
+          "items": [
+            { "chord": "Dm", "lyric": "Peace " },
+            { "lyric": "found in these mountains " },
+            { "chord": "G", "lyric": "tall, " },
+            { "lyric": "greatest treasure of them all" }
+          ]
+        }
+      ]
+    },
+    // Final Chorus
+    {
+      "lines": [
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Echo " },
+            { "lyric": "through the " },
+            { "chord": "G", "lyric": "hills, " },
+            { "lyric": "ancient voices singing still" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "Am", "lyric": "Carry " },
+            { "lyric": "me on wings of " },
+            { "chord": "F", "lyric": "song, " },
+            { "lyric": "where I know that I belong" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "C", "lyric": "Mountains " },
+            { "lyric": "reaching to the " },
+            { "chord": "G", "lyric": "sky, " },
+            { "lyric": "under endless azure high" }
+          ]
+        },
+        {
+          "type": "chorus",
+          "items": [
+            { "chord": "F", "lyric": "This " },
+            { "lyric": "is where my spirit's " },
+            { "chord": "G", "lyric": "free, " },
+            { "lyric": "in the valley's harmony" }
+          ]
+        }
+      ]
+    },
+    // Outro
+    {
+      "lines": [
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "Am", "lyric": "Sunset " },
+            { "lyric": "paints the mountains " },
+            { "chord": "F", "lyric": "gold, " },
+            { "lyric": "tales of wonder yet untold" }
+          ]
+        },
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "C", "lyric": "Stars " },
+            { "lyric": "appear as daylight " },
+            { "chord": "G", "lyric": "fades, " },
+            { "lyric": "night descends on forest glades" }
+          ]
+        },
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "F", "lyric": "Sleep " },
+            { "lyric": "now in valley's " },
+            { "chord": "G", "lyric": "arms, " },
+            { "lyric": "safe from worry, free from harm" }
+          ]
+        },
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "Am", "lyric": "Dream " },
+            { "lyric": "of places yet to " },
+            { "chord": "C", "lyric": "roam, " },
+            { "lyric": "but remember this is home" }
+          ]
+        },
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "F", "lyric": "This " },
+            { "lyric": "is " },
+            { "chord": "G", "lyric": "home, " },
+            { "lyric": "sweet valley home" }
+          ]
+        },
+        {
+          "type": "outro",
+          "items": [
+            { "chord": "C", "lyric": "Home..." }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+    // DOM elements
+    const measureButton = document.getElementById('measure-button');
+    const canvasResultsElem = document.getElementById('canvas-results');
+    const domResultsElem = document.getElementById('dom-results');
+    const canvasVisualizationElem = document.getElementById('canvas-visualization');
+    const domVisualizationElem = document.getElementById('dom-visualization');
+    const comparisonSummaryElem = document.getElementById('comparison-summary');
+    const methodOptions = document.getElementsByName('measure-method');
+
+    const canvasTimingElem = document.getElementById('canvas-timing');
+    const domTimingElem = document.getElementById('dom-timing');
+    const canvasResultsTimingElem = document.getElementById('canvas-results-timing');
+    const domResultsTimingElem = document.getElementById('dom-results-timing');
+
+    const chordFontSelect = document.getElementById('chord-font');
+    const lyricFontSelect = document.getElementById('lyric-font');
+    const chordSizeInput = document.getElementById('chord-size');
+    const lyricSizeInput = document.getElementById('lyric-size');
+    const lineHeightInput = document.getElementById('line-height');
+    const containerWidthInput = document.getElementById('container-width');
+    const chordSizeValue = document.getElementById('chord-size-value');
+    const lyricSizeValue = document.getElementById('lyric-size-value');
+    const lineHeightValue = document.getElementById('line-height-value');
+    const containerWidthValue = document.getElementById('container-width-value');
+    const chordFontPreview = document.getElementById('chord-font-preview');
+    const lyricFontPreview = document.getElementById('lyric-font-preview');
+
+    // Initialize analyzers and comparison
+    let canvasAnalyzer;
+    let domAnalyzer;
+    let comparison;
+    let selectedMethod = 'both';
+
+    // Initialize the application
+    async function init() {
+      // Initialize the analyzers
+      canvasAnalyzer = await new ChordTextAnalyzer('canvas').init();
+      domAnalyzer = await new ChordTextAnalyzer('dom').init();
+      comparison = new MeasurementComparison();
+
+      // Set up event listeners
+      measureButton.addEventListener('click', performMeasurement);
+
+      // Set up measurement method selection
+      methodOptions.forEach(option => {
+        option.addEventListener('change', function() {
+          if (this.checked) {
+            selectedMethod = this.value;
+            updateViewVisibility();
+          }
+        });
+      });
+
+      // Set up input change handlers
+      chordSizeInput.addEventListener('input', updatePreview);
+      lyricSizeInput.addEventListener('input', updatePreview);
+      lineHeightInput.addEventListener('input', updatePreview);
+      containerWidthInput.addEventListener('input', updateContainerWidth);
+      chordFontSelect.addEventListener('change', updatePreview);
+      lyricFontSelect.addEventListener('change', updatePreview);
+
+      // Initial updates
+      updatePreview();
+      updateContainerWidth();
+      updateViewVisibility();
+    }
+
+    // Update view visibility based on selected method
+    function updateViewVisibility() {
+      switch (selectedMethod) {
+        case 'canvas':
+          canvasVisualizationElem.style.display = 'block';
+          domVisualizationElem.style.display = 'none';
+          canvasResultsElem.parentElement.style.display = 'block';
+          domResultsElem.parentElement.style.display = 'none';
+          comparisonSummaryElem.style.display = 'none';
+          break;
+        case 'dom':
+          canvasVisualizationElem.style.display = 'none';
+          domVisualizationElem.style.display = 'block';
+          canvasResultsElem.parentElement.style.display = 'none';
+          domResultsElem.parentElement.style.display = 'block';
+          comparisonSummaryElem.style.display = 'none';
+          break;
+        case 'both':
+        default:
+          canvasVisualizationElem.style.display = 'block';
+          domVisualizationElem.style.display = 'block';
+          canvasResultsElem.parentElement.style.display = 'block';
+          domResultsElem.parentElement.style.display = 'block';
+          comparisonSummaryElem.style.display = 'block';
+          break;
+      }
+    }
+
+    // Update font preview
+    function updatePreview() {
+      const chordFont = chordFontSelect.value;
+      const lyricFont = lyricFontSelect.value;
+      const chordSize = chordSizeInput.value;
+      const lyricSize = lyricSizeInput.value;
+      const lineHeight = (parseInt(lineHeightInput.value) / 10).toFixed(1); // Convert to 1.0-3.0 range
+
+      chordSizeValue.textContent = `${chordSize}px`;
+      lyricSizeValue.textContent = `${lyricSize}px`;
+      lineHeightValue.textContent = lineHeight;
+
+      chordFontPreview.style.fontFamily = chordFont;
+      chordFontPreview.style.fontSize = `${chordSize}px`;
+      chordFontPreview.style.lineHeight = lineHeight;
+
+      lyricFontPreview.style.fontFamily = lyricFont;
+      lyricFontPreview.style.fontSize = `${lyricSize}px`;
+      lyricFontPreview.style.lineHeight = lineHeight;
+
+      // Set CSS variables for the visualization
+      document.documentElement.style.setProperty('--chord-font', chordFont);
+      document.documentElement.style.setProperty('--lyric-font', lyricFont);
+      document.documentElement.style.setProperty('--preview-font', lyricFont);
+    }
+
+    // Update container width
+    function updateContainerWidth() {
+      const width = containerWidthInput.value;
+      containerWidthValue.textContent = `${width}px`;
+      canvasVisualizationElem.style.width = `${width}px`;
+      domVisualizationElem.style.width = `${width}px`;
+    }
+
+    // Update timing display
+    function updateTimingDisplay(element, time, compareTo = null) {
+      element.textContent = `${time.toFixed(2)} ms`;
+
+      // If we have a comparison value, add styling
+      if (compareTo !== null) {
+        element.classList.remove('fast', 'slow');
+        if (time < compareTo) {
+          element.classList.add('fast');
+        } else if (time > compareTo) {
+          element.classList.add('slow');
+        }
+      }
+    }
+
+    // Perform text measurement using both methods
+    async function performMeasurement() {
+      // Get current options
+      const options = {
+        chordFont: chordFontSelect.value,
+        lyricFont: lyricFontSelect.value,
+        chordSize: parseInt(chordSizeInput.value),
+        lyricSize: parseInt(lyricSizeInput.value),
+        lineHeight: (parseInt(lineHeightInput.value) / 10).toString() // Convert to 1.0-3.0 range
+      };
+
+      // Get container width
+      const containerWidth = parseInt(containerWidthInput.value);
+
+      // Analyze the song with Canvas API
+      let canvasAnalyzedSong, canvasBreakAnalysis, canvasTime = 0;
+
+      if (selectedMethod === 'canvas' || selectedMethod === 'both') {
+        canvasAnalyzedSong = canvasAnalyzer.analyzeSong(sampleSong, options);
+        canvasBreakAnalysis = canvasAnalyzer.calculateLineBreaks(canvasAnalyzedSong, containerWidth);
+        canvasTime = canvasAnalyzer.getTotalTime();
+
+        // Update timing display
+        updateTimingDisplay(canvasTimingElem, canvasTime);
+        updateTimingDisplay(canvasResultsTimingElem, canvasTime);
+      }
+
+      // Analyze the song with DOM Elements
+      let domAnalyzedSong, domBreakAnalysis, domTime = 0;
+
+      if (selectedMethod === 'dom' || selectedMethod === 'both') {
+        domAnalyzedSong = domAnalyzer.analyzeSong(sampleSong, options);
+        domBreakAnalysis = domAnalyzer.calculateLineBreaks(domAnalyzedSong, containerWidth);
+        domTime = domAnalyzer.getTotalTime();
+
+        // Update timing display
+        updateTimingDisplay(domTimingElem, domTime);
+        updateTimingDisplay(domResultsTimingElem, domTime);
+      }
+
+      // If both methods are used, update comparisons
+      if (selectedMethod === 'both') {
+        updateTimingDisplay(canvasTimingElem, canvasTime, domTime);
+        updateTimingDisplay(domTimingElem, domTime, canvasTime);
+        updateTimingDisplay(canvasResultsTimingElem, canvasTime, domTime);
+        updateTimingDisplay(domResultsTimingElem, domTime, canvasTime);
+      }
+
+      // Display results based on selected method
+      if (selectedMethod === 'canvas' || selectedMethod === 'both') {
+        displayResults(canvasResultsElem, canvasAnalyzedSong, canvasBreakAnalysis, containerWidth, options, 'Canvas API', canvasTime);
+        renderVisualization(canvasVisualizationElem, canvasAnalyzedSong, options, containerWidth);
+      }
+
+      if (selectedMethod === 'dom' || selectedMethod === 'both') {
+        displayResults(domResultsElem, domAnalyzedSong, domBreakAnalysis, containerWidth, options, 'DOM Element', domTime);
+        renderVisualization(domVisualizationElem, domAnalyzedSong, options, containerWidth);
+      }
+
+      // Compare results if both methods are used
+      if (selectedMethod === 'both') {
+        const summary = comparison.compareResults(canvasAnalyzedSong, domAnalyzedSong, canvasTime, domTime);
+        comparisonSummaryElem.innerHTML = comparison.generateComparisonHTML(summary);
+      }
+    }
+
+    // Display measurement results
+    function displayResults(resultsElem, analyzed, breakAnalysis, containerWidth, options, methodName, timeTaken) {
+      // Format the results in a readable way
+      const results = {
+        method: methodName,
+        time_taken: timeTaken.toFixed(2) + ' ms',
+        container_width: containerWidth,
+        font_settings: {
+          chord_font: options.chordFont,
+          lyric_font: options.lyricFont,
+          chord_size: options.chordSize + 'px',
+          lyric_size: options.lyricSize + 'px',
+          line_height: options.lineHeight
+        },
+        paragraphs: analyzed.paragraphs.map((p, pIdx) => ({
+          paragraph_index: pIdx,
+          lines: p.lines.map((l, lIdx) => ({
+            line_index: lIdx,
+            type: l.type,
+            total_width: Math.round(l.total_width),
+            total_height: Math.round(l.total_height || 0),
+            fits_container: l.total_width <= containerWidth,
+            items: l.items.map(item => ({
+              text: item.lyric || '',
+              chord: item.chord || '',
+              text_width: item.lyric_width ? Math.round(item.lyric_width) : 0,
+              text_height: item.lyric_height ? Math.round(item.lyric_height) : 0,
+              chord_width: item.chord_width ? Math.round(item.chord_width) : 0,
+              chord_height: item.chord_height ? Math.round(item.chord_height) : 0,
+              x_position: Math.round(item.position_x || 0),
+              break_points: item.breakPoints || []
+            }))
+          }))
+        })),
+        break_analysis: breakAnalysis
+      };
+
+      resultsElem.textContent = JSON.stringify(results, null, 2);
+    }
+
+    // Render visualization of the song with measurements
+    function renderVisualization(visualizationElem, analyzed, options, containerWidth) {
+      // Clear current visualization except for the header and width line
+      const header = visualizationElem.querySelector('h3');
+      const widthLine = visualizationElem.querySelector('.container-width-line');
+      visualizationElem.innerHTML = '';
+      visualizationElem.appendChild(header);
+      visualizationElem.appendChild(widthLine);
+
+      // Create the elements
+      analyzed.paragraphs.forEach(paragraph => {
+        const paragraphElem = document.createElement('div');
+        paragraphElem.className = 'paragraph';
+
+        paragraph.lines.forEach(line => {
+          const lineElem = document.createElement('div');
+          lineElem.className = 'line';
+
+          // Highlight lines that are too long
+          if (line.total_width > containerWidth) {
+            lineElem.style.color = '#e74c3c';
+          }
+
+          line.items.forEach(item => {
+            const itemElem = document.createElement('span');
+            itemElem.className = 'item';
+
+            if (item.chord) {
+              const chordElem = document.createElement('span');
+              chordElem.className = 'chord';
+              chordElem.textContent = item.chord;
+              chordElem.style.fontSize = `${options.chordSize}px`;
+              itemElem.appendChild(chordElem);
+
+              // Add measurement box for chord
+              const chordBox = document.createElement('div');
+              chordBox.className = 'chord-measurement-box';
+              chordBox.style.width = `${item.chord_width}px`;
+              itemElem.appendChild(chordBox);
+            }
+
+            if (item.lyric) {
+              const lyricElem = document.createElement('span');
+              lyricElem.className = 'lyric';
+              lyricElem.textContent = item.lyric;
+              lyricElem.style.fontSize = `${options.lyricSize}px`;
+
+              // Highlight break points
+              if (item.breakPoints && item.breakPoints.length > 0) {
+                // Create a version with break points highlighted
+                let highlightedText = '';
+                let lastPos = 0;
+
+                item.breakPoints.forEach(bp => {
+                  highlightedText += item.lyric.substring(lastPos, bp.index);
+                  highlightedText += `<span style="background-color: rgba(255,220,0,0.3); border-radius: 2px;">${item.lyric.charAt(bp.index)}</span>`;
+                  lastPos = bp.index + 1;
+                });
+
+                highlightedText += item.lyric.substring(lastPos);
+                lyricElem.innerHTML = highlightedText;
+              }
+
+              itemElem.appendChild(lyricElem);
+
+              // Add measurement box for lyric
+              const lyricBox = document.createElement('div');
+              lyricBox.className = 'measurement-box';
+              lyricBox.style.width = `${item.lyric_width}px`;
+              itemElem.appendChild(lyricBox);
+            }
+
+            lineElem.appendChild(itemElem);
+          });
+
+          paragraphElem.appendChild(lineElem);
+        });
+
+        visualizationElem.appendChild(paragraphElem);
+      });
+    }
+
+    // Start initialization when document is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

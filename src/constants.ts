@@ -121,9 +121,15 @@ export const MAJOR = 'M';
 
 export type Mode = 'M' | 'm';
 
-type FretNumber = number;
-type OpenFret = '0';
-type NonSoundingString = '-1' | 'N' | 'x';
+export type FretNumber = number;
+export type OpenFret = 0;
+export type NonSoundingString = '-1' | 'N' | 'x';
+
+export type StringNumber = 1 | 2 | 3 | 4 | 5 | 6;
+export type FingerNumber = 1 | 2 | 3 | 4 | 5 | OpenFret;
+
+export const nonSoundingString = ['N', '-1', 'x'] as NonSoundingString[];
+export const openFret = 0 as OpenFret;
 
 export type Fret = FretNumber | OpenFret | NonSoundingString;
 
