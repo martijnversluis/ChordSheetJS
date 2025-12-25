@@ -1,6 +1,6 @@
+import { Accidental } from '../constants';
 import Chord from '../chord';
 import Key from '../key';
-import { Modifier } from '../constants';
 
 /**
  * Represents a chord with the corresponding (partial) lyrics
@@ -93,8 +93,15 @@ class ChordLyricsPair {
     });
   }
 
-  useModifier(modifier: Modifier) {
-    return this.changeChord((chord: Chord) => chord.useModifier(modifier));
+  useAccidental(accidental: Accidental) {
+    return this.changeChord((chord: Chord) => chord.useAccidental(accidental));
+  }
+
+  /**
+   * @deprecated Use useAccidental instead
+   */
+  useModifier(accidental: Accidental) {
+    return this.useAccidental(accidental);
   }
 
   changeChord(func: (chord: Chord) => Chord): ChordLyricsPair {

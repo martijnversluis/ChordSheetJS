@@ -9,7 +9,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           grade: 0,
-          modifier: null,
+          accidental: null,
           type: SYMBOL,
           minor: false,
           referenceKeyGrade: 4,
@@ -22,7 +22,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           grade: 0,
-          modifier: '#',
+          accidental: '#',
           type: SYMBOL,
           minor: false,
           referenceKeyGrade: 6,
@@ -37,7 +37,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           grade: 0,
-          modifier: null,
+          accidental: null,
           type: SOLFEGE,
           minor: false,
           referenceKeyGrade: 4,
@@ -50,7 +50,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           grade: 0,
-          modifier: '#',
+          accidental: '#',
           type: SOLFEGE,
           minor: false,
           referenceKeyGrade: 6,
@@ -66,7 +66,7 @@ describe('Key', () => {
         expect(key).toMatchObject({
           number: 4,
           referenceKeyGrade: null,
-          modifier: null,
+          accidental: null,
           type: NUMERIC,
           minor: false,
           originalKeyString: '4',
@@ -78,7 +78,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           number: 4,
-          modifier: '#',
+          accidental: '#',
           type: NUMERIC,
           minor: false,
           referenceKeyGrade: null,
@@ -93,7 +93,7 @@ describe('Key', () => {
 
         expect(key).toMatchObject({
           number: 4,
-          modifier: null,
+          accidental: null,
           type: NUMERAL,
           minor: false,
           referenceKeyGrade: null,
@@ -107,7 +107,7 @@ describe('Key', () => {
         expect(key).toMatchObject({
           referenceKeyGrade: null,
           number: 4,
-          modifier: '#',
+          accidental: '#',
           type: NUMERAL,
           minor: false,
         });

@@ -19,7 +19,7 @@ describe('Key', () => {
         expect(wrappedKey).toMatchObject({
           referenceKeyGrade: 8,
           grade: 0,
-          modifier: 'b',
+          accidental: 'b',
           type: SYMBOL,
           minor: false,
         });
@@ -44,7 +44,7 @@ describe('Key', () => {
         expect(wrappedKey).toMatchObject({
           referenceKeyGrade: 8,
           grade: 0,
-          modifier: 'b',
+          accidental: 'b',
           type: SOLFEGE,
           minor: false,
         });

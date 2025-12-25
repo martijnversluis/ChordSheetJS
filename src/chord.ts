@@ -4,8 +4,8 @@ import { parse } from './parser/chord/peg_parser';
 import { isMinor, normalizeChordSuffix } from './utilities';
 
 import {
+  Accidental,
   ChordType,
-  Modifier,
   NUMERAL,
   NUMERIC,
   SOLFEGE,
@@ -20,10 +20,10 @@ interface ChordProperties {
 
 export interface ChordConstructorOptions {
   base?: string | number | null;
-  modifier?: Modifier | null;
+  accidental?: Accidental | null;
   suffix?: string | null;
   bassBase?: string | number | null;
-  bassModifier?: Modifier | null;
+  bassAccidental?: Accidental | null;
   root?: Key | null;
   bass?: Key | null;
   chordType?: ChordType | null;
@@ -320,12 +320,19 @@ class Chord implements ChordProperties {
   }
 
   /**
-   * Switches to the specified modifier
-   * @param newModifier the modifier to use: `'#'` or `'b'`
+   * Switches to the specified accidental
+   * @param newAccidental the accidental to use: `'#'` or `'b'`
    * @returns {Chord} the new, changed chord
    */
-  useModifier(newModifier: Modifier): Chord {
-    return this.transform((key) => key.useModifier(newModifier));
+  useAccidental(newAccidental: Accidental): Chord {
+    return this.transform((key) => key.useAccidental(newAccidental));
+  }
+
+  /**
+   * @deprecated Use useAccidental instead
+   */
+  useModifier(newAccidental: Accidental): Chord {
+    return this.useAccidental(newAccidental);
   }
 
   /**
@@ -356,10 +363,10 @@ class Chord implements ChordProperties {
   constructor(
     {
       base = null,
-      modifier = null,
+      accidental = null,
       suffix = null,
       bassBase = null,
-      bassModifier = null,
+      bassAccidental = null,
       root = null,
       bass = null,
       chordType = null,
@@ -367,10 +374,10 @@ class Chord implements ChordProperties {
   ) {
     this.suffix = suffix || null;
     this.root = Chord.determineRoot({
-      root, base, modifier, suffix, chordType,
+      root, base, accidental, suffix, chordType,
     });
     this.bass = Chord.determineBass({
-      bass, bassBase, bassModifier, chordType,
+      bass, bassBase, bassAccidental, chordType,
     });
   }
 
@@ -384,13 +391,13 @@ class Chord implements ChordProperties {
     {
       root,
       base,
-      modifier,
+      accidental,
       suffix,
       chordType,
     }: {
       root: Key | null,
       base: string | number | null,
-      modifier: Modifier | null,
+      accidental: Accidental | null,
       suffix: string | null,
       chordType: ChordType | null,
     },
@@ -403,7 +410,7 @@ class Chord implements ChordProperties {
       key: base,
       keyType: chordType,
       minor: isMinor(base, chordType, suffix),
-      modifier,
+      accidental,
     });
   }
 
@@ -411,12 +418,12 @@ class Chord implements ChordProperties {
     {
       bass,
       bassBase,
-      bassModifier,
+      bassAccidental,
       chordType,
     }: {
       bass: Key | null,
       bassBase: string | number | null,
-      bassModifier: Modifier | null,
+      bassAccidental: Accidental | null,
       chordType: ChordType | null,
     },
   ): Key | null {
@@ -426,7 +433,7 @@ class Chord implements ChordProperties {
 
     return Key.resolve({
       key: bassBase,
-      modifier: bassModifier || null,
+      accidental: bassAccidental || null,
       minor: false,
       keyType: chordType,
     });

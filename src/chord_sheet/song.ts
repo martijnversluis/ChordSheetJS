@@ -16,7 +16,7 @@ import SongBuilder from '../song_builder';
 import SongMapper from './song_mapper';
 import Tag from './tag';
 
-import { Modifier } from '../constants';
+import { Accidental } from '../constants';
 import { filterObject } from '../utilities';
 import { testSelector } from '../helpers';
 import { CAPO, KEY } from './tags';
@@ -247,8 +247,8 @@ class Song extends MetadataAccessors {
    */
   transpose(
     delta: number,
-    { modifier, normalizeChordSuffix = false }:
-      { modifier?: Modifier | null, normalizeChordSuffix?: boolean } = {},
+    { accidental, normalizeChordSuffix = false }:
+      { accidental?: Accidental | null, normalizeChordSuffix?: boolean } = {},
   ): Song {
     let transposedKey: Key | null = null;
     const song = (this as Song);
@@ -256,7 +256,7 @@ class Song extends MetadataAccessors {
     return song.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         transposedKey = Key.wrapOrFail(item.value).transpose(delta);
-        if (modifier) transposedKey = transposedKey.useModifier(modifier);
+        if (accidental) transposedKey = transposedKey.useAccidental(accidental);
         return item.set({ value: transposedKey.toString() });
       }
 
@@ -266,7 +266,7 @@ class Song extends MetadataAccessors {
           delta,
           transposedKey,
           normalizeChordSuffix,
-          modifier: modifier || null,
+          accidental: accidental || null,
         });
       }
 
@@ -280,20 +280,20 @@ class Song extends MetadataAccessors {
       delta,
       transposedKey,
       normalizeChordSuffix,
-      modifier,
+      accidental,
     }:
     {
       item: ChordLyricsPair,
       delta: number,
       transposedKey: Key | null,
       normalizeChordSuffix: boolean,
-      modifier: Modifier | null
+      accidental: Accidental | null
     },
   ) {
     let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
 
-    if (modifier) {
-      chord = chord.useModifier(modifier);
+    if (accidental) {
+      chord = chord.useAccidental(accidental);
     }
 
     return chord;
@@ -337,31 +337,38 @@ class Song extends MetadataAccessors {
     const currentKey = this.requireCurrentKey();
     const targetKey = Key.wrapOrFail(newKey);
     const delta = currentKey.distanceTo(targetKey);
-    return this.transpose(delta, { modifier: targetKey.modifier });
+    return this.transpose(delta, { accidental: targetKey.accidental });
   }
 
   /**
-   * Returns a copy of the song with all chords changed to the specified modifier.
+   * Returns a copy of the song with all chords changed to the specified accidental.
    *
    * Examples:
    *
    * ```js
-   * song.useModifier('#');
-   * song.useModifier('b');
+   * song.useAccidental('#');
+   * song.useAccidental('b');
    * ```
    *
-   * @param {Modifier} modifier the new modifier
+   * @param {Accidental} accidental the new accidental
    * @returns {Song} the changed song
    */
-  useModifier(modifier: Modifier): Song {
+  useAccidental(accidental: Accidental): Song {
     const { currentKey } = this;
-    let changedSong = this.mapChordLyricsPairs((pair) => pair.useModifier(modifier));
+    let changedSong = this.mapChordLyricsPairs((pair) => pair.useAccidental(accidental));
 
-    if (currentKey && currentKey.modifier !== modifier) {
-      changedSong = changedSong.changeKey(currentKey.useModifier(modifier));
+    if (currentKey && currentKey.accidental !== accidental) {
+      changedSong = changedSong.changeKey(currentKey.useAccidental(accidental));
     }
 
     return changedSong;
+  }
+
+  /**
+   * @deprecated Use useAccidental instead
+   */
+  useModifier(accidental: Accidental): Song {
+    return this.useAccidental(accidental);
   }
 
   /**

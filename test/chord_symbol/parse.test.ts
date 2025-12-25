@@ -12,7 +12,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 4,
@@ -29,7 +29,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 4,
@@ -46,7 +46,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -63,7 +63,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -80,7 +80,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 5,
@@ -97,7 +97,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -114,7 +114,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 9,
@@ -138,7 +138,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 4,
@@ -146,7 +146,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 11,
@@ -162,7 +162,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 4,
@@ -170,7 +170,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 11,
@@ -186,7 +186,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -194,7 +194,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 1,
@@ -210,7 +210,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -218,7 +218,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 1,
@@ -234,7 +234,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 5,
@@ -242,7 +242,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 1,
@@ -258,7 +258,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 6,
@@ -266,7 +266,7 @@ describe('Chord', () => {
             },
             bass: {
               grade: 0,
-              modifier: '#',
+              accidental: '#',
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 1,
@@ -283,7 +283,7 @@ describe('Chord', () => {
         expect(chord).toMatchObject({
           root: {
             grade: 0,
-            modifier: '#',
+            accidental: '#',
             type: SYMBOL,
             minor: false,
             referenceKeyGrade: 6,
@@ -291,7 +291,7 @@ describe('Chord', () => {
           },
           bass: {
             grade: 0,
-            modifier: '#',
+            accidental: '#',
             type: SYMBOL,
             minor: false,
             referenceKeyGrade: 1,
@@ -309,7 +309,7 @@ describe('Chord', () => {
             root: null,
             bass: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 11,

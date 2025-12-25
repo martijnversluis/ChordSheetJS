@@ -1,4 +1,4 @@
-import { ChordType, Fret, Modifier } from './constants';
+import { Accidental, ChordType, Fret } from './constants';
 
 export interface SerializedTraceInfo {
   location?: {
@@ -11,10 +11,10 @@ export interface SerializedTraceInfo {
 export interface SerializedChord {
   type: 'chord',
   base: string,
-  modifier: Modifier | null,
+  accidental: Accidental | null,
   suffix: string | null,
   bassBase: string | null,
-  bassModifier: Modifier | null,
+  bassAccidental: Accidental | null,
   chordType: ChordType,
 }
 

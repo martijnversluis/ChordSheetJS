@@ -6,10 +6,10 @@ describe('Chord', () => {
       it('returns a clone of the chord', () => {
         const originalChord = new Chord({
           base: 3,
-          modifier: '#',
+          accidental: '#',
           suffix: 'sus',
           bassBase: 5,
-          bassModifier: 'b',
+          bassAccidental: 'b',
           chordType: NUMERIC,
         });
 

@@ -1,13 +1,13 @@
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 
 import {
+  Accidental,
+  AccidentalMaybe,
   ChordType,
   FLAT,
   MAJOR,
   MINOR,
-  Modifier,
-  ModifierMaybe,
-  NO_MODIFIER,
+  NO_ACCIDENTAL,
   NUMERAL,
   NUMERIC,
   ROMAN_NUMERALS,
@@ -20,10 +20,10 @@ import { KEY_TO_GRADE } from './scales';
 import { gradeToKey } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
-  symbol: /^(?<key>((?<note>[A-Ga-g])(?<modifier>#|b)?))(?<minor>m)?$/,
-  solfege: /^(?<key>((?<note>Do|Re|Mi|Fa|Sol|La|Si|do|re|mi|fa|sol|la|si)(?<modifier>#|b)?))(?<minor>m)?$/,
-  numeric: /^(?<key>(?<modifier>#|b)?(?<note>[1-7]))(?<minor>m)?$/,
-  numeral: /^(?<key>(?<modifier>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2}))$/,
+  symbol: /^(?<key>((?<note>[A-Ga-g])(?<accidental>#|b)?))(?<minor>m)?$/,
+  solfege: /^(?<key>((?<note>Do|Re|Mi|Fa|Sol|La|Si|do|re|mi|fa|sol|la|si)(?<accidental>#|b)?))(?<minor>m)?$/,
+  numeric: /^(?<key>(?<accidental>#|b)?(?<note>[1-7]))(?<minor>m)?$/,
+  numeral: /^(?<key>(?<accidental>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2}))$/,
 };
 
 interface KeyProperties {
@@ -31,9 +31,9 @@ interface KeyProperties {
   number?: number | null;
   type?: ChordType;
   minor?: boolean;
-  modifier?: Modifier | null;
+  accidental?: Accidental | null;
   referenceKeyGrade?: number | null;
-  preferredModifier?: Modifier | null,
+  preferredAccidental?: Accidental | null,
 }
 
 const KEY_TYPES: ChordType[] = [SYMBOL, SOLFEGE, NUMERIC, NUMERAL];
@@ -48,10 +48,10 @@ interface ConstructorOptions {
   number?: number | null;
   minor: boolean;
   type: ChordType;
-  modifier: Modifier | null;
+  accidental: Accidental | null;
   referenceKeyGrade?: number | null;
   originalKeyString?: string | null;
-  preferredModifier: Modifier | null;
+  preferredAccidental: Accidental | null;
 }
 
 /**
@@ -64,12 +64,12 @@ class Key implements KeyProperties {
 
   number: number | null = null;
 
-  modifier: Modifier | null;
+  accidental: Accidental | null;
 
   type: ChordType;
 
-  get unicodeModifier(): string | null {
-    switch (this.modifier) {
+  get unicodeAccidental(): string | null {
+    switch (this.accidental) {
       case FLAT:
         return '\u266d';
       case SHARP:
@@ -79,13 +79,22 @@ class Key implements KeyProperties {
     }
   }
 
+  /** @deprecated Use unicodeAccidental instead */
+  get unicodeModifier(): string | null { return this.unicodeAccidental; }
+
+  /** @deprecated Use accidental instead */
+  get modifier(): Accidental | null { return this.accidental; }
+
+  /** @deprecated Use preferredAccidental instead */
+  get preferredModifier(): Accidental | null { return this.preferredAccidental; }
+
   minor = false;
 
   referenceKeyGrade: number | null = null;
 
   originalKeyString: string | null = null;
 
-  preferredModifier: Modifier | null;
+  preferredAccidental: Accidental | null;
 
   static parse(keyString: string | null): null | Key {
     if (!keyString) return null;
@@ -107,13 +116,13 @@ class Key implements KeyProperties {
 
     if (!match) return null;
 
-    const { minor, note, modifier } = match.groups as { minor?: string, note: string, modifier?: Modifier };
+    const { minor, note, accidental } = match.groups as { minor?: string, note: string, accidental?: Accidental };
 
     return this.resolve({
       key: note,
       keyType,
       minor: minor || false,
-      modifier: modifier || null,
+      accidental: accidental || null,
     });
   }
 
@@ -123,27 +132,27 @@ class Key implements KeyProperties {
       key,
       keyType,
       minor,
-      modifier,
+      accidental,
     }: {
       key: string | number,
       keyType: ChordType,
       minor: string | boolean,
-      modifier: Modifier | null,
+      accidental: Accidental | null,
     },
   ): Key | null {
     const keyString = `${key}`;
     const isMinor = this.isMinor(keyString, keyType, minor);
 
     if (keyType === SYMBOL || keyType === SOLFEGE) {
-      const grade = this.toGrade(keyString, modifier || NO_MODIFIER, keyType, isMinor);
+      const grade = this.toGrade(keyString, accidental || NO_ACCIDENTAL, keyType, isMinor);
 
       if (grade !== null) {
         return new Key({
           grade: 0,
           minor: isMinor,
           type: keyType,
-          modifier: modifier || null,
-          preferredModifier: modifier || null,
+          accidental: accidental || null,
+          preferredAccidental: accidental || null,
           referenceKeyGrade: grade,
           originalKeyString: keyString,
         });
@@ -156,8 +165,8 @@ class Key implements KeyProperties {
       number,
       minor: isMinor,
       type: keyType,
-      modifier: modifier || null,
-      preferredModifier: modifier || null,
+      accidental: accidental || null,
+      preferredAccidental: accidental || null,
       originalKeyString: keyString,
     });
   }
@@ -171,24 +180,29 @@ class Key implements KeyProperties {
     return ROMAN_NUMERALS.findIndex((numeral) => uppercaseKey === numeral) + 1;
   }
 
-  static keyWithModifier(key: string, modifier: Modifier | null, type: ChordType): string {
+  static keyWithAccidental(key: string, accidental: Accidental | null, type: ChordType): string {
     const normalizedKey = key.toUpperCase();
-    const modifierString = modifier || '';
+    const accidentalString = accidental || '';
 
     if (type === SOLFEGE) {
-      return `${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}${modifierString}`;
+      return `${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()}${accidentalString}`;
     }
 
     if (type === SYMBOL) {
-      return `${normalizedKey}${modifierString}`;
+      return `${normalizedKey}${accidentalString}`;
     }
 
-    return `${modifierString}${normalizedKey}`;
+    return `${accidentalString}${normalizedKey}`;
   }
 
-  static toGrade(key: string, modifier: ModifierMaybe, type: ChordType, isMinor: boolean): number | null {
+  /** @deprecated Use keyWithAccidental instead */
+  static keyWithModifier(key: string, accidental: Accidental | null, type: ChordType): string {
+    return this.keyWithAccidental(key, accidental, type);
+  }
+
+  static toGrade(key: string, accidental: AccidentalMaybe, type: ChordType, isMinor: boolean): number | null {
     const mode = (isMinor ? MINOR : MAJOR);
-    const grades = KEY_TO_GRADE[type][mode][modifier];
+    const grades = KEY_TO_GRADE[type][mode][accidental];
 
     if (key in grades) {
       return grades[key];
@@ -265,18 +279,18 @@ class Key implements KeyProperties {
       number = null,
       minor,
       type,
-      modifier,
+      accidental,
       referenceKeyGrade = null,
       originalKeyString = null,
-      preferredModifier = null,
+      preferredAccidental = null,
     }: ConstructorOptions,
   ) {
     this.grade = grade;
     this.number = number;
     this.minor = minor;
     this.type = type;
-    this.modifier = modifier;
-    this.preferredModifier = preferredModifier;
+    this.accidental = accidental;
+    this.preferredAccidental = preferredAccidental;
     this.referenceKeyGrade = referenceKeyGrade;
     this.originalKeyString = originalKeyString;
   }
@@ -335,7 +349,7 @@ class Key implements KeyProperties {
 
     this.grade = Key.toGrade(
       this.number.toString(),
-      this.modifier || NO_MODIFIER,
+      this.accidental || NO_ACCIDENTAL,
       NUMERIC,
       this.isMinor(),
     );
@@ -346,7 +360,7 @@ class Key implements KeyProperties {
   toChordSymbol(key: Key | string): Key {
     if (this.isChordSymbol()) return this.clone();
 
-    const { modifier } = this;
+    const { accidental } = this;
 
     this.ensureGrade();
 
@@ -355,18 +369,18 @@ class Key implements KeyProperties {
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
       type: SYMBOL,
-      modifier: null,
-      preferredModifier: modifier || keyObj.modifier,
+      accidental: null,
+      preferredAccidental: accidental || keyObj.accidental,
     });
 
     const normalized = chordSymbol.normalizeEnharmonics(keyObj);
-    return modifier ? normalized.set({ preferredModifier: modifier, modifier: null }) : normalized;
+    return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
   }
 
   toChordSolfege(key: Key | string): Key {
     if (this.isChordSolfege()) return this.clone();
 
-    const { modifier } = this;
+    const { accidental } = this;
 
     this.ensureGrade();
 
@@ -375,12 +389,12 @@ class Key implements KeyProperties {
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
       type: SOLFEGE,
-      modifier: null,
-      preferredModifier: modifier || keyObj.modifier,
+      accidental: null,
+      preferredAccidental: accidental || keyObj.accidental,
     });
 
     const normalized = chordSolfege.normalizeEnharmonics(keyObj);
-    return modifier ? normalized.set({ preferredModifier: modifier, modifier: null }) : normalized;
+    return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
   }
 
   toChordSymbolString(key: Key): string {
@@ -414,8 +428,8 @@ class Key implements KeyProperties {
   equals(otherKey: Key): boolean {
     return this.grade === otherKey.grade &&
       this.number === otherKey.number &&
-      this.modifier === otherKey.modifier &&
-      this.preferredModifier === otherKey.preferredModifier &&
+      this.accidental === otherKey.accidental &&
+      this.preferredAccidental === otherKey.preferredAccidental &&
       this.type === otherKey.type &&
       this.minor === otherKey.minor;
   }
@@ -448,8 +462,8 @@ class Key implements KeyProperties {
       type: NUMERIC,
       grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
       referenceKeyGrade: 0,
-      modifier: null,
-      preferredModifier: referenceKey.modifier,
+      accidental: null,
+      preferredAccidental: referenceKey.accidental,
     });
   }
 
@@ -472,8 +486,8 @@ class Key implements KeyProperties {
       type: NUMERAL,
       grade: Key.shiftGrade(this.effectiveGrade - referenceKeyGrade),
       referenceKeyGrade: 0,
-      modifier: null,
-      preferredModifier: referenceKey.modifier || this.modifier,
+      accidental: null,
+      preferredAccidental: referenceKey.accidental || this.accidental,
     });
   }
 
@@ -502,8 +516,8 @@ class Key implements KeyProperties {
 
     return gradeToKey({
       type: this.type,
-      modifier: this.modifier,
-      preferredModifier: this.preferredModifier,
+      accidental: this.accidental,
+      preferredAccidental: this.preferredAccidental,
       grade: this.effectiveGrade,
       minor: this.minor,
     });
@@ -513,11 +527,11 @@ class Key implements KeyProperties {
     if (this.number === null) throw new Error('Not possible, grade and number are null');
 
     if (this.isNumeric()) {
-      return `${this.modifier || ''}${this.number}`;
+      return `${this.accidental || ''}${this.number}`;
     }
 
     const numeral = ROMAN_NUMERALS[this.number - 1];
-    return `${this.modifier || ''}${this.isMinor() ? numeral.toLowerCase() : numeral}`;
+    return `${this.accidental || ''}${this.isMinor() ? numeral.toLowerCase() : numeral}`;
   }
 
   get minorSign() {
@@ -548,7 +562,7 @@ class Key implements KeyProperties {
   transpose(delta: number): Key {
     if (delta === 0) return this;
 
-    const originalModifier = this.modifier;
+    const originalAccidental = this.accidental;
     let transposedKey = this.clone();
     const func = (delta < 0) ? 'transposeDown' : 'transposeUp';
 
@@ -556,7 +570,7 @@ class Key implements KeyProperties {
       transposedKey = transposedKey[func]();
     }
 
-    return transposedKey.useModifier(originalModifier);
+    return transposedKey.useAccidental(originalAccidental);
   }
 
   changeGrade(delta) {
@@ -573,13 +587,13 @@ class Key implements KeyProperties {
     const normalizedKey = this.normalize();
     let key: Key = normalizedKey.changeGrade(+1);
 
-    if (this.modifier || !key.canBeSharp()) {
-      key = key.useModifier(null);
+    if (this.accidental || !key.canBeSharp()) {
+      key = key.useAccidental(null);
     } else if (key.canBeSharp()) {
-      key = key.useModifier(SHARP);
+      key = key.useAccidental(SHARP);
     }
 
-    key = key.set({ preferredModifier: SHARP }).normalize();
+    key = key.set({ preferredAccidental: SHARP }).normalize();
     return key;
   }
 
@@ -587,13 +601,13 @@ class Key implements KeyProperties {
     const normalizedKey = this.normalize();
     let key: Key = normalizedKey.changeGrade(-1);
 
-    if (this.modifier || !key.canBeFlat()) {
-      key = key.useModifier(null);
+    if (this.accidental || !key.canBeFlat()) {
+      key = key.useAccidental(null);
     } else if (key.canBeFlat()) {
-      key = key.useModifier(FLAT);
+      key = key.useAccidental(FLAT);
     }
 
-    return key.set({ preferredModifier: FLAT });
+    return key.set({ preferredAccidental: FLAT });
   }
 
   canBeFlat() {
@@ -626,20 +640,23 @@ class Key implements KeyProperties {
     return grade % 12;
   }
 
-  useModifier(newModifier: Modifier | null): Key {
+  useAccidental(newAccidental: Accidental | null): Key {
     this.ensureGrade();
-    return this.set({ modifier: newModifier });
+    return this.set({ accidental: newAccidental });
   }
+
+  /** @deprecated Use useAccidental instead */
+  useModifier(newAccidental: Accidental | null): Key { return this.useAccidental(newAccidental); }
 
   normalize(): Key {
     this.ensureGrade();
 
-    if (this.modifier === SHARP && !this.canBeSharp()) {
-      return this.set({ modifier: null });
+    if (this.accidental === SHARP && !this.canBeSharp()) {
+      return this.set({ accidental: null });
     }
 
-    if (this.modifier === FLAT && !this.canBeFlat()) {
-      return this.set({ modifier: null });
+    if (this.accidental === FLAT && !this.canBeFlat()) {
+      return this.set({ accidental: null });
     }
 
     return this.clone();
@@ -667,11 +684,11 @@ class Key implements KeyProperties {
       grade: this.grade,
       number: this.number,
       type: this.type,
-      modifier: this.modifier,
+      accidental: this.accidental,
       minor: this.minor,
       referenceKeyGrade: this.referenceKeyGrade,
       originalKeyString: this.originalKeyString,
-      preferredModifier: this.preferredModifier,
+      preferredAccidental: this.preferredAccidental,
       ...(overwrite ? attributes : {}),
     });
   }

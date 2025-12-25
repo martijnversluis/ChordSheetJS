@@ -69,7 +69,7 @@ class ChordRenderer {
       chord,
       [
         (c: Chord) => c.transpose(this.effectiveTransposeDistance),
-        (c: Chord) => (this.modifier ? c.useModifier(this.modifier) : c),
+        (c: Chord) => (this.accidental ? c.useAccidental(this.accidental) : c),
         (c: Chord) => (this.normalizeChords ? c.normalize(this.effectiveKey) : c),
         (c: Chord) => this.changeChordType(c),
       ],
@@ -91,8 +91,8 @@ class ChordRenderer {
     }
   }
 
-  private get modifier() {
-    return this.renderKey?.modifier || this.contextKey?.modifier || null;
+  private get accidental() {
+    return this.renderKey?.accidental || this.contextKey?.accidental || null;
   }
 
   private get effectiveKey() {

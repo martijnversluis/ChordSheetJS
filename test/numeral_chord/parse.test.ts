@@ -24,7 +24,7 @@ describe('Chord', () => {
             root: {
               grade: null,
               number,
-              modifier: null,
+              accidental: null,
               type: NUMERAL,
               minor: false,
               referenceKeyGrade: null,
@@ -39,7 +39,7 @@ describe('Chord', () => {
           expect(Chord.parse(chord.toLowerCase())).toMatchObject({
             root: {
               number,
-              modifier: null,
+              accidental: null,
               type: NUMERAL,
               minor: true,
               referenceKeyGrade: null,
@@ -60,7 +60,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -78,7 +78,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -96,7 +96,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: true,
             referenceKeyGrade: null,
@@ -114,7 +114,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 3,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: true,
             referenceKeyGrade: null,
@@ -132,7 +132,7 @@ describe('Chord', () => {
           root: {
             number: 4,
             grade: null,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -150,7 +150,7 @@ describe('Chord', () => {
           root: {
             number: 4,
             grade: null,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -170,7 +170,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -179,7 +179,7 @@ describe('Chord', () => {
           bass: {
             grade: null,
             number: 1,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -196,7 +196,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -205,7 +205,7 @@ describe('Chord', () => {
           bass: {
             grade: null,
             number: 1,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -222,7 +222,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -231,7 +231,7 @@ describe('Chord', () => {
           bass: {
             grade: null,
             number: 1,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -248,7 +248,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -257,7 +257,7 @@ describe('Chord', () => {
           bass: {
             grade: null,
             number: 1,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -274,7 +274,7 @@ describe('Chord', () => {
           root: {
             grade: null,
             number: 4,
-            modifier: null,
+            accidental: null,
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -283,7 +283,7 @@ describe('Chord', () => {
           bass: {
             grade: null,
             number: 1,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -300,7 +300,7 @@ describe('Chord', () => {
           root: {
             number: 4,
             grade: null,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
@@ -309,7 +309,7 @@ describe('Chord', () => {
           bass: {
             number: 1,
             grade: null,
-            modifier: '#',
+            accidental: '#',
             type: NUMERAL,
             minor: false,
             referenceKeyGrade: null,
