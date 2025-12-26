@@ -6,7 +6,7 @@ import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 import { GRADE_TO_KEY } from './scales';
 
 import {
-  ChordType, MAJOR, MINOR, Modifier, ModifierMaybe, NO_MODIFIER, NUMERAL, SHARP,
+  Accidental, AccidentalMaybe, ChordType, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, SHARP,
 } from './constants';
 
 export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
@@ -109,22 +109,22 @@ export function normalizeLineEndings(string: string): string {
 }
 
 class GradeSet {
-  grades: Record<ModifierMaybe, Record<number, string>>;
+  grades: Record<AccidentalMaybe, Record<number, string>>;
 
-  constructor(grades: Record<ModifierMaybe, Record<number, string>>) {
+  constructor(grades: Record<AccidentalMaybe, Record<number, string>>) {
     this.grades = grades;
   }
 
-  determineGrade(modifier: ModifierMaybe | null, preferredModifier: Modifier | null, grade: number) {
-    return this.getGradeForModifier(modifier, grade) ||
-      this.getGradeForModifier(NO_MODIFIER, grade) ||
-      this.getGradeForModifier(preferredModifier, grade) ||
-      this.getGradeForModifier(SHARP, grade);
+  determineGrade(accidental: AccidentalMaybe | null, preferredAccidental: Accidental | null, grade: number) {
+    return this.getGradeForAccidental(accidental, grade) ||
+      this.getGradeForAccidental(NO_ACCIDENTAL, grade) ||
+      this.getGradeForAccidental(preferredAccidental, grade) ||
+      this.getGradeForAccidental(SHARP, grade);
   }
 
-  getGradeForModifier(modifier: ModifierMaybe | null, grade: number) {
-    if (modifier) {
-      return this.grades[modifier][grade];
+  getGradeForAccidental(accidental: AccidentalMaybe | null, grade: number) {
+    if (accidental) {
+      return this.grades[accidental][grade];
     }
 
     return null;
@@ -133,39 +133,39 @@ class GradeSet {
 
 function determineKey({
   type,
-  modifier,
-  preferredModifier,
+  accidental,
+  preferredAccidental,
   grade,
   minor,
 }: {
   type: ChordType,
-  modifier: ModifierMaybe | null,
-  preferredModifier: Modifier | null,
+  accidental: AccidentalMaybe | null,
+  preferredAccidental: Accidental | null,
   grade: number,
   minor: boolean,
 }) {
   const mode = (minor ? MINOR : MAJOR);
   const grades = GRADE_TO_KEY[type][mode];
-  return new GradeSet(grades).determineGrade(modifier, preferredModifier, grade);
+  return new GradeSet(grades).determineGrade(accidental, preferredAccidental, grade);
 }
 
 export function gradeToKey(options: {
   type: ChordType,
-  modifier: ModifierMaybe | null,
-  preferredModifier: Modifier | null,
+  accidental: AccidentalMaybe | null,
+  preferredAccidental: Accidental | null,
   grade: number,
   minor: boolean,
 }): string {
   const {
     type,
-    modifier,
-    preferredModifier,
+    accidental,
+    preferredAccidental,
     grade,
     minor,
   } = options;
 
   let key = determineKey({
-    type, modifier, preferredModifier, grade, minor,
+    type, accidental, preferredAccidental, grade, minor,
   });
 
   if (!key) {

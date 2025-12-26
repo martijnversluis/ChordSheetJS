@@ -45,7 +45,7 @@ export default tseslint.config(
       'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
       'max-depth': ['error', 2],
       'max-len': ['error', { code: 120, ignoreUrls: true }],
-      'max-lines': ['error', 700],
+      'max-lines': ['error', 720],
       'max-lines-per-function': ['error', { max: 25, skipBlankLines: true, skipComments: true }],
       'max-statements': ['error', 10],
       'no-underscore-dangle': 'off',

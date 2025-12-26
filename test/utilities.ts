@@ -12,7 +12,7 @@ import Metadata from '../src/chord_sheet/metadata';
 import { LineType } from '../src/chord_sheet/line';
 import { TernaryProperties } from '../src/chord_sheet/chord_pro/ternary';
 import { stripHTML } from '../src/template_helpers';
-import { ChordType, Fret, Modifier } from '../src/constants';
+import { Accidental, ChordType, Fret } from '../src/constants';
 
 import {
   ContentType,
@@ -228,13 +228,13 @@ export function eachTestCase(table: string, callback: (_testCase: TestCaseProps)
 export function buildKey(
   keyString: string | number,
   keyType: ChordType,
-  modifier?: Modifier | null,
+  accidental?: Accidental | null,
   minor = false,
 ) {
   const resolvedKey = Key.resolve({
     key: keyString,
     keyType,
-    modifier: modifier || null,
+    accidental: accidental || null,
     minor: minor || false,
   });
 

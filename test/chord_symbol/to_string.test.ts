@@ -7,10 +7,10 @@ describe('Chord', () => {
       it('returns the right string representation', () => {
         const chord = new Chord({
           base: 'E',
-          modifier: 'b',
+          accidental: 'b',
           suffix: 'sus',
           bassBase: 'G',
-          bassModifier: '#',
+          bassAccidental: '#',
           chordType: SYMBOL,
         });
 
@@ -21,7 +21,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'E',
-            modifier: 'b',
+            accidental: 'b',
             suffix: 'sus',
             bassBase: 'G',
             chordType: SYMBOL,
@@ -35,7 +35,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'E',
-            modifier: 'b',
+            accidental: 'b',
             suffix: 'sus',
             chordType: SYMBOL,
           });
@@ -60,7 +60,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'E',
-            modifier: 'b',
+            accidental: 'b',
             chordType: SYMBOL,
           });
 
@@ -72,7 +72,7 @@ describe('Chord', () => {
         it('returns the right string representation with flat symbol', () => {
           const chord = new Chord({
             base: 'E',
-            modifier: 'b',
+            accidental: 'b',
             chordType: SYMBOL,
           });
 
@@ -82,7 +82,7 @@ describe('Chord', () => {
         it('returns the right string representation with sharp symbol', () => {
           const chord = new Chord({
             base: 'F',
-            modifier: '#',
+            accidental: '#',
             chordType: SYMBOL,
           });
 

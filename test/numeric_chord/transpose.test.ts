@@ -20,10 +20,10 @@ describe('Chord', () => {
         it('does not change the chord', () => {
           const chord = new Chord({
             base: 7,
-            modifier: '#',
+            accidental: '#',
             suffix: null,
             bassBase: 1,
-            bassModifier: 'b',
+            bassAccidental: 'b',
             chordType: NUMERIC,
           });
 

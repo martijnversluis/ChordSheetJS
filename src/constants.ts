@@ -90,10 +90,27 @@ export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
 export const FLAT = 'b';
 export const SHARP = '#';
-export type Modifier = '#' | 'b';
-export const NO_MODIFIER = 'NM';
-export type NoModifier = 'NM';
-export type ModifierMaybe = Modifier | NoModifier;
+export type Accidental = '#' | 'b';
+export const NO_ACCIDENTAL = 'NM';
+export type NoAccidental = 'NM';
+export type AccidentalMaybe = Accidental | NoAccidental;
+
+/**
+ * @deprecated Use Accidental instead
+ */
+export type Modifier = Accidental;
+/**
+ * @deprecated Use NO_ACCIDENTAL instead
+ */
+export const NO_MODIFIER = NO_ACCIDENTAL;
+/**
+ * @deprecated Use NoAccidental instead
+ */
+export type NoModifier = NoAccidental;
+/**
+ * @deprecated Use AccidentalMaybe instead
+ */
+export type ModifierMaybe = AccidentalMaybe;
 
 export type ChordType = 'symbol' | 'solfege' | 'numeric' | 'numeral';
 export type ChordStyle = 'symbol' | 'solfege' | 'number' | 'numeral';

@@ -139,7 +139,7 @@ function toBeKey(received, { note, modifier, minor = false }) {
   return toBeClassInstanceWithProperties(
     {
       note: received.note.note,
-      modifier: received.modifier,
+      accidental: received.modifier,
       minor: received.minor,
     },
     null,

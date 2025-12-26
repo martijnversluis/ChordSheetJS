@@ -67,8 +67,8 @@ describe('Key', () => {
       const key = new Key({
         grade: 5,
         type: NUMERIC,
-        modifier: SHARP,
-        preferredModifier: FLAT,
+        accidental: SHARP,
+        preferredAccidental: FLAT,
         minor: false,
       });
 

@@ -7,10 +7,10 @@ describe('Chord', () => {
       it('returns the right string representation', () => {
         const chord = new Chord({
           base: 'Mi',
-          modifier: 'b',
+          accidental: 'b',
           suffix: 'sus',
           bassBase: 'Sol',
-          bassModifier: '#',
+          bassAccidental: '#',
           chordType: SOLFEGE,
         });
 
@@ -21,7 +21,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'Mi',
-            modifier: 'b',
+            accidental: 'b',
             suffix: 'sus',
             bassBase: 'Sol',
             chordType: SOLFEGE,
@@ -35,7 +35,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'Mi',
-            modifier: 'b',
+            accidental: 'b',
             suffix: 'sus',
             chordType: SOLFEGE,
           });
@@ -60,7 +60,7 @@ describe('Chord', () => {
         it('returns the right string representation', () => {
           const chord = new Chord({
             base: 'Mi',
-            modifier: 'b',
+            accidental: 'b',
             chordType: SOLFEGE,
           });
 
@@ -72,7 +72,7 @@ describe('Chord', () => {
         it('returns the right string representation with flat solfege', () => {
           const chord = new Chord({
             base: 'Mi',
-            modifier: 'b',
+            accidental: 'b',
             chordType: SOLFEGE,
           });
 
@@ -82,7 +82,7 @@ describe('Chord', () => {
         it('returns the right string representation with sharp symbol', () => {
           const chord = new Chord({
             base: 'Fa',
-            modifier: '#',
+            accidental: '#',
             chordType: SOLFEGE,
           });
 

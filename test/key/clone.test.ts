@@ -5,7 +5,7 @@ describe('Key', () => {
   describe('#clone', () => {
     it('returns a deep copy of the key', () => {
       const key = new Key({
-        grade: 5, modifier: SHARP, preferredModifier: FLAT, minor: true, type: NUMERAL, referenceKeyGrade: 4,
+        grade: 5, accidental: SHARP, preferredAccidental: FLAT, minor: true, type: NUMERAL, referenceKeyGrade: 4,
       });
 
       const clone = key.clone();
