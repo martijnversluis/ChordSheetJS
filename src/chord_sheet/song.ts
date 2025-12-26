@@ -17,9 +17,9 @@ import SongMapper from './song_mapper';
 import Tag from './tag';
 
 import { Accidental } from '../constants';
-import { filterObject } from '../utilities';
 import { testSelector } from '../helpers';
 import { CAPO, KEY } from './tags';
+import { deprecate, filterObject } from '../utilities';
 
 type MapItemsCallback = (_item: Item) => Item | Item[] | null;
 
@@ -368,6 +368,7 @@ class Song extends MetadataAccessors {
    * @deprecated Use useAccidental instead
    */
   useModifier(accidental: Accidental): Song {
+    deprecate('useModifier is deprecated, use useAccidental instead');
     return this.useAccidental(accidental);
   }
 

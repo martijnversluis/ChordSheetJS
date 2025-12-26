@@ -17,7 +17,7 @@ import {
 } from './constants';
 
 import { KEY_TO_GRADE } from './scales';
-import { gradeToKey } from './utilities';
+import { deprecate, gradeToKey } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
   symbol: /^(?<key>((?<note>[A-Ga-g])(?<accidental>#|b)?))(?<minor>m)?$/,
@@ -80,13 +80,22 @@ class Key implements KeyProperties {
   }
 
   /** @deprecated Use unicodeAccidental instead */
-  get unicodeModifier(): string | null { return this.unicodeAccidental; }
+  get unicodeModifier(): string | null {
+    deprecate('unicodeModifier is deprecated, use unicodeAccidental instead');
+    return this.unicodeAccidental;
+  }
 
   /** @deprecated Use accidental instead */
-  get modifier(): Accidental | null { return this.accidental; }
+  get modifier(): Accidental | null {
+    deprecate('modifier is deprecated, use accidental instead');
+    return this.accidental;
+  }
 
   /** @deprecated Use preferredAccidental instead */
-  get preferredModifier(): Accidental | null { return this.preferredAccidental; }
+  get preferredModifier(): Accidental | null {
+    deprecate('preferredModifier is deprecated, use preferredAccidental instead');
+    return this.preferredAccidental;
+  }
 
   minor = false;
 
@@ -197,6 +206,7 @@ class Key implements KeyProperties {
 
   /** @deprecated Use keyWithAccidental instead */
   static keyWithModifier(key: string, accidental: Accidental | null, type: ChordType): string {
+    deprecate('keyWithModifier is deprecated, use keyWithAccidental instead');
     return this.keyWithAccidental(key, accidental, type);
   }
 
@@ -646,7 +656,10 @@ class Key implements KeyProperties {
   }
 
   /** @deprecated Use useAccidental instead */
-  useModifier(newAccidental: Accidental | null): Key { return this.useAccidental(newAccidental); }
+  useModifier(newAccidental: Accidental | null): Key {
+    deprecate('useModifier is deprecated, use useAccidental instead');
+    return this.useAccidental(newAccidental);
+  }
 
   normalize(): Key {
     this.ensureGrade();

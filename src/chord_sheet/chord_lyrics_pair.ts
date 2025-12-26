@@ -1,6 +1,8 @@
-import { Accidental } from '../constants';
 import Chord from '../chord';
 import Key from '../key';
+
+import { Accidental } from '../constants';
+import { deprecate } from '../utilities';
 
 /**
  * Represents a chord with the corresponding (partial) lyrics
@@ -101,6 +103,7 @@ class ChordLyricsPair {
    * @deprecated Use useAccidental instead
    */
   useModifier(accidental: Accidental) {
+    deprecate('useModifier is deprecated, use useAccidental instead');
     return this.useAccidental(accidental);
   }
 

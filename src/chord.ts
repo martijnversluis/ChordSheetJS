@@ -1,7 +1,7 @@
 import ChordParsingError from './chord_parsing_error';
 import Key from './key';
 import { parse } from './parser/chord/peg_parser';
-import { isMinor, normalizeChordSuffix } from './utilities';
+import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 
 import {
   Accidental,
@@ -332,6 +332,7 @@ class Chord implements ChordProperties {
    * @deprecated Use useAccidental instead
    */
   useModifier(newAccidental: Accidental): Chord {
+    deprecate('useModifier is deprecated, use useAccidental instead');
     return this.useAccidental(newAccidental);
   }
 
