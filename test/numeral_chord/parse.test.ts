@@ -32,6 +32,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
 
@@ -47,6 +49,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
       });
@@ -68,6 +72,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: null,
+          quality: null,
+          extensions: null,
         });
       });
 
@@ -86,6 +92,88 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'sus',
+          quality: 'sus',
+          extensions: null,
+        });
+      });
+
+      it('parses a diminished chord', () => {
+        const chord = Chord.parse('VIIdim');
+
+        expect(chord).toMatchObject({
+          root: {
+            grade: null,
+            number: 7,
+            accidental: null,
+            type: NUMERAL,
+            minor: false,
+            referenceKeyGrade: null,
+            originalKeyString: 'VII',
+          },
+          bass: null,
+          suffix: 'dim',
+          quality: 'dim',
+          extensions: null,
+        });
+      });
+
+      it('parses an augmented chord', () => {
+        const chord = Chord.parse('Iaug');
+
+        expect(chord).toMatchObject({
+          root: {
+            grade: null,
+            number: 1,
+            accidental: null,
+            type: NUMERAL,
+            minor: false,
+            referenceKeyGrade: null,
+            originalKeyString: 'I',
+          },
+          bass: null,
+          suffix: 'aug',
+          quality: 'aug',
+          extensions: null,
+        });
+      });
+
+      it('parses a sus2 chord', () => {
+        const chord = Chord.parse('IIsus2');
+
+        expect(chord).toMatchObject({
+          root: {
+            grade: null,
+            number: 2,
+            accidental: null,
+            type: NUMERAL,
+            minor: false,
+            referenceKeyGrade: null,
+            originalKeyString: 'II',
+          },
+          bass: null,
+          suffix: 'sus2',
+          quality: 'sus2',
+          extensions: null,
+        });
+      });
+
+      it('parses a sus4 chord', () => {
+        const chord = Chord.parse('Vsus4');
+
+        expect(chord).toMatchObject({
+          root: {
+            grade: null,
+            number: 5,
+            accidental: null,
+            type: NUMERAL,
+            minor: false,
+            referenceKeyGrade: null,
+            originalKeyString: 'V',
+          },
+          bass: null,
+          suffix: 'sus4',
+          quality: 'sus4',
+          extensions: null,
         });
       });
 
@@ -104,6 +192,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: null,
+          quality: null,
+          extensions: null,
         });
       });
 
@@ -122,6 +212,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'sus',
+          quality: 'sus',
+          extensions: null,
         });
       });
 
@@ -140,6 +232,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'maj9#11',
+          quality: null,
+          extensions: 'maj9#11',
         });
       });
 
@@ -158,6 +252,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'maj9b11',
+          quality: null,
+          extensions: 'maj9b11',
         });
       });
     });
@@ -186,6 +282,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: null,
+          quality: null,
+          extensions: null,
         });
       });
 
@@ -212,6 +310,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'sus4',
+          quality: 'sus4',
+          extensions: null,
         });
       });
 
@@ -238,6 +338,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: null,
+          quality: null,
+          extensions: null,
         });
       });
 
@@ -264,6 +366,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'sus4',
+          quality: 'sus4',
+          extensions: null,
         });
       });
 
@@ -290,6 +394,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'maj9#11',
+          quality: null,
+          extensions: 'maj9#11',
         });
       });
 
@@ -316,6 +422,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'maj9b11',
+          quality: null,
+          extensions: 'maj9b11',
         });
       });
     });
