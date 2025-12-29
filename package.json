@@ -37,8 +37,8 @@
     "@eslint/core": "^0.16.0",
     "@eslint/js": "^9.11.0",
     "@martijnversluis/unibuild": "^2.0.3",
-    "@parcel/packager-ts": "2.13.0",
-    "@parcel/transformer-typescript-types": "2.13.0",
+    "@parcel/packager-ts": "^2.15.4",
+    "@parcel/transformer-typescript-types": "^2.15.4",
     "@types/jest": "^30.0.0",
     "@types/js-levenshtein": "^1",
     "@types/node": "^24.0.0",
@@ -50,14 +50,14 @@
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "js-levenshtein": "^1.1.6",
-    "parcel": "2.13.0",
+    "parcel": "^2.15.4",
     "peggy": "^5.0.2",
     "pegjs-backtrace": "^0.2.1",
     "print": "^1.2.0",
     "process": "^0.11.10",
     "puppeteer": "^24.0.0",
     "theredoc": "^1.0.0",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.2.3",
     "ts-node": "^10.9.2",
     "ts-pegjs": "^3.0.0",
     "tsx": "^4.10.5",
@@ -82,7 +82,7 @@
     "prepare": "yarn install && yarn build",
     "release": "yarn unibuild release",
     "test": "yarn unibuild lint && yarn unibuild test",
-    "playground": "parcel playground/index.html --port=3300 --no-cache"
+    "playground": "cd playground && parcel index.html --port=3300 --no-cache"
   },
   "dependencies": {
     "jspdf": "^3.0.0"
