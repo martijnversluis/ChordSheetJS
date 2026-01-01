@@ -41,7 +41,7 @@
     "@parcel/transformer-typescript-types": "^2.16.3",
     "@types/jest": "^30.0.0",
     "@types/js-levenshtein": "^1",
-    "@types/node": "^24.0.0",
+    "@types/node": "^25.0.3",
     "@types/web": "^0.0.294",
     "esbuild": "^0.25.0",
     "eslint": "^9.11.0",
