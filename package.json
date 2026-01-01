@@ -34,7 +34,7 @@
     "@codemirror/lint": "^6.0.0",
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
-    "@eslint/core": "^0.16.0",
+    "@eslint/core": "^1.0.0",
     "@eslint/js": "^9.11.0",
     "@martijnversluis/unibuild": "^2.0.3",
     "@parcel/packager-ts": "^2.16.3",
