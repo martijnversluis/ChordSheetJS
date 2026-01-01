@@ -411,16 +411,16 @@ __metadata:
   linkType: hard
 
 "@codemirror/language@npm:^6.0.0":
-  version: 6.11.3
-  resolution: "@codemirror/language@npm:6.11.3"
+  version: 6.12.1
+  resolution: "@codemirror/language@npm:6.12.1"
   dependencies:
     "@codemirror/state": "npm:^6.0.0"
     "@codemirror/view": "npm:^6.23.0"
-    "@lezer/common": "npm:^1.1.0"
+    "@lezer/common": "npm:^1.5.0"
     "@lezer/highlight": "npm:^1.0.0"
     "@lezer/lr": "npm:^1.0.0"
     style-mod: "npm:^4.0.0"
-  checksum: 10c0/0cbc2a98bd9e94e8e186af30613741a553fc45479e3875c79bddc32340d4d75ecc36229c66e2ee5fcffbc8fdd49b442e43847799d1d68651e3b4f8ec20d3d092
+  checksum: 10c0/d37e526a839f571f767372c49e28649c4e79a539c73845a74117ee408ad31c29d60a32b5e1bad439637b1456d18154d672eb225e9b4482d3e00eca150461bc6a
   languageName: node
   linkType: hard
 
@@ -1390,6 +1390,13 @@ __metadata:
   version: 1.4.0
   resolution: "@lezer/common@npm:1.4.0"
   checksum: 10c0/6b7a0b5f9b969d5eb87b1a6407abf90809ed4cb290afa4ce0fd412102176144b1d01748f243b27fef1300e0444eb690a519395388cda936fbbb536fd0abb8ebc
+  languageName: node
+  linkType: hard
+
+"@lezer/common@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@lezer/common@npm:1.5.0"
+  checksum: 10c0/12c4b0ea9d621eedb6aa13e41a0628e25f80efe6a1d44cf68a9ea1808db4c8fc124d0691458de69c833860f3235526fbec574005d812c710e693c2dc6e65e3a8
   languageName: node
   linkType: hard
 
