@@ -34,4 +34,24 @@ describe('ChordLyricsPair', () => {
       expect(transposedPair.chords).toEqual('F#');
     });
   });
+
+  describe('#hasLyrics', () => {
+    it('returns true if there are lyrics', () => {
+      const chordLyricsPair = new ChordLyricsPair('C', 'Let it');
+
+      expect(chordLyricsPair.hasLyrics()).toBe(true);
+    });
+
+    it('returns false when the lyrics are falsy', () => {
+      const chordLyricsPair = new ChordLyricsPair('C', '');
+
+      expect(chordLyricsPair.hasLyrics()).toBe(false);
+    });
+
+    it('returns false when the lyrics are only whitespace', () => {
+      const chordLyricsPair = new ChordLyricsPair('C', '   ');
+
+      expect(chordLyricsPair.hasLyrics()).toBe(false);
+    });
+  });
 });

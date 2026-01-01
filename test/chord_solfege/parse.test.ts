@@ -1,4 +1,4 @@
-import '../matchers';
+import '../util/matchers';
 
 import { Chord, SOLFEGE } from '../../src';
 

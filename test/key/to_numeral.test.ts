@@ -1,6 +1,6 @@
 /* eslint quote-props: 0 */
 
-import { buildKey } from '../utilities';
+import { buildKey } from '../util/utilities';
 import { Key, NUMERAL } from '../../src';
 
 const examples = {
@@ -8,7 +8,9 @@ const examples = {
     'C': 'I',
     'C#': '#I',
     'D': 'II',
-    'D#': '#II',
+    'Eb': 'bIII',
+    'E': 'III',
+    'F': 'IV',
     'B': 'VII',
 
     '1': 'I',
@@ -20,7 +22,6 @@ const examples = {
 
   'C#': {
     'D#': 'II',
-    'E': '#II',
     'D': '#I',
     'G': '#IV',
 

@@ -1,8 +1,8 @@
+import { HtmlTemplateCssClasses } from './configuration';
 import template from './templates/html_table_formatter';
+import HtmlFormatter, { CSS, Template } from './html_formatter';
 
-import HtmlFormatter, { CSS, HtmlTemplateCssClasses, Template } from './html_formatter';
-
-/* eslint-disable-next-line max-lines-per-function */
+// eslint-disable-next-line max-lines-per-function
 function defaultCss(cssClasses: HtmlTemplateCssClasses): CSS {
   const {
     annotation,
@@ -52,7 +52,7 @@ class HtmlTableFormatter extends HtmlFormatter {
   }
 
   get defaultCss(): CSS {
-    return defaultCss(this.cssClasses);
+    return defaultCss(this.configuration.cssClasses);
   }
 }
 

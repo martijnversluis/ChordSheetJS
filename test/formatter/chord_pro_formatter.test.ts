@@ -1,5 +1,5 @@
 import { ChordProFormatter } from '../../src';
-import { chordLyricsPair, createSongFromAst } from '../utilities';
+import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 

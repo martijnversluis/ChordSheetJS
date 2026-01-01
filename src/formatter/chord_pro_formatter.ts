@@ -23,10 +23,59 @@ class ChordProFormatter extends Formatter {
    */
   format(song: Song): string {
     const { lines, metadata } = song;
+    const { metadataLines, contentLines } = this.separateMetadataFromContent(lines);
+    const formattedMetadataLines = this.formatMetadataSection(metadataLines);
+    const formattedContentLines = this.formatContentSection(contentLines, metadata);
+    return this.combineMetadataAndContent(formattedMetadataLines, formattedContentLines);
+  }
 
-    return lines
+  private separateMetadataFromContent(lines: Line[]): { metadataLines: Line[], contentLines: Line[] } {
+    const metadataLines: Line[] = [];
+    const contentLines: Line[] = [];
+    let foundContentLine = false;
+
+    lines.forEach((line) => {
+      const isMetadataLine = line.items.length === 1 &&
+        line.items[0] instanceof Tag &&
+        (line.items[0] as Tag).isMetaTag();
+
+      // Only treat as metadata if it appears before any content line
+      // This preserves contextual directives like key changes within the song
+      if (isMetadataLine && !foundContentLine) {
+        metadataLines.push(line);
+      } else {
+        contentLines.push(line);
+        if (line.hasRenderableItems()) {
+          foundContentLine = true;
+        }
+      }
+    });
+
+    return { metadataLines, contentLines };
+  }
+
+  private formatMetadataSection(metadataLines: Line[]): string[] {
+    return metadataLines.map((line) => {
+      const tag = line.items[0] as Tag;
+      return this.formatTag(tag);
+    });
+  }
+
+  private formatContentSection(contentLines: Line[], metadata: Metadata): string {
+    return contentLines
       .map((line) => this.formatLine(line, metadata))
       .join('\n');
+  }
+
+  private combineMetadataAndContent(formattedMetadataLines: string[], formattedContentLines: string): string {
+    if (formattedMetadataLines.length > 0) {
+      if (formattedContentLines.trim().length > 0) {
+        return `${formattedMetadataLines.join('\n')}\n${formattedContentLines}`;
+      }
+      return formattedMetadataLines.join('\n');
+    }
+
+    return formattedContentLines;
   }
 
   formatLine(line: Line, metadata: Metadata): string {
@@ -61,7 +110,7 @@ class ChordProFormatter extends Formatter {
 
   formatOrEvaluateItem(item: Evaluatable, metadata: Metadata): string {
     if (this.configuration.evaluate) {
-      return item.evaluate(metadata, this.configuration.metadataSeparator);
+      return item.evaluate(metadata, this.configuration.metadata.separator);
     }
 
     if (item instanceof Ternary) {

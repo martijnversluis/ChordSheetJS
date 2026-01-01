@@ -1,4 +1,4 @@
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 import { ChordProFormatter, ChordProParser } from '../../src';
 
 describe('chordpro e2e', () => {

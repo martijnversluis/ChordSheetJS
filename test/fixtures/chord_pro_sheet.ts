@@ -1,4 +1,4 @@
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 
 export const chordProSheetSymbol = heredoc`
 {title: Let it be}

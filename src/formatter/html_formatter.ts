@@ -1,35 +1,15 @@
 import Formatter from './formatter';
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
-
+import { getHTMLDefaultConfig } from './configuration';
 import { scopeCss } from '../utilities';
-import Configuration, { ConfigurationProperties } from './configuration';
-
-export interface HtmlTemplateCssClasses {
-  annotation: string,
-  chord: string,
-  chordSheet: string,
-  column: string,
-  comment: string,
-  emptyLine: string,
-  label: string,
-  labelWrapper: string,
-  line: string,
-  literal: string,
-  literalContents: string,
-  lyrics: string,
-  paragraph: string,
-  row: string,
-  subtitle: string,
-  title: string,
-}
+import { HTMLFormatterConfiguration, HtmlTemplateCssClasses } from './configuration';
 
 export interface HtmlTemplateArgs {
-  configuration: Configuration;
+  configuration: HTMLFormatterConfiguration;
   song: Song;
   renderBlankLines?: boolean;
   bodyParagraphs: Paragraph[],
-  cssClasses: HtmlTemplateCssClasses,
 }
 
 export type Template = (_args: HtmlTemplateArgs) => string;
@@ -57,41 +37,13 @@ export const defaultCssClasses: HtmlTemplateCssClasses = {
 /**
  * Acts as a base class for HTML formatters
  */
-abstract class HtmlFormatter extends Formatter {
-  cssClasses: HtmlTemplateCssClasses;
-
+abstract class HtmlFormatter extends Formatter<HTMLFormatterConfiguration> {
   /**
-   * Instantiate the formatter. For all options see {@link Formatter}
-   * @param {Object} [configuration={}] options
-   * @param {object} [configuration.cssClasses={}] CSS classes to use in the HTML output. The default classes are
-   * defined in {@link defaultCssClasses}. You can override them by providing your own classes here:
-   * @example
-   * ```javascript
-   * {
-   *    cssClasses: {
-   *      annotation: 'my-annotation',
-   *      chord: 'my-chord',
-   *      chordSheet: 'my-chord-sheet',
-   *      column: 'my-column',
-   *      comment: 'my-comment',
-   *      emptyLine: 'my-empty-line',
-   *      label: 'my-label',
-   *      labelWrapper: 'my-label-wrapper',
-   *      line: 'my-line',
-   *      literal: 'my-literal',
-   *      literalContents: 'my-contents',
-   *      lyrics: 'my-lyrics',
-   *      paragraph: 'my-paragraph',
-   *      row: 'my-row',
-   *      subtitle: 'my-subtitle',
-   *      title: 'my-title',
-   *    }
-   *  }
-   *  ```
+   * Get the default configuration for HTML formatter
+   * Uses the HTML-specific default configuration from the configuration manager
    */
-  constructor(configuration: ConfigurationProperties & { cssClasses?: Partial<HtmlTemplateCssClasses> } = {}) {
-    super(configuration);
-    this.cssClasses = { ...defaultCssClasses, ...configuration.cssClasses };
+  protected getDefaultConfiguration(): HTMLFormatterConfiguration {
+    return getHTMLDefaultConfig();
   }
 
   /**
@@ -107,7 +59,6 @@ abstract class HtmlFormatter extends Formatter {
         song,
         configuration: this.configuration,
         bodyParagraphs: this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs,
-        cssClasses: this.cssClasses,
       },
     );
   }

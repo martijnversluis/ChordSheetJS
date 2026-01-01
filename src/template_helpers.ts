@@ -4,18 +4,24 @@ import Font from './chord_sheet/font';
 import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import Metadata from './chord_sheet/metadata';
+import { MetadataConfiguration } from './formatter/configuration/base_configuration';
+import MetadataProcessor from './template_helpers/metadata_processor';
 import Paragraph from './chord_sheet/paragraph';
 import Tag from './chord_sheet/tag';
 import When from './template_helpers/when';
 import WhenCallback from './template_helpers/when_callback';
 
-import Configuration, { Delegate, defaultDelegate } from './formatter/configuration';
-
-import { HtmlTemplateCssClasses } from './formatter/html_formatter';
-import { Literal } from './index';
 import { renderChord } from './helpers';
 import { INDETERMINATE, NONE } from './constants';
+import { Literal, SoftLineBreak } from './index';
 import { hasChordContents, isEmptyString, isEvaluatable } from './utilities';
+
+import {
+  Configuration,
+  Delegate,
+  HtmlTemplateCssClasses,
+  defaultDelegate,
+} from './formatter/configuration';
 
 type EachCallback = (_item: any) => string;
 
@@ -40,6 +46,14 @@ export function isLiteral(item: Item): boolean {
 
 export function isComment(item: Tag): boolean {
   return item.name === 'comment';
+}
+
+export function isColumnBreak(item: Item): boolean {
+  return item instanceof Tag && item.name === 'column_break';
+}
+
+export function isSoftLineBreak(item: Item): boolean {
+  return item instanceof SoftLineBreak;
 }
 
 export function stripHTML(string: string): string {
@@ -110,12 +124,22 @@ export function fontStyleTag(font: Font): string {
   return '';
 }
 
+export function processMetadata(
+  metadata: Record<string, string | string[]>,
+  config: MetadataConfiguration,
+): [string, string | string[]][] {
+  return new MetadataProcessor(metadata, config).process();
+}
+
 export default {
+  isLiteral,
+  isSoftLineBreak,
   isEvaluatable,
   isChordLyricsPair,
   lineHasContents,
   isTag,
   isComment,
+  isColumnBreak,
   stripHTML,
   each,
   when,
@@ -126,4 +150,5 @@ export default {
   fontStyleTag,
   renderChord,
   hasChordContents,
+  processMetadata,
 };

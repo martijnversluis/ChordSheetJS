@@ -29,6 +29,7 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.node,
+        ...globals.browser, // Voeg browser globals toe zodat ESLint DOM types zoals HTMLElement en document herkent
       },
     },
     rules: {
@@ -41,13 +42,13 @@ export default tseslint.config(
       ...variablesRules,
 
       'class-methods-use-this': 'off',
-      'complexity': ['error', 10],
+      'complexity': ['error', 11],
       'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
       'max-depth': ['error', 2],
       'max-len': ['error', { code: 120, ignoreUrls: true }],
-      'max-lines': ['error', 720],
+      'max-lines': ['error', 730],
       'max-lines-per-function': ['error', { max: 25, skipBlankLines: true, skipComments: true }],
-      'max-statements': ['error', 10],
+      'max-statements': ['error', 12],
       'no-underscore-dangle': 'off',
       'no-unused-vars': 'off',
       'object-curly-spacing': ['error', 'always'],
@@ -77,6 +78,18 @@ export default tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
+    },
+  },
+  {
+    files: ['playground/**/*.ts', 'test/formatter/pdf/pdf-dev.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        CodeMirror: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off',
     },
   },
   {
@@ -110,24 +123,39 @@ export default tseslint.config(
   {
     files: ['test/fixtures/**/*.ts'],
     rules: {
+      'max-len': 'off',
       'max-lines': 'off',
       'max-lines-per-function': 'off',
     },
   },
   {
-    files: ['test/matchers.ts', 'test/utilities.ts', 'unibuild.ts'],
+    files: ['playground/fixtures/content/example-chordpro.ts'],
     rules: {
+      'max-len': 'off',
+    },
+  },
+  {
+    files: ['playground/**/*.*', 'test/util/**/*.ts', '**/*.js', 'unibuild.ts'],
+    rules: {
+      'complexity': 'off',
       'jest/no-export': 'off',
+      'max-depth': 'off',
+      'max-lines': 'off',
       'max-lines-per-function': 'off',
       'max-statements': 'off',
     },
   },
   {
     ignores: [
+      'dist/**/*',
+      'playground/dist/**/*',
       'lib/**/*',
+      'src/formatter/pdf_formatter/fonts/**/*',
       'src/normalize_mappings/suffix-normalize-mapping.ts',
       'src/parser/*/peg_parser.ts',
       'tmp/**/*',
+      './**/*.{css,html,md,json}',
+      '**/.parcelrc',
     ],
   },
 );

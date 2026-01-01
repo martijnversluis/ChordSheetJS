@@ -1,20 +1,20 @@
 {
   "compilerOptions": {
-    "outDir": "./lib",
-    "module": "commonjs",
-    "target": "es2018",
-    "moduleResolution": "node",
-    "lib": ["es2018", "es2019", "dom"],
-    "types": ["node", "jest"],
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "noEmitOnError":  true,
-    "noImplicitAny": false,
-    "noFallthroughCasesInSwitch":  true,
     "forceConsistentCasingInFileNames": true,
+    "lib": ["es2018", "es2019", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError":  true,
+    "noFallthroughCasesInSwitch":  true,
+    "noImplicitAny": false,
+    "outDir": "./lib",
+    "resolveJsonModule": true,
+    "strict": true,
     "strictNullChecks": true,
-    "strict": true
+    "target": "es2018",
+    "types": ["node", "jest"],
   },
   "parserOptions": {
     "project": "./tsconfig.json"

@@ -16,6 +16,7 @@ export interface SerializedChord {
   bassBase: string | null,
   bassAccidental: Accidental | null,
   chordType: ChordType,
+  optional?: boolean,
 }
 
 export interface SerializedChordLyricsPair {

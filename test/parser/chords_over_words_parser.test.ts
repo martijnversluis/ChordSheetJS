@@ -1,7 +1,7 @@
-import '../matchers';
+import '../util/matchers';
 
 import { ChordsOverWordsParser } from '../../src';
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 
 describe('ChordsOverWordsParser', () => {
   it('parses chords over words correctly', () => {
@@ -508,6 +508,26 @@ describe('ChordsOverWordsParser', () => {
       expect(line1Pairs[4]).toBeChordLyricsPair('', 'on Heaven\'s ');
       expect(line1Pairs[5]).toBeChordLyricsPair('F2', 'door');
     });
+
+    it('supports chords surrounded by round brackets', () => {
+      const chordOverWords = heredoc`
+        Chorus 1
+              Am            (C)
+        Let it   be, let it be`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines[0].items.length).toEqual(1);
+      expect(lines[0].items[0]).toBeTag('comment', 'Chorus 1');
+
+      const line1Pairs = lines[1].items;
+      expect(line1Pairs[0]).toBeChordLyricsPair('', 'Let it');
+      expect(line1Pairs[1]).toBeChordLyricsPair('Am', ' ');
+      expect(line1Pairs[2]).toBeChordLyricsPair('', 'be, let it ');
+      expect(line1Pairs[3]).toBeChordLyricsPair('(C)', 'be');
+    });
   });
 
   it('support CR line endings', () => {
@@ -573,8 +593,8 @@ describe('ChordsOverWordsParser', () => {
   describe('with option softLineBreaks=true', () => {
     it('parses soft line breaks', () => {
       const chordOverWords = heredoc`
-               Am         C/G          F          C
-        Let it be, let it be, let it \\ be, let it be
+               Am         C/G         F          C
+        Let it be, let it be, let it\\ be, let it be
       `;
 
       const parser = new ChordsOverWordsParser();
@@ -587,11 +607,30 @@ describe('ChordsOverWordsParser', () => {
       expect(lineItems[1]).toBeChordLyricsPair('Am', 'be, ');
       expect(lineItems[2]).toBeChordLyricsPair('', 'let it ');
       expect(lineItems[3]).toBeChordLyricsPair('C/G', 'be, ');
-      expect(lineItems[4]).toBeChordLyricsPair('', 'let it ');
+      expect(lineItems[4]).toBeChordLyricsPair('', 'let it');
       expect(lineItems[5]).toBeSoftLineBreak();
       expect(lineItems[6]).toBeChordLyricsPair('F', 'be, ');
       expect(lineItems[7]).toBeChordLyricsPair('', 'let it ');
       expect(lineItems[8]).toBeChordLyricsPair('C', 'be');
+    });
+
+    it('parses soft line breaks when chord is on breaking word', () => {
+      const chordOverWords = heredoc`
+               Am  C/G
+        Let it be\\ let it be
+      `;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords, { softLineBreaks: true });
+      const { lines } = song;
+
+      const lineItems = lines[0].items;
+
+      expect(lineItems[0]).toBeChordLyricsPair('', 'Let it ');
+      expect(lineItems[1]).toBeChordLyricsPair('Am', 'be');
+      expect(lineItems[2]).toBeSoftLineBreak();
+      expect(lineItems[3]).toBeChordLyricsPair('C/G', 'let ');
+      expect(lineItems[4]).toBeChordLyricsPair('', 'it be');
     });
   });
 

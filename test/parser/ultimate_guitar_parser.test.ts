@@ -1,7 +1,7 @@
 import fs from 'fs';
 
-import '../matchers';
-import { heredoc } from '../utilities';
+import '../util/matchers';
+import { heredoc } from '../util/utilities';
 import { normalizeLineEndings } from '../../src/utilities';
 import { ChordProFormatter, UltimateGuitarParser } from '../../src';
 

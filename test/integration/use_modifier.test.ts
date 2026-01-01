@@ -1,4 +1,4 @@
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 import { ChordProParser, TextFormatter } from '../../src';
 
 describe('changing the song modifiers', () => {

@@ -5,9 +5,13 @@ import { Chord } from '../../src';
 const majorExamples = {
   'Ab': {
     '1': 'Ab',
+
     'b2': 'A',
+
     '2': 'Bb',
+
     'b3': 'Cb',
+
     '3': 'C',
     '4': 'Db',
     'b5': 'D',
@@ -35,7 +39,7 @@ const majorExamples = {
 
   'Bb': {
     '1': 'Bb',
-    'b2': 'B',
+    'b2': 'Cb',
     '2': 'C',
     'b3': 'Db',
     '3': 'D',
@@ -248,51 +252,6 @@ const majorExamples = {
 
 const minorExamples = {
   'Am': {
-    '1m': 'Am',
-    'b2m': 'Bbm',
-    '2m': 'Bm',
-    '3m': 'Cm',
-    'b4m': 'Dbm',
-    '4m': 'Dm',
-    'b5m': 'Ebm',
-    '5m': 'Em',
-    '6m': 'Fm',
-    '#6m': 'Gbm',
-    'b7m': 'Gbm',
-    '7m': 'Gm',
-  },
-
-  'Bbm': {
-    '1m': 'Bbm',
-    'b2m': 'Bm',
-    '2m': 'Cm',
-    '3m': 'Dbm',
-    'b4m': 'Dm',
-    '4m': 'Ebm',
-    'b5m': 'Em',
-    '5m': 'Fm',
-    '6m': 'F#m',
-    '#6m': 'Gm',
-    'b7m': 'Gm',
-    '7m': 'Abm',
-  },
-
-  'Bm': {
-    '1m': 'Bm',
-    'b2m': 'Cm',
-    '2m': 'C#m',
-    '3m': 'Dm',
-    'b4m': 'Ebm',
-    '4m': 'Em',
-    'b5m': 'Fm',
-    '5m': 'F#m',
-    '6m': 'Gm',
-    '#6m': 'G#m',
-    'b7m': 'Abm',
-    '7m': 'Am',
-  },
-
-  'Cm': {
     '1m': 'Cm',
     'b2m': 'Dbm',
     '2m': 'Dm',
@@ -300,74 +259,79 @@ const minorExamples = {
     'b4m': 'Em',
     '4m': 'Fm',
     'b5m': 'Gbm',
-    '5m': 'Gm',
-    '6m': 'Abm',
-    '#6m': 'Am',
-    'b7m': 'Am',
-    '7m': 'Bbm',
+    '5m': 'Abm',
+    '6m': 'Am',
+    '#6m': 'Bbm',
+    'b7m': 'Bbm',
+    '7m': 'Bbm'
+    ,
   },
 
-  'C#m': {
-    '1m': 'C#m',
+  'Bbm': {
+    '1m': 'Dbm',
     'b2m': 'Dm',
     '2m': 'Ebm',
     '3m': 'Em',
     'b4m': 'Fm',
-    '4m': 'F#m',
+    '4m': 'Gbm',
     'b5m': 'Gm',
-    '5m': 'G#m',
-    '6m': 'Am',
-    '#6m': 'Bbm',
-    'b7m': 'Bbm',
-    '7m': 'Bm',
-  },
-
-  'Dm': {
-    '1m': 'Dm',
-    'b2m': 'Ebm',
-    '2m': 'Em',
-    '3m': 'Fm',
-    'b4m': 'Gbm',
-    '4m': 'Gm',
-    'b5m': 'Abm',
     '5m': 'Am',
     '6m': 'Bbm',
     '#6m': 'Bm',
     'b7m': 'Bm',
-    '7m': 'Cm',
+    '7m': 'Bm',
+
   },
 
-  'Ebm': {
-    '1m': 'Ebm',
-    'b2m': 'Em',
-    '2m': 'Fm',
-    '3m': 'Gbm',
-    'b4m': 'Gm',
-    '4m': 'Abm',
-    'b5m': 'Am',
+  'Bm': {
+    '1m': 'Dm',
+    'b2m': 'Ebm',
+    '2m': 'Em',
+    '3m': 'Fm',
+    'b4m': 'F#m',
+    '4m': 'Gm',
+    'b5m': 'Abm',
     '5m': 'Bbm',
     '6m': 'Bm',
     '#6m': 'Cm',
     'b7m': 'Cm',
-    '7m': 'Dbm',
+    '7m': 'Cm',
+
   },
 
-  'Em': {
+  'Cm': {
+    '1m': 'D#m',
+    'b2m': 'Em',
+    '2m': 'Fm',
+    '3m': 'F#m',
+    'b4m': 'Gm',
+    '4m': 'G#m',
+    'b5m': 'Am',
+    '5m': 'Bm',
+    '6m': 'Cm',
+    '#6m': 'C#m',
+    'b7m': 'C#m',
+    '7m': 'C#m'
+    ,
+  },
+
+  'C#m': {
     '1m': 'Em',
     'b2m': 'Fm',
     '2m': 'F#m',
     '3m': 'Gm',
-    'b4m': 'Abm',
+    'b4m': 'G#m',
     '4m': 'Am',
     'b5m': 'Bbm',
-    '5m': 'Bm',
-    '6m': 'Cm',
-    '#6m': 'Dbm',
-    'b7m': 'Dbm',
+    '5m': 'Cm',
+    '6m': 'C#m',
+    '#6m': 'Dm',
+    'b7m': 'Dm',
     '7m': 'Dm',
+
   },
 
-  'Fm': {
+  'Dm': {
     '1m': 'Fm',
     'b2m': 'Gbm',
     '2m': 'Gm',
@@ -375,29 +339,31 @@ const minorExamples = {
     'b4m': 'Am',
     '4m': 'Bbm',
     'b5m': 'Bm',
-    '5m': 'Cm',
-    '6m': 'Dbm',
-    '#6m': 'Dm',
-    'b7m': 'Dm',
-    '7m': 'Ebm',
-  },
-
-  'F#m': {
-    '1m': 'F#m',
-    'b2m': 'Gm',
-    '2m': 'G#m',
-    '3m': 'Am',
-    'b4m': 'Bbm',
-    '4m': 'Bm',
-    'b5m': 'Cm',
     '5m': 'C#m',
     '6m': 'Dm',
     '#6m': 'Ebm',
     'b7m': 'Ebm',
-    '7m': 'Em',
+    '7m': 'Ebm'
+    ,
   },
 
-  'Gm': {
+  'Ebm': {
+    '1m': 'Gbm',
+    'b2m': 'Gm',
+    '2m': 'Abm',
+    '3m': 'Am',
+    'b4m': 'Bbm',
+    '4m': 'Cbm',
+    'b5m': 'Cm',
+    '5m': 'Dm',
+    '6m': 'Ebm',
+    '#6m': 'Fbm',
+    'b7m': 'Fbm',
+    '7m': 'Fbm'
+    ,
+  },
+
+  'Em': {
     '1m': 'Gm',
     'b2m': 'Abm',
     '2m': 'Am',
@@ -405,26 +371,75 @@ const minorExamples = {
     'b4m': 'Bm',
     '4m': 'Cm',
     'b5m': 'Dbm',
-    '5m': 'Dm',
-    '6m': 'Ebm',
-    '#6m': 'Em',
-    'b7m': 'Em',
+    '5m': 'Ebm',
+    '6m': 'Em',
+    '#6m': 'Fm',
+    'b7m': 'Fm',
     '7m': 'Fm',
+
   },
 
-  'G#m': {
+  'Fm': {
     '1m': 'G#m',
     'b2m': 'Am',
-    '2m': 'A#m',
+    '2m': 'Bbm',
     '3m': 'Bm',
     'b4m': 'Cm',
     '4m': 'C#m',
     'b5m': 'Dm',
-    '5m': 'D#m',
-    '6m': 'Em',
-    '#6m': 'Fm',
-    '7m': 'F#m',
-    '#7m': 'Gm',
+    '5m': 'Em',
+    '6m': 'Fm',
+    '#6m': 'F#m',
+    'b7m': 'F#m',
+    '7m': 'F#m'
+    ,
+  },
+
+  'F#m': {
+    '1m': 'Am',
+    'b2m': 'Bbm',
+    '2m': 'Bm',
+    '3m': 'Cm',
+    'b4m': 'Dbm',
+    '4m': 'Dm',
+    'b5m': 'Ebm',
+    '5m': 'Fm',
+    '6m': 'F#m',
+    '#6m': 'Gm',
+    'b7m': 'Gm',
+    '7m': 'Gm',
+
+  },
+
+  'Gm': {
+    '1m': 'A#m',
+    'b2m': 'Bm',
+    '2m': 'Cm',
+    '3m': 'C#m',
+    'b4m': 'Dm',
+    '4m': 'D#m',
+    'b5m': 'Em',
+    '5m': 'F#m',
+    '6m': 'Gm',
+    '#6m': 'G#m',
+    'b7m': 'G#m',
+    '7m': 'G#m'
+    ,
+  },
+
+  'G#m': {
+    '1m': 'Bm',
+    'b2m': 'Cm',
+    '2m': 'C#m',
+    '3m': 'Dm',
+    'b4m': 'D#m',
+    '4m': 'Em',
+    'b5m': 'Fm',
+    '5m': 'Gm',
+    '6m': 'G#m',
+    '#6m': 'Am',
+    'b7m': 'Am',
+    '7m': 'Am',
   },
 };
 

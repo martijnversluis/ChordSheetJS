@@ -126,6 +126,47 @@ const formatter = new ChordSheetJS.ChordProFormatter();
 const disp = formatter.format(song);
 ```
 
+#### Chords over words format
+
+```javascript
+const formatter = new ChordSheetJS.ChordsOverWordsFormatter();
+const disp = formatter.format(song);
+```
+
+#### PDF format (BETA)
+
+> **Note:** `PdfFormatter` is currently in beta. Its API may change in future releases.
+
+Generates a PDF document directly. Requires configuration for page size and fonts.
+
+```javascript
+const formatter = new ChordSheetJS.PdfFormatter();
+const doc = formatter.format(song);
+doc.save('song.pdf');
+```
+
+#### Measured HTML format (BETA)
+
+> **Note:** `MeasuredHtmlFormatter` is currently in beta. Its API may change in future releases.
+
+Creates HTML output with precise text measurement for accurate chord positioning.
+
+```javascript
+const formatter = new ChordSheetJS.MeasuredHtmlFormatter();
+const disp = formatter.format(song);
+```
+
+### Layout Engine
+
+The `PdfFormatter` and `MeasuredHtmlFormatter` are powered by a layout engine that handles text measurement
+and precise positioning of chords above lyrics. The layout engine uses measurers to calculate text dimensions:
+
+- `DomMeasurer` - Measures text using the browser's DOM
+- `CanvasMeasurer` - Measures text using HTML Canvas
+- `JsPdfMeasurer` - Measures text using jsPDF (for PDF output)
+
+These are used internally by the measurement-based formatters but can also be accessed directly for advanced use cases.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by

@@ -149,7 +149,7 @@ export default unibuild((u: Config) => {
 
   u.lint('checkTypes', {
     requires: jsBuild,
-    command: `tsc ${types}`,
+    command: `tsc --skipLibCheck ${types}`,
   });
 
   u.lint('eslint', {

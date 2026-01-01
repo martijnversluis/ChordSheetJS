@@ -1,6 +1,6 @@
 import {
   chordLyricsPair, comment, createSongFromAst, section, softLineBreak, tag, ternary,
-} from '../utilities';
+} from '../util/utilities';
 
 // This Song object mimics the chord pro sheet in chord_pro_sheet.js
 export const exampleSongSymbol = createSongFromAst([

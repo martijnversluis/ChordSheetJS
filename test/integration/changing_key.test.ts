@@ -1,14 +1,16 @@
-import { heredoc } from '../utilities';
+import { heredoc } from '../util/utilities';
 import { ChordProFormatter, ChordProParser, TextFormatter } from '../../src';
 
 describe('changing the key of an existing song (symbol chords)', () => {
   it('updates the key directive and transposes the chords', () => {
     const chordpro = heredoc`
       {key: C}
+
       Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be`;
 
     const changedSheet = heredoc`
       {key: D}
+
       Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordpro);
@@ -33,6 +35,7 @@ describe('changing the key of an existing song (symbol chords)', () => {
 
     const changedSheet = heredoc`
       {key: D}
+
       Let it [Bm]be, let it [D/A]be, let it [G]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordSheet);
@@ -55,10 +58,12 @@ describe('changing the key of an existing song (solfege chords)', () => {
   it('updates the key directive and transposes the chords', () => {
     const chordpro = `
 {key: Do}
+
 Let it [Lam]be, let it [Do/Sol]be, let it [Fa]be, let it [Do]be`.substring(1);
 
     const changedSheet = `
 {key: Re}
+
 Let it [Sim]be, let it [Re/La]be, let it [Sol]be, let it [Re]be`.substring(1);
 
     const song = new ChordProParser().parse(chordpro);
@@ -83,6 +88,7 @@ Let it [Lam]be, let it [Do/Sol]be, let it [Fa]be, let it [Do]be`.substring(1);
 
     const changedSheet = `
 {key: Re}
+
 Let it [Sim]be, let it [Re/La]be, let it [Sol]be, let it [Re]be`.substring(1);
 
     const song = new ChordProParser().parse(chordSheet);

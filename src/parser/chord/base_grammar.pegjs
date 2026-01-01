@@ -1,5 +1,8 @@
 Chord
-  = chord:(Numeral / Numeric / ChordSolfege / ChordSymbol) {
+  = "(" chord:(Numeral / Numeric / ChordSolfege / ChordSymbol) ")" {
+      return { type: "chord", ...chord, column: location().start.column, optional: true };
+    }
+  / chord:(Numeral / Numeric / ChordSolfege / ChordSymbol) {
       return { type: "chord", ...chord, column: location().start.column };
     }
 

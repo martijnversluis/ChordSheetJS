@@ -1,4 +1,4 @@
-import '../matchers';
+import '../util/matchers';
 
 import ChordSheetSerializer from '../../src/chord_sheet_serializer';
 
@@ -13,7 +13,7 @@ import {
 
 import {
   chordLyricsPair, createSongFromAst, heredoc, html, section,
-} from '../utilities';
+} from '../util/utilities';
 
 describe('HtmlDivFormatter', () => {
   it('formats a symbol song to a html chord sheet correctly', () => {
