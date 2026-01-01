@@ -10,8 +10,11 @@ ChordAccidental
   = "#" / "b"
 
 ChordSymbol
-  = root:ChordSymbolRoot accidental:ChordAccidental? suffix:$(ChordSuffix) bass:ChordSymbolBass? {
-  	  return { base: root, accidental, suffix, ...bass, chordType: "symbol" };
+  = root:ChordSymbolRoot accidental:ChordAccidental? suffix:ChordSuffix bass:ChordSymbolBass? {
+      const suffixProps = typeof suffix === 'string' || suffix === null
+        ? { suffix }
+        : { quality: suffix.quality, extensions: suffix.extensions };
+  	  return { base: root, accidental, ...suffixProps, ...bass, chordType: "symbol" };
     }
   / bass:ChordSymbolBass {
       return { base: null, accidental: null, suffix: null, ...bass, chordType: "symbol" };
@@ -26,8 +29,11 @@ ChordSymbolBass
     }
 
 ChordSolfege
-  = root:ChordSolfegeRoot accidental:ChordAccidental? suffix:$(ChordSuffix) bass:ChordSolfegeBass? {
-  	  return { base: root, accidental, suffix, ...bass, chordType: "solfege" };
+  = root:ChordSolfegeRoot accidental:ChordAccidental? suffix:ChordSuffix bass:ChordSolfegeBass? {
+      const suffixProps = typeof suffix === 'string' || suffix === null
+        ? { suffix }
+        : { quality: suffix.quality, extensions: suffix.extensions };
+  	  return { base: root, accidental, ...suffixProps, ...bass, chordType: "solfege" };
     }
   / bass:ChordSolfegeBass {
       return { base: null, accidental: null, suffix: null, ...bass, chordType: "solfege" };
@@ -42,8 +48,11 @@ ChordSolfegeBass
     }
 
 Numeral
-  = accidental:ChordAccidental? root:NumeralRoot suffix:$(ChordSuffix) bass:NumeralBass? {
-      return { base: root, accidental, suffix, ...bass, chordType: "numeral" };
+  = accidental:ChordAccidental? root:NumeralRoot suffix:ChordSuffix bass:NumeralBass? {
+      const suffixProps = typeof suffix === 'string' || suffix === null
+        ? { suffix }
+        : { quality: suffix.quality, extensions: suffix.extensions };
+      return { base: root, accidental, ...suffixProps, ...bass, chordType: "numeral" };
     }
   / bass:NumeralBass {
       return { base: null, accidental: null, suffix: null, ...bass, chordType: "numeral" };
@@ -58,8 +67,11 @@ NumeralBass
     }
 
 Numeric
-  = accidental:ChordAccidental? root:NumericRoot suffix:$(ChordSuffix) bass:NumericBass? {
-      return { base: root, accidental, suffix, ...bass, chordType: "numeric" };
+  = accidental:ChordAccidental? root:NumericRoot suffix:ChordSuffix bass:NumericBass? {
+      const suffixProps = typeof suffix === 'string' || suffix === null
+        ? { suffix }
+        : { quality: suffix.quality, extensions: suffix.extensions };
+      return { base: root, accidental, ...suffixProps, ...bass, chordType: "numeric" };
     }
   / bass:NumericBass {
       return { base: null, accidental: null, suffix: null, ...bass, chordType: "numeric" };

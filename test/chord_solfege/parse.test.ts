@@ -20,6 +20,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
 
@@ -37,6 +39,103 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'sus',
+            quality: 'sus',
+            extensions: null,
+          });
+        });
+
+        it('parses a minor chord', () => {
+          const chord = Chord.parse('Lam');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SOLFEGE,
+              minor: true,
+              referenceKeyGrade: 9,
+              originalKeyString: 'La',
+            },
+            bass: null,
+            suffix: 'm',
+            quality: 'm',
+            extensions: null,
+          });
+        });
+
+        it('parses a diminished chord', () => {
+          const chord = Chord.parse('Sidim');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SOLFEGE,
+              minor: false,
+              referenceKeyGrade: 11,
+              originalKeyString: 'Si',
+            },
+            bass: null,
+            suffix: 'dim',
+            quality: 'dim',
+            extensions: null,
+          });
+        });
+
+        it('parses an augmented chord', () => {
+          const chord = Chord.parse('Doaug');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SOLFEGE,
+              minor: false,
+              referenceKeyGrade: 0,
+              originalKeyString: 'Do',
+            },
+            bass: null,
+            suffix: 'aug',
+            quality: 'aug',
+            extensions: null,
+          });
+        });
+
+        it('parses a sus2 chord', () => {
+          const chord = Chord.parse('Resus2');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SOLFEGE,
+              minor: false,
+              referenceKeyGrade: 2,
+              originalKeyString: 'Re',
+            },
+            bass: null,
+            suffix: 'sus2',
+            quality: 'sus2',
+            extensions: null,
+          });
+        });
+
+        it('parses a sus4 chord', () => {
+          const chord = Chord.parse('Solsus4');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SOLFEGE,
+              minor: false,
+              referenceKeyGrade: 7,
+              originalKeyString: 'Sol',
+            },
+            bass: null,
+            suffix: 'sus4',
+            quality: 'sus4',
+            extensions: null,
           });
         });
 
@@ -54,6 +153,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
 
@@ -71,6 +172,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'sus',
+            quality: 'sus',
+            extensions: null,
           });
         });
 
@@ -88,6 +191,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'ma9(#11)',
+            quality: null,
+            extensions: 'ma9(#11)',
           });
         });
 
@@ -105,6 +210,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'maj9b11',
+            quality: null,
+            extensions: 'maj9b11',
           });
         });
 
@@ -122,6 +229,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: '7(#9)',
+            quality: null,
+            extensions: '7(#9)',
           });
 
           expect(chord?.toString()).toEqual('La7(#9)');
@@ -150,6 +259,8 @@ describe('Chord', () => {
               originalKeyString: 'Si',
             },
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
 
@@ -174,6 +285,8 @@ describe('Chord', () => {
               originalKeyString: 'Si',
             },
             suffix: 'sus',
+            quality: 'sus',
+            extensions: null,
           });
         });
 
@@ -198,6 +311,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: null,
+            quality: null,
+            extensions: null,
           });
         });
 
@@ -222,6 +337,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: 'sus',
+            quality: 'sus',
+            extensions: null,
           });
         });
 
@@ -246,6 +363,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: 'ma9(#11)',
+            quality: null,
+            extensions: 'ma9(#11)',
           });
         });
 
@@ -270,6 +389,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: 'maj9b11',
+            quality: null,
+            extensions: 'maj9b11',
           });
         });
       });
@@ -295,6 +416,8 @@ describe('Chord', () => {
             originalKeyString: 'Do',
           },
           suffix: null,
+          quality: null,
+          extensions: null,
         });
       });
 
@@ -313,6 +436,8 @@ describe('Chord', () => {
               originalKeyString: 'Si',
             },
             suffix: null,
+            quality: null,
+            extensions: null,
           });
 
           expect(chord?.toString()).toEqual('/Si');

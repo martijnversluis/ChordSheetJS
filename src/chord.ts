@@ -15,6 +15,8 @@ import {
 interface ChordProperties {
   root?: Key | null;
   suffix?: string | null;
+  quality?: string | null;
+  extensions?: string | null;
   bass?: Key | null;
   optional?: boolean;
 }
@@ -23,6 +25,8 @@ export interface ChordConstructorOptions {
   base?: string | number | null;
   accidental?: Accidental | null;
   suffix?: string | null;
+  quality?: string | null;
+  extensions?: string | null;
   bassBase?: string | number | null;
   bassAccidental?: Accidental | null;
   root?: Key | null;
@@ -39,7 +43,26 @@ class Chord implements ChordProperties {
 
   root: Key | null;
 
-  suffix: string | null;
+  private _suffix: string | null;
+
+  private _quality: string | null;
+
+  private _extensions: string | null;
+
+  get suffix(): string | null {
+    if (this._quality !== null || this._extensions !== null) {
+      return (this._quality || '') + (this._extensions || '');
+    }
+    return this._suffix;
+  }
+
+  get quality(): string | null {
+    return this._quality;
+  }
+
+  get extensions(): string | null {
+    return this._extensions;
+  }
 
   optional: boolean;
 
@@ -368,27 +391,14 @@ class Chord implements ChordProperties {
     return this.transform((key) => key.transpose(delta));
   }
 
-  constructor(
-    {
-      base = null,
-      accidental = null,
-      suffix = null,
-      bassBase = null,
-      bassAccidental = null,
-      root = null,
-      bass = null,
-      chordType = null,
-      optional = false,
-    }: ChordConstructorOptions,
-  ) {
-    this.suffix = suffix || null;
-    this.optional = optional;
-    this.root = Chord.determineRoot({
-      root, base, accidental, suffix, chordType,
-    });
-    this.bass = Chord.determineBass({
-      bass, bassBase, bassAccidental, chordType,
-    });
+  constructor(options: ChordConstructorOptions) {
+    this._quality = options.quality ?? null;
+    this._extensions = options.extensions ?? null;
+    this._suffix = options.suffix ?? null;
+    this.optional = options.optional ?? false;
+
+    this.root = Chord.determineRoot({ ...options, suffix: this.suffix });
+    this.bass = Chord.determineBass(options);
   }
 
   equals(otherChord: Chord): boolean {
@@ -398,21 +408,10 @@ class Chord implements ChordProperties {
       Key.equals(this.bass, otherChord.bass);
   }
 
-  static determineRoot(
-    {
-      root,
-      base,
-      accidental,
-      suffix,
-      chordType,
-    }: {
-      root: Key | null,
-      base: string | number | null,
-      accidental: Accidental | null,
-      suffix: string | null,
-      chordType: ChordType | null,
-    },
-  ): Key | null {
+  static determineRoot(options: ChordConstructorOptions & { suffix?: string | null }): Key | null {
+    const {
+      root, base, accidental, suffix, chordType,
+    } = options;
     if (root) return root;
     if (!base) return null;
     if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
@@ -420,31 +419,22 @@ class Chord implements ChordProperties {
     return Key.resolve({
       key: base,
       keyType: chordType,
-      minor: isMinor(base, chordType, suffix),
-      accidental,
+      minor: isMinor(base, chordType, suffix ?? null),
+      accidental: accidental ?? null,
     });
   }
 
-  static determineBass(
-    {
-      bass,
-      bassBase,
-      bassAccidental,
-      chordType,
-    }: {
-      bass: Key | null,
-      bassBase: string | number | null,
-      bassAccidental: Accidental | null,
-      chordType: ChordType | null,
-    },
-  ): Key | null {
+  static determineBass(options: ChordConstructorOptions): Key | null {
+    const {
+      bass, bassBase, bassAccidental, chordType,
+    } = options;
     if (bass) return bass;
     if (!bassBase) return null;
     if (!chordType) throw new Error('Can\'t resolve at this point without a chord type');
 
     return Key.resolve({
       key: bassBase,
-      accidental: bassAccidental || null,
+      accidental: bassAccidental ?? null,
       minor: false,
       keyType: chordType,
     });
@@ -461,15 +451,38 @@ class Chord implements ChordProperties {
   }
 
   set(properties: ChordProperties): Chord {
+    const suffixProps = this.determineSuffixProps(properties);
+
     return new Chord(
       {
         root: this.root?.clone() || null,
-        suffix: this.suffix,
+        ...suffixProps,
         bass: this.bass?.clone() || null,
         ...(this.optional ? { optional: true } : {}),
         ...properties,
       },
     );
+  }
+
+  private determineSuffixProps(
+    properties: ChordProperties,
+  ): { suffix?: string | null; quality?: string | null; extensions?: string | null } {
+    if ('suffix' in properties) {
+      return { suffix: properties.suffix, quality: null, extensions: null };
+    }
+
+    if ('quality' in properties || 'extensions' in properties) {
+      return {
+        quality: properties.quality ?? this._quality,
+        extensions: properties.extensions ?? this._extensions,
+      };
+    }
+
+    if (this._quality !== null || this._extensions !== null) {
+      return { quality: this._quality, extensions: this._extensions };
+    }
+
+    return { suffix: this._suffix };
   }
 
   private is(type: ChordType): boolean {
