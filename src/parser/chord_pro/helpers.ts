@@ -128,7 +128,7 @@ export function combineChordLyricsPairs(items: SerializedItem[], chopFirstWord?:
   const combinedItems: SerializedItem[] = [];
 
   for (let i = 0, { length } = items; i < length; i += 1) {
-    if (combinableChordLyricsPairs(items[i], items[i + 1])) {
+    if (items[i + 1] && combinableChordLyricsPairs(items[i], items[i + 1])) {
       combinedItems.push(
         combineLyrics(
           items[i] as SerializedChordLyricsPair as SerializedChordLyricsPair,
