@@ -85,7 +85,7 @@
     "playground": "cd playground && parcel index.html --port=3300 --no-cache"
   },
   "dependencies": {
-    "jspdf": "^3.0.0"
+    "jspdf": "^4.0.0"
   },
   "packageManager": "yarn@4.2.2"
 }
