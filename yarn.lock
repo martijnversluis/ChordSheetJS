@@ -436,11 +436,11 @@ __metadata:
   linkType: hard
 
 "@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.4.0, @codemirror/state@npm:^6.5.0":
-  version: 6.5.3
-  resolution: "@codemirror/state@npm:6.5.3"
+  version: 6.5.4
+  resolution: "@codemirror/state@npm:6.5.4"
   dependencies:
     "@marijn/find-cluster-break": "npm:^1.0.0"
-  checksum: 10c0/517e547fba2f1960deb240a29d05310b4fa8ad7cd958a7c63b046602bc5ce717f204af2e8c44af2b8825cdf59259efc227cb064d51bdfe66fc24d62617cc16c8
+  checksum: 10c0/8f40e1a22b84752fc44637e586cb3d804f775c0cf9c8083a79eed5cb18fbdfb30b83c112d8b6d819046526d1f9e49bf1198bdca4c4c3427bdf2c657a96df7adf
   languageName: node
   linkType: hard
 
