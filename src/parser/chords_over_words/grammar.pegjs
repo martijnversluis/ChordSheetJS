@@ -64,7 +64,7 @@ NonEmptyLyrics
   = $(WordChar+)
 
 ChordWithSpacing
-  = _S_ chord:Chord _S_ {
+  = _S_ chord:Chord ![a-zA-Z] _S_ {
       return chord;
     }
 
