@@ -120,6 +120,30 @@ describe('Chord', () => {
           });
         });
 
+        it('parses Fadd9 as chord symbol, not solfege', () => {
+          const chord = Chord.parse('Fadd9');
+
+          expect(chord).toMatchObject({
+            root: {
+              type: SYMBOL,
+              originalKeyString: 'F',
+            },
+            suffix: 'add9',
+          });
+        });
+
+        it('parses Faug as chord symbol, not solfege', () => {
+          const chord = Chord.parse('Faug');
+
+          expect(chord).toMatchObject({
+            root: {
+              type: SYMBOL,
+              originalKeyString: 'F',
+            },
+            suffix: 'aug',
+          });
+        });
+
         it('parses a sus2 chord', () => {
           const chord = Chord.parse('Dsus2');
 
