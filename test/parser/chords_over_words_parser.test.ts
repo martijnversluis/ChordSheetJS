@@ -509,6 +509,27 @@ describe('ChordsOverWordsParser', () => {
       expect(line1Pairs[5]).toBeChordLyricsPair('F2', 'door');
     });
 
+    it('handles lyrics with words resembling chords (numerals, solfege, chord symbols)', () => {
+      // "E vive em mim" contains words that could be parsed as chords:
+      // E (chord symbol), vi (numeral), v (numeral), e (chord), em (E minor), mim (solfege Mi minor)
+      // All should be parsed as lyrics, not chords
+      const chordOverWords = heredoc`
+           G       Am
+        E vive em mim`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines).toHaveLength(1);
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('', 'E v');
+      expect(linePairs[1]).toBeChordLyricsPair('G', 'ive ');
+      expect(linePairs[2]).toBeChordLyricsPair('', 'em m');
+      expect(linePairs[3]).toBeChordLyricsPair('Am', 'im');
+    });
+
     it('supports chords surrounded by round brackets', () => {
       const chordOverWords = heredoc`
         Chorus 1
