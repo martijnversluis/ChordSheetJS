@@ -64,6 +64,26 @@ describe('Chord', () => {
           });
         });
 
+        it('parses a minor-major seventh chord (mM7)', () => {
+          const chord = Chord.parse('6mM7');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: null,
+              number: 6,
+              accidental: null,
+              type: NUMERIC,
+              minor: true,
+              referenceKeyGrade: null,
+              originalKeyString: '6',
+            },
+            bass: null,
+            suffix: 'mM7',
+            quality: 'm',
+            extensions: 'M7',
+          });
+        });
+
         it('parses a diminished chord', () => {
           const chord = Chord.parse('7dim');
 

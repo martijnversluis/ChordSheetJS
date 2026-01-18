@@ -487,6 +487,22 @@ describe('ChordsOverWordsParser', () => {
       expect(line1Pairs[3]).toBeChordLyricsPair('C/G', 'be');
     });
 
+    it('handles minor-major seventh chords (mM7)', () => {
+      const chordOverWords = heredoc`
+        Dm             DmM7  Dm7
+        althans in 't algemeen`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('Dm', 'althans ');
+      expect(linePairs[1]).toBeChordLyricsPair('', 'in \'t a');
+      expect(linePairs[2]).toBeChordLyricsPair('DmM7', 'lgemee');
+      expect(linePairs[3]).toBeChordLyricsPair('Dm7', 'n');
+    });
+
     it('handles a lyrics line that starts with a "I" which can be a numeral chord', () => {
       const chordOverWords = heredoc`
         Verse 1

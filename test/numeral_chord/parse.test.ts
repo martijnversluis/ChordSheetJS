@@ -177,6 +177,26 @@ describe('Chord', () => {
         });
       });
 
+      it('parses a minor-major seventh chord (mM7)', () => {
+        const chord = Chord.parse('ivmM7');
+
+        expect(chord).toMatchObject({
+          root: {
+            grade: null,
+            number: 4,
+            accidental: null,
+            type: NUMERAL,
+            minor: true,
+            referenceKeyGrade: null,
+            originalKeyString: 'iv',
+          },
+          bass: null,
+          suffix: 'mM7',
+          quality: 'm',
+          extensions: 'M7',
+        });
+      });
+
       it('parses a numeral chord with modifier', () => {
         const chord = Chord.parse('#iv');
 
