@@ -40,7 +40,11 @@ ChordSolfege
     }
 
 ChordSolfegeRoot
-  = "Do"i / "Re"i / "Mi"i / "Fa"i / "Sol"i / "La"i / "Si"i
+  = "Do"i / "Re"i / "Mi"i / SolfegeFa / "Sol"i / "La"i / "Si"i
+
+SolfegeFa
+  = "Fa" !("dd"i / "ug"i) { return "Fa"; }
+  / "fa" !("dd"i / "ug"i) { return "fa"; }
 
 ChordSolfegeBass
   = "/" root:ChordSolfegeRoot accidental:ChordAccidental? {
