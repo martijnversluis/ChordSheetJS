@@ -90,8 +90,8 @@ m, mi, min, minor, -
 m(11), m(add11)
 m(4), m(add4)
 m(9), m(add9)
-m(ma7), m(M7), mi(maj7), min(maj7), m(maj7), m(+7), m+7
-m(ma9), m(M9), mi(maj9), min(maj9), m(maj9), m(+9), m+9
+m(ma7), m(M7), mM7, mi(maj7), min(maj7), m(maj7), m(+7), m+7
+m(ma9), m(M9), mM9, mi(maj9), min(maj9), m(maj9), m(+9), m+9
 m(no5)
 m11, mi11, min11, -11
 m11(#5), m11#5, m11+5, m11(+5), -11(#5), -11#5, m9+5, -11(+5)
