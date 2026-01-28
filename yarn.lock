@@ -425,13 +425,13 @@ __metadata:
   linkType: hard
 
 "@codemirror/lint@npm:^6.0.0":
-  version: 6.9.2
-  resolution: "@codemirror/lint@npm:6.9.2"
+  version: 6.9.3
+  resolution: "@codemirror/lint@npm:6.9.3"
   dependencies:
     "@codemirror/state": "npm:^6.0.0"
     "@codemirror/view": "npm:^6.35.0"
     crelt: "npm:^1.0.5"
-  checksum: 10c0/f938391b6d216784d3196e9494c7d492d5524109fa36566708fba73f48e69d5d18332f7e9993f472eb34fe4271727b5636b6390abb804cae7ef70120427fece2
+  checksum: 10c0/729af1fc39ced59edb5ad73ef95a71df8e4a7ed7bccac53bac3e6232a4f018f5d8b2b1c320eb014f5ba07a1a0e53fbc094907679e017dc5f3b5707765b2c6541
   languageName: node
   linkType: hard
 
