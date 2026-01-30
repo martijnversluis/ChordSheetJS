@@ -8,6 +8,7 @@ import Item from './item';
 import Key from '../key';
 import Line from './line';
 import LineExpander from './line_expander';
+import Literal from './chord_pro/literal';
 import Metadata from './metadata';
 import MetadataAccessors from './metadata_accessors';
 import Paragraph from './paragraph';
@@ -254,56 +255,52 @@ class Song extends MetadataAccessors {
    */
   transpose(
     delta: number,
-    { accidental, normalizeChordSuffix = false }:
+    { accidental = null, normalizeChordSuffix = false }:
       { accidental?: Accidental | null, normalizeChordSuffix?: boolean } = {},
   ): Song {
     let transposedKey: Key | null = null;
-    const song = (this as Song);
 
-    return song.mapItems((item) => {
+    return this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         transposedKey = Key.wrapOrFail(item.value).transpose(delta).normalize();
         if (accidental) transposedKey = transposedKey.useAccidental(accidental);
         return item.set({ value: transposedKey.toString() });
       }
-
       if (item instanceof ChordLyricsPair) {
-        return Song.transposeChordLyricsPair({
-          item,
-          delta,
-          transposedKey,
-          normalizeChordSuffix,
-          accidental: accidental || null,
-        });
+        return Song.transposeChordLyricsPair(item, delta, transposedKey, normalizeChordSuffix, accidental);
       }
-
+      if (item instanceof Literal) {
+        return Song.transposeLiteral(item, delta, transposedKey, normalizeChordSuffix, accidental);
+      }
       return item;
     });
   }
 
   private static transposeChordLyricsPair(
-    {
-      item,
-      delta,
-      transposedKey,
-      normalizeChordSuffix,
-      accidental,
-    }:
-    {
-      item: ChordLyricsPair,
-      delta: number,
-      transposedKey: Key | null,
-      normalizeChordSuffix: boolean,
-      accidental: Accidental | null
-    },
-  ) {
+    item: ChordLyricsPair,
+    delta: number,
+    transposedKey: Key | null,
+    normalizeChordSuffix: boolean,
+    accidental: Accidental | null,
+  ): ChordLyricsPair {
     let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
-
-    if (accidental) {
-      chord = chord.useAccidental(accidental);
-    }
-
+    if (accidental) chord = chord.useAccidental(accidental);
     return chord;
+  }
+
+  private static transposeLiteral(
+    item: Literal,
+    delta: number,
+    transposedKey: Key | null,
+    normalizeChordSuffix: boolean,
+    accidental: Accidental | null,
+  ): Literal {
+    return Song.mapChordsInLiteral(item, (chord) => {
+      let transposed = chord.transpose(delta);
+      if (transposedKey) transposed = transposed.normalize(transposedKey, { normalizeSuffix: normalizeChordSuffix });
+      if (accidental) transposed = transposed.useAccidental(accidental);
+      return transposed;
+    });
   }
 
   /**
@@ -403,7 +400,25 @@ class Song extends MetadataAccessors {
   }
 
   changeChords(func: (chord: Chord) => Chord): Song {
-    return this.mapChordLyricsPairs((pair) => pair.changeChord(func));
+    return this.mapItems((item) => {
+      if (item instanceof ChordLyricsPair) {
+        return item.changeChord(func);
+      }
+      if (item instanceof Literal) {
+        return Song.mapChordsInLiteral(item, func);
+      }
+      return item;
+    });
+  }
+
+  private static mapChordsInLiteral(item: Literal, func: (chord: Chord) => Chord): Literal {
+    // Handle space-separated chords in grid format (e.g., "|| Am . . | C . |")
+    const changedString = item.string.replace(/(\s|^)(\S+)(?=\s|$)/g, (_match, space, token) => {
+      const chord = Chord.parse(token);
+      if (!chord) return `${space}${token}`;
+      return `${space}${func(chord).toString()}`;
+    });
+    return new Literal(changedString);
   }
 
   get currentKey(): Key | null {
