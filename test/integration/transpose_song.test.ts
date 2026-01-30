@@ -119,6 +119,64 @@ describe('transposing a song', () => {
     expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 
+  describe('grid section', () => {
+    it('transposes chords within grid sections', () => {
+      const chordpro = heredoc`
+        {key: C}
+        {start_of_grid}
+        || Am . . . | G . . . | C . . . | F . . . |
+        {end_of_grid}`;
+
+      const changedSheet = heredoc`
+        {key: D}
+        {start_of_grid}
+        || Bm . . . | A . . . | D . . . | G . . . |
+        {end_of_grid}`;
+
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.transpose(2);
+
+      expect(updatedSong.key).toEqual('D');
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+
+    it('changes accidentals within grid sections', () => {
+      const chordpro = heredoc`
+        {key: C#}
+        {start_of_grid}
+        || C# . | F# . | G# . |
+        {end_of_grid}`;
+
+      const changedSheet = heredoc`
+        {key: Db}
+        {start_of_grid}
+        || Db . | Gb . | Ab . |
+        {end_of_grid}`;
+
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.useAccidental('b');
+
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+
+    it('normalizes chords within grid sections', () => {
+      const chordpro = heredoc`
+        {start_of_grid}
+        || Cb . | E# . | B# . |
+        {end_of_grid}`;
+
+      const changedSheet = heredoc`
+        {start_of_grid}
+        || B . | F . | C . |
+        {end_of_grid}`;
+
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.normalizeChords();
+
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+  });
+
   describe('key change', () => {
     const chordpro = heredoc`
       {key: B}
