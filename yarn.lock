@@ -2842,10 +2842,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.325":
-  version: 0.0.325
-  resolution: "@types/web@npm:0.0.325"
-  checksum: 10c0/09d53658a6130042882573cea3b1ae8b4b6e7e4ccfb87af32c689edee4d6cc6491d5763794996199c146280b3a27c9e0e37da6fe29d8e1365608611d8cafbda6
+"@types/web@npm:^0.0.326":
+  version: 0.0.326
+  resolution: "@types/web@npm:0.0.326"
+  checksum: 10c0/2e222c2332d10f6ee1ef9544561a6d326a93b8c3933a38d2a029093fa135f4d12793fc427325ef5b26f6778e21bf9334207ae26fec502e5f5ae4b823735c33b3
   languageName: node
   linkType: hard
 
@@ -3800,7 +3800,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/js-levenshtein": "npm:^1"
     "@types/node": "npm:^25.0.3"
-    "@types/web": "npm:^0.0.325"
+    "@types/web": "npm:^0.0.326"
     esbuild: "npm:^0.27.2"
     eslint: "npm:^9.11.0"
     eslint-config-airbnb: "npm:^19.0.4"
