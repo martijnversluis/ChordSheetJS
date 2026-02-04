@@ -8,3 +8,8 @@ updates:
     directory: /
     schedule:
       interval: daily
+    groups:
+      parcel:
+        patterns:
+          - "parcel"
+          - "@parcel/*"
