@@ -89,6 +89,8 @@ export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser
 export { default as templateHelpers } from './template_helpers';
 export { default as version } from './version';
 
+export * from './serialized_types';
+
 export { BaseMeasurer } from './layout/measurement/measurer';
 export { JsPdfMeasurer } from './layout/measurement';
 export { DomMeasurer } from './layout/measurement';

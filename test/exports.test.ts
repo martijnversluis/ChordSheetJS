@@ -10,6 +10,7 @@ import ChordSheetJS, {
   ChordsOverWordsParser,
   Comment,
   Composite,
+  ContentType,
   Formatter,
   HtmlDivFormatter,
   HtmlFormatter,
@@ -22,8 +23,24 @@ import ChordSheetJS, {
   NONE,
   NUMERIC,
   Paragraph,
+  PartTypes,
   SOLFEGE,
   SYMBOL,
+  SerializedChord,
+  SerializedChordDefinition,
+  SerializedChordLyricsPair,
+  SerializedComment,
+  SerializedComponent,
+  SerializedComposite,
+  SerializedItem,
+  SerializedLine,
+  SerializedLiteral,
+  SerializedSection,
+  SerializedSoftLineBreak,
+  SerializedSong,
+  SerializedTag,
+  SerializedTernary,
+  SerializedTraceInfo,
   Song,
   TAB,
   Tag,
@@ -156,5 +173,55 @@ describe('exports', () => {
     expect(ChordSheetJS.templateHelpers.fontStyleTag).toBeDefined();
     expect(ChordSheetJS.templateHelpers.renderChord).toBeDefined();
     expect(ChordSheetJS.templateHelpers.hasChordContents).toBeDefined();
+  });
+
+  it('exports serialized types', () => {
+    const song: SerializedSong = { type: 'chordSheet', lines: [] };
+    const line: SerializedLine = { type: 'line', items: [] };
+    const pair: SerializedChordLyricsPair = { type: 'chordLyricsPair', chords: 'Am', lyrics: 'test' };
+    const tag: SerializedTag = { type: 'tag', name: 'title', value: 'Test' };
+    const comment: SerializedComment = { type: 'comment', comment: 'test' };
+    const ternary: SerializedTernary = {
+      type: 'ternary', variable: null, valueTest: null, trueExpression: [], falseExpression: [],
+    };
+    const chord: SerializedChord = {
+      type: 'chord',
+      base: 'A',
+      accidental: null,
+      suffix: 'm',
+      bassBase: null,
+      bassAccidental: null,
+      chordType: 'symbol',
+    };
+    const chordDef: SerializedChordDefinition = { name: 'Am', baseFret: 1, frets: [0, 0, 2, 2, 1, 0] };
+    const softBreak: SerializedSoftLineBreak = { type: 'softLineBreak' };
+    const section: SerializedSection = {
+      type: 'section', sectionType: 'tab', content: [], startTag: tag, endTag: tag,
+    };
+    const literal: SerializedLiteral = 'test';
+    const composite: SerializedComposite = [literal, ternary];
+    const item: SerializedItem = pair;
+    const component: SerializedComponent = song;
+    const traceInfo: SerializedTraceInfo = { location: { offset: 0, line: 1, column: 1 } };
+    const contentType: ContentType = 'tab';
+    const partType: PartTypes = 'intro';
+
+    expect(song.type).toBe('chordSheet');
+    expect(line.type).toBe('line');
+    expect(pair.type).toBe('chordLyricsPair');
+    expect(tag.type).toBe('tag');
+    expect(comment.type).toBe('comment');
+    expect(ternary.type).toBe('ternary');
+    expect(chord.type).toBe('chord');
+    expect(chordDef.name).toBe('Am');
+    expect(softBreak.type).toBe('softLineBreak');
+    expect(section.type).toBe('section');
+    expect(literal).toBe('test');
+    expect(composite).toHaveLength(2);
+    expect(item.type).toBe('chordLyricsPair');
+    expect(component.type).toBe('chordSheet');
+    expect(traceInfo.location?.offset).toBe(0);
+    expect(contentType).toBe('tab');
+    expect(partType).toBe('intro');
   });
 });
