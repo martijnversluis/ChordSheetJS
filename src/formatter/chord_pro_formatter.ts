@@ -1,4 +1,3 @@
-import Chord from '../chord';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Comment from '../chord_sheet/comment';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
@@ -201,14 +200,13 @@ class ChordProFormatter extends Formatter {
 
   formatChordLyricsPairChords(chordLyricsPair: ChordLyricsPair): string {
     if (chordLyricsPair.chords) {
-      const renderedChord = Chord.parse(chordLyricsPair.chords);
-
-      if (!renderedChord) {
+      const chordObj = chordLyricsPair.chord;
+      if (!chordObj) {
         return `[${chordLyricsPair.chords}]`;
       }
 
-      const normalizedChord = this.configuration.normalizeChords ? renderedChord.normalize() : renderedChord;
-      return `[${normalizedChord}]`;
+      const finalChord = this.configuration.normalizeChords ? chordObj.normalize() : chordObj;
+      return `[${finalChord}]`;
     }
 
     if (chordLyricsPair.annotation) {

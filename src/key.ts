@@ -34,7 +34,8 @@ interface KeyProperties {
   accidental?: Accidental | null;
   referenceKeyGrade?: number | null;
   referenceKeyMode?: string | null;
-  preferredAccidental?: Accidental | null,
+  preferredAccidental?: Accidental | null;
+  explicitAccidental?: boolean;
 }
 
 const KEY_TYPES: ChordType[] = [SYMBOL, SOLFEGE, NUMERIC, NUMERAL];
@@ -55,6 +56,7 @@ interface ConstructorOptions {
   referenceKeyMode?: string | null;
   originalKeyString?: string | null;
   preferredAccidental: Accidental | null;
+  explicitAccidental?: boolean;
 }
 
 /**
@@ -109,6 +111,8 @@ class Key implements KeyProperties {
   originalKeyString: string | null = null;
 
   preferredAccidental: Accidental | null;
+
+  explicitAccidental = false;
 
   static parse(keyString: string | null): null | Key {
     if (!keyString) return null;
@@ -290,15 +294,9 @@ class Key implements KeyProperties {
 
   constructor(
     {
-      grade = null,
-      number = null,
-      minor,
-      type,
-      accidental,
-      referenceKeyGrade = null,
-      referenceKeyMode = null,
-      originalKeyString = null,
-      preferredAccidental = null,
+      grade = null, number = null, minor, type, accidental, referenceKeyGrade = null,
+      referenceKeyMode = null, originalKeyString = null, preferredAccidental = null,
+      explicitAccidental = false,
     }: ConstructorOptions,
   ) {
     this.grade = grade;
@@ -310,6 +308,7 @@ class Key implements KeyProperties {
     this.referenceKeyGrade = referenceKeyGrade;
     this.referenceKeyMode = referenceKeyMode;
     this.originalKeyString = originalKeyString;
+    this.explicitAccidental = explicitAccidental;
   }
 
   distanceTo(otherKey: Key | string): number {
@@ -669,7 +668,7 @@ class Key implements KeyProperties {
 
   useAccidental(newAccidental: Accidental | null): Key {
     this.ensureGrade();
-    return this.set({ accidental: newAccidental });
+    return this.set({ accidental: newAccidental, explicitAccidental: newAccidental !== null });
   }
 
   /** @deprecated Use useAccidental instead */
@@ -694,6 +693,9 @@ class Key implements KeyProperties {
 
   normalizeEnharmonics(key: Key | string | null): Key {
     if (key) {
+      // Preserve explicit accidental choices made via useAccidental()
+      if (this.explicitAccidental) return this.clone();
+
       const rootKeyString = Key.wrapOrFail(key).toString({ showMinor: true });
       const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
       const thisKeyString = this.toString({ showMinor: false });
@@ -719,6 +721,7 @@ class Key implements KeyProperties {
       referenceKeyGrade: this.referenceKeyGrade,
       originalKeyString: this.originalKeyString,
       preferredAccidental: this.preferredAccidental,
+      explicitAccidental: this.explicitAccidental,
       ...(overwrite ? attributes : {}),
     });
   }

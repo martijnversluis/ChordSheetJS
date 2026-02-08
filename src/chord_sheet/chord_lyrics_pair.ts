@@ -14,33 +14,30 @@ class ChordLyricsPair {
 
   annotation: string | null;
 
+  private _chordObj: Chord | null = null;
+
   /**
    * Initialises a ChordLyricsPair
    * @param {string} chords The chords
    * @param {string | null} lyrics The lyrics
    * @param {string | null} annotation The annotation
+   * @param {Chord | null} chordObj Optional pre-parsed Chord object
    */
-  constructor(chords = '', lyrics: string | null = null, annotation: string | null = null) {
-    /**
-     * The chords
-     * @member
-     * @type {string}
-     */
+  constructor(
+    chords = '',
+    lyrics: string | null = null,
+    annotation: string | null = null,
+    chordObj: Chord | null = null,
+  ) {
     this.chords = chords || '';
-
-    /**
-     * The lyrics
-     * @member
-     * @type {string}
-     */
     this.lyrics = lyrics || '';
-
-    /**
-     * The annotation
-     * @member
-     * @type {string}
-     */
     this.annotation = annotation || '';
+    this._chordObj = chordObj;
+  }
+
+  /** Returns the Chord object if available, otherwise parses from string */
+  get chord(): Chord | null {
+    return this._chordObj || Chord.parse(this.chords.trim());
   }
 
   /**
@@ -63,18 +60,24 @@ class ChordLyricsPair {
    * @returns {ChordLyricsPair}
    */
   clone(): ChordLyricsPair {
-    return new ChordLyricsPair(this.chords, this.lyrics, this.annotation);
+    return new ChordLyricsPair(this.chords, this.lyrics, this.annotation, this._chordObj?.clone() || null);
   }
 
   toString(): string {
     return `ChordLyricsPair(chords=${this.chords}, lyrics=${this.lyrics})`;
   }
 
-  set({ chords, lyrics, annotation }: { chords?: string, lyrics?: string, annotation?: string }): ChordLyricsPair {
+  set(
+    {
+      chords, lyrics, annotation, chordObj,
+    }:
+    { chords?: string, lyrics?: string, annotation?: string, chordObj?: Chord | null },
+  ): ChordLyricsPair {
     return new ChordLyricsPair(
-      chords || this.chords,
-      lyrics || this.lyrics,
-      annotation || this.annotation,
+      chords ?? this.chords,
+      lyrics ?? this.lyrics,
+      annotation ?? this.annotation,
+      chordObj ?? null,
     );
   }
 
@@ -119,7 +122,7 @@ class ChordLyricsPair {
 
     if (chordObj) {
       const changedChord = func(chordObj);
-      return this.set({ chords: changedChord.toString() });
+      return this.set({ chords: changedChord.toString(), chordObj: changedChord });
     }
 
     return this.clone();
