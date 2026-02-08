@@ -80,7 +80,7 @@
     "lint:fix": "yarn unibuild lint --fix",
     "postversion": "yarn build:release",
     "prepare": "yarn install && yarn build",
-    "release": "(yarn npm whoami || yarn npm login) && yarn unibuild release",
+    "release": "yarn npm whoami || (echo 'Not logged in. Run: yarn npm login' && exit 1) && yarn unibuild release",
     "test": "yarn unibuild lint && yarn unibuild test",
     "playground": "cd playground && parcel index.html --port=3300 --no-cache"
   },
