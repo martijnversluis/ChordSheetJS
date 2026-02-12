@@ -309,4 +309,109 @@ describe('UltimateGuitarParser', () => {
     expect(line1Items[1]).toBeChordLyricsPair('F         ', 'be, let it ');
     expect(line1Items[2]).toBeChordLyricsPair('C', 'be');
   });
+
+  it('parses Key metadata', () => {
+    const chordSheet = heredoc`
+      Key: Am
+      [Verse]
+      Am     G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.key).toEqual('Am');
+  });
+
+  it('parses Capo metadata', () => {
+    const chordSheet = heredoc`
+      Capo: 2
+      [Verse]
+      Am     G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.capo).toEqual('2');
+  });
+
+  it('parses Capo metadata with "fret" suffix', () => {
+    const chordSheet = heredoc`
+      Capo: 3rd fret
+      [Verse]
+      Am     G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.capo).toEqual('3');
+  });
+
+  it('parses multiple metadata lines', () => {
+    const chordSheet = heredoc`
+      Key: G
+      Capo: 2
+      [Verse]
+      G      D
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.key).toEqual('G');
+    expect(song.capo).toEqual('2');
+  });
+
+  it('parses Artist metadata', () => {
+    const chordSheet = heredoc`
+      Artist: The Beatles
+      [Verse]
+      Am     G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.artist).toEqual('The Beatles');
+  });
+
+  it('parses Title metadata', () => {
+    const chordSheet = heredoc`
+      Title: Let It Be
+      [Verse]
+      Am     G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.title).toEqual('Let It Be');
+  });
+
+  it('parses all common metadata', () => {
+    const chordSheet = heredoc`
+      Title: Let It Be
+      Artist: The Beatles
+      Album: Let It Be
+      Year: 1970
+      Key: C
+      Capo: 0
+      Tempo: 72
+      [Verse]
+      C      G
+      Hello world`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+
+    expect(song.title).toEqual('Let It Be');
+    expect(song.artist).toEqual('The Beatles');
+    expect(song.album).toEqual('Let It Be');
+    expect(song.year).toEqual('1970');
+    expect(song.key).toEqual('C');
+    expect(song.capo).toEqual('0');
+    expect(song.tempo).toEqual('72');
+  });
 });
