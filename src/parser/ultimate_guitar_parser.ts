@@ -24,6 +24,9 @@ const BRIDGE_LINE_REGEX = /^\[(Bridge.*)]/i;
 const PART_LINE_REGEX = /^\[(Intro|Outro|Instrumental|Interlude|Solo|Pre-Chorus)( \d+)?]/i;
 const UG_METADATA_REGEX = /^(\w+):\s*(.+)$/;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
+const REPEAT_NOTATION_REGEX = /\s+(x\d+)\s*$/i;
+// eslint-disable-next-line max-len
+const CHORD_LINE_REGEX = /^\s*((([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 const startSectionTags: Record<string, string> = {
   [VERSE]: START_OF_VERSE,
@@ -46,6 +49,8 @@ const endSectionTags: Record<string, string> = {
 class UltimateGuitarParser extends ChordSheetParser {
   currentSectionType: string | null = null;
 
+  pendingRepeatNotation: string | null = null;
+
   /**
    * Instantiate a chord sheet parser
    * @param {Object} [options={}] options
@@ -60,16 +65,148 @@ class UltimateGuitarParser extends ChordSheetParser {
       this.endSection();
     }
 
+    const { cleanLine, repeatNotation } = this.extractRepeatNotation(line);
+    this.pendingRepeatNotation = repeatNotation;
+
     if (!(
-      this.parseVerseDirective(line) ||
-      this.parseChorusDirective(line) ||
-      this.parseBridgeDirective(line) ||
-      this.parsePartDirective(line) ||
-      this.parseUGMetadata(line) ||
-      this.parseMetadata(line)
+      this.parseVerseDirective(cleanLine) ||
+      this.parseChorusDirective(cleanLine) ||
+      this.parseBridgeDirective(cleanLine) ||
+      this.parsePartDirective(cleanLine) ||
+      this.parseUGMetadata(cleanLine) ||
+      this.parseMetadata(cleanLine)
     )) {
-      super.parseLine(line);
+      this.parseRegularLine(cleanLine);
     }
+  }
+
+  private parseRegularLine(line: string): void {
+    this.songLine = this.songBuilder.addLine();
+
+    if (line.trim().length === 0) {
+      this.chordLyricsPair = null;
+    } else {
+      this.parseNonEmptyLine(line);
+    }
+  }
+
+  parseNonEmptyLine(line: string): void {
+    if (!this.songLine) throw new Error('Expected this.songLine to be present');
+
+    this.chordLyricsPair = this.songLine.addChordLyricsPair();
+    const isChordLine = CHORD_LINE_REGEX.test(line);
+
+    if (isChordLine && this.hasNextLine()) {
+      this.parseChordLineWithNextLine(line);
+    } else if (isChordLine) {
+      this.parseChordsOnly(line);
+    } else {
+      this.chordLyricsPair.lyrics = `${line}`;
+    }
+  }
+
+  private parseChordLineWithNextLine(chordsLine: string): void {
+    const nextLine = this.readLine();
+
+    if (this.isDirectiveLine(nextLine)) {
+      this.parseChordsOnly(chordsLine);
+      this.unreadLine();
+    } else {
+      this.parseLyricsWithChords(chordsLine, nextLine);
+    }
+  }
+
+  private unreadLine(): void {
+    this.currentLine -= 1;
+  }
+
+  private isDirectiveLine(line: string): boolean {
+    return VERSE_LINE_REGEX.test(line) ||
+      CHORUS_LINE_REGEX.test(line) ||
+      BRIDGE_LINE_REGEX.test(line) ||
+      PART_LINE_REGEX.test(line) ||
+      OTHER_METADATA_LINE_REGEX.test(line) ||
+      line.trim().length === 0;
+  }
+
+  private parseChordsOnly(chordsLine: string): void {
+    this.parseLyricsWithChords(chordsLine, '');
+    this.applyRepeatNotation();
+  }
+
+  parseLyricsWithChords(chordsLine: string, lyricsLine: string): void {
+    this.processCharacters(chordsLine, lyricsLine);
+
+    if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
+
+    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
+    this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
+
+    if (this.chordLyricsPair.lyrics) {
+      this.chordLyricsPair.lyrics = this.chordLyricsPair.lyrics.trim();
+    }
+
+    this.applyRepeatNotation();
+  }
+
+  processCharacters(chordsLine: string, lyricsLine: string): void {
+    for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
+      const chr = chordsLine[c];
+      const nextChar = chordsLine[c + 1];
+      const isWhiteSpace = /\s/.test(chr);
+      this.addCharacter(chr, nextChar);
+
+      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
+
+      this.chordLyricsPair.lyrics += lyricsLine[c] || '';
+      this.processingText = !isWhiteSpace;
+    }
+  }
+
+  addCharacter(chr: string, nextChar: string): void {
+    const isWhiteSpace = /\s/.test(chr);
+
+    if (!isWhiteSpace) {
+      this.ensureChordLyricsPairInitialized();
+    }
+
+    if (!isWhiteSpace || this.shouldAddCharacterToChords(nextChar)) {
+      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
+      this.chordLyricsPair.chords += chr;
+    }
+  }
+
+  shouldAddCharacterToChords(nextChar: string): boolean {
+    return !!(nextChar && /\s/.test(nextChar) && this.preserveWhitespace);
+  }
+
+  ensureChordLyricsPairInitialized(): void {
+    if (!this.processingText) {
+      if (!this.songLine) throw new Error('Expected this.songLine to be present');
+      this.chordLyricsPair = this.songLine.addChordLyricsPair();
+      this.processingText = true;
+    }
+  }
+
+  private extractRepeatNotation(line: string): { cleanLine: string; repeatNotation: string | null } {
+    const match = line.match(REPEAT_NOTATION_REGEX);
+    if (match) {
+      return {
+        cleanLine: line.replace(REPEAT_NOTATION_REGEX, ''),
+        repeatNotation: match[1],
+      };
+    }
+    return { cleanLine: line, repeatNotation: null };
+  }
+
+  private applyRepeatNotation(): void {
+    if (!this.pendingRepeatNotation || !this.songLine) return;
+
+    const lastItem = this.songLine.items[this.songLine.items.length - 1];
+    if (lastItem && 'lyrics' in lastItem) {
+      lastItem.lyrics = (lastItem.lyrics || '') + this.pendingRepeatNotation;
+    }
+    this.pendingRepeatNotation = null;
   }
 
   parseUGMetadata(line: string): boolean {

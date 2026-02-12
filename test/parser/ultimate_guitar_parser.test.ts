@@ -414,4 +414,36 @@ describe('UltimateGuitarParser', () => {
     expect(song.capo).toEqual('0');
     expect(song.tempo).toEqual('72');
   });
+
+  it('parses repeat notation x2', () => {
+    const chordSheet = heredoc`
+      [Intro]
+      D A Bm G x2`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(3);
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeChordLyricsPair('D', '');
+    expect(line1Items[1]).toBeChordLyricsPair('A', '');
+    expect(line1Items[2]).toBeChordLyricsPair('Bm', '');
+    expect(line1Items[3]).toBeChordLyricsPair('G', 'x2');
+  });
+
+  it('parses repeat notation x3', () => {
+    const chordSheet = 'C G Am F x3';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeChordLyricsPair('C', '');
+    expect(line0Items[1]).toBeChordLyricsPair('G', '');
+    expect(line0Items[2]).toBeChordLyricsPair('Am', '');
+    expect(line0Items[3]).toBeChordLyricsPair('F', 'x3');
+  });
 });
