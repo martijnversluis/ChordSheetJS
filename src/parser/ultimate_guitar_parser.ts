@@ -1,24 +1,40 @@
 import ChordSheetParser from './chord_sheet_parser';
 import Tag from '../chord_sheet/tag';
 
-import { CHORUS, NONE, VERSE } from '../constants';
+import {
+  BRIDGE, CHORUS, NONE, PART, VERSE,
+} from '../constants';
 
 import {
-  COMMENT, END_OF_CHORUS, END_OF_VERSE, START_OF_CHORUS, START_OF_VERSE,
+  COMMENT,
+  END_OF_BRIDGE,
+  END_OF_CHORUS,
+  END_OF_PART,
+  END_OF_VERSE,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_PART,
+  START_OF_VERSE,
 } from '../chord_sheet/tags';
 
 const VERSE_LINE_REGEX = /^\[(Verse.*)]/i;
-const CHORUS_LINE_REGEX = /^\[(Chorus)]/i;
+const CHORUS_LINE_REGEX = /^\[(Chorus.*)]/i;
+const BRIDGE_LINE_REGEX = /^\[(Bridge.*)]/i;
+const PART_LINE_REGEX = /^\[(Intro|Outro|Instrumental|Interlude|Solo|Pre-Chorus)( \d+)?]/i;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 
-const startSectionTags = {
+const startSectionTags: Record<string, string> = {
   [VERSE]: START_OF_VERSE,
   [CHORUS]: START_OF_CHORUS,
+  [BRIDGE]: START_OF_BRIDGE,
+  [PART]: START_OF_PART,
 };
 
-const endSectionTags = {
+const endSectionTags: Record<string, string> = {
   [VERSE]: END_OF_VERSE,
   [CHORUS]: END_OF_CHORUS,
+  [BRIDGE]: END_OF_BRIDGE,
+  [PART]: END_OF_PART,
 };
 
 /**
@@ -45,6 +61,8 @@ class UltimateGuitarParser extends ChordSheetParser {
     if (!(
       this.parseVerseDirective(line) ||
       this.parseChorusDirective(line) ||
+      this.parseBridgeDirective(line) ||
+      this.parsePartDirective(line) ||
       this.parseMetadata(line)
     )) {
       super.parseLine(line);
@@ -74,6 +92,32 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.startNewLine();
     const label = match[1];
     this.startSection(CHORUS, label);
+    return true;
+  }
+
+  parseBridgeDirective(line: string): boolean {
+    const match = line.match(BRIDGE_LINE_REGEX);
+
+    if (!match) {
+      return false;
+    }
+
+    this.startNewLine();
+    const label = match[1];
+    this.startSection(BRIDGE, label);
+    return true;
+  }
+
+  parsePartDirective(line: string): boolean {
+    const match = line.match(PART_LINE_REGEX);
+
+    if (!match) {
+      return false;
+    }
+
+    this.startNewLine();
+    const label = match[1] + (match[2] || '');
+    this.startSection(PART, label);
     return true;
   }
 
@@ -108,7 +152,7 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.endSection({ addNewLine: false });
   }
 
-  startSection(sectionType: 'verse' | 'chorus', label: string) {
+  startSection(sectionType: string, label: string) {
     if (this.currentSectionType) {
       this.endSection();
     }
@@ -123,7 +167,12 @@ class UltimateGuitarParser extends ChordSheetParser {
 
   endSection({ addNewLine = true } = {}) {
     if (this.currentSectionType !== null && this.currentSectionType in endSectionTags) {
-      this.songBuilder.addTag(new Tag(endSectionTags[this.currentSectionType]));
+      if (this.songLine && this.songLine.isEmpty()) {
+        this.songLine.addTag(new Tag(endSectionTags[this.currentSectionType]));
+      } else {
+        const endTagLine = this.songBuilder.addLine();
+        endTagLine.addTag(new Tag(endSectionTags[this.currentSectionType]));
+      }
 
       if (addNewLine) {
         this.startNewLine();

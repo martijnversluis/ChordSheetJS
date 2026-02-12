@@ -83,7 +83,76 @@ describe('UltimateGuitarParser', () => {
     expect(line5Items[0]).toBeTag('end_of_chorus', '');
   });
 
-  it('adds unknown sections as comments', () => {
+  it('parses bridge sections', () => {
+    const chordSheetBridge = heredoc`
+      [Bridge]
+      F  C Dm
+      Some bridge lyrics`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetBridge);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(3);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_bridge', 'Bridge');
+
+    const line2Items = lines[2].items;
+    expect(line2Items[0]).toBeTag('end_of_bridge', '');
+  });
+
+  it('parses bridge sections with number', () => {
+    const chordSheetBridge = '[Bridge 2]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetBridge);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(2);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_bridge', 'Bridge 2');
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeTag('end_of_bridge', '');
+  });
+
+  it('parses intro sections as part', () => {
+    const chordSheetIntro = heredoc`
+      [Intro]
+      F  C Dm`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetIntro);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(3);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Intro');
+
+    const line2Items = lines[2].items;
+    expect(line2Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses outro sections as part', () => {
+    const chordSheetOutro = '[Outro]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetOutro);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(2);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Outro');
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses instrumental sections as part', () => {
     const chordSheetInstrumental = heredoc`
       [Instrumental]
       F  C Dm`;
@@ -92,13 +161,85 @@ describe('UltimateGuitarParser', () => {
     const song = parser.parse(chordSheetInstrumental);
     const { lines } = song;
 
+    expect(lines.length).toEqual(3);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Instrumental');
+
+    const line2Items = lines[2].items;
+    expect(line2Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses interlude sections as part', () => {
+    const chordSheetInterlude = '[Interlude]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetInterlude);
+    const { lines } = song;
+
     expect(lines.length).toEqual(2);
 
     const line0Items = lines[0].items;
-    expect(line0Items[0]).toBeTag('comment', 'Instrumental');
+    expect(line0Items[0]).toBeTag('start_of_part', 'Interlude');
 
     const line1Items = lines[1].items;
-    expect(line1Items.length).toEqual(1);
+    expect(line1Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses solo sections as part', () => {
+    const chordSheetSolo = '[Solo]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetSolo);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(2);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Solo');
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses pre-chorus sections as part', () => {
+    const chordSheetPreChorus = '[Pre-Chorus]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetPreChorus);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(2);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Pre-Chorus');
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeTag('end_of_part', '');
+  });
+
+  it('parses section types case-insensitively', () => {
+    const chordSheetBridge = '[BRIDGE]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetBridge);
+    const { lines } = song;
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_bridge', 'BRIDGE');
+  });
+
+  it('adds truly unknown sections as comments', () => {
+    const chordSheetUnknown = '[Some Random Thing]';
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheetUnknown);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(1);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('comment', 'Some Random Thing');
   });
 
   it('parses entire chord sheet with several sections correctly', () => {
@@ -106,11 +247,11 @@ describe('UltimateGuitarParser', () => {
 
     const expected = normalizeLineEndings(
       fs.readFileSync('./test/fixtures/ultimate_guitar_chordsheet_expected_chordpro_format.txt', 'utf8'),
-    );
+    ).trimEnd();
 
     const parser = new UltimateGuitarParser({ preserveWhitespace: false });
     const song = parser.parse(chordSheet);
-    const result = new ChordProFormatter().format(song);
+    const result = new ChordProFormatter().format(song).trimEnd();
 
     expect(result).toEqual(expected);
   });

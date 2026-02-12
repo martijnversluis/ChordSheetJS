@@ -22,12 +22,14 @@
 {end_of_chorus}
 
 
-{comment: Instrumental}
+{start_of_part: Instrumental}
 [F][C][Dm]
+{end_of_part}
 
 
-{comment: Solo}
+{start_of_part: Solo}
 [C][G][Am]
+{end_of_part}
 
 
 {start_of_chorus: Chorus}
@@ -36,5 +38,7 @@
 {end_of_chorus}
 
 
-{comment: Outro}
+{start_of_part: Outro}
 [F][C][Dm]
+
+{end_of_part}
