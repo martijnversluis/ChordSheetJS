@@ -446,4 +446,35 @@ describe('UltimateGuitarParser', () => {
     expect(line0Items[2]).toBeChordLyricsPair('Am', '');
     expect(line0Items[3]).toBeChordLyricsPair('F', 'x3');
   });
+
+  it('parses consecutive chord lines without lyrics', () => {
+    const chordSheet = heredoc`
+      [Intro]
+      D A Bm G
+      D A Bm G`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+
+    expect(lines.length).toEqual(4);
+
+    const line0Items = lines[0].items;
+    expect(line0Items[0]).toBeTag('start_of_part', 'Intro');
+
+    const line1Items = lines[1].items;
+    expect(line1Items[0]).toBeChordLyricsPair('D', '');
+    expect(line1Items[1]).toBeChordLyricsPair('A', '');
+    expect(line1Items[2]).toBeChordLyricsPair('Bm', '');
+    expect(line1Items[3]).toBeChordLyricsPair('G', '');
+
+    const line2Items = lines[2].items;
+    expect(line2Items[0]).toBeChordLyricsPair('D', '');
+    expect(line2Items[1]).toBeChordLyricsPair('A', '');
+    expect(line2Items[2]).toBeChordLyricsPair('Bm', '');
+    expect(line2Items[3]).toBeChordLyricsPair('G', '');
+
+    const line3Items = lines[3].items;
+    expect(line3Items[0]).toBeTag('end_of_part', '');
+  });
 });

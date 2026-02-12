@@ -108,7 +108,7 @@ class UltimateGuitarParser extends ChordSheetParser {
   private parseChordLineWithNextLine(chordsLine: string): void {
     const nextLine = this.readLine();
 
-    if (this.isDirectiveLine(nextLine)) {
+    if (this.isNonLyricsLine(nextLine)) {
       this.parseChordsOnly(chordsLine);
       this.unreadLine();
     } else {
@@ -120,12 +120,13 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.currentLine -= 1;
   }
 
-  private isDirectiveLine(line: string): boolean {
+  private isNonLyricsLine(line: string): boolean {
     return VERSE_LINE_REGEX.test(line) ||
       CHORUS_LINE_REGEX.test(line) ||
       BRIDGE_LINE_REGEX.test(line) ||
       PART_LINE_REGEX.test(line) ||
       OTHER_METADATA_LINE_REGEX.test(line) ||
+      CHORD_LINE_REGEX.test(line) ||
       line.trim().length === 0;
   }
 
