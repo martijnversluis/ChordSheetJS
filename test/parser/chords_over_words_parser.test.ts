@@ -687,4 +687,15 @@ describe('ChordsOverWordsParser', () => {
       expect(linePairs[2]).toBeChordLyricsPair('C/G', 'be');
     });
   });
+
+  it('parses maj13 chords correctly', () => {
+    const chordOverWords = heredoc`
+      Eb      Dbmaj13
+      A line`;
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordOverWords);
+
+    expect(song.getChords()).toEqual(['Eb', 'Dbmaj13']);
+  });
 });
