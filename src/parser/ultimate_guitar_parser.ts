@@ -1,11 +1,12 @@
 import ChordSheetParser from './chord_sheet_parser';
-import Tag from '../chord_sheet/tag';
+import Tag, { META_TAGS } from '../chord_sheet/tag';
 
 import {
   BRIDGE, CHORUS, NONE, PART, VERSE,
 } from '../constants';
 
 import {
+  CAPO,
   COMMENT,
   END_OF_BRIDGE,
   END_OF_CHORUS,
@@ -21,6 +22,7 @@ const VERSE_LINE_REGEX = /^\[(Verse.*)]/i;
 const CHORUS_LINE_REGEX = /^\[(Chorus.*)]/i;
 const BRIDGE_LINE_REGEX = /^\[(Bridge.*)]/i;
 const PART_LINE_REGEX = /^\[(Intro|Outro|Instrumental|Interlude|Solo|Pre-Chorus)( \d+)?]/i;
+const UG_METADATA_REGEX = /^(\w+):\s*(.+)$/;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 
 const startSectionTags: Record<string, string> = {
@@ -63,10 +65,29 @@ class UltimateGuitarParser extends ChordSheetParser {
       this.parseChorusDirective(line) ||
       this.parseBridgeDirective(line) ||
       this.parsePartDirective(line) ||
+      this.parseUGMetadata(line) ||
       this.parseMetadata(line)
     )) {
       super.parseLine(line);
     }
+  }
+
+  parseUGMetadata(line: string): boolean {
+    const match = line.match(UG_METADATA_REGEX);
+    if (!match) return false;
+
+    const tagName = match[1].toLowerCase();
+    if (!META_TAGS.includes(tagName)) return false;
+
+    const value = tagName === CAPO ? this.extractCapoValue(match[2]) : match[2].trim();
+    this.startNewLine();
+    this.songBuilder.addTag(new Tag(tagName, value));
+    return true;
+  }
+
+  private extractCapoValue(rawValue: string): string {
+    const [, capoNumber] = rawValue.match(/^(\d+)/) || [];
+    return capoNumber || rawValue.trim();
   }
 
   parseVerseDirective(line: string): boolean {
