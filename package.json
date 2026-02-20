@@ -42,7 +42,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-levenshtein": "^1",
     "@types/node": "^25.0.3",
-    "@types/web": "^0.0.336",
+    "@types/web": "^0.0.337",
     "esbuild": "^0.27.2",
     "eslint": "^9.11.0",
     "eslint-config-airbnb": "^19.0.4",
