@@ -291,8 +291,7 @@ export class ItemProcessor {
    * Removes hyphens from lyrics for lyrics-only mode
    */
   removeHyphens(lyrics: string): string {
-    let cleanedLyrics = lyrics;
-    cleanedLyrics = lyrics.replace(/\b(\w+)\s*-\s*(\w+)\b/g, '$1$2');
+    let cleanedLyrics = lyrics.replace(/\b(\w+)\s*-\s*(\w+)\b/g, '$1$2');
     cleanedLyrics = cleanedLyrics.replace(/(?:\b(\w+)\s*-\s*$)|(?:-\s*$)|(?:\s+-\s+$)/g, '$1');
     if (/^\s*-\s*$/.test(cleanedLyrics)) {
       return '';
