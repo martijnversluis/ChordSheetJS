@@ -3,7 +3,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2018", "es2019", "dom"],
+    "lib": ["es2018", "es2019", "es2022", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError":  true,

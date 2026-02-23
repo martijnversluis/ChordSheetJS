@@ -245,7 +245,7 @@ export class LayoutSectionRenderer {
       const parsed = new ChordProParser().parse(template);
       return new TextFormatter().format(parsed, metadata);
     } catch (e) {
-      throw new Error(`Error evaluating template\n\n${template}\n\n: ${(e as Error).message}`);
+      throw new Error(`Error evaluating template\n\n${template}\n\n: ${(e as Error).message}`, { cause: e });
     }
   }
 
