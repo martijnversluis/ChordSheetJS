@@ -1,4 +1,5 @@
 import Formatter from './formatter';
+import Metadata from '../chord_sheet/metadata';
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import { getHTMLDefaultConfig } from './configuration';
@@ -8,6 +9,7 @@ import { HTMLFormatterConfiguration, HtmlTemplateCssClasses } from './configurat
 export interface HtmlTemplateArgs {
   configuration: HTMLFormatterConfiguration;
   song: Song;
+  metadata: Metadata;
   renderBlankLines?: boolean;
   bodyParagraphs: Paragraph[],
 }
@@ -57,6 +59,7 @@ abstract class HtmlFormatter extends Formatter<HTMLFormatterConfiguration> {
     return this.template(
       {
         song,
+        metadata: song.getMetadata(this.configuration),
         configuration: this.configuration,
         bodyParagraphs: this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs,
       },

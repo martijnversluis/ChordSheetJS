@@ -48,7 +48,8 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatHeader(): string {
     // Process metadata according to configuration
-    const orderedMetadata = processMetadata(this.song.metadata.all(), this.configuration.metadata);
+    const songMetadata = this.song.getMetadata(this.configuration);
+    const orderedMetadata = processMetadata(songMetadata.all(), this.configuration.metadata);
 
     const metadata = orderedMetadata
       .map(([key, value]) => {
@@ -66,7 +67,8 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, bodyParagraphs: { length: count }, metadata } = this.song;
+    const { bodyParagraphs, bodyParagraphs: { length: count } } = this.song;
+    const metadata = this.song.getMetadata(this.configuration);
 
     const formattedParagraphs = bodyParagraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
     const combined = formattedParagraphs.join('\n\n');

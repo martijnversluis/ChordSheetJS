@@ -422,6 +422,76 @@ describe('Song', () => {
     });
   });
 
+  describe('#getMetadata', () => {
+    it('returns all metadata when no configuration is provided', () => {
+      const song = createSong([
+        createLine([createTag('artist', 'John')]),
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      const metadata = song.getMetadata();
+
+      expect(metadata.getSingle('artist')).toEqual('John');
+      expect(metadata.getSingle('title')).toEqual('My Song');
+    });
+
+    it('leaves out metadata with non-matching selector', () => {
+      const configuration = configure({ instrument: { type: 'ukulele' } });
+
+      const song = createSong([
+        createLine([createTag('artist', 'John', null, 'guitar')]),
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.getSingle('artist')).toBeNull();
+      expect(metadata.getSingle('title')).toEqual('My Song');
+    });
+
+    it('includes metadata with matching selector', () => {
+      const configuration = configure({ instrument: { type: 'guitar' } });
+
+      const song = createSong([
+        createLine([createTag('artist', 'John', null, 'guitar')]),
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.getSingle('artist')).toEqual('John');
+      expect(metadata.getSingle('title')).toEqual('My Song');
+    });
+
+    it('leaves out metadata with a negated matching selector', () => {
+      const configuration = configure({ instrument: { type: 'guitar' } });
+
+      const song = createSong([
+        createLine([createTag('artist', 'John', null, 'guitar', true)]),
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.getSingle('artist')).toBeNull();
+      expect(metadata.getSingle('title')).toEqual('My Song');
+    });
+
+    it('includes metadata with a negated non-matching selector', () => {
+      const configuration = configure({ instrument: { type: 'ukulele' } });
+
+      const song = createSong([
+        createLine([createTag('artist', 'John', null, 'guitar', true)]),
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.getSingle('artist')).toEqual('John');
+      expect(metadata.getSingle('title')).toEqual('My Song');
+    });
+  });
+
   describe('#chordDefinitions', () => {
     it('returns the unique chord definitions in a song', () => {
       const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
