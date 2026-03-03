@@ -109,6 +109,10 @@ class Paragraph {
     return getCommonValue(selectors, null);
   }
 
+  get isNegated(): boolean {
+    return this.lines.some((line) => line.isNegated);
+  }
+
   /**
    * Indicates whether the paragraph contains lines with renderable items.
    * @see {@link Line.hasRenderableItems}

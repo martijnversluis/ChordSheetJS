@@ -89,6 +89,18 @@ class Song extends MetadataAccessors {
     return this.selectRenderableItems(this.linesToParagraphs(expandedLines)) as Paragraph[];
   }
 
+  filterParagraphs(paragraphs: Paragraph[], configuration: Configuration): Paragraph[] {
+    const context: FormattingContext = { configuration, metadata: this.metadata };
+
+    return paragraphs.filter((paragraph) => {
+      const { selector, isNegated } = paragraph;
+
+      if (!selector) return true;
+
+      return testSelector({ selector, isNegated }, context);
+    });
+  }
+
   linesToParagraphs(lines: Line[]): Paragraph[] {
     let currentParagraph = new Paragraph();
     const paragraphs = [currentParagraph];

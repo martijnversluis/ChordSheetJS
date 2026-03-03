@@ -57,6 +57,8 @@ class Line {
 
   selector: string | null = null;
 
+  isNegated = false;
+
   /**
    * The text font that applies to this line. Is derived from the directives:
    * `textfont`, `textsize` and `textcolour`
