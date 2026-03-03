@@ -149,6 +149,39 @@ Grid line 2`;
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
+  describe('conditional metadata', () => {
+    it('excludes metadata with a non-matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {title: My Song}
+        {artist-guitar: Guitar John}
+        {artist: Generic Jane}
+
+        [Am]Hello
+      `);
+
+      const formatter = new ChordsOverWordsFormatter({ instrument: { type: 'ukulele' } });
+      const result = formatter.format(song);
+
+      expect(result).toContain('artist: Generic Jane');
+      expect(result).not.toContain('Guitar John');
+    });
+
+    it('includes metadata with a matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {title: My Song}
+        {artist-guitar: Guitar John}
+        {artist: Generic Jane}
+
+        [Am]Hello
+      `);
+
+      const formatter = new ChordsOverWordsFormatter({ instrument: { type: 'guitar' } });
+      const result = formatter.format(song);
+
+      expect(result).toContain('artist: Guitar John,Generic Jane');
+    });
+  });
+
   describe('conditional sections', () => {
     it('excludes sections with a non-matching selector', () => {
       const song = new ChordProParser().parse(heredoc`

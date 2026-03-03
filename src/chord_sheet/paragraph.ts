@@ -109,8 +109,8 @@ class Paragraph {
     return getCommonValue(selectors, null);
   }
 
-  get isNegated(): boolean {
-    return this.lines.some((line) => line.isNegated);
+  get selectorIsNegated(): boolean {
+    return this.lines.some((line) => line.selectorIsNegated);
   }
 
   /**

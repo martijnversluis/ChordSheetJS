@@ -93,11 +93,11 @@ class Song extends MetadataAccessors {
     const context: FormattingContext = { configuration, metadata: this.metadata };
 
     return paragraphs.filter((paragraph) => {
-      const { selector, isNegated } = paragraph;
+      const { selector, selectorIsNegated } = paragraph;
 
       if (!selector) return true;
 
-      return testSelector({ selector, isNegated }, context);
+      return testSelector({ selector, isNegated: selectorIsNegated }, context);
     });
   }
 

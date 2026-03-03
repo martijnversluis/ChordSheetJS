@@ -27,7 +27,7 @@ class TextFormatter extends Formatter {
    */
   format(song: Song, metadata?: Metadata): string {
     this.song = song;
-    this.metadata = metadata || song.metadata;
+    this.metadata = metadata || song.getMetadata(this.configuration);
 
     return [
       this.formatHeader(),

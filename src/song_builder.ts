@@ -29,7 +29,7 @@ class SongBuilder {
 
   selector: string | null = null;
 
-  isNegated = false;
+  selectorIsNegated = false;
 
   song: Song;
 
@@ -61,7 +61,7 @@ class SongBuilder {
       this.lines.push(this.currentLine);
     }
 
-    this.setCurrentProperties(this.sectionType, this.selector, this.isNegated);
+    this.setCurrentProperties(this.sectionType, this.selector, this.selectorIsNegated);
     this.currentLine.transposeKey = this.transposeKey ?? this.currentKey;
     this.currentLine.key = this.currentKey || this.song.getMetadata().getSingle(KEY);
     this.currentLine.lineNumber = this.lines.length - 1;
@@ -73,7 +73,7 @@ class SongBuilder {
 
     this.currentLine.type = sectionType as LineType;
     this.currentLine.selector = selector;
-    this.currentLine.isNegated = isNegated;
+    this.currentLine.selectorIsNegated = isNegated;
     this.currentLine.textFont = this.fontStack.textFont.clone();
     this.currentLine.chordFont = this.fontStack.chordFont.clone();
   }
@@ -147,7 +147,7 @@ class SongBuilder {
   startSection(sectionType: string, tag: Tag): void {
     this.checkCurrentSectionType(NONE, tag);
     this.selector = tag.selector;
-    this.isNegated = tag.isNegated;
+    this.selectorIsNegated = tag.isNegated;
 
     if (sectionType === PART && tag.value) {
       this.sectionType = tag.value.split(' ')[0].toLowerCase();
@@ -162,7 +162,7 @@ class SongBuilder {
     this.checkCurrentSectionType(sectionType, tag);
     this.sectionType = NONE;
     this.selector = null;
-    this.isNegated = false;
+    this.selectorIsNegated = false;
   }
 
   checkCurrentSectionType(sectionType: string, tag: Tag): void {

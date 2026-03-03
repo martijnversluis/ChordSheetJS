@@ -256,6 +256,37 @@ Let it be, let it be, let it be, let it be`;
     expect(rendered).toEqual('Composers: John and Jane');
   });
 
+  describe('conditional metadata', () => {
+    it('excludes metadata with a non-matching selector from ternary expressions', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {composer-guitar: Guitar John}
+        {composer: Generic Jane}
+
+        Composer: %{composer}
+      `);
+
+      const rendered = new TextFormatter({ instrument: { type: 'ukulele' } }).format(song);
+
+      expect(rendered).toEqual('Composer: Generic Jane');
+    });
+
+    it('includes metadata with a matching selector in ternary expressions', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {composer-guitar: Guitar John}
+        {composer: Generic Jane}
+
+        Composer: %{composer}
+      `);
+
+      const rendered = new TextFormatter({
+        instrument: { type: 'guitar' },
+        metadata: { separator: ' and ' },
+      }).format(song);
+
+      expect(rendered).toEqual('Composer: Guitar John and Generic Jane');
+    });
+  });
+
   describe('conditional sections', () => {
     it('excludes sections with a non-matching selector', () => {
       const song = new ChordProParser().parse(heredoc`
