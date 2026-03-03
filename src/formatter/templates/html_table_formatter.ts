@@ -25,12 +25,12 @@ export default (
       cssClasses: c,
     },
     song,
+    metadata,
     renderBlankLines = false,
     song: {
       title,
       subtitle,
       bodyLines,
-      metadata,
     },
     bodyParagraphs,
   }: HtmlTemplateArgs,
