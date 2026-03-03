@@ -55,13 +55,14 @@ abstract class HtmlFormatter extends Formatter<HTMLFormatterConfiguration> {
    */
   format(song: Song): string {
     const { bodyParagraphs, expandedBodyParagraphs } = song;
+    const paragraphs = this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs;
 
     return this.template(
       {
         song,
         metadata: song.getMetadata(this.configuration),
         configuration: this.configuration,
-        bodyParagraphs: this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs,
+        bodyParagraphs: song.filterParagraphs(paragraphs, this.configuration),
       },
     );
   }

@@ -67,10 +67,11 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, bodyParagraphs: { length: count } } = this.song;
     const metadata = this.song.getMetadata(this.configuration);
+    const paragraphs = this.song.filterParagraphs(this.song.bodyParagraphs, this.configuration);
+    const count = paragraphs.length;
 
-    const formattedParagraphs = bodyParagraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
+    const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
     const combined = formattedParagraphs.join('\n\n');
 
     if (formattedParagraphs[count - 1].length === 0) {

@@ -182,6 +182,48 @@ Grid line 2`;
     });
   });
 
+  describe('conditional sections', () => {
+    it('excludes sections with a non-matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {title: My Song}
+
+        {start_of_verse-guitar: Verse}
+        [Am]Guitar verse
+        {end_of_verse}
+
+        {start_of_verse: Verse}
+        [C]Common verse
+        {end_of_verse}
+      `);
+
+      const formatter = new ChordsOverWordsFormatter({ instrument: { type: 'ukulele' } });
+      const result = formatter.format(song);
+
+      expect(result).not.toContain('Guitar verse');
+      expect(result).toContain('Common verse');
+    });
+
+    it('includes sections with a matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {title: My Song}
+
+        {start_of_verse-guitar: Verse}
+        [Am]Guitar verse
+        {end_of_verse}
+
+        {start_of_verse: Verse}
+        [C]Common verse
+        {end_of_verse}
+      `);
+
+      const formatter = new ChordsOverWordsFormatter({ instrument: { type: 'guitar' } });
+      const result = formatter.format(song);
+
+      expect(result).toContain('Guitar verse');
+      expect(result).toContain('Common verse');
+    });
+  });
+
   describe('delegates', () => {
     [ABC, GRID, LILYPOND, TAB].forEach((type) => {
       describe(`for ${type}`, () => {

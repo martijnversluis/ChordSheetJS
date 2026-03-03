@@ -287,6 +287,59 @@ Let it be, let it be, let it be, let it be`;
     });
   });
 
+  describe('conditional sections', () => {
+    it('excludes sections with a non-matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {start_of_verse-guitar: Verse}
+        [Am]Guitar verse
+        {end_of_verse}
+
+        {start_of_verse: Verse}
+        [C]Common verse
+        {end_of_verse}
+      `);
+
+      const rendered = new TextFormatter({ instrument: { type: 'ukulele' } }).format(song);
+
+      expect(rendered).not.toContain('Guitar verse');
+      expect(rendered).toContain('Common verse');
+    });
+
+    it('includes sections with a matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {start_of_verse-guitar: Verse}
+        [Am]Guitar verse
+        {end_of_verse}
+
+        {start_of_verse: Verse}
+        [C]Common verse
+        {end_of_verse}
+      `);
+
+      const rendered = new TextFormatter({ instrument: { type: 'guitar' } }).format(song);
+
+      expect(rendered).toContain('Guitar verse');
+      expect(rendered).toContain('Common verse');
+    });
+
+    it('excludes sections with a negated matching selector', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {start_of_verse-guitar!: Verse}
+        [Am]Not for guitar
+        {end_of_verse}
+
+        {start_of_verse: Verse}
+        [C]Common verse
+        {end_of_verse}
+      `);
+
+      const rendered = new TextFormatter({ instrument: { type: 'guitar' } }).format(song);
+
+      expect(rendered).not.toContain('Not for guitar');
+      expect(rendered).toContain('Common verse');
+    });
+  });
+
   describe('delegates', () => {
     [ABC, GRID, LILYPOND, TAB].forEach((type) => {
       describe(`for ${type}`, () => {
