@@ -3,6 +3,8 @@ import MetadataAccessors from './metadata_accessors';
 import { isReadonlyTag } from './tag';
 import { CAPO, KEY, _KEY } from './tags';
 
+type MetadataProvider = () => string | null;
+
 function appendValue(array: string[], value: string): void {
   if (!array.includes(value)) {
     array.push(value);
@@ -19,6 +21,8 @@ function appendValue(array: string[], value: string): void {
  */
 class Metadata extends MetadataAccessors implements Iterable<[string, string | string[]]> {
   metadata: Record<string, string | string[]> = {};
+
+  providers = new Map<string, MetadataProvider>();
 
   constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
@@ -72,6 +76,10 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     this.metadata[key] = [currentValue, value];
   }
 
+  setProvider(key: string, provider: MetadataProvider): void {
+    this.providers.set(key, provider);
+  }
+
   set(key: string, value: string | null): void {
     if (value) {
       this.metadata[key] = value;
@@ -119,14 +127,42 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
       return this.metadata[prop];
     }
 
+    const provider = this.providers.get(prop);
+
+    if (provider) {
+      return provider();
+    }
+
     return this.getArrayItem(prop);
   }
 
   /**
-   * Returns all metadata values, including generated values like `_key`.
+   * Returns all metadata values, including provider values and generated values like `_key`.
    * @returns {Object.<string, string|string[]>} the metadata values
    */
   all(): Record<string, string | string[]> {
+    const all: Record<string, string | string[]> = {};
+
+    this.providers.forEach((provider, providerKey) => {
+      const value = provider();
+
+      if (value !== null) {
+        all[providerKey] = value;
+      }
+    });
+
+    Object.assign(all, this.metadata);
+
+    const key = this.calculateKeyFromCapo();
+
+    if (key) {
+      all[_KEY] = key;
+    }
+
+    return all;
+  }
+
+  ownMetadata(): Record<string, string | string[]> {
     const all = { ...this.metadata };
     const key = this.calculateKeyFromCapo();
 
@@ -138,7 +174,7 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
   }
 
   [Symbol.iterator](): IterableIterator<[string, string | string[]]> {
-    return Object.entries(this.all())[Symbol.iterator]();
+    return Object.entries(this.ownMetadata())[Symbol.iterator]();
   }
 
   /**
@@ -195,7 +231,9 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
    * @returns {Metadata} the cloned Metadata object
    */
   clone(): Metadata {
-    return new Metadata(this.metadata);
+    const cloned = new Metadata(this.metadata);
+    this.providers.forEach((provider, key) => cloned.setProvider(key, provider));
+    return cloned;
   }
 
   calculateKeyFromCapo(): string | null {
