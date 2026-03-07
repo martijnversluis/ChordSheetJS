@@ -49,7 +49,7 @@ class ChordsOverWordsFormatter extends Formatter {
   formatHeader(): string {
     // Process metadata according to configuration
     const songMetadata = this.song.getMetadata(this.configuration);
-    const orderedMetadata = processMetadata(songMetadata.all(), this.configuration.metadata);
+    const orderedMetadata = processMetadata(songMetadata.ownMetadata(), this.configuration.metadata);
 
     const metadata = orderedMetadata
       .map(([key, value]) => {

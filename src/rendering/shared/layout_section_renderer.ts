@@ -113,10 +113,10 @@ export class LayoutSectionRenderer {
       return true;
     }
 
-    const metadata = {
-      ...this.context.metadata.all(),
-      ...this.context.extraMetadata,
-    };
+    const { metadata: songMetadata, extraMetadata } = this.context;
+    const metadata = new Proxy({} as Record<string, any>, {
+      get: (_, prop: string) => extraMetadata?.[prop] ?? songMetadata.get(prop),
+    });
     return new Condition(contentItem.condition as ConditionalRule, metadata).evaluate();
   }
 

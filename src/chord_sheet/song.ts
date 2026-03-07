@@ -20,6 +20,7 @@ import Tag from './tag';
 import { Accidental } from '../constants';
 import { testSelector } from '../helpers';
 import { CAPO, KEY } from './tags';
+import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
 
 type MapItemsCallback = (_item: Item) => Item | Item[] | null;
@@ -605,6 +606,15 @@ Or set the song key before changing key:
 
   getMetadata(configuration?: Configuration): Metadata {
     const metadata = new Metadata();
+
+    const providers = configuration ? configurationProviders(configuration) : staticProviders();
+    providers.forEach((provider, key) => metadata.setProvider(key, provider));
+
+    const chords = () => this.getChords();
+    metadata.setProvider('chords', () => { const c = chords(); return c.length ? c.join(', ') : null; });
+    metadata.setProvider('numchords', () => chords().length.toString());
+    metadata.setProvider('key_actual', () => metadata.getSingle('_key') ?? metadata.getSingle('key'));
+    metadata.setProvider('key_from', () => metadata.getSingle('key'));
 
     this.foreachItem((item: Item) => {
       if (!(item instanceof Tag)) {

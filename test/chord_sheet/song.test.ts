@@ -492,6 +492,116 @@ describe('Song', () => {
     });
   });
 
+  describe('standard metadata', () => {
+    it('provides chordpro metadata without configuration', () => {
+      const song = createSong([]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('chordpro')).toEqual('ChordPro');
+    });
+
+    it('provides today metadata', () => {
+      const song = createSong([]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('today')).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    });
+
+    it('provides instrument.type from configuration', () => {
+      const configuration = configure({ instrument: { type: 'guitar' } });
+      const song = createSong([]);
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.get('instrument.type')).toEqual('guitar');
+    });
+
+    it('provides user.name from configuration', () => {
+      const configuration = configure({ user: { name: 'johndoe' } });
+      const song = createSong([]);
+      const metadata = song.getMetadata(configuration);
+
+      expect(metadata.get('user.name')).toEqual('johndoe');
+    });
+
+    it('allows explicit directive to override standard metadata', () => {
+      const song = createSong([
+        createLine([createTag('title', 'My Song')]),
+      ]);
+
+      song.getMetadata();
+
+      // title doesn't have a standard provider, but chordpro does
+      // verify explicit metadata is preferred
+      const metadata = song.getMetadata();
+      expect(metadata.get('title')).toEqual('My Song');
+    });
+
+    it('provides chords as comma-separated list', () => {
+      const song = createSong([
+        createLine([createChordLyricsPair('Am', 'let it '), createChordLyricsPair('C', 'be')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('chords')).toEqual('Am, C');
+    });
+
+    it('provides numchords as count of unique chords', () => {
+      const song = createSong([
+        createLine([createChordLyricsPair('Am', 'let it '), createChordLyricsPair('C', 'be')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('numchords')).toEqual('2');
+    });
+
+    it('returns null for chords when song has no chords', () => {
+      const song = createSong([
+        createLine([createTag('title', 'No Chords')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('chords')).toBeNull();
+      expect(metadata.get('numchords')).toEqual('0');
+    });
+
+    it('provides key_actual as key when no capo is set', () => {
+      const song = createSong([
+        createLine([createTag('key', 'C')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('key_actual')).toEqual('C');
+    });
+
+    it('provides key_actual as transposed key when capo is set', () => {
+      const song = createSong([
+        createLine([createTag('key', 'C')]),
+        createLine([createTag('capo', '2')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('key_actual')).toEqual('D');
+    });
+
+    it('provides key_from as the original key', () => {
+      const song = createSong([
+        createLine([createTag('key', 'C')]),
+        createLine([createTag('capo', '2')]),
+      ]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('key_from')).toEqual('C');
+    });
+
+    it('returns null for key_actual and key_from when no key is set', () => {
+      const song = createSong([]);
+      const metadata = song.getMetadata();
+
+      expect(metadata.get('key_actual')).toBeNull();
+      expect(metadata.get('key_from')).toBeNull();
+    });
+  });
+
   describe('#chordDefinitions', () => {
     it('returns the unique chord definitions in a song', () => {
       const cm7 = createChordDefinition('CM7', 3, ['x', 0, 1]);
