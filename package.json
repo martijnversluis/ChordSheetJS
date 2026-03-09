@@ -42,7 +42,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-levenshtein": "^1",
     "@types/node": "^25.0.3",
-    "@types/web": "^0.0.339",
+    "@types/web": "^0.0.341",
     "@typescript-eslint/utils": "^8.56.1",
     "esbuild": "^0.27.2",
     "eslint": "^10.0.1",
