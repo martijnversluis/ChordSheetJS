@@ -452,14 +452,14 @@ __metadata:
   linkType: hard
 
 "@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.35.0":
-  version: 6.39.16
-  resolution: "@codemirror/view@npm:6.39.16"
+  version: 6.39.17
+  resolution: "@codemirror/view@npm:6.39.17"
   dependencies:
     "@codemirror/state": "npm:^6.5.0"
     crelt: "npm:^1.0.6"
     style-mod: "npm:^4.1.0"
     w3c-keyname: "npm:^2.2.4"
-  checksum: 10c0/93de1ad645649030968d7dae2ce9a599ec3e96651a1b8a43445137e69b879073e08f031299684f6df77889fa3743e8275166fd12a2b591b3fb7494c6a0d427d5
+  checksum: 10c0/3344f94b1c5f3a003c4fbd777327bd88aaea959938cb25319b558c62017f8e4ccd0cfb02e0269266ba74c37f90a505ec50ce7c94fb0f85928ca6486face3b957
   languageName: node
   linkType: hard
 
