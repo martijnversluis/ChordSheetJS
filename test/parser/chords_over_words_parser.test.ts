@@ -756,7 +756,7 @@ describe('ChordsOverWordsParser', () => {
       'n.c',
       'N/C',
       'n/c',
-    ])('normalizes %s to N.C.', (variant) => {
+    ])('preserves original notation %s in output', (variant) => {
       const chordOverWords = `${variant}  D`;
 
       const parser = new ChordsOverWordsParser();
@@ -766,7 +766,7 @@ describe('ChordsOverWordsParser', () => {
       expect(lines).toHaveLength(1);
 
       const linePairs = lines[0].items;
-      expect(linePairs[0]).toBeChordLyricsPair('N.C.', '');
+      expect(linePairs[0]).toBeChordLyricsPair(variant, '');
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
     });
   });
