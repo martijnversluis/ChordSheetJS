@@ -11,6 +11,7 @@ import {
   HtmlTableFormatter,
   LILYPOND,
   TAB,
+  TEXTBLOCK,
 } from '../../src';
 
 import {
@@ -247,6 +248,25 @@ describe('HtmlTableFormatter', () => {
           </tr>
         </table>
       </div>
+
+      <div class="paragraph textblock">
+        <table class="row">
+          <tr>
+            <td class="label-wrapper">
+              <h3 class="label">Disclaimer</h3>
+            </td>
+          </tr>
+        </table>
+
+        <table class="literal">
+          <tr>
+            <td class="contents">
+              Textblock line 1<br>
+              Textblock line 2
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>`);
 
     expect(new HtmlTableFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
@@ -471,6 +491,25 @@ describe('HtmlTableFormatter', () => {
               <td class="contents">
                 Grid line 1<br>
                 Grid line 2
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="paragraph textblock">
+          <table class="row">
+            <tr>
+              <td class="label-wrapper">
+                <h3 class="label">Disclaimer</h3>
+              </td>
+            </tr>
+          </table>
+
+          <table class="literal">
+            <tr>
+              <td class="contents">
+                Textblock line 1<br>
+                Textblock line 2
               </td>
             </tr>
           </table>
@@ -702,6 +741,25 @@ describe('HtmlTableFormatter', () => {
             <td class="CONTENTS">
               Grid line 1<br>
               Grid line 2
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="PARAGRAPH textblock">
+        <table class="ROW">
+          <tr>
+            <td class="LABEL-WRAPPER">
+              <h3 class="LABEL">Disclaimer</h3>
+            </td>
+          </tr>
+        </table>
+
+        <table class="LITERAL">
+          <tr>
+            <td class="CONTENTS">
+              Textblock line 1<br>
+              Textblock line 2
             </td>
           </tr>
         </table>
@@ -1179,6 +1237,25 @@ describe('HtmlTableFormatter', () => {
               </tr>
             </table>
           </div>
+
+          <div class="paragraph textblock">
+            <table class="row">
+              <tr>
+                <td class="label-wrapper">
+                  <h3 class="label">Disclaimer</h3>
+                </td>
+              </tr>
+            </table>
+
+            <table class="literal">
+              <tr>
+                <td class="contents">
+                  Textblock line 1<br>
+                  Textblock line 2
+                </td>
+              </tr>
+            </table>
+          </div>
       </div>
     `);
 
@@ -1309,7 +1386,7 @@ describe('HtmlTableFormatter', () => {
   });
 
   describe('delegates', () => {
-    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+    [ABC, GRID, LILYPOND, TAB, TEXTBLOCK].forEach((type) => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([

@@ -54,7 +54,12 @@ Bridge line
 {start_of_grid: Grid 1}
 Grid line 1
 Grid line 2
-{end_of_grid}`;
+{end_of_grid}
+
+{start_of_textblock: Disclaimer}
+Textblock line 1
+Textblock line 2
+{end_of_textblock}`;
 
 export const chordProSheetSolfege = heredoc`
 {title: Let it be}
@@ -110,4 +115,9 @@ Bridge line
 {start_of_grid: Grid 1}
 Grid line 1
 Grid line 2
-{end_of_grid}`;
+{end_of_grid}
+
+{start_of_textblock: Disclaimer}
+Textblock line 1
+Textblock line 2
+{end_of_textblock}`;

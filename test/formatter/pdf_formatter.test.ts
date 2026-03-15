@@ -78,14 +78,14 @@ describe('PdfFormatter', () => {
     // expect(doc).toHaveText('Grid 1', 45, 499);
 
     // Chord Diagrams
-    expect(doc).toHaveText('Am', 54, 538);
-    expect(doc).toHaveText('C/G', 95, 538);
-    expect(doc).toHaveText('F', 142, 538);
-    expect(doc).toHaveText('C', 184, 538);
-    expect(doc).toHaveText('G', 225, 538);
-    expect(doc).toHaveText('C/E', 263, 538);
+    expect(doc).toHaveText('Am', 54, 570);
+    expect(doc).toHaveText('C/G', 95, 570);
+    expect(doc).toHaveText('F', 142, 570);
+    expect(doc).toHaveText('C', 184, 570);
+    expect(doc).toHaveText('G', 225, 570);
+    expect(doc).toHaveText('C/E', 263, 570);
     // Moved to next column
-    expect(doc).toHaveText('Dm', 54, 608);
+    expect(doc).toHaveText('Dm', 54, 640);
   });
 
   it('renders header content', () => {
@@ -283,13 +283,13 @@ describe('PdfFormatter', () => {
     formatter.configure(config).format(exampleSongSymbol, StubbedPdfDoc);
     const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
 
-    expect(doc).toHaveText('Am', 54, 538);
-    expect(doc).toHaveText('C/G', 95, 538);
-    expect(doc).toHaveText('F', 142, 538);
-    expect(doc).toHaveText('C', 184, 538);
-    // expect(doc).toHaveText('G', 225, 538);
-    expect(doc).toHaveText('C/E', 221, 538);
+    expect(doc).toHaveText('Am', 54, 570);
+    expect(doc).toHaveText('C/G', 95, 570);
+    expect(doc).toHaveText('F', 142, 570);
+    expect(doc).toHaveText('C', 184, 570);
+    // expect(doc).toHaveText('G', 225, 570);
+    expect(doc).toHaveText('C/E', 221, 570);
     // Moved to next column
-    expect(doc).toHaveText('Dm', 264, 538);
+    expect(doc).toHaveText('Dm', 264, 570);
   });
 });

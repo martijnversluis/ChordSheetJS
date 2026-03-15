@@ -156,6 +156,18 @@ export const START_OF_LY = 'start_of_ly';
 export const START_OF_TAB = 'start_of_tab';
 
 /**
+ * Start of textblock directive. See https://chordpro.org/chordpro/directives-env_textblock/
+ * @type {string}
+ */
+export const START_OF_TEXTBLOCK = 'start_of_textblock';
+
+/**
+ * End of textblock directive. See https://chordpro.org/chordpro/directives-env_textblock/
+ * @type {string}
+ */
+export const END_OF_TEXTBLOCK = 'end_of_textblock';
+
+/**
  * Start of verse directive. See https://www.chordpro.org/chordpro/directives-env_verse/
  * @type {string}
  */

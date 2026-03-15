@@ -10,6 +10,7 @@ import {
   LILYPOND,
   NONE,
   TAB,
+  TEXTBLOCK,
   Tag,
   Ternary,
   VERSE,
@@ -714,6 +715,29 @@ Let it [Am]be
     expect(lines[0].items[0]).toBeTag('start_of_ly', 'Intro');
     expect(lines[1].items[0]).toBeLiteral('LY line 1');
     expect(lines[2].items[0]).toBeLiteral('LY line 2');
+  });
+
+  it('parses textblock sections', () => {
+    const chordSheet = heredoc`
+      {start_of_textblock: Disclaimer}
+      This is plain text.
+      No chords here.
+      {end_of_textblock}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(TEXTBLOCK);
+    expect(lines).toHaveLength(3);
+
+    expect(lines[0].items[0]).toBeTag('start_of_textblock', 'Disclaimer');
+    expect(lines[1].items[0]).toBeLiteral('This is plain text.');
+    expect(lines[2].items[0]).toBeLiteral('No chords here.');
   });
 
   it('parses conditional sections', () => {

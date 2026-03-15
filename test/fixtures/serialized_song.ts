@@ -656,6 +656,44 @@ export const serializedSongSymbol: SerializedSong = {
         },
       ],
     },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_textblock',
+          value: 'Disclaimer',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Textblock line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Textblock line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_textblock',
+          value: '',
+          attributes: {},
+        },
+      ],
+    },
   ],
 };
 
@@ -1300,6 +1338,44 @@ export const serializedSongSolfege: SerializedSong = {
         {
           type: 'tag',
           name: 'end_of_grid',
+          value: '',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'start_of_textblock',
+          value: 'Disclaimer',
+          attributes: {},
+        },
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Textblock line 1',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        'Textblock line 2',
+      ],
+    },
+    {
+      type: 'line',
+      items: [
+        {
+          type: 'tag',
+          name: 'end_of_textblock',
           value: '',
           attributes: {},
         },

@@ -4,6 +4,7 @@ const sections: [string, boolean][] = [
   ['grid', true],
   ['ly', false],
   ['tab', true],
+  ['textblock', false],
 ];
 
 export default sections;

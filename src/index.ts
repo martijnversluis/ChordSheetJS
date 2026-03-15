@@ -49,6 +49,7 @@ import {
   NONE,
   PART,
   TAB,
+  TEXTBLOCK,
   VERSE,
 } from './constants';
 
@@ -107,6 +108,7 @@ export {
   SOLFEGE,
   SYMBOL,
   TAB,
+  TEXTBLOCK,
   VERSE,
   PART,
   NUMERAL,
@@ -139,6 +141,7 @@ export default {
   SoftLineBreak,
   Song,
   TAB,
+  TEXTBLOCK,
   Tag,
   Ternary,
   TextFormatter,
