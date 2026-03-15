@@ -7,7 +7,7 @@ import { GRID } from '../../src/constants';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
-  ABC, ChordProParser, LILYPOND, TAB, TextFormatter,
+  ABC, ChordProParser, LILYPOND, TAB, TEXTBLOCK, TextFormatter,
 } from '../../src';
 
 import {
@@ -59,7 +59,11 @@ describe('TextFormatter', () => {
 
       Grid 1
       Grid line 1
-      Grid line 2`;
+      Grid line 2
+
+      Disclaimer
+      Textblock line 1
+      Textblock line 2`;
 
     expect(new TextFormatter().format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -108,7 +112,11 @@ Bridge line
 
 Grid 1
 Grid line 1
-Grid line 2`;
+Grid line 2
+
+Disclaimer
+Textblock line 1
+Textblock line 2`;
 
     expect(new TextFormatter().format(exampleSongSolfege)).toEqual(expectedChordSheet);
   });
@@ -206,7 +214,11 @@ Let it be, let it be, let it be, let it be`;
 
       Grid 1
       Grid line 1
-      Grid line 2`;
+      Grid line 2
+
+      Disclaimer
+      Textblock line 1
+      Textblock line 2`;
 
     expect(new TextFormatter({ key: 'Eb' }).format(exampleSongSymbol)).toEqual(expectedChordSheet);
   });
@@ -341,7 +353,7 @@ Let it be, let it be, let it be, let it be`;
   });
 
   describe('delegates', () => {
-    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+    [ABC, GRID, LILYPOND, TAB, TEXTBLOCK].forEach((type) => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([

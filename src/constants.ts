@@ -68,6 +68,13 @@ export const LILYPOND = 'ly';
  */
 export const ABC = 'abc';
 
+/**
+ * Used to mark a paragraph as textblock
+ * @constant
+ * @type {string}
+ */
+export const TEXTBLOCK = 'textblock';
+
 export type ParagraphType =
   'abc' |
   'bridge' |
@@ -77,6 +84,7 @@ export type ParagraphType =
   'ly' |
   'none' |
   'tab' |
+  'textblock' |
   'verse' |
   'part' |
   string;

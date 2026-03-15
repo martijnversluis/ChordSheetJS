@@ -87,6 +87,8 @@ export const exampleSongSymbol = createSongFromAst([
   [tag('end_of_bridge')],
   [],
   ...section('grid', 'Grid 1', {}, 'Grid line 1\nGrid line 2'),
+  [],
+  ...section('textblock', 'Disclaimer', {}, 'Textblock line 1\nTextblock line 2'),
 ]);
 
 export const exampleSongSolfege = createSongFromAst([
@@ -171,4 +173,6 @@ export const exampleSongSolfege = createSongFromAst([
   [tag('end_of_bridge')],
   [],
   ...section('grid', 'Grid 1', {}, 'Grid line 1\nGrid line 2'),
+  [],
+  ...section('textblock', 'Disclaimer', {}, 'Textblock line 1\nTextblock line 2'),
 ]);

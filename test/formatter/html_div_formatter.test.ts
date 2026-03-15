@@ -8,7 +8,7 @@ import { stripHTML } from '../../src/template_helpers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
-  ABC, HtmlDivFormatter, LILYPOND, TAB,
+  ABC, HtmlDivFormatter, LILYPOND, TAB, TEXTBLOCK,
 } from '../../src';
 
 import {
@@ -224,6 +224,18 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
+        <div class="paragraph textblock">
+          <div class="row">
+            <h3 class="label">Disclaimer</h3>
+          </div>
+          <div class="row">
+            <div class="literal">
+              Textblock line 1<br>
+              Textblock line 2
+            </div>
+          </div>
+        </div>
       </div>
     `);
 
@@ -431,6 +443,18 @@ describe('HtmlDivFormatter', () => {
             <div class="literal">
               Grid line 1<br>
               Grid line 2
+            </div>
+          </div>
+        </div>
+
+        <div class="paragraph textblock">
+          <div class="row">
+            <h3 class="label">Disclaimer</h3>
+          </div>
+          <div class="row">
+            <div class="literal">
+              Textblock line 1<br>
+              Textblock line 2
             </div>
           </div>
         </div>
@@ -645,6 +669,18 @@ describe('HtmlDivFormatter', () => {
             <div class="LITERAL">
               Grid line 1<br>
               Grid line 2
+            </div>
+          </div>
+        </div>
+
+        <div class="PARAGRAPH textblock">
+          <div class="ROW">
+            <h3 class="LABEL">Disclaimer</h3>
+          </div>
+          <div class="ROW">
+            <div class="LITERAL">
+              Textblock line 1<br>
+              Textblock line 2
             </div>
           </div>
         </div>
@@ -1086,6 +1122,18 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
+        <div class="paragraph textblock">
+          <div class="row">
+            <h3 class="label">Disclaimer</h3>
+          </div>
+          <div class="row">
+            <div class="literal">
+              Textblock line 1<br>
+              Textblock line 2
+            </div>
+          </div>
+        </div>
       </div>
     `);
 
@@ -1298,6 +1346,18 @@ describe('HtmlDivFormatter', () => {
             </div>
           </div>
         </div>
+
+        <div class="paragraph textblock">
+          <div class="row">
+            <h3 class="label">Disclaimer</h3>
+          </div>
+          <div class="row">
+            <div class="literal">
+              Textblock line 1<br>
+              Textblock line 2
+            </div>
+          </div>
+        </div>
       </div>
     `);
 
@@ -1391,7 +1451,7 @@ describe('HtmlDivFormatter', () => {
   });
 
   describe('delegates', () => {
-    [ABC, GRID, LILYPOND, TAB].forEach((type) => {
+    [ABC, GRID, LILYPOND, TAB, TEXTBLOCK].forEach((type) => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
