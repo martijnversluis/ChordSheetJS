@@ -21,12 +21,18 @@ interface RhythmSymbol {
   column: number,
 }
 
+interface NoChord {
+  type: 'noChord',
+  value: string,
+  column: number,
+}
+
 type DirectionLine = SerializedLine;
 type InlineMetadata = SerializedLine;
 
 interface ChordsLine {
   type: 'chordsLine',
-  items: (Chord | RhythmSymbol)[]
+  items: (Chord | RhythmSymbol | NoChord)[]
 }
 
 interface LyricsLine {
@@ -163,13 +169,14 @@ function lyricsStringToLine(lyrics: string): SerializedLine {
   };
 }
 
-function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol): SerializedChordLyricsPair {
+function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol | NoChord): SerializedChordLyricsPair {
   switch (item.type) {
     case 'chord':
       return {
         type: 'chordLyricsPair', chord: item, chords: '', lyrics: null,
       };
     case 'symbol':
+    case 'noChord':
       return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
     default:
       throw new Error(`Unexpected chordsLine item ${item}`);
