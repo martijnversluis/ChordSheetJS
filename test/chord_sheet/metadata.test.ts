@@ -21,7 +21,7 @@ describe('Metadata', () => {
     it('sets a value', () => {
       const metadata = new Metadata();
       metadata.add('artist', 'Steve');
-      expect(Object.keys(metadata)).toHaveLength(1);
+      expect(Object.keys(metadata.metadata)).toHaveLength(1);
       expect(metadata.metadata).toEqual({ artist: 'Steve' });
       expect(metadata.artist).toEqual('Steve');
     });
@@ -123,6 +123,77 @@ describe('Metadata', () => {
       expect(merged.key).toEqual('Ab');
       expect(merged.capo).toEqual('3');
       expect(merged.get('_key')).toEqual('B');
+    });
+  });
+
+  describe('providers', () => {
+    describe('get', () => {
+      it('returns provider value when key is not in explicit metadata', () => {
+        const metadata = new Metadata();
+        metadata.setProvider('chordpro', () => 'ChordPro');
+
+        expect(metadata.get('chordpro')).toEqual('ChordPro');
+      });
+
+      it('returns explicit metadata over provider value', () => {
+        const metadata = new Metadata({ title: 'Explicit Title' });
+        metadata.setProvider('title', () => 'Provider Title');
+
+        expect(metadata.get('title')).toEqual('Explicit Title');
+      });
+
+      it('supports dotted keys', () => {
+        const metadata = new Metadata();
+        metadata.setProvider('instrument.type', () => 'guitar');
+
+        expect(metadata.get('instrument.type')).toEqual('guitar');
+      });
+
+      it('returns null when provider returns null', () => {
+        const metadata = new Metadata();
+        metadata.setProvider('instrument', () => null);
+
+        expect(metadata.get('instrument')).toBeNull();
+      });
+    });
+
+    describe('all', () => {
+      it('includes provider values', () => {
+        const metadata = new Metadata({ artist: 'John' });
+        metadata.setProvider('chordpro', () => 'ChordPro');
+
+        const all = metadata.all();
+
+        expect(all.artist).toEqual('John');
+        expect(all.chordpro).toEqual('ChordPro');
+      });
+
+      it('does not override explicit metadata with provider values', () => {
+        const metadata = new Metadata({ title: 'Explicit' });
+        metadata.setProvider('title', () => 'Provider');
+
+        expect(metadata.all().title).toEqual('Explicit');
+      });
+    });
+
+    describe('clone', () => {
+      it('preserves providers', () => {
+        const metadata = new Metadata();
+        metadata.setProvider('chordpro', () => 'ChordPro');
+
+        const cloned = metadata.clone();
+
+        expect(cloned.get('chordpro')).toEqual('ChordPro');
+      });
+    });
+
+    describe('contains', () => {
+      it('returns false for provider-only keys', () => {
+        const metadata = new Metadata();
+        metadata.setProvider('chordpro', () => 'ChordPro');
+
+        expect(metadata.contains('chordpro')).toBe(false);
+      });
     });
   });
 

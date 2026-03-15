@@ -20,6 +20,7 @@ export interface MetadataConfiguration {
 export interface InstrumentConfiguration {
   type?: string;
   description?: string;
+  tuning?: string;
 }
 
 export interface UserConfigurationProperties {
