@@ -69,7 +69,7 @@ NoChordWithSpacing
     }
 
 NoChord
-  = "N.C."i {
+  = ("N.C."i / "N.C"i / "N/C"i / "NC"i) {
       return {
         type: "noChord",
         value: "N.C.",
