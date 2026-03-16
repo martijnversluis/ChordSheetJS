@@ -698,4 +698,76 @@ describe('ChordsOverWordsParser', () => {
 
     expect(song.getChords()).toEqual(['Eb', 'Dbmaj13']);
   });
+
+  describe('N.C. (no chord) notation', () => {
+    it('parses N.C. mixed with chords paired with lyrics', () => {
+      const chordOverWords = heredoc`
+        N.C.  D                   A
+        Hey,  Jude, don't make it bad,`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines).toHaveLength(1);
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey, ');
+      expect(linePairs[1]).toBeChordLyricsPair('D', 'Jude, ');
+      expect(linePairs[2]).toBeChordLyricsPair('', 'don\'t make it ');
+      expect(linePairs[3]).toBeChordLyricsPair('A', 'bad,');
+    });
+
+    it('parses a standalone N.C. line as a chord line', () => {
+      const chordOverWords = heredoc`
+        N.C.
+        Hey Jude`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines).toHaveLength(1);
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey ');
+      expect(linePairs[1]).toBeChordLyricsPair('', 'Jude');
+    });
+
+    it('parses N.C. without lyrics below as a chord-only line', () => {
+      const chordOverWords = 'N.C.  D   A';
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines).toHaveLength(1);
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('N.C.', '');
+      expect(linePairs[1]).toBeChordLyricsPair('D', '');
+      expect(linePairs[2]).toBeChordLyricsPair('A', '');
+    });
+
+    it.each([
+      'NC',
+      'nc',
+      'N.C',
+      'n.c',
+      'N/C',
+      'n/c',
+    ])('preserves original notation %s in output', (variant) => {
+      const chordOverWords = `${variant}  D`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+      const { lines } = song;
+
+      expect(lines).toHaveLength(1);
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair(variant, '');
+      expect(linePairs[1]).toBeChordLyricsPair('D', '');
+    });
+  });
 });

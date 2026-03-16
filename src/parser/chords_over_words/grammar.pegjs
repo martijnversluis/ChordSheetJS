@@ -31,7 +31,7 @@ SingleChordsLine
     }
 
 ChordsLine
-  = items:(ChordWithSpacing / RhythmSymbolWithSpacing)+ {
+  = items:(ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ {
       return {
         type: "chordsLine",
         items
@@ -62,6 +62,20 @@ Lyrics
 
 NonEmptyLyrics
   = $(WordChar+)
+
+NoChordWithSpacing
+  = _S_ noChord:NoChord ![a-zA-Z] _S_ {
+      return noChord;
+    }
+
+NoChord
+  = ("N.C."i / "N.C"i / "N/C"i / "NC"i) {
+      return {
+        type: "noChord",
+        value: text(),
+        column: location().start.column
+      };
+    }
 
 ChordWithSpacing
   = _S_ chord:Chord ![a-zA-Z] _S_ {
