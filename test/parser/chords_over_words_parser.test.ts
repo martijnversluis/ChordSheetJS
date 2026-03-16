@@ -770,4 +770,27 @@ describe('ChordsOverWordsParser', () => {
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
     });
   });
+
+  it('treats lines with only rhythm symbols as lyrics', () => {
+    const chordOverWords = heredoc`
+      D        A
+      Some lyrics
+      ----
+      Some lyrics`;
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordOverWords);
+    const { lines } = song;
+
+    expect(lines).toHaveLength(3);
+
+    const line0Pairs = lines[0].items;
+    expect(line0Pairs[0]).toBeChordLyricsPair('D', 'Some ');
+    expect(line0Pairs[1]).toBeChordLyricsPair('', 'lyri');
+    expect(line0Pairs[2]).toBeChordLyricsPair('A', 'cs');
+
+    expect(lines[1].items[0]).toBeChordLyricsPair('', '----');
+
+    expect(lines[2].items[0]).toBeChordLyricsPair('', 'Some lyrics');
+  });
 });
