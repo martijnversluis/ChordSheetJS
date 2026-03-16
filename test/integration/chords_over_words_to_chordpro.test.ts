@@ -112,6 +112,23 @@ describe('chords over words to chordpro', () => {
     expect(actualChordPro).toEqual(expectedChordPro);
   });
 
+  it('correctly converts N.C. notation to chordpro', () => {
+    const chordOverWords = heredoc`
+      N.C.  D                   A
+      Hey,  Jude, don't make it bad,
+            A7  A7sus4    A7      D
+      Take a sad song, and make it better`;
+
+    const expectedChordPro = heredoc`
+      [N.C.]Hey, [D]Jude, don't make it [A]bad,
+      Take a[A7] sad[A7sus4] song, and[A7] make it[D] better`;
+
+    const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
   it('correctly parses and converts a complicated chart', () => {
     const chordsOverWords = fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8');
 
