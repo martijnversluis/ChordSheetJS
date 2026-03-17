@@ -31,7 +31,11 @@ SingleChordsLine
     }
 
 ChordsLine
-  = items:(ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ {
+  = items:(ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ &{
+      if (items.some(item => item.type === 'chord' || item.type === 'noChord')) return true;
+      if (items.length <= 1) return false;
+      return !items.some((item, i) => i > 0 && item.column === items[i - 1].column + 1);
+    } {
       return {
         type: "chordsLine",
         items
