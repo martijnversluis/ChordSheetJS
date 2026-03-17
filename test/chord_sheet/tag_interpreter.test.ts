@@ -88,6 +88,20 @@ describe('TagInterpreter', () => {
     expect(sectionType).toEqual('ly');
   });
 
+  it('recognises start_of_svg', () => {
+    const [tagType, sectionType] = TagInterpreter.interpret('start_of_svg', '');
+
+    expect(tagType).toEqual(START_TAG);
+    expect(sectionType).toEqual('svg');
+  });
+
+  it('recognises end_of_svg', () => {
+    const [tagType, sectionType] = TagInterpreter.interpret('end_of_svg', '');
+
+    expect(tagType).toEqual(END_TAG);
+    expect(sectionType).toEqual('svg');
+  });
+
   it('recognises start_of_tab', () => {
     const [tagType, sectionType] = TagInterpreter.interpret('start_of_tab', '');
 

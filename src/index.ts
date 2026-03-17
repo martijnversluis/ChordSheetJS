@@ -104,6 +104,7 @@ export {
   INDETERMINATE,
   LILYPOND,
   NONE,
+  SVG,
   NUMERIC,
   SOLFEGE,
   SYMBOL,

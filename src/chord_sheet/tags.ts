@@ -156,6 +156,18 @@ export const START_OF_LY = 'start_of_ly';
 export const START_OF_TAB = 'start_of_tab';
 
 /**
+ * Start of SVG section. See https://www.chordpro.org/chordpro/directives-env_svg/
+ * @type {string}
+ */
+export const START_OF_SVG = 'start_of_svg';
+
+/**
+ * End of SVG section. See https://www.chordpro.org/chordpro/directives-env_svg/
+ * @type {string}
+ */
+export const END_OF_SVG = 'end_of_svg';
+
+/**
  * Start of textblock directive. See https://chordpro.org/chordpro/directives-env_textblock/
  * @type {string}
  */

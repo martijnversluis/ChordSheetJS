@@ -69,6 +69,13 @@ export const LILYPOND = 'ly';
 export const ABC = 'abc';
 
 /**
+ * Used to mark a section as SVG image
+ * @constant
+ * @type {string}
+ */
+export const SVG = 'svg';
+
+/**
  * Used to mark a paragraph as textblock
  * @constant
  * @type {string}
@@ -83,6 +90,7 @@ export type ParagraphType =
   'indeterminate' |
   'ly' |
   'none' |
+  'svg' |
   'tab' |
   'textblock' |
   'verse' |

@@ -49,7 +49,7 @@ export interface SerializedComment {
   comment: string,
 }
 
-export type ContentType = 'tab' | 'abc' | 'ly' | 'grid' | 'textblock';
+export type ContentType = 'tab' | 'abc' | 'ly' | 'svg' | 'grid' | 'textblock';
 
 export type PartTypes = 'part' | 'intro' | 'instrumental' | 'tag' | 'end';
 

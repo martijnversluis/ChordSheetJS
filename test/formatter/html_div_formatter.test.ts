@@ -8,7 +8,7 @@ import { stripHTML } from '../../src/template_helpers';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
-  ABC, HtmlDivFormatter, LILYPOND, TAB, TEXTBLOCK,
+  ABC, HtmlDivFormatter, LILYPOND, SVG, TAB, TEXTBLOCK,
 } from '../../src';
 
 import {
@@ -1450,8 +1450,31 @@ describe('HtmlDivFormatter', () => {
     expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
   });
 
+  it('renders SVG content un-escaped', () => {
+    const song = createSongFromAst([
+      ...section('svg', 'Alert', {}, '<svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>'),
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph svg">
+          <div class="row">
+            <h3 class="label">Alert</h3>
+          </div>
+          <div class="row">
+            <div class="literal">
+              <svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
+  });
+
   describe('delegates', () => {
-    [ABC, GRID, LILYPOND, TAB, TEXTBLOCK].forEach((type) => {
+    [ABC, GRID, LILYPOND, SVG, TAB, TEXTBLOCK].forEach((type) => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([

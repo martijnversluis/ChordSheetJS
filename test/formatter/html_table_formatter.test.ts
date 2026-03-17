@@ -10,6 +10,7 @@ import {
   ABC,
   HtmlTableFormatter,
   LILYPOND,
+  SVG,
   TAB,
   TEXTBLOCK,
 } from '../../src';
@@ -1386,7 +1387,7 @@ describe('HtmlTableFormatter', () => {
   });
 
   describe('delegates', () => {
-    [ABC, GRID, LILYPOND, TAB, TEXTBLOCK].forEach((type) => {
+    [ABC, GRID, LILYPOND, SVG, TAB, TEXTBLOCK].forEach((type) => {
       describe(`for ${type}`, () => {
         it('uses a configured delegate', () => {
           const song = createSongFromAst([
