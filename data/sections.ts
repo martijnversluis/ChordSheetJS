@@ -3,6 +3,7 @@ const sections: [string, boolean][] = [
   ['abc', false],
   ['grid', true],
   ['ly', false],
+  ['svg', false],
   ['tab', true],
   ['textblock', false],
 ];

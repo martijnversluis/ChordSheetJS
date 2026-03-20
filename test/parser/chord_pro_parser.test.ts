@@ -9,6 +9,7 @@ import {
   ChordProParser,
   LILYPOND,
   NONE,
+  SVG,
   TAB,
   TEXTBLOCK,
   Tag,
@@ -738,6 +739,68 @@ Let it [Am]be
     expect(lines[0].items[0]).toBeTag('start_of_textblock', 'Disclaimer');
     expect(lines[1].items[0]).toBeLiteral('This is plain text.');
     expect(lines[2].items[0]).toBeLiteral('No chords here.');
+  });
+
+  it('parses SVG sections', () => {
+    const chordSheet = heredoc`
+      {start_of_svg: Alert}
+      <svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>
+      {end_of_svg}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(SVG);
+    expect(lines).toHaveLength(2);
+    expect(lines[0].items[0]).toBeTag('start_of_svg', 'Alert');
+    expect(lines[1].items[0]).toBeLiteral('<svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>');
+  });
+
+  it('parses SVG sections with attributes', () => {
+    const chordSheet = heredoc`
+      {start_of_svg: label="Alert" align="left"}
+      <svg xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100"/></svg>
+      {end_of_svg}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(SVG);
+    expect(lines).toHaveLength(2);
+    expect(lines[0].items[0]).toBeTag('start_of_svg', '');
+  });
+
+  it('parses multiline SVG sections', () => {
+    const chordSheet = heredoc`
+      {start_of_svg}
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="40"/>
+      </svg>
+      {end_of_svg}
+    `;
+
+    const parser = new ChordProParser();
+    const song = parser.parse(chordSheet);
+    const { paragraphs } = song;
+    const paragraph = paragraphs[0];
+    const { lines } = paragraph;
+
+    expect(paragraphs).toHaveLength(1);
+    expect(paragraph.type).toEqual(SVG);
+    expect(lines).toHaveLength(3);
+    expect(lines[0].items[0]).toBeLiteral('<svg xmlns="http://www.w3.org/2000/svg">');
+    expect(lines[1].items[0]).toBeLiteral('  <circle cx="50" cy="50" r="40"/>');
+    expect(lines[2].items[0]).toBeLiteral('</svg>');
   });
 
   it('parses conditional sections', () => {

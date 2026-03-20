@@ -40,6 +40,7 @@ export const defaultMetadataConfiguration: MetadataConfiguration = {
 export interface DelegatesConfiguration {
   abc: Delegate;
   ly: Delegate;
+  svg: Delegate;
   tab: Delegate;
   grid: Delegate;
 }
@@ -47,6 +48,7 @@ export interface DelegatesConfiguration {
 export const defaultDelegatesConfiguration: DelegatesConfiguration = {
   abc: defaultDelegate,
   ly: defaultDelegate,
+  svg: defaultDelegate,
   tab: defaultDelegate,
   grid: defaultDelegate,
 };
