@@ -375,6 +375,14 @@ class Tag extends AstComponent {
   }
 
   /**
+   * Checks whether this tag is a standard meta tag.
+   * @returns {boolean}
+   */
+  isStandardMetaTag(): boolean {
+    return META_TAGS.indexOf(this.name) !== -1;
+  }
+
+  /**
    * Returns a clone of the tag.
    * @returns {Tag} The cloned tag
    */

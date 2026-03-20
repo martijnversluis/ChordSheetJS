@@ -57,6 +57,10 @@ class ChordProFormatter extends Formatter {
   private formatMetadataSection(metadataLines: Line[]): string[] {
     return metadataLines.map((line) => {
       const tag = line.items[0] as Tag;
+
+      if (!tag.isStandardMetaTag()) {
+        return `{meta: ${tag.originalName} ${tag.value}}`;
+      }
       return this.formatTag(tag);
     });
   }
