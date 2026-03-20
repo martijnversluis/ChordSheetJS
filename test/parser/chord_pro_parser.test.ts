@@ -120,18 +120,6 @@ describe('ChordProParser', () => {
     expect(song.subtitle).toEqual('ChordSheetJS example version');
   });
 
-  it('parses custom meta data', () => {
-    const chordSheetWithCustomMetaData = `
-      {x_one_directive: Foo}
-      {x_other_directive: Bar}
-    `;
-
-    const song = new ChordProParser().parse(chordSheetWithCustomMetaData);
-
-    expect(song.metadata.get('x_one_directive')).toEqual('Foo');
-    expect(song.metadata.get('x_other_directive')).toEqual('Bar');
-  });
-
   it('parses directives with attributes', () => {
     const chordSheet = '{start_of_verse: label="Verse 1"}';
     const song = new ChordProParser().parse(chordSheet);

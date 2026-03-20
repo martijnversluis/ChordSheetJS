@@ -4,9 +4,9 @@ export const chordProSheetSymbol = heredoc`
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
 {key: C}
-{x_some_setting}
 {composer: John Lennon}
 {composer: Paul McCartney}
+{x_some_setting}
 #This is my favorite song
 
 Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
@@ -65,9 +65,9 @@ export const chordProSheetSolfege = heredoc`
 {title: Let it be}
 {subtitle: ChordSheetJS example version}
 {key: Do}
-{x_some_setting}
 {composer: John Lennon}
 {composer: Paul McCartney}
+{x_some_setting}
 #This is my favorite song
 
 Written by: %{composer|%{}|No composer defined for %{title|%{}|Untitled song}}
