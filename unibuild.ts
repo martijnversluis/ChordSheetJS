@@ -106,6 +106,12 @@ export default unibuild((u: Config) => {
     },
   });
 
+  const versionFile = u.asset('versionFile', {
+    input: 'package.json',
+    outfile: 'src/version.ts',
+    build: () => `export default '${version}';${os.EOL}`,
+  });
+
   const codeGeneratedAssets: Asset[] = [
     suffixNormalizeMapping,
     scales,
@@ -113,13 +119,8 @@ export default unibuild((u: Config) => {
     chordProParser,
     chordsOverWordsParser,
     chordDefinitionParser,
+    versionFile,
   ];
-
-  u.asset('versionFile', {
-    input: 'package.json',
-    outfile: 'src/version.ts',
-    build: () => `export default '${version}';${os.EOL}`,
-  });
 
   const jsBuild = u.asset('sources', {
     input: codeGeneratedAssets,
