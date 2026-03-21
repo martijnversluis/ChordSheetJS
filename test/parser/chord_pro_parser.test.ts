@@ -803,6 +803,33 @@ Let it [Am]be
     expect(lines[2].items[0]).toBeLiteral('</svg>');
   });
 
+  it('parses image directive with src attribute', () => {
+    const chordSheet = '{image: src="myimage.png"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('image');
+    expect(tag.attributes).toEqual({ src: 'myimage.png' });
+  });
+
+  it('parses image directive with multiple attributes', () => {
+    const chordSheet = '{image: src="myimage.png" width="200" height="150"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('image');
+    expect(tag.attributes).toEqual({ src: 'myimage.png', width: '200', height: '150' });
+  });
+
+  it('parses image directive with value-based shorthand', () => {
+    const chordSheet = '{image: myimage.png}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('image');
+    expect(tag.value).toEqual('myimage.png');
+  });
+
   it('parses conditional sections', () => {
     const chordSheet = heredoc`
       {start_of_ly-guitar: Intro}

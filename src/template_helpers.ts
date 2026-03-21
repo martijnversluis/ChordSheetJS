@@ -48,6 +48,17 @@ export function isComment(item: Tag): boolean {
   return item.name === 'comment';
 }
 
+export function isImage(item: Tag): boolean {
+  return item.name === 'image';
+}
+
+export function imageTag(item: Tag): string {
+  const src = item.attributes.src || item.value;
+  const width = item.attributes.width ? ` width="${item.attributes.width}"` : '';
+  const height = item.attributes.height ? ` height="${item.attributes.height}"` : '';
+  return `<img src="${src}"${width}${height}>`;
+}
+
 export function isColumnBreak(item: Item): boolean {
   return item instanceof Tag && item.name === 'column_break';
 }
@@ -139,6 +150,7 @@ export default {
   lineHasContents,
   isTag,
   isComment,
+  isImage,
   isColumnBreak,
   stripHTML,
   each,

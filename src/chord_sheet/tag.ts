@@ -23,6 +23,7 @@ import {
   END_OF_PART,
   END_OF_TAB,
   END_OF_VERSE,
+  IMAGE,
   KEY,
   LYRICIST,
   NEW_KEY, SORTTITLE,
@@ -72,7 +73,7 @@ const TITLE_SHORT = 't';
 const START_OF_PART_SHORTER = 'p';
 const END_OF_PART_SHORTER = 'ep';
 
-const RENDERABLE_TAGS = [COMMENT];
+const RENDERABLE_TAGS = [COMMENT, IMAGE];
 
 // Order of these tags is the default rendering order
 export const META_TAGS = [
@@ -286,6 +287,13 @@ class Tag extends AstComponent {
    */
   isComment(): boolean {
     return this.name === COMMENT || this.name === COMMENT_SHORT;
+  }
+
+  /**
+   * Checks whether the tag is an image tag ({image}).
+   */
+  isImage(): boolean {
+    return this.name === IMAGE;
   }
 
   set name(name) {

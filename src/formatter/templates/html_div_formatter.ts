@@ -6,9 +6,11 @@ import {
   each,
   evaluate,
   fontStyleTag,
+  imageTag,
   isChordLyricsPair,
   isComment,
   isEvaluatable,
+  isImage,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -79,6 +81,10 @@ export default (
                   `).elseWhen(isTag(item), () => `
                     ${ when(isComment(item), () => `
                       <div class="${ c.comment }">${ item.value }</div>
+                    `) }
+
+                    ${ when(isImage(item), () => `
+                      <div class="${ c.image }">${ imageTag(item) }</div>
                     `) }
 
                     ${ when(item.hasRenderableLabel(), () => `

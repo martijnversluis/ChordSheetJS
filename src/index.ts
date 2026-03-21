@@ -34,6 +34,7 @@ import {
   isChordLyricsPair,
   isComment,
   isEvaluatable,
+  isImage,
   isTag,
   lineClasses,
   lineHasContents,
@@ -89,6 +90,8 @@ export { default as TextFormatter } from './formatter/text_formatter';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
 export { default as templateHelpers } from './template_helpers';
 export { default as version } from './version';
+
+export { IMAGE } from './chord_sheet/tags';
 
 export * from './serialized_types';
 
@@ -160,6 +163,7 @@ export default {
     lineHasContents,
     isTag,
     isComment,
+    isImage,
     stripHTML,
     each,
     when,
