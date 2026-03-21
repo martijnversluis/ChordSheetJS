@@ -12,7 +12,7 @@ import {
 } from '../../src';
 
 import {
-  chordLyricsPair, createSongFromAst, heredoc, html, section,
+  chordLyricsPair, createSongFromAst, heredoc, html, section, tag,
 } from '../util/utilities';
 
 describe('HtmlDivFormatter', () => {
@@ -695,6 +695,7 @@ describe('HtmlDivFormatter', () => {
         column: 'COLUMN',
         comment: 'COMMENT',
         emptyLine: 'EMPTY-LINE',
+        image: 'IMAGE',
         label: 'LABEL',
         labelWrapper: 'LABEL-WRAPPER',
         line: 'LINE',
@@ -1465,6 +1466,60 @@ describe('HtmlDivFormatter', () => {
             <div class="literal">
               <svg xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>
             </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
+  });
+
+  it('renders image directive with src attribute', () => {
+    const song = createSongFromAst([
+      [tag('image', '', { src: 'myimage.png' })],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="image"><img src="myimage.png"></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
+  });
+
+  it('renders image directive with width and height attributes', () => {
+    const song = createSongFromAst([
+      [tag('image', '', { src: 'photo.jpg', width: '200', height: '150' })],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="image"><img src="photo.jpg" width="200" height="150"></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlDivFormatter().format(song)).toEqual(expectedOutput);
+  });
+
+  it('renders image directive with value-based src', () => {
+    const song = createSongFromAst([
+      [tag('image', 'myimage.png')],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <div class="row">
+            <div class="image"><img src="myimage.png"></div>
           </div>
         </div>
       </div>

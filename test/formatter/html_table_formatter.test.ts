@@ -21,6 +21,7 @@ import {
   heredoc,
   html,
   section,
+  tag,
 } from '../util/utilities';
 
 describe('HtmlTableFormatter', () => {
@@ -775,6 +776,7 @@ describe('HtmlTableFormatter', () => {
         column: 'COLUMN',
         comment: 'COMMENT',
         emptyLine: 'EMPTY-LINE',
+        image: 'IMAGE',
         label: 'LABEL',
         labelWrapper: 'LABEL-WRAPPER',
         line: 'LINE',
@@ -1384,6 +1386,66 @@ describe('HtmlTableFormatter', () => {
 
       expect(formatted).toEqual(expectedHTML);
     });
+  });
+
+  it('renders image directive with src attribute', () => {
+    const song = createSongFromAst([
+      [tag('image', '', { src: 'myimage.png' })],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="image"><img src="myimage.png"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlTableFormatter().format(song)).toEqual(expectedOutput);
+  });
+
+  it('renders image directive with width and height attributes', () => {
+    const song = createSongFromAst([
+      [tag('image', '', { src: 'photo.jpg', width: '200', height: '150' })],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="image"><img src="photo.jpg" width="200" height="150"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlTableFormatter().format(song)).toEqual(expectedOutput);
+  });
+
+  it('renders image directive with value-based src', () => {
+    const song = createSongFromAst([
+      [tag('image', 'myimage.png')],
+    ]);
+
+    const expectedOutput = html`
+      <div class="chord-sheet">
+        <div class="paragraph">
+          <table class="row">
+            <tr>
+              <td class="image"><img src="myimage.png"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    `;
+
+    expect(new HtmlTableFormatter().format(song)).toEqual(expectedOutput);
   });
 
   describe('delegates', () => {

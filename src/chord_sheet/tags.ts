@@ -47,6 +47,12 @@ export const COPYRIGHT = 'copyright';
 export const DURATION = 'duration';
 
 /**
+ * Image directive. See https://www.chordpro.org/chordpro/directives-image/
+ * @type {string}
+ */
+export const IMAGE = 'image';
+
+/**
  * End of ABC music notation section See https://chordpro.org/chordpro/directives-env_abc/
  * @type {string}
  */
