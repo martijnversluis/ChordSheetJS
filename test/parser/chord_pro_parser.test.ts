@@ -1079,4 +1079,13 @@ Let it [Am]be
     expect(lineTypes).toEqual(['intro', 'intro', 'intro', VERSE, VERSE, VERSE, CHORUS, CHORUS, CHORUS]);
     expect(parser.warnings).toHaveLength(0);
   });
+
+  it('preserves pango markup in lyrics', () => {
+    const chordSheet = '[C]<b>roses</b> [G]<i>red</i>';
+    const song = new ChordProParser().parse(chordSheet);
+    const { lines } = song;
+
+    expect(lines[0].items[0]).toBeChordLyricsPair('C', '<b>roses</b> ');
+    expect(lines[0].items[1]).toBeChordLyricsPair('G', '<i>red</i>');
+  });
 });

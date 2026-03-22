@@ -8,6 +8,7 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 
 import { renderChord } from '../helpers';
+import { stripPangoMarkup } from '../pango/pango_helpers';
 import { SoftLineBreak, Ternary } from '../index';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import { hasTextContents, processMetadata, renderSection } from '../template_helpers';
@@ -118,7 +119,7 @@ class ChordsOverWordsFormatter extends Formatter {
     const content = chordLyricsPair.annotation || this.renderChord(chordLyricsPair, line);
     const { lyrics } = chordLyricsPair;
     const contentLength = (content || '').length;
-    const lyricsLength = (lyrics || '').length;
+    const lyricsLength = stripPangoMarkup(lyrics || '').length;
 
     if (contentLength >= lyricsLength) {
       return contentLength + 1;
@@ -205,7 +206,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatChordLyricsPair(item: ChordLyricsPair, line: Line) {
-    return padLeft(item.lyrics || '', this.chordLyricsPairLength(item, line));
+    return padLeft(stripPangoMarkup(item.lyrics || ''), this.chordLyricsPairLength(item, line));
   }
 }
 

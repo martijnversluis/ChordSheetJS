@@ -28,6 +28,9 @@ type EachCallback = (_item: any) => string;
 export { hasChordContents, isEvaluatable } from './utilities';
 export { renderChord } from './helpers';
 
+import { pangoToHtml, stripPangoMarkup } from './pango/pango_helpers';
+export { pangoToHtml, stripPangoMarkup };
+
 export function isChordLyricsPair(item: Item): boolean {
   return item instanceof ChordLyricsPair;
 }
@@ -162,5 +165,7 @@ export default {
   fontStyleTag,
   renderChord,
   hasChordContents,
+  pangoToHtml,
+  stripPangoMarkup,
   processMetadata,
 };

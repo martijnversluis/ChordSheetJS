@@ -47,4 +47,12 @@ describe('ChordProFormatter', () => {
 
     expect(formatted).toEqual('{image: myimage.png}');
   });
+
+  it('preserves pango markup in lyrics during round-trip', () => {
+    const chordSheet = '[C]Roses are <span color="red">red</span>, [G]<b>bold</b>';
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordProFormatter().format(song);
+
+    expect(formatted).toEqual(chordSheet);
+  });
 });

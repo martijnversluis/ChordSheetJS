@@ -393,4 +393,31 @@ Let it be, let it be, let it be, let it be`;
       });
     });
   });
+
+  describe('pango markup', () => {
+    it('strips pango markup from lyrics output', () => {
+      const song = createSongFromAst([
+        [chordLyricsPair('C', 'Roses are <b>red</b>')],
+      ]);
+
+      const formatted = new TextFormatter().format(song);
+
+      expect(formatted).toContain('Roses are red');
+      expect(formatted).not.toContain('<b>');
+    });
+
+    it('calculates alignment based on stripped text length', () => {
+      const song = createSongFromAst([
+        [
+          chordLyricsPair('C', '<span color="red">Roses</span> are '),
+          chordLyricsPair('G', 'red'),
+        ],
+      ]);
+
+      const formatted = new TextFormatter().format(song);
+      const lines = formatted.split('\n');
+
+      expect(lines[1]).toBe('Roses are red');
+    });
+  });
 });

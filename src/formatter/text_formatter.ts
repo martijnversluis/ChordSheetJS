@@ -8,6 +8,7 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 
 import { renderChord } from '../helpers';
+import { stripPangoMarkup } from '../pango/pango_helpers';
 import { evaluate, hasTextContents, renderSection } from '../template_helpers';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 
@@ -109,7 +110,7 @@ class TextFormatter extends Formatter {
     const content = chordLyricsPair.annotation || this.renderChords(chordLyricsPair, line);
     const { lyrics } = chordLyricsPair;
     const contentLength = (content || '').length;
-    const lyricsLength = (lyrics || '').length;
+    const lyricsLength = stripPangoMarkup(lyrics || '').length;
 
     if (contentLength >= lyricsLength) {
       return contentLength + 1;
@@ -171,7 +172,7 @@ class TextFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(item.lyrics || '', this.chordLyricsPairLength(item, line));
+      return padLeft(stripPangoMarkup(item.lyrics || ''), this.chordLyricsPairLength(item, line));
     }
 
     if ('evaluate' in item) {
