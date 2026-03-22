@@ -38,9 +38,11 @@ import {
   isTag,
   lineClasses,
   lineHasContents,
+  pangoToHtml,
   paragraphClasses,
   renderChord,
   stripHTML,
+  stripPangoMarkup,
   when,
 } from './template_helpers';
 
@@ -92,6 +94,7 @@ export { default as templateHelpers } from './template_helpers';
 export { default as version } from './version';
 
 export { IMAGE } from './chord_sheet/tags';
+export { pangoToHtml, stripPangoMarkup } from './pango/pango_helpers';
 
 export * from './serialized_types';
 
@@ -174,5 +177,7 @@ export default {
     fontStyleTag,
     renderChord,
     hasChordContents,
+    pangoToHtml,
+    stripPangoMarkup,
   },
 };

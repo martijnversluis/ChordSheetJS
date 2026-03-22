@@ -48,6 +48,8 @@ import ChordSheetJS, {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  pangoToHtml,
+  stripPangoMarkup,
   templateHelpers,
   version,
 } from '../src';
@@ -70,6 +72,8 @@ const {
   fontStyleTag,
   renderChord,
   hasChordContents,
+  pangoToHtml: pangoToHtmlHelper,
+  stripPangoMarkup: stripPangoMarkupHelper,
 } = templateHelpers;
 
 describe('exports', () => {
@@ -106,6 +110,8 @@ describe('exports', () => {
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
+    expect(pangoToHtml).toBeDefined();
+    expect(stripPangoMarkup).toBeDefined();
     expect(templateHelpers).toBeDefined();
     expect(version).toEqual(packageJSON.version);
   });
@@ -126,6 +132,8 @@ describe('exports', () => {
     expect(fontStyleTag).toBeDefined();
     expect(renderChord).toBeDefined();
     expect(hasChordContents).toBeDefined();
+    expect(pangoToHtmlHelper).toBeDefined();
+    expect(stripPangoMarkupHelper).toBeDefined();
   });
 
   it('supplies all constants as properties of the default export', () => {
@@ -173,6 +181,8 @@ describe('exports', () => {
     expect(ChordSheetJS.templateHelpers.fontStyleTag).toBeDefined();
     expect(ChordSheetJS.templateHelpers.renderChord).toBeDefined();
     expect(ChordSheetJS.templateHelpers.hasChordContents).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.pangoToHtml).toBeDefined();
+    expect(ChordSheetJS.templateHelpers.stripPangoMarkup).toBeDefined();
   });
 
   it('exports serialized types', () => {

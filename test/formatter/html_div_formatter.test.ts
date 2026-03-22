@@ -1591,4 +1591,26 @@ describe('HtmlDivFormatter', () => {
       });
     });
   });
+
+  describe('pango markup', () => {
+    it('converts pango markup in lyrics to HTML', () => {
+      const song = createSongFromAst([
+        [chordLyricsPair('C', 'Roses are <span color="red">red</span>')],
+      ]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('Roses are <span style="color: red">red</span>');
+    });
+
+    it('converts pango bold tags in lyrics', () => {
+      const song = createSongFromAst([
+        [chordLyricsPair('G', '<b>bold text</b>')],
+      ]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('<b>bold text</b>');
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import { HtmlTemplateArgs } from '../html_formatter';
 import { isPresent } from '../../utilities';
+import { pangoToHtml } from '../../pango/pango_helpers';
 import { renderChord } from '../../helpers';
 
 import {
@@ -76,11 +77,13 @@ export default (
                           ) }
                         </div>
                      `) }
-                      <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>${ item.lyrics }</div>
+                      <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
+                        ${ pangoToHtml(item.lyrics || '') }
+                      </div>
                     </div>
                   `).elseWhen(isTag(item), () => `
                     ${ when(isComment(item), () => `
-                      <div class="${ c.comment }">${ item.value }</div>
+                      <div class="${ c.comment }">${ pangoToHtml(item.value || '') }</div>
                     `) }
 
                     ${ when(isImage(item), () => `

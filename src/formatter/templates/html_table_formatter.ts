@@ -1,4 +1,5 @@
 import { HtmlTemplateArgs } from '../html_formatter';
+import { pangoToHtml } from '../../pango/pango_helpers';
 import { renderChord } from '../../helpers';
 import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 
@@ -94,10 +95,14 @@ export default (
                     <tr>
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
-                          <td class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>${ item.lyrics }</td>
+                          <td class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
+                            ${ pangoToHtml(item.lyrics || '') }
+                          </td>
                         `).elseWhen(isTag(item), () => `
                           ${ when(isComment(item), () => `
-                            <td class="${ c.comment }"${ fontStyleTag(line.textFont) }>${ item.value }</td>
+                            <td class="${ c.comment }"${ fontStyleTag(line.textFont) }>
+                              ${ pangoToHtml(item.value || '') }
+                            </td>
                           `) }
 
                           ${ when(isImage(item), () => `
