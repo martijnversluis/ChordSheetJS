@@ -1,6 +1,6 @@
 import { HtmlTemplateArgs } from '../html_formatter';
+import { defaultPangoRenderer } from '../../pango/pango_helpers';
 import { isPresent } from '../../utilities';
-import { pangoToHtml } from '../../pango/pango_helpers';
 import { renderChord } from '../../helpers';
 
 import {
@@ -36,7 +36,10 @@ export default (
     },
     bodyParagraphs,
   }: HtmlTemplateArgs,
-): string => stripHTML(`
+): string => {
+  const pango = configuration.pangoRenderer || defaultPangoRenderer;
+
+  return stripHTML(`
   ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
   ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
 
@@ -78,12 +81,12 @@ export default (
                         </div>
                      `) }
                       <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
-                        ${ pangoToHtml(item.lyrics || '') }
+                        ${ pango.convert(item.lyrics || '') }
                       </div>
                     </div>
                   `).elseWhen(isTag(item), () => `
                     ${ when(isComment(item), () => `
-                      <div class="${ c.comment }">${ pangoToHtml(item.value || '') }</div>
+                      <div class="${ c.comment }">${ pango.convert(item.value || '') }</div>
                     `) }
 
                     ${ when(isImage(item), () => `
@@ -110,3 +113,4 @@ export default (
     `) }
   </div>
 `);
+};

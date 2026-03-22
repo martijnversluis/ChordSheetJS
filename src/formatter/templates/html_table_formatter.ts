@@ -1,5 +1,5 @@
 import { HtmlTemplateArgs } from '../html_formatter';
-import { pangoToHtml } from '../../pango/pango_helpers';
+import { defaultPangoRenderer } from '../../pango/pango_helpers';
 import { renderChord } from '../../helpers';
 import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 
@@ -38,7 +38,10 @@ export default (
     },
     bodyParagraphs,
   }: HtmlTemplateArgs,
-): string => stripHTML(`
+): string => {
+  const pango = configuration.pangoRenderer || defaultPangoRenderer;
+
+  return stripHTML(`
   ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
   ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
 
@@ -96,12 +99,12 @@ export default (
                       ${ each(line.items, (item) => `
                         ${ when(isChordLyricsPair(item), () => `
                           <td class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
-                            ${ pangoToHtml(item.lyrics || '') }
+                            ${ pango.convert(item.lyrics || '') }
                           </td>
                         `).elseWhen(isTag(item), () => `
                           ${ when(isComment(item), () => `
                             <td class="${ c.comment }"${ fontStyleTag(line.textFont) }>
-                              ${ pangoToHtml(item.value || '') }
+                              ${ pango.convert(item.value || '') }
                             </td>
                           `) }
 
@@ -133,3 +136,4 @@ export default (
     </div>
   `) }
 `);
+};

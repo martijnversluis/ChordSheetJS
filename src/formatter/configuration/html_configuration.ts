@@ -3,6 +3,8 @@ import {
   ConfigurationProperties,
 } from './base_configuration';
 
+import { PangoRenderer } from '../../pango/pango_helpers';
+
 export type CSS = Record<string, string | number>;
 
 export interface HtmlTemplateCssClasses {
@@ -29,6 +31,7 @@ export interface HtmlTemplateCssClasses {
 export interface HTMLFormatterConfiguration extends BaseFormatterConfiguration {
   cssClasses: HtmlTemplateCssClasses;
   customCSS?: CSS;
+  pangoRenderer?: PangoRenderer;
   renderBlankLines?: boolean;
 }
 
@@ -58,6 +61,7 @@ export const defaultCssClasses: HtmlTemplateCssClasses = {
 export interface HTMLConfigurationProperties extends ConfigurationProperties {
   cssClasses?: Partial<HtmlTemplateCssClasses>;
   customCSS?: CSS;
+  pangoRenderer?: PangoRenderer;
   renderBlankLines?: boolean;
 }
 

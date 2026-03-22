@@ -126,6 +126,10 @@ export function stripPangoMarkup(text: string): string {
   return text.replace(PANGO_TAG_PATTERN, '');
 }
 
+export interface PangoRenderer {
+  convert(text: string): string;
+}
+
 export function pangoToHtml(text: string): string {
   const openTagStack: string[] = [];
 
@@ -139,3 +143,7 @@ export function pangoToHtml(text: string): string {
     },
   );
 }
+
+export const defaultPangoRenderer: PangoRenderer = {
+  convert: pangoToHtml,
+};

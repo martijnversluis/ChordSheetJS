@@ -1612,5 +1612,20 @@ describe('HtmlDivFormatter', () => {
 
       expect(formatted).toContain('<b>bold text</b>');
     });
+
+    it('uses a custom pangoRenderer when provided', () => {
+      const song = createSongFromAst([
+        [chordLyricsPair('C', 'Roses are <span color="red">red</span>')],
+      ]);
+
+      const customRenderer = {
+        convert: (text: string) => text.replace(/<span color="red">/g, '<span class="red">'),
+      };
+
+      const formatted = new HtmlDivFormatter({ pangoRenderer: customRenderer }).format(song);
+
+      expect(formatted).toContain('Roses are <span class="red">red</span>');
+      expect(formatted).not.toContain('style="color: red"');
+    });
   });
 });
