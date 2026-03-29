@@ -146,6 +146,7 @@ const ALIASES: Record<string, string> = {
 };
 
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
+const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
 export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
@@ -366,11 +367,11 @@ class Tag extends AstComponent {
   }
 
   /**
-   * Checks whether the tag is either a standard meta tag or a custom meta directive (`{meta: some_name value}`)
+   * Checks whether the tag is either a standard meta tag or a custom meta directive (`{x_some_name}`)
    * @returns {boolean}
    */
   isMetaTag(): boolean {
-    return this._isMetaTag || META_TAGS.indexOf(this.name) !== -1;
+    return this._isMetaTag || CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
   }
 
   /**
