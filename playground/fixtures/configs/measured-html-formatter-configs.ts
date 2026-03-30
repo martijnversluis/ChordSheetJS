@@ -4,71 +4,210 @@ export const measuredHtmlConfigs = [
     content: {
       fonts: {
         title: {
-          name: '"Atkinson Hyperlegible Next"',
+          name: 'Arial',
           style: 'bold',
-          weight: 900,
-          size: 28,
-          color: 'black',
-        },
-        subtitle: {
-          name: '"Atkinson Hyperlegible Next"',
-          style: 'normal',
-          size: 10,
-          color: 100,
-        },
-        metadata: {
-          name: '"Atkinson Hyperlegible Next"',
-          style: 'normal',
-          size: 10,
-          color: 100,
-        },
-        text: {
-          name: '"Atkinson Hyperlegible Next"',
-          style: 'normal',
-          size: 18,
-          color: 'black',
-        },
-        chord: {
-          name: '"Atkinson Hyperlegible Next"',
-          style: 'bold',
-          weight: 500,
-          size: 16,
-          color: '#ed6e6e',
-        },
-        sectionLabel: {
-          name: '"Atkinson Hyperlegible Next"',
           weight: 700,
           size: 19,
-          color: 'black',
+          color: '#151515',
+        },
+        subtitle: {
+          name: 'Arial',
+          style: 'normal',
+          size: 11,
+          color: '#6f6f6f',
+        },
+        metadata: {
+          name: 'Arial',
+          style: 'normal',
+          size: 11,
+          color: '#6f6f6f',
+        },
+        text: {
+          name: 'Arial',
+          style: 'normal',
+          size: 18,
+          color: '#232323',
+        },
+        chord: {
+          name: 'Arial',
+          style: 'bold',
+          weight: 700,
+          size: 16,
+          color: '#2f2f2f',
+        },
+        sectionLabel: {
+          name: 'Arial',
+          weight: 700,
+          size: 15,
+          color: '#a1312d',
           lineHeight: 1.2,
         },
         comment: {
-          name: '"Atkinson Hyperlegible Next"',
+          name: 'Arial',
           weight: 700,
-          size: 19,
-          color: 'black',
+          size: 15,
+          color: '#232323',
           underline: true,
           lineHeight: 1.2,
         },
         annotation: {
-          name: '"Atkinson Hyperlegible Next"',
+          name: 'Arial',
           style: 'normal',
           size: 10,
-          color: 'black',
+          color: '#232323',
         },
       },
       layout: {
         global: {
           margins: {
-            top: 5,
+            top: 12,
             bottom: 10,
             left: 15,
             right: 15,
           },
         },
         header: {
-          height: 0,
+          height: 72,
           content: [
+            {
+              type: 'text',
+              template: '%{title}',
+              style: {
+                name: 'Arial', style: 'bold', size: 19, color: '#151515', weight: 700,
+              },
+              position: {
+                x: 'left', y: 0, width: 'auto', clip: true, ellipsis: true,
+              },
+              condition: {
+                page: { first: true },
+              },
+            },
+            {
+              type: 'text',
+              template: '%{artist}',
+              style: {
+                name: 'Arial', style: 'normal', size: 11, color: '#6f6f6f',
+              },
+              position: {
+                x: 'left', y: 25, width: 'auto', clip: true, ellipsis: true,
+              },
+              condition: {
+                page: { first: true },
+              },
+            },
+            {
+              type: 'text',
+              template: '%{tempo|%{} BPM}%{time| \u00b7 %{}}%{capo| \u00b7 Capo %{}}',
+              style: {
+                name: 'Arial', style: 'normal', size: 11, color: '#6f6f6f',
+              },
+              position: {
+                x: 'left', y: 40, width: 240, clip: true, ellipsis: true,
+              },
+              condition: {
+                page: { first: true },
+              },
+            },
+            {
+              type: 'line',
+              style: { width: 1, color: '#d7d7d7' },
+              position: {
+                x: 0, y: 60, width: 'auto', height: 0,
+              },
+              condition: {
+                page: { first: true },
+              },
+            },
+            {
+              type: 'text',
+              template: '%{key}',
+              cssClass: 'measured-html-key-badge',
+              elementStyle: {
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '999px',
+                backgroundColor: '#a1312d',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+              },
+              style: {
+                name: 'Arial', style: 'bold', size: 12, color: '#ffffff', weight: 700,
+              },
+              position: {
+                x: 'right', y: 12, width: 28, offsetX: -2,
+              },
+              condition: {
+                and: [
+                  { page: { first: true } },
+                  { key: { exists: true } },
+                ],
+              },
+            },
+            {
+              type: 'text',
+              template: '%{title}',
+              style: {
+                name: 'Arial', style: 'bold', size: 12, color: '#151515', weight: 700,
+              },
+              position: {
+                x: 'left', y: 0, width: 'auto', clip: true, ellipsis: true,
+              },
+              condition: {
+                page: { greater_than: 1 },
+              },
+            },
+            {
+              type: 'text',
+              template: '%{page}/%{pages}',
+              style: {
+                name: 'Arial', style: 'normal', size: 10, color: '#9a9a9a',
+              },
+              position: { x: 'right', y: 4, offsetX: -38 },
+              condition: {
+                page: { greater_than: 1 },
+              },
+            },
+            {
+              type: 'text',
+              template: '%{key}',
+              cssClass: 'measured-html-key-badge',
+              elementStyle: {
+                width: '28px',
+                height: '28px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '999px',
+                backgroundColor: '#a1312d',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+              },
+              style: {
+                name: 'Arial', style: 'bold', size: 12, color: '#ffffff', weight: 700,
+              },
+              position: {
+                x: 'right', y: 2, width: 28, offsetX: -2,
+              },
+              condition: {
+                and: [
+                  { page: { greater_than: 1 } },
+                  { key: { exists: true } },
+                ],
+              },
+            },
+            {
+              type: 'line',
+              style: { width: 1, color: '#d7d7d7' },
+              position: {
+                x: 0, y: 32, width: 'auto', height: 0,
+              },
+              condition: {
+                page: { greater_than: 1 },
+              },
+            },
           ],
         },
         footer: {
@@ -134,13 +273,13 @@ export const measuredHtmlConfigs = [
           },
           fonts: {
             title: {
-              name: 'NimbusSansL-Bol', style: 'bold', size: 9, color: 'black',
+              name: 'Arial', style: 'bold', size: 9, color: '#232323',
             },
             fingerings: {
-              name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: 'black',
+              name: 'Arial', style: 'bold', size: 6, color: '#232323',
             },
             baseFret: {
-              name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: 'black',
+              name: 'Arial', style: 'bold', size: 6, color: '#232323',
             },
           },
         },
