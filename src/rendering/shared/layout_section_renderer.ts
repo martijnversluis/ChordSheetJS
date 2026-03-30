@@ -32,6 +32,7 @@ export interface LayoutRenderingBackend {
   getTextWidth(text: string, font?: FontConfiguration): number;
   splitTextToSize(text: string, maxWidth: number, font?: FontConfiguration): string[];
   setFontStyle(style: FontConfiguration): void;
+  setTextItem?(item: LayoutContentItemWithText): void;
 
   // Element operations (HTML-specific, PDF uses text directly)
   addElement?(element: any, x: number, y: number): void;
@@ -115,7 +116,18 @@ export class LayoutSectionRenderer {
 
     const { metadata: songMetadata, extraMetadata } = this.context;
     const metadata = new Proxy({} as Record<string, any>, {
-      get: (_, prop: string) => extraMetadata?.[prop] ?? songMetadata.get(prop),
+      get: (_, prop: string) => {
+        const value = extraMetadata?.[prop] ?? songMetadata.get(prop);
+
+        if ((prop === 'page' || prop === 'pages' || prop === 'renderTime') && typeof value === 'string') {
+          const numericValue = Number(value);
+          if (!Number.isNaN(numericValue)) {
+            return numericValue;
+          }
+        }
+
+        return value;
+      },
     });
     return new Condition(contentItem.condition as ConditionalRule, metadata).evaluate();
   }
@@ -140,9 +152,9 @@ export class LayoutSectionRenderer {
     const y = sectionY + position.y;
 
     if (position.clip) {
-      this.renderClippedText(textValue, position, availableWidth, y, style);
+      this.renderClippedText(textValue, textItem, availableWidth, y, style);
     } else {
-      this.renderMultilineText(textValue, position, availableWidth, y, style);
+      this.renderMultilineText(textValue, textItem, availableWidth, y, style);
     }
   }
 
@@ -151,16 +163,19 @@ export class LayoutSectionRenderer {
    */
   private renderClippedText(
     textValue: string,
-    position: any,
+    textItem: LayoutContentItemWithText,
     availableWidth: number,
     y: number,
     style: FontConfiguration,
   ): void {
+    const { position } = textItem;
     const clippedText = position.ellipsis ?
       this.clipTextWithEllipsis(textValue, availableWidth, style) :
       this.clipText(textValue, availableWidth, style);
     const textWidth = this.backend.getTextWidth(clippedText, style);
-    const x = this.calculateX(position.x, textWidth);
+    const alignmentWidth = position.width ?? textWidth;
+    this.backend.setTextItem?.(textItem);
+    const x = this.calculateX(position.x, alignmentWidth, position.offsetX);
     this.backend.text(clippedText, x, y);
   }
 
@@ -191,17 +206,20 @@ export class LayoutSectionRenderer {
    */
   private renderMultilineText(
     textValue: string,
-    position: any,
+    textItem: LayoutContentItemWithText,
     availableWidth: number,
     y: number,
     style: FontConfiguration,
   ): void {
+    const { position } = textItem;
     const lines = this.backend.splitTextToSize(textValue, availableWidth, style);
     let tempY = y;
 
     lines.forEach((line: string) => {
       const lineWidth = this.backend.getTextWidth(line, style);
-      const x = this.calculateX(position.x, lineWidth);
+      const alignmentWidth = position.width ?? lineWidth;
+      this.backend.setTextItem?.(textItem);
+      const x = this.calculateX(position.x, alignmentWidth, position.offsetX);
       this.backend.text(line, x, tempY);
       tempY += style.size * (style.lineHeight ?? 1.2);
     });
@@ -215,7 +233,7 @@ export class LayoutSectionRenderer {
       src, position, size, alias, compression, rotation,
     } = imageItem;
 
-    const x = this.calculateX(position.x, size.width);
+    const x = this.calculateX(position.x, size.width, position.offsetX);
     const y = sectionY + position.y;
     const format = src.split('.').pop()?.toUpperCase() as string;
 
@@ -252,18 +270,18 @@ export class LayoutSectionRenderer {
   /**
    * Calculates the X position based on alignment
    */
-  calculateX(alignment: Alignment | number, width = 0): number {
+  calculateX(alignment: Alignment | number, width = 0, offsetX = 0): number {
     switch (alignment) {
       case 'center':
-        return this.backend.pageSize.width / 2 - width / 2;
+        return this.backend.pageSize.width / 2 - width / 2 + offsetX;
       case 'right':
-        return this.backend.pageSize.width - this.context.margins.right - width;
+        return this.backend.pageSize.width - this.context.margins.right - width + offsetX;
       case 'left':
       default:
         if (typeof alignment === 'number') {
-          return this.context.margins.left + alignment;
+          return this.context.margins.left + alignment + offsetX;
         }
-        return this.context.margins.left;
+        return this.context.margins.left + offsetX;
     }
   }
 
