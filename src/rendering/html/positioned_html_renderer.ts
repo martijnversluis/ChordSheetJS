@@ -15,6 +15,9 @@ import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  LayoutContentItemWithText,
+  LayoutItem,
+  LineStyle,
   MeasuredHtmlFormatterConfiguration,
 } from '../../formatter/configuration';
 
@@ -32,6 +35,14 @@ interface Bounds {
  */
 class PositionedHtmlRenderer extends Renderer {
   private configuration: MeasuredHtmlFormatterConfiguration;
+
+  private currentLayoutFontStyle: FontConfiguration | null = null;
+
+  private currentLayoutSection: 'header' | 'footer' | null = null;
+
+  private currentLayoutTextItem: LayoutContentItemWithText | null = null;
+
+  private currentLineStyle: LineStyle | null = null;
 
   private _dimensions: Dimensions | null = null;
 
@@ -130,42 +141,64 @@ class PositionedHtmlRenderer extends Renderer {
   }
 
   protected renderHeadersAndFooters(): void {
-    const layoutRenderer = this.createLayoutRenderer();
+    const headerConfig = this.getHeaderConfig();
+    const footerConfig = this.getFooterConfig();
 
-    if (this.getHeaderConfig()) {
-      this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getHeaderConfig()!, 'header');
-      });
+    if (headerConfig) {
+      this.renderLayoutForEachPage(headerConfig, 'header');
     }
-    if (this.getFooterConfig()) {
-      this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getFooterConfig()!, 'footer');
-      });
+
+    if (footerConfig) {
+      this.renderLayoutForEachPage(footerConfig, 'footer');
     }
+
+    this.resetLayoutRenderingState();
   }
 
-  private createLayoutRenderer(): LayoutSectionRenderer {
-    const backend = this.createLayoutBackend();
-    return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
-      margins: this.dimensions.margins,
-      extraMetadata: this.getExtraMetadata(this.doc.currentPage, this.doc.totalPages),
+  private renderLayoutForEachPage(layoutConfig: LayoutItem, section: 'header' | 'footer'): void {
+    this.doc.eachPage((_page, index) => {
+      this.currentLayoutSection = section;
+      this.resetLayoutRenderingState(section);
+      this.createLayoutRenderer(index + 1, this.doc.totalPages).renderLayout(layoutConfig, section);
     });
   }
 
-  private createLayoutBackend(): LayoutRenderingBackend {
+  private resetLayoutRenderingState(section: 'header' | 'footer' | null = null): void {
+    this.currentLayoutSection = section;
+    this.currentLayoutFontStyle = null;
+    this.currentLayoutTextItem = null;
+    this.currentLineStyle = null;
+  }
+
+  private createLayoutRenderer(page: number, totalPages: number): LayoutSectionRenderer {
+    const backend = this.createLayoutBackend(page, totalPages);
+    return new LayoutSectionRenderer(backend, {
+      metadata: this.song.metadata,
+      margins: this.dimensions.margins,
+      extraMetadata: this.getExtraMetadata(page, totalPages),
+    });
+  }
+
+  private createLayoutBackend(page: number, totalPages: number): LayoutRenderingBackend {
     return {
       pageSize: this.doc.pageSize,
-      currentPage: this.doc.currentPage,
-      totalPages: this.doc.totalPages,
+      currentPage: page,
+      totalPages,
       text: (content, x, y) => this.renderHtmlText(content, x, y),
       getTextWidth: (text, font) => this.doc.getTextWidth(text, font!),
       splitTextToSize: (text, maxWidth, font) => this.doc.splitTextToSize(text, maxWidth, font!),
-      setFontStyle: () => { /* no-op for HTML */ },
+      setFontStyle: (style) => {
+        this.currentLayoutFontStyle = style;
+      },
+      setTextItem: (item) => {
+        this.currentLayoutTextItem = item;
+      },
       addElement: (element, x, y) => this.doc.addElement(element, x, y),
       addImage: (src, _format, x, y, width, height) => this.renderHtmlImage(src, x, y, width, height),
       line: (x1, y1, x2, y2) => this.renderHtmlLine(x1, y1, x2, y2),
-      setLineStyle: () => { /* no-op for HTML */ },
+      setLineStyle: (style) => {
+        this.currentLineStyle = style;
+      },
       resetDash: () => { /* no-op for HTML */ },
     };
   }
@@ -173,8 +206,33 @@ class PositionedHtmlRenderer extends Renderer {
   private renderHtmlText(content: string, x: number, y: number): void {
     const element = document.createElement('div');
     element.className = `${this.styler.prefix}header-text`;
+    this.applyLayoutTextClasses(element);
+
     element.textContent = content;
+    this.applyLayoutTextStyles(element);
+
     this.doc.addElement(element, x, y);
+  }
+
+  private applyLayoutTextClasses(element: HTMLDivElement): void {
+    const sectionClass = this.currentLayoutSection ? this.styler.getCustomClass(this.currentLayoutSection) : undefined;
+    if (sectionClass) {
+      element.classList.add(sectionClass);
+    }
+
+    if (this.currentLayoutTextItem?.cssClass) {
+      element.classList.add(this.currentLayoutTextItem.cssClass);
+    }
+  }
+
+  private applyLayoutTextStyles(element: HTMLDivElement): void {
+    if (this.currentLayoutTextItem?.elementStyle) {
+      Object.assign(element.style, this.currentLayoutTextItem.elementStyle);
+    }
+
+    if (this.currentLayoutFontStyle) {
+      this.styler.applyFontStyle(element, this.currentLayoutFontStyle);
+    }
   }
 
   private renderHtmlImage(src: string, x: number, y: number, width: number, height: number): void {
@@ -189,11 +247,12 @@ class PositionedHtmlRenderer extends Renderer {
   private renderHtmlLine(x1: number, y1: number, x2: number, _y2: number): void {
     const lineElement = document.createElement('div');
     lineElement.className = `${this.styler.prefix}line`;
+    const lineStyle = this.currentLineStyle;
     lineElement.style.width = `${x2 - x1}px`;
-    lineElement.style.height = '1px';
-    lineElement.style.borderBottomWidth = '1px';
-    lineElement.style.borderBottomStyle = 'solid';
-    lineElement.style.borderBottomColor = '#000000';
+    lineElement.style.height = '0';
+    lineElement.style.borderBottomWidth = `${lineStyle?.width ?? 1}px`;
+    lineElement.style.borderBottomStyle = lineStyle?.dash?.length ? 'dashed' : 'solid';
+    lineElement.style.borderBottomColor = lineStyle?.color ?? '#000000';
     this.doc.addElement(lineElement, x1, y1);
   }
 
