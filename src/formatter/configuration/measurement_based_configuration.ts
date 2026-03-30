@@ -32,7 +32,7 @@ export type FontSection =
   'sectionLabel';
 
 export type LayoutSection = 'header' | 'footer';
-export type Alignment = 'left' | 'center' | 'right';
+export type Alignment = 'left' | 'center' | 'right' | number;
 export type MeasurerType = 'canvas' | 'dom' | 'jspdf';
 
 // Condition rules for conditional rendering
@@ -66,6 +66,7 @@ export interface Position {
   y: number,
   width?: number,
   height?: number,
+  offsetX?: number,
   clip?: boolean,
   ellipsis?: boolean,
 }
@@ -198,6 +199,8 @@ export interface LayoutContentItemWithText extends ILayoutContentItem {
   style: FontConfiguration,
   value?: string,
   template?: string,
+  cssClass?: string,
+  elementStyle?: Record<string, string>,
 }
 
 export interface LayoutContentItemWithValue extends LayoutContentItemWithText {
