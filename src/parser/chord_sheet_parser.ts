@@ -4,6 +4,7 @@ import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
 import SongBuilder from '../song_builder';
 import { deprecate, normalizeLineEndings } from '../utilities';
+import { buildVisualColumnMap } from './parser_helpers';
 
 const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+)+(\s|$)+/;
@@ -126,11 +127,11 @@ class ChordSheetParser {
   }
 
   parseLyricsWithChords(chordsLine, lyricsLine) {
-    this.processCharacters(chordsLine, lyricsLine);
+    const consumedLyrics = this.processCharacters(chordsLine, lyricsLine);
 
     if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
-    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
+    this.chordLyricsPair.lyrics += lyricsLine.substring(consumedLyrics);
     this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
 
     if (this.chordLyricsPair.lyrics) {
@@ -143,7 +144,10 @@ class ChordSheetParser {
     }
   }
 
-  processCharacters(chordsLine, lyricsLine) {
+  processCharacters(chordsLine, lyricsLine): number {
+    const columnToLyricsIndex = buildVisualColumnMap(lyricsLine);
+    let lastLyricsIndex = -1;
+
     for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
       const chr = chordsLine[c];
       const nextChar = chordsLine[c + 1];
@@ -152,9 +156,17 @@ class ChordSheetParser {
 
       if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
-      this.chordLyricsPair.lyrics += lyricsLine[c] || '';
+      const lyricsIndex = columnToLyricsIndex[c];
+
+      if (lyricsIndex !== undefined && lyricsIndex !== lastLyricsIndex) {
+        this.chordLyricsPair.lyrics += lyricsLine[lyricsIndex];
+        lastLyricsIndex = lyricsIndex;
+      }
+
       this.processingText = !isWhiteSpace;
     }
+
+    return lastLyricsIndex >= 0 ? lastLyricsIndex + 1 : 0;
   }
 
   addCharacter(chr, nextChar) {
