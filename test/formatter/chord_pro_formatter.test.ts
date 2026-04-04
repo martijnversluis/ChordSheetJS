@@ -1,5 +1,5 @@
 import { ChordProFormatter, ChordProParser } from '../../src';
-import { chordLyricsPair, createSongFromAst } from '../util/utilities';
+import { chordLyricsPair, createSongFromAst, tag } from '../util/utilities';
 import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
@@ -54,5 +54,17 @@ describe('ChordProFormatter', () => {
     const formatted = new ChordProFormatter().format(song);
 
     expect(formatted).toEqual(chordSheet);
+  });
+
+  it('correctly formats non-standard metadata', () => {
+    const song = createSongFromAst([
+      [tag('title', 'Let it be')],
+      [tag('meta', 'composer John Lennon')],
+      [tag('meta', 'non_standard value')],
+    ]);
+
+    expect(new ChordProFormatter().format(song)).toEqual(
+      '{title: Let it be}\n{composer: John Lennon}\n{meta: non_standard value}',
+    );
   });
 });

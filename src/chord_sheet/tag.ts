@@ -367,11 +367,20 @@ class Tag extends AstComponent {
   }
 
   /**
-   * Checks whether the tag is either a standard meta tag or a custom meta directive (`{x_some_name}`)
+   * Checks whether the tag is a standard meta tag, a custom meta directive (`{x_some_name}`)
+   * or a non-standard meta tag (`{meta: name value}`)
    * @returns {boolean}
    */
   isMetaTag(): boolean {
     return this._isMetaTag || CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
+  }
+
+  /**
+   * Checks whether this tag is a standard meta tag or a custom meta directive (`{x_some_name}`)
+   * @returns {boolean}
+   */
+  isStandardOrCustomMetaTag(): boolean {
+    return META_TAGS.indexOf(this.name) !== -1 || CUSTOM_META_TAG_NAME_REGEX.test(this.name);
   }
 
   /**
