@@ -1,5 +1,6 @@
 import '../util/matchers';
 
+import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 import { ChordsOverWordsParser } from '../../src';
 import { heredoc } from '../util/utilities';
 
@@ -172,10 +173,13 @@ describe('ChordsOverWordsParser', () => {
 
     const line2Pairs = lines[2].items;
     expect(line2Pairs[0]).toBeChordLyricsPair('Eb(no3)', '');
+    expect((line2Pairs[0] as ChordLyricsPair).isRhythmSymbol).toBe(false);
     expect(line2Pairs[1]).toBeChordLyricsPair('/', '');
+    expect((line2Pairs[1] as ChordLyricsPair).isRhythmSymbol).toBe(true);
     expect(line2Pairs[2]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[3]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[4]).toBeChordLyricsPair('|', '');
+    expect((line2Pairs[4] as ChordLyricsPair).isRhythmSymbol).toBe(true);
     expect(line2Pairs[5]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[6]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[7]).toBeChordLyricsPair('/', '');

@@ -1592,6 +1592,46 @@ describe('HtmlDivFormatter', () => {
     });
   });
 
+  describe('rhythm symbols', () => {
+    it('renders rhythm symbols with rhythm-symbol class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          { type: 'chordLyricsPair', chords: 'Am', lyrics: '' },
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+          {
+            type: 'chordLyricsPair', chords: '|', lyrics: '', isRhythmSymbol: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('<div class="chord">Am</div>');
+      expect(formatted).toContain('<div class="rhythm-symbol">/</div>');
+      expect(formatted).toContain('<div class="rhythm-symbol">|</div>');
+      expect(formatted).not.toMatch(/<div class="chord">[/|]<\/div>/);
+    });
+
+    it('allows customizing the rhythm symbol CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
+
+      expect(formatted).toContain('<div class="custom-rhythm">/</div>');
+    });
+  });
+
   describe('pango markup', () => {
     it('converts pango markup in lyrics to HTML', () => {
       const song = createSongFromAst([

@@ -13,6 +13,7 @@ import {
   isComment,
   isImage,
   isLiteral,
+  isRhythmSymbol,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -75,8 +76,10 @@ export default (
                         ${ when(isChordLyricsPair(item), () => `
                           ${ when(item.annotation).then(() => `
                             <td class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
-                          `).else(() => `
-                            <td class="${ c.chord }"${ fontStyleTag(line.chordFont) }>${
+                          `).else(() => {
+                            const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                            return `
+                            <td class="${ cls }"${ fontStyleTag(line.chordFont) }>${
                               renderChord(
                                 item.chords,
                                 line,
@@ -89,7 +92,8 @@ export default (
                                 },
                               )
                             }</td>
-                          `) }
+                          `;
+                          }) }
                         `) }
                       `) }
                     </tr>

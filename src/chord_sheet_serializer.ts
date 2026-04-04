@@ -108,13 +108,19 @@ class ChordSheetSerializer {
   }
 
   serializeChordLyricsPair(chordLyricsPair: ChordLyricsPair): SerializedChordLyricsPair {
-    return {
+    const serialized: SerializedChordLyricsPair = {
       type: CHORD_LYRICS_PAIR,
       chords: chordLyricsPair.chords,
       chord: null,
       lyrics: chordLyricsPair.lyrics,
       annotation: chordLyricsPair.annotation,
     };
+
+    if (chordLyricsPair.isRhythmSymbol) {
+      serialized.isRhythmSymbol = true;
+    }
+
+    return serialized;
   }
 
   serializeTernary(ternary: Ternary): object {
@@ -196,13 +202,15 @@ class ChordSheetSerializer {
 
   parseChordLyricsPair(astComponent: SerializedChordLyricsPair): ChordLyricsPair {
     const {
-      chord, chords, lyrics, annotation,
+      chord, chords, lyrics, annotation, isRhythmSymbol,
     } = astComponent;
 
     return new ChordLyricsPair(
       chord ? new Chord(chord).toString() : chords,
       lyrics,
       annotation,
+      null,
+      isRhythmSymbol || false,
     );
   }
 

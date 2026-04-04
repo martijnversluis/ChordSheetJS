@@ -32,6 +32,7 @@ export const defaultCssClasses: HtmlTemplateCssClasses = {
   literalContents: 'contents',
   lyrics: 'lyrics',
   paragraph: 'paragraph',
+  rhythmSymbol: 'rhythm-symbol',
   row: 'row',
   subtitle: 'subtitle',
   title: 'title',
