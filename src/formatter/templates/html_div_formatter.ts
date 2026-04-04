@@ -12,6 +12,7 @@ import {
   isComment,
   isEvaluatable,
   isImage,
+  isRhythmSymbol,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -65,8 +66,10 @@ export default (
                     <div class="${ c.column }">
                      ${ when(item.annotation).then(() => `
                        <div class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</div>
-                     `).else(() => `
-                        <div class="${ c.chord }"${ fontStyleTag(line.chordFont) }>
+                     `).else(() => {
+                       const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                       return `
+                        <div class="${ cls }"${ fontStyleTag(line.chordFont) }>
                           ${ renderChord(
                             item.chords,
                             line,
@@ -79,7 +82,8 @@ export default (
                             },
                           ) }
                         </div>
-                     `) }
+                     `;
+                     }) }
                       <div class="${ c.lyrics }"${ fontStyleTag(line.textFont) }>
                         ${ pango.convert(item.lyrics || '') }
                       </div>

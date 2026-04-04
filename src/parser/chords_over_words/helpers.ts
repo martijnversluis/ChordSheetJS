@@ -176,6 +176,9 @@ function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol | NoChord): 
         type: 'chordLyricsPair', chord: item, chords: '', lyrics: null,
       };
     case 'symbol':
+      return {
+        type: 'chordLyricsPair', chords: item.value, lyrics: null, isRhythmSymbol: true,
+      };
     case 'noChord':
       return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
     default:

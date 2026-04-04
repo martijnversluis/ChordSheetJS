@@ -1524,6 +1524,46 @@ describe('HtmlTableFormatter', () => {
     });
   });
 
+  describe('rhythm symbols', () => {
+    it('renders rhythm symbols with rhythm-symbol class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          { type: 'chordLyricsPair', chords: 'Am', lyrics: '' },
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+          {
+            type: 'chordLyricsPair', chords: '|', lyrics: '', isRhythmSymbol: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter().format(song);
+
+      expect(formatted).toContain('<td class="chord">Am</td>');
+      expect(formatted).toContain('<td class="rhythm-symbol">/</td>');
+      expect(formatted).toContain('<td class="rhythm-symbol">|</td>');
+      expect(formatted).not.toMatch(/<td class="chord">[/|]<\/td>/);
+    });
+
+    it('allows customizing the rhythm symbol CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: '/', lyrics: '', isRhythmSymbol: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
+
+      expect(formatted).toContain('<td class="custom-rhythm">/</td>');
+    });
+  });
+
   describe('pango markup', () => {
     it('converts pango markup in lyrics to HTML', () => {
       const song = createSongFromAst([

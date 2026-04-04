@@ -35,6 +35,10 @@ export function isChordLyricsPair(item: Item): boolean {
   return item instanceof ChordLyricsPair;
 }
 
+export function isRhythmSymbol(item: Item): boolean {
+  return item instanceof ChordLyricsPair && item.isRhythmSymbol;
+}
+
 export function lineHasContents(line: Line): boolean {
   return line.items.some((item: Item) => item.isRenderable());
 }
