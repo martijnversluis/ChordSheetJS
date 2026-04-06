@@ -952,11 +952,11 @@ __metadata:
   linkType: hard
 
 "@eslint/core@npm:^1.1.0, @eslint/core@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@eslint/core@npm:1.1.1"
+  version: 1.2.0
+  resolution: "@eslint/core@npm:1.2.0"
   dependencies:
     "@types/json-schema": "npm:^7.0.15"
-  checksum: 10c0/129c654c78afc1f6d61dccb0ce841be667f09f052f7d5642614b6ba5eeebd579ca6cc336d7b750d88625e61f7aad22fdd62bf83847fbfc10cc3e58cfe6c5072e
+  checksum: 10c0/e564945218f7f3910dfd0f57bf7852072060f560c241f5ed96a7b13e9f7fed4cc5707ee5eb44653f2bf4f9576ee7b7921f55cc5ac96f72343d0c5e80818fe2bf
   languageName: node
   linkType: hard
 
