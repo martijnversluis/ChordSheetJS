@@ -11,7 +11,7 @@ Whisper words of wisdom, let it be`;
 
 describe('ChordSheetParser', () => {
   it('parses a regular chord sheet correctly', () => {
-    const parser = new ChordSheetParser();
+    const parser = new ChordSheetParser({}, false);
     const song = parser.parse(defaultChordSheet);
     const { lines } = song;
 
@@ -44,7 +44,7 @@ describe('ChordSheetParser', () => {
       Am               Bb             F  C
       Whisper words of wisdom, let it be`;
 
-    const parser = new ChordSheetParser();
+    const parser = new ChordSheetParser({}, false);
     const song = parser.parse(chordSheetWithParagraphs);
     const { paragraphs } = song;
 
@@ -75,7 +75,7 @@ describe('ChordSheetParser', () => {
 
   describe('with option preserveWhitespace:true', () => {
     it('parses a regular chord sheet correctly', () => {
-      const parser = new ChordSheetParser({ preserveWhitespace: true });
+      const parser = new ChordSheetParser({ preserveWhitespace: true }, false);
       const song = parser.parse(defaultChordSheet);
       const { lines } = song;
 
@@ -101,7 +101,7 @@ describe('ChordSheetParser', () => {
 
   describe('with option preserveWhitespace:false', () => {
     it('parses a regular chord sheet correctly', () => {
-      const parser = new ChordSheetParser({ preserveWhitespace: false });
+      const parser = new ChordSheetParser({ preserveWhitespace: false }, false);
       const song = parser.parse(defaultChordSheet);
       const { lines } = song;
 
@@ -128,7 +128,7 @@ describe('ChordSheetParser', () => {
   it('support CR line endings', () => {
     const chordSheet = '       Am         C/G\rLet it be, let it be,\r       F          C\rlet it be, let it be';
 
-    const parser = new ChordSheetParser();
+    const parser = new ChordSheetParser({}, false);
     const song = parser.parse(chordSheet);
     const { lines } = song;
     const [{ items: line0Items }, { items: line1Items }] = lines;
@@ -146,7 +146,7 @@ describe('ChordSheetParser', () => {
   it('support LF line endings', () => {
     const chordSheet = '       Am         C/G\nLet it be, let it be,\n       F          C\nlet it be, let it be';
 
-    const parser = new ChordSheetParser();
+    const parser = new ChordSheetParser({}, false);
     const song = parser.parse(chordSheet);
     const { lines } = song;
     const [{ items: line0Items }, { items: line1Items }] = lines;
@@ -164,7 +164,7 @@ describe('ChordSheetParser', () => {
   it('support CRLF line endings', () => {
     const chordSheet = '       Am         C/G\r\nLet it be, let it be,\r\n       F          C\r\nlet it be, let it be';
 
-    const parser = new ChordSheetParser();
+    const parser = new ChordSheetParser({}, false);
     const song = parser.parse(chordSheet);
     const { lines } = song;
     const [{ items: line0Items }, { items: line1Items }] = lines;
