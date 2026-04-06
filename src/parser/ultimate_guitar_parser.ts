@@ -1,4 +1,5 @@
 import ChordSheetParser from './chord_sheet_parser';
+import { buildVisualColumnMap } from './parser_helpers';
 import Tag, { META_TAGS } from '../chord_sheet/tag';
 
 import {
@@ -136,11 +137,11 @@ class UltimateGuitarParser extends ChordSheetParser {
   }
 
   parseLyricsWithChords(chordsLine: string, lyricsLine: string): void {
-    this.processCharacters(chordsLine, lyricsLine);
+    const consumedLyrics = this.processCharacters(chordsLine, lyricsLine);
 
     if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
-    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
+    this.chordLyricsPair.lyrics += lyricsLine.substring(consumedLyrics);
     this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
 
     if (this.chordLyricsPair.lyrics) {
@@ -150,18 +151,17 @@ class UltimateGuitarParser extends ChordSheetParser {
     this.applyRepeatNotation();
   }
 
-  processCharacters(chordsLine: string, lyricsLine: string): void {
+  processCharacters(chordsLine: string, lyricsLine: string): number {
+    const columnToLyricsIndex = buildVisualColumnMap(lyricsLine);
+    let lastLyricsIndex = -1;
+
     for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
-      const chr = chordsLine[c];
-      const nextChar = chordsLine[c + 1];
-      const isWhiteSpace = /\s/.test(chr);
-      this.addCharacter(chr, nextChar);
-
-      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
-
-      this.chordLyricsPair.lyrics += lyricsLine[c] || '';
-      this.processingText = !isWhiteSpace;
+      this.addCharacter(chordsLine[c], chordsLine[c + 1]);
+      lastLyricsIndex = this.mapLyricsCharacter(columnToLyricsIndex, c, lyricsLine, lastLyricsIndex);
+      this.processingText = !/\s/.test(chordsLine[c]);
     }
+
+    return lastLyricsIndex >= 0 ? lastLyricsIndex + 1 : 0;
   }
 
   addCharacter(chr: string, nextChar: string): void {

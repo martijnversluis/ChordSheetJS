@@ -477,4 +477,18 @@ describe('UltimateGuitarParser', () => {
     const line3Items = lines[3].items;
     expect(line3Items[0]).toBeTag('end_of_part', '');
   });
+
+  it('correctly aligns chords with CJK lyrics', () => {
+    const chordSheet = heredoc`
+      [Verse]
+      G        D/F#
+      人算什麼 祢竟顧念他`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+    const verseLine = song.lines[1];
+
+    expect(verseLine.items[0]).toBeChordLyricsPair('G', '人算什麼 ');
+    expect(verseLine.items[1]).toBeChordLyricsPair('D/F#', '祢竟顧念他');
+  });
 });

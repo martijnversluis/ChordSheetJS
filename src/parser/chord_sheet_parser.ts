@@ -3,6 +3,7 @@ import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
 import SongBuilder from '../song_builder';
+import { buildVisualColumnMap } from './parser_helpers';
 import { deprecate, normalizeLineEndings } from '../utilities';
 
 const WHITE_SPACE = /\s/;
@@ -126,11 +127,11 @@ class ChordSheetParser {
   }
 
   parseLyricsWithChords(chordsLine, lyricsLine) {
-    this.processCharacters(chordsLine, lyricsLine);
+    const consumedLyrics = this.processCharacters(chordsLine, lyricsLine);
 
     if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
 
-    this.chordLyricsPair.lyrics += lyricsLine.substring(chordsLine.length);
+    this.chordLyricsPair.lyrics += lyricsLine.substring(consumedLyrics);
     this.chordLyricsPair.chords = this.chordLyricsPair.chords.trim();
 
     if (this.chordLyricsPair.lyrics) {
@@ -143,18 +144,30 @@ class ChordSheetParser {
     }
   }
 
-  processCharacters(chordsLine, lyricsLine) {
+  processCharacters(chordsLine, lyricsLine): number {
+    const columnToLyricsIndex = buildVisualColumnMap(lyricsLine);
+    let lastLyricsIndex = -1;
+
     for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
-      const chr = chordsLine[c];
-      const nextChar = chordsLine[c + 1];
-      const isWhiteSpace = WHITE_SPACE.test(chr);
-      this.addCharacter(chr, nextChar);
-
-      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
-
-      this.chordLyricsPair.lyrics += lyricsLine[c] || '';
-      this.processingText = !isWhiteSpace;
+      this.addCharacter(chordsLine[c], chordsLine[c + 1]);
+      lastLyricsIndex = this.mapLyricsCharacter(columnToLyricsIndex, c, lyricsLine, lastLyricsIndex);
+      this.processingText = !WHITE_SPACE.test(chordsLine[c]);
     }
+
+    return lastLyricsIndex >= 0 ? lastLyricsIndex + 1 : 0;
+  }
+
+  mapLyricsCharacter(columnMap: number[], column: number, lyricsLine: string, lastIndex: number): number {
+    if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
+
+    const lyricsIndex = columnMap[column];
+
+    if (lyricsIndex !== undefined && lyricsIndex !== lastIndex) {
+      this.chordLyricsPair.lyrics += lyricsLine[lyricsIndex];
+      return lyricsIndex;
+    }
+
+    return lastIndex;
   }
 
   addCharacter(chr, nextChar) {
