@@ -156,21 +156,9 @@ class UltimateGuitarParser extends ChordSheetParser {
     let lastLyricsIndex = -1;
 
     for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
-      const chr = chordsLine[c];
-      const nextChar = chordsLine[c + 1];
-      const isWhiteSpace = /\s/.test(chr);
-      this.addCharacter(chr, nextChar);
-
-      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
-
-      const lyricsIndex = columnToLyricsIndex[c];
-
-      if (lyricsIndex !== undefined && lyricsIndex !== lastLyricsIndex) {
-        this.chordLyricsPair.lyrics += lyricsLine[lyricsIndex];
-        lastLyricsIndex = lyricsIndex;
-      }
-
-      this.processingText = !isWhiteSpace;
+      this.addCharacter(chordsLine[c], chordsLine[c + 1]);
+      lastLyricsIndex = this.mapLyricsCharacter(columnToLyricsIndex, c, lyricsLine, lastLyricsIndex);
+      this.processingText = !/\s/.test(chordsLine[c]);
     }
 
     return lastLyricsIndex >= 0 ? lastLyricsIndex + 1 : 0;

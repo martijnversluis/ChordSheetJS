@@ -488,10 +488,7 @@ describe('UltimateGuitarParser', () => {
     const song = parser.parse(chordSheet);
     const verseLine = song.lines[1];
 
-    expect(verseLine.items[0].chords).toEqual('G');
-    expect(verseLine.items[0].lyrics).toEqual('人算什麼');
-
-    expect(verseLine.items[1].chords).toEqual('D/F#');
-    expect(verseLine.items[1].lyrics).toEqual('祢竟顧念他');
+    expect(verseLine.items[0]).toBeChordLyricsPair('G', '人算什麼 ');
+    expect(verseLine.items[1]).toBeChordLyricsPair('D/F#', '祢竟顧念他');
   });
 });

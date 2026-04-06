@@ -3,8 +3,8 @@ import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
 import SongBuilder from '../song_builder';
-import { deprecate, normalizeLineEndings } from '../utilities';
 import { buildVisualColumnMap } from './parser_helpers';
+import { deprecate, normalizeLineEndings } from '../utilities';
 
 const WHITE_SPACE = /\s/;
 const CHORD_LINE_REGEX = /^\s*((([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+)+(\s|$)+/;
@@ -149,24 +149,25 @@ class ChordSheetParser {
     let lastLyricsIndex = -1;
 
     for (let c = 0, charCount = chordsLine.length; c < charCount; c += 1) {
-      const chr = chordsLine[c];
-      const nextChar = chordsLine[c + 1];
-      const isWhiteSpace = WHITE_SPACE.test(chr);
-      this.addCharacter(chr, nextChar);
-
-      if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
-
-      const lyricsIndex = columnToLyricsIndex[c];
-
-      if (lyricsIndex !== undefined && lyricsIndex !== lastLyricsIndex) {
-        this.chordLyricsPair.lyrics += lyricsLine[lyricsIndex];
-        lastLyricsIndex = lyricsIndex;
-      }
-
-      this.processingText = !isWhiteSpace;
+      this.addCharacter(chordsLine[c], chordsLine[c + 1]);
+      lastLyricsIndex = this.mapLyricsCharacter(columnToLyricsIndex, c, lyricsLine, lastLyricsIndex);
+      this.processingText = !WHITE_SPACE.test(chordsLine[c]);
     }
 
     return lastLyricsIndex >= 0 ? lastLyricsIndex + 1 : 0;
+  }
+
+  mapLyricsCharacter(columnMap: number[], column: number, lyricsLine: string, lastIndex: number): number {
+    if (!this.chordLyricsPair) throw new Error('Expected this.chordLyricsPair to be present');
+
+    const lyricsIndex = columnMap[column];
+
+    if (lyricsIndex !== undefined && lyricsIndex !== lastIndex) {
+      this.chordLyricsPair.lyrics += lyricsLine[lyricsIndex];
+      return lyricsIndex;
+    }
+
+    return lastIndex;
   }
 
   addCharacter(chr, nextChar) {

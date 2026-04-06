@@ -1,12 +1,12 @@
-import { chopFirstWord, isWideCharacter, buildVisualColumnMap } from '../../src/parser/parser_helpers';
 import { eachTestCase } from '../util/utilities';
+import { buildVisualColumnMap, chopFirstWord, isWideCharacter } from '../../src/parser/parser_helpers';
 
 describe('parser helpers', () => {
   describe('isWideCharacter', () => {
     it('returns true for CJK characters', () => {
       expect(isWideCharacter('人')).toBe(true);
-      expect(isWideCharacter('가')).toBe(true);  // Hangul
-      expect(isWideCharacter('あ')).toBe(true);  // Hiragana
+      expect(isWideCharacter('가')).toBe(true); // Hangul
+      expect(isWideCharacter('あ')).toBe(true); // Hiragana
     });
 
     it('returns false for Latin characters', () => {
