@@ -153,6 +153,18 @@ describe('ChordProParser', () => {
     expect(song.metadata.get('other_directive')).toEqual('Bar');
   });
 
+  it('parses directives with space instead of colon', () => {
+    const song = new ChordProParser().parse('{title Harvest Moon}');
+
+    expect(song.title).toEqual('Harvest Moon');
+  });
+
+  it('parses subtitle directive with space instead of colon', () => {
+    const song = new ChordProParser().parse('{subtitle A Neil Young classic}');
+
+    expect(song.subtitle).toEqual('A Neil Young classic');
+  });
+
   it('can have multiple values for a meta directive', () => {
     const chordSheetWithMultipleComposers = `
       {composer: John}
