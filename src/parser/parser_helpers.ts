@@ -16,11 +16,11 @@ export function isWideCharacter(ch: string): boolean {
 
 export function buildVisualColumnMap(lyricsLine: string): number[] {
   const map: number[] = [];
-  let vi = 0;
+  let visualColumn = 0;
 
-  for (let li = 0; li < lyricsLine.length; li++) {
-    const w = isWideCharacter(lyricsLine[li]) ? 2 : 1;
-    for (let k = 0; k < w; k++) map[vi++] = li;
+  for (let characterIndex = 0; characterIndex < lyricsLine.length; characterIndex++) {
+    const characterWidth = isWideCharacter(lyricsLine[characterIndex]) ? 2 : 1;
+    for (let column = 0; column < characterWidth; column++) map[visualColumn++] = characterIndex;
   }
 
   return map;
