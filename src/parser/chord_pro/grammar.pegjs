@@ -172,8 +172,8 @@ ChordDefinition
     }
 
 Tag
-  = "{" _ tagName:$(TagName) selector:TagSelector? _ tagColonWithValue:TagColonWithValue? "}" {
-      return helpers.buildTag(tagName, tagColonWithValue, selector, location());
+  = "{" _ tagName:$(TagName) selector:TagSelector? tagValue:(TagColonWithValue / TagSpaceWithValue)? _ "}" {
+      return helpers.buildTag(tagName, tagValue, selector, location());
     }
 
 TagSelector
@@ -193,8 +193,13 @@ TagSelectorValue
   = $([a-zA-Z0-9-_]+)
 
 TagColonWithValue
-  = ":" tagValue:TagValue {
+  = _ ":" tagValue:TagValue {
       return tagValue;
+    }
+
+TagSpaceWithValue
+  = __ value:TagSimpleValue {
+      return { value: value };
     }
 
 TagValue
