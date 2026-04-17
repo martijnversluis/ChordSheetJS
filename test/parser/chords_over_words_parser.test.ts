@@ -703,6 +703,17 @@ describe('ChordsOverWordsParser', () => {
     expect(song.getChords()).toEqual(['Eb', 'Dbmaj13']);
   });
 
+  it('parses mmaj7 chords correctly', () => {
+    const chordOverWords = heredoc`
+      Eb      Dbmmaj7
+      A line`;
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordOverWords);
+
+    expect(song.getChords()).toEqual(['Eb', 'Dbmmaj7']);
+  });
+
   describe('N.C. (no chord) notation', () => {
     it('parses N.C. mixed with chords paired with lyrics', () => {
       const chordOverWords = heredoc`
