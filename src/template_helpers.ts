@@ -43,6 +43,10 @@ export function isInstruction(item: Item): boolean {
   return item instanceof ChordLyricsPair && item.isInstruction;
 }
 
+export function isNoChord(item: Item): boolean {
+  return item instanceof ChordLyricsPair && item.isNoChord;
+}
+
 export function lineHasContents(line: Line): boolean {
   return line.items.some((item: Item) => item.isRenderable());
 }
@@ -163,6 +167,7 @@ export default {
   isComment,
   isImage,
   isColumnBreak,
+  isNoChord,
   stripHTML,
   each,
   when,

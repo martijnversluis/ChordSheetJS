@@ -14,6 +14,7 @@ import {
   isImage,
   isInstruction,
   isLiteral,
+  isNoChord,
   isRhythmSymbol,
   isTag,
   lineClasses,
@@ -83,6 +84,8 @@ export default (
                               cls = c.rhythmSymbol;
                             } else if (isInstruction(item)) {
                               cls = c.instruction;
+                            } else if (isNoChord(item)) {
+                              cls = c.noChord;
                             } else {
                               cls = c.chord;
                             }

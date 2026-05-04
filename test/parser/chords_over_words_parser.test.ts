@@ -755,6 +755,9 @@ describe('ChordsOverWordsParser', () => {
 
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
+
+      expect(song.getChords()).toEqual(['D', 'A']);
+
       const { lines } = song;
 
       expect(lines).toHaveLength(1);

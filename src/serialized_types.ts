@@ -27,6 +27,7 @@ export interface SerializedChordLyricsPair {
   annotation?: string | null,
   isRhythmSymbol?: boolean,
   isInstruction?: boolean,
+  isNoChord?: boolean,
 }
 
 export interface SerializedChordDefinition {

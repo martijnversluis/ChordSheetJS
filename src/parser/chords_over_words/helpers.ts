@@ -87,7 +87,10 @@ function getChordData(item: ChordItem) {
   if (item.type === 'symbol') {
     return { chords: item.value, isRhythmSymbol: true };
   }
-  return { chords: item.value };
+  if (item.type === 'noChord') {
+    return { chords: item.value, isNoChord: true };
+  }
+  throw new Error(`Unexpected chord item type ${item}`);
 }
 
 function buildSoftLineBreakResult(
@@ -202,7 +205,9 @@ function chordsLineItemToChordLyricsPair(
         type: 'chordLyricsPair', chords: item.value, lyrics: null, isRhythmSymbol: true,
       };
     case 'noChord':
-      return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
+      return {
+        type: 'chordLyricsPair', chords: item.value, lyrics: null, isNoChord: true,
+      };
     case 'instruction':
       return {
         type: 'chordLyricsPair', chords: item.value, lyrics: null, isInstruction: true,

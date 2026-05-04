@@ -27,6 +27,7 @@ export const defaultCssClasses: HtmlTemplateCssClasses = {
   image: 'image',
   instruction: 'instruction',
   label: 'label',
+  noChord: 'no-chord',
   labelWrapper: 'label-wrapper',
   line: 'line',
   literal: 'literal',

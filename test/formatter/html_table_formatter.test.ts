@@ -1602,6 +1602,40 @@ describe('HtmlTableFormatter', () => {
     });
   });
 
+  describe('no chord (N.C.) notation', () => {
+    it('renders N.C. with no-chord class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+          chordLyricsPair('F', 'Hey'),
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter().format(song);
+
+      expect(formatted).toContain('<td class="no-chord">N.C.</td>');
+      expect(formatted).not.toContain('<td class="chord">N.C.</td>');
+    });
+
+    it('allows customizing the no-chord CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter({
+        cssClasses: { noChord: 'custom-no-chord' },
+      }).format(song);
+
+      expect(formatted).toContain('<td class="custom-no-chord">N.C.</td>');
+    });
+  });
+
   describe('pango markup', () => {
     it('converts pango markup in lyrics to HTML', () => {
       const song = createSongFromAst([

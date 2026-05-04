@@ -1636,6 +1636,40 @@ describe('HtmlDivFormatter', () => {
     });
   });
 
+  describe('no chord (N.C.) notation', () => {
+    it('renders N.C. with no-chord class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+          chordLyricsPair('F', 'Hey'),
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('<div class="no-chord">N.C.</div>');
+      expect(formatted).not.toContain('<div class="chord">N.C.</div>');
+    });
+
+    it('allows customizing the no-chord CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter({
+        cssClasses: { noChord: 'custom-no-chord' },
+      }).format(song);
+
+      expect(formatted).toContain('<div class="custom-no-chord">N.C.</div>');
+    });
+  });
+
   describe('pango markup', () => {
     it('converts pango markup in lyrics to HTML', () => {
       const song = createSongFromAst([
