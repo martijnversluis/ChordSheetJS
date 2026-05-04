@@ -8,6 +8,7 @@ function defaultCss(cssClasses: HtmlTemplateCssClasses): CSS {
     annotation,
     chord,
     comment,
+    instruction,
     labelWrapper,
     line,
     literal,
@@ -30,10 +31,11 @@ function defaultCss(cssClasses: HtmlTemplateCssClasses): CSS {
       borderSpacing: '0',
       color: 'inherit',
     },
-    [`.${annotation}, .${chord}, .${comment}, .${literalContents}, .${labelWrapper}, .${literal}, .${lyrics}`]: {
+    [[`.${annotation}, .${chord}, .${comment}, .${instruction}`,
+      `.${literalContents}, .${labelWrapper}, .${literal}, .${lyrics}`].join(', ')]: {
       padding: '3px 0',
     },
-    [`.${chord}:not(:last-child)`]: {
+    [`.${chord}:not(:last-child), .${instruction}:not(:last-child)`]: {
       paddingRight: '10px',
     },
     [`.${paragraph}`]: {

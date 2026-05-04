@@ -25,6 +25,7 @@ export const defaultCssClasses: HtmlTemplateCssClasses = {
   comment: 'comment',
   emptyLine: 'empty-line',
   image: 'image',
+  instruction: 'instruction',
   label: 'label',
   labelWrapper: 'label-wrapper',
   line: 'line',

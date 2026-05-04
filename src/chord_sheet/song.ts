@@ -547,7 +547,13 @@ Or set the song key before changing key:
         return;
       }
 
-      const itemChords = (item as ChordLyricsPair).chords;
+      const pair = item as ChordLyricsPair;
+
+      if (pair.isInstruction) {
+        return;
+      }
+
+      const itemChords = pair.chords;
 
       if (itemChords && itemChords.length > 0) {
         const parsedChord = Chord.parse(itemChords);

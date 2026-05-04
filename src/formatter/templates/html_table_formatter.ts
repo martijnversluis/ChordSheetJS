@@ -12,6 +12,7 @@ import {
   isChordLyricsPair,
   isComment,
   isImage,
+  isInstruction,
   isLiteral,
   isRhythmSymbol,
   isTag,
@@ -77,7 +78,14 @@ export default (
                           ${ when(item.annotation).then(() => `
                             <td class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
                           `).else(() => {
-                            const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                            let cls: string;
+                            if (isRhythmSymbol(item)) {
+                              cls = c.rhythmSymbol;
+                            } else if (isInstruction(item)) {
+                              cls = c.instruction;
+                            } else {
+                              cls = c.chord;
+                            }
                             return `
                             <td class="${ cls }"${ fontStyleTag(line.chordFont) }>${
                               renderChord(

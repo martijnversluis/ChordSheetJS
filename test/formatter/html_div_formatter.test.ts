@@ -755,7 +755,8 @@ describe('HtmlDivFormatter', () => {
 
   it('generates a CSS string', () => {
     const expectedCss = heredoc`
-      .chord:not(:last-child) {
+      .chord:not(:last-child),
+      .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -767,7 +768,8 @@ describe('HtmlDivFormatter', () => {
         display: flex;
       }
 
-      .chord:after {
+      .chord:after,
+      .instruction:after {
         content: '\\200b';
       }
 
@@ -781,7 +783,8 @@ describe('HtmlDivFormatter', () => {
 
   it('generates a scoped CSS string with the instance method', () => {
     const expectedCss = heredoc`
-      .someScope .chord:not(:last-child) {
+      .someScope .chord:not(:last-child),
+      .someScope .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -793,7 +796,8 @@ describe('HtmlDivFormatter', () => {
         display: flex;
       }
 
-      .someScope .chord:after {
+      .someScope .chord:after,
+      .someScope .instruction:after {
         content: '\\200b';
       }
 
