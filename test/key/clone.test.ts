@@ -11,8 +11,8 @@ describe('Key', () => {
       const clone = key.clone();
 
       expect(clone.grade).toEqual(5);
-      expect(clone.modifier).toEqual(SHARP);
-      expect(clone.preferredModifier).toEqual(FLAT);
+      expect(clone.accidental).toEqual(SHARP);
+      expect(clone.preferredAccidental).toEqual(FLAT);
       expect(clone.minor).toEqual(true);
       expect(clone.type).toEqual(NUMERAL);
       expect(clone.referenceKeyGrade).toEqual(4);

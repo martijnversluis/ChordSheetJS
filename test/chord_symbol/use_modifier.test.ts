@@ -5,19 +5,19 @@ describe('Chord', () => {
     describe('useModifier', () => {
       describe('for a chord without modifier', () => {
         it('does not change the chord', () => {
-          expect(Chord.parse('F/F')?.useModifier('b').toString()).toEqual('F/F');
+          expect(Chord.parse('F/F')?.useAccidental('b').toString()).toEqual('F/F');
         });
       });
 
       describe('for #', () => {
         it('changes to b', () => {
-          expect(Chord.parse('G#/G#')?.useModifier('b').toString()).toEqual('Ab/Ab');
+          expect(Chord.parse('G#/G#')?.useAccidental('b').toString()).toEqual('Ab/Ab');
         });
       });
 
       describe('for b', () => {
         it('changes to #', () => {
-          expect(Chord.parse('Gb/Gb')?.useModifier('#').toString()).toEqual('F#/F#');
+          expect(Chord.parse('Gb/Gb')?.useAccidental('#').toString()).toEqual('F#/F#');
         });
       });
     });

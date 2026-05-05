@@ -9,7 +9,7 @@ describe('Key', () => {
         it('does not change the key', () => {
           const key = buildKey('F', SYMBOL);
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
 
           expect(switchedKey.toString()).toEqual('F');
         });
@@ -19,7 +19,7 @@ describe('Key', () => {
         it('changes to b', () => {
           const key = buildKey('G', SYMBOL, '#');
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
           expect(switchedKey.toString()).toEqual('Ab');
         });
       });
@@ -28,7 +28,7 @@ describe('Key', () => {
         it('changes to #', () => {
           const key = buildKey('G', SYMBOL, 'b');
 
-          const switchedKey = key.useModifier('#');
+          const switchedKey = key.useAccidental('#');
           expect(switchedKey.toString()).toEqual('F#');
         });
       });
@@ -39,7 +39,7 @@ describe('Key', () => {
         it('does not change the key', () => {
           const key = buildKey('Fa', SOLFEGE);
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
 
           expect(switchedKey.toString()).toEqual('Fa');
         });
@@ -49,7 +49,7 @@ describe('Key', () => {
         it('changes to b', () => {
           const key = buildKey('Sol', SOLFEGE, '#');
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
           expect(switchedKey.toString()).toEqual('Lab');
         });
       });
@@ -58,7 +58,7 @@ describe('Key', () => {
         it('changes to #', () => {
           const key = buildKey('Sol', SOLFEGE, 'b');
 
-          const switchedKey = key.useModifier('#');
+          const switchedKey = key.useAccidental('#');
           expect(switchedKey.toString()).toEqual('Fa#');
         });
       });
@@ -69,7 +69,7 @@ describe('Key', () => {
         it('does not change the key', () => {
           const key = buildKey(4, NUMERIC);
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
 
           expect(switchedKey.toString()).toEqual('4');
         });
@@ -79,7 +79,7 @@ describe('Key', () => {
         it('changes to b', () => {
           const key = buildKey(5, NUMERIC, '#');
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
           expect(switchedKey.toString()).toEqual('b6');
         });
       });
@@ -88,7 +88,7 @@ describe('Key', () => {
         it('changes to #', () => {
           const key = buildKey(5, NUMERIC, 'b');
 
-          const switchedKey = key.useModifier('#');
+          const switchedKey = key.useAccidental('#');
           expect(switchedKey.toString()).toEqual('#4');
         });
       });
@@ -99,7 +99,7 @@ describe('Key', () => {
         it('does not change the key', () => {
           const key = buildKey('IV', NUMERAL);
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
 
           expect(switchedKey.toString()).toEqual('IV');
         });
@@ -109,7 +109,7 @@ describe('Key', () => {
         it('changes to b', () => {
           const key = buildKey('V', NUMERAL, '#');
 
-          const switchedKey = key.useModifier('b');
+          const switchedKey = key.useAccidental('b');
 
           expect(switchedKey.toString()).toEqual('bVI');
         });
@@ -119,7 +119,7 @@ describe('Key', () => {
         it('changes to #', () => {
           const key = buildKey('V', NUMERAL, 'b');
 
-          const switchedKey = key.useModifier('#');
+          const switchedKey = key.useAccidental('#');
 
           expect(switchedKey.toString()).toEqual('#IV');
         });

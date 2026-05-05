@@ -3,7 +3,7 @@ import { heredoc } from '../util/utilities';
 import {
   ChordProFormatter,
   ChordProParser,
-  ChordSheetParser,
+  ChordsOverWordsParser,
   TextFormatter,
 } from '../../src';
 
@@ -113,7 +113,7 @@ describe('transposing a song', () => {
              Bm         D/A        G          D
       Let it be, let it be, let it be, let it be`;
 
-    const song = new ChordSheetParser().parse(chordpro);
+    const song = new ChordsOverWordsParser().parse(chordpro);
     const updatedSong = song.transpose(2);
 
     expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);

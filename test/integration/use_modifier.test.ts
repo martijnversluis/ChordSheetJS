@@ -11,7 +11,7 @@ describe('changing the song modifiers', () => {
     `;
 
     const song = new ChordProParser().parse(chordpro);
-    const updatedSong = song.useModifier('#');
+    const updatedSong = song.useAccidental('#');
 
     expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);
   });
@@ -25,7 +25,7 @@ describe('changing the song modifiers', () => {
     `;
 
     const song = new ChordProParser().parse(chordpro);
-    const updatedSong = song.useModifier('b');
+    const updatedSong = song.useAccidental('b');
 
     expect(new TextFormatter().format(updatedSong)).toEqual(changedSheet);
   });
