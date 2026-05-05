@@ -755,7 +755,8 @@ describe('HtmlDivFormatter', () => {
 
   it('generates a CSS string', () => {
     const expectedCss = heredoc`
-      .chord:not(:last-child) {
+      .chord:not(:last-child),
+      .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -767,7 +768,8 @@ describe('HtmlDivFormatter', () => {
         display: flex;
       }
 
-      .chord:after {
+      .chord:after,
+      .instruction:after {
         content: '\\200b';
       }
 
@@ -781,7 +783,8 @@ describe('HtmlDivFormatter', () => {
 
   it('generates a scoped CSS string with the instance method', () => {
     const expectedCss = heredoc`
-      .someScope .chord:not(:last-child) {
+      .someScope .chord:not(:last-child),
+      .someScope .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -793,7 +796,8 @@ describe('HtmlDivFormatter', () => {
         display: flex;
       }
 
-      .someScope .chord:after {
+      .someScope .chord:after,
+      .someScope .instruction:after {
         content: '\\200b';
       }
 
@@ -1629,6 +1633,40 @@ describe('HtmlDivFormatter', () => {
       const formatted = new HtmlDivFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
 
       expect(formatted).toContain('<div class="custom-rhythm">/</div>');
+    });
+  });
+
+  describe('no chord (N.C.) notation', () => {
+    it('renders N.C. with no-chord class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+          chordLyricsPair('F', 'Hey'),
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('<div class="no-chord">N.C.</div>');
+      expect(formatted).not.toContain('<div class="chord">N.C.</div>');
+    });
+
+    it('allows customizing the no-chord CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlDivFormatter({
+        cssClasses: { noChord: 'custom-no-chord' },
+      }).format(song);
+
+      expect(formatted).toContain('<div class="custom-no-chord">N.C.</div>');
     });
   });
 

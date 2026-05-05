@@ -5,29 +5,22 @@ import HtmlFormatter, { CSS, Template } from './html_formatter';
 
 function defaultCss(cssClasses: HtmlTemplateCssClasses): CSS {
   const {
-    chord,
-    lyrics,
-    paragraph,
-    row,
+    chord, instruction, lyrics, paragraph, row,
   } = cssClasses;
 
   return {
-    [`.${chord}:not(:last-child)`]: {
+    [`.${chord}:not(:last-child), .${instruction}:not(:last-child)`]: {
       paddingRight: '10px',
     },
-
     [`.${paragraph}`]: {
       marginBottom: '1em',
     },
-
     [`.${row}`]: {
       display: 'flex',
     },
-
-    [`.${chord}:after`]: {
+    [`.${chord}:after, .${instruction}:after`]: {
       content: '\'\\200b\'',
     },
-
     [`.${lyrics}:after`]: {
       content: '\'\\200b\'',
     },

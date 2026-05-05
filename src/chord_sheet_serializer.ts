@@ -120,6 +120,14 @@ class ChordSheetSerializer {
       serialized.isRhythmSymbol = true;
     }
 
+    if (chordLyricsPair.isInstruction) {
+      serialized.isInstruction = true;
+    }
+
+    if (chordLyricsPair.isNoChord) {
+      serialized.isNoChord = true;
+    }
+
     return serialized;
   }
 
@@ -202,7 +210,7 @@ class ChordSheetSerializer {
 
   parseChordLyricsPair(astComponent: SerializedChordLyricsPair): ChordLyricsPair {
     const {
-      chord, chords, lyrics, annotation, isRhythmSymbol,
+      chord, chords, lyrics, annotation, isRhythmSymbol, isInstruction, isNoChord,
     } = astComponent;
 
     return new ChordLyricsPair(
@@ -211,6 +219,8 @@ class ChordSheetSerializer {
       annotation,
       null,
       isRhythmSymbol || false,
+      isInstruction || false,
+      isNoChord || false,
     );
   }
 

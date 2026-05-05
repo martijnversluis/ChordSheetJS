@@ -16,6 +16,10 @@ class ChordLyricsPair {
 
   isRhythmSymbol: boolean;
 
+  isInstruction: boolean;
+
+  isNoChord: boolean;
+
   private _chordObj: Chord | null = null;
 
   /**
@@ -25,6 +29,8 @@ class ChordLyricsPair {
    * @param {string | null} annotation The annotation
    * @param {Chord | null} chordObj Optional pre-parsed Chord object
    * @param {boolean} isRhythmSymbol Whether this pair represents a rhythm symbol
+   * @param {boolean} isInstruction Whether this pair represents a chord instruction (like repeat count)
+   * @param {boolean} isNoChord Whether this pair represents a no-chord notation (N.C.)
    */
   constructor(
     chords = '',
@@ -32,12 +38,16 @@ class ChordLyricsPair {
     annotation: string | null = null,
     chordObj: Chord | null = null,
     isRhythmSymbol = false,
+    isInstruction = false,
+    isNoChord = false,
   ) {
     this.chords = chords || '';
     this.lyrics = lyrics || '';
     this.annotation = annotation || '';
     this._chordObj = chordObj;
     this.isRhythmSymbol = isRhythmSymbol;
+    this.isInstruction = isInstruction;
+    this.isNoChord = isNoChord;
   }
 
   /** Returns the Chord object if available, otherwise parses from string */
@@ -66,7 +76,15 @@ class ChordLyricsPair {
    */
   clone(): ChordLyricsPair {
     const chordObj = this._chordObj?.clone() || null;
-    return new ChordLyricsPair(this.chords, this.lyrics, this.annotation, chordObj, this.isRhythmSymbol);
+    return new ChordLyricsPair(
+      this.chords,
+      this.lyrics,
+      this.annotation,
+      chordObj,
+      this.isRhythmSymbol,
+      this.isInstruction,
+      this.isNoChord,
+    );
   }
 
   toString(): string {
@@ -75,9 +93,17 @@ class ChordLyricsPair {
 
   set(
     {
-      chords, lyrics, annotation, chordObj, isRhythmSymbol,
+      chords, lyrics, annotation, chordObj, isRhythmSymbol, isInstruction, isNoChord,
     }:
-    { chords?: string, lyrics?: string, annotation?: string, chordObj?: Chord | null, isRhythmSymbol?: boolean },
+    {
+      chords?: string,
+      lyrics?: string,
+      annotation?: string,
+      chordObj?: Chord | null,
+      isRhythmSymbol?: boolean,
+      isInstruction?: boolean,
+      isNoChord?: boolean,
+    },
   ): ChordLyricsPair {
     return new ChordLyricsPair(
       chords ?? this.chords,
@@ -85,6 +111,8 @@ class ChordLyricsPair {
       annotation ?? this.annotation,
       chordObj ?? null,
       isRhythmSymbol ?? this.isRhythmSymbol,
+      isInstruction ?? this.isInstruction,
+      isNoChord ?? this.isNoChord,
     );
   }
 

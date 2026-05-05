@@ -31,8 +31,8 @@ SingleChordsLine
     }
 
 ChordsLine
-  = items:(ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ &{
-      if (items.some(item => item.type === 'chord' || item.type === 'noChord')) return true;
+  = items:(ChordInstructionWithSpacing / NoChordWithSpacing / ChordWithSpacing / RhythmSymbolWithSpacing)+ &{
+      if (items.some(item => item.type === 'chord' || item.type === 'noChord' || item.type === 'instruction')) return true;
       if (items.length <= 1) return false;
       return !items.some((item, i) => i > 0 && item.column === items[i - 1].column + 1);
     } {
@@ -81,8 +81,22 @@ NoChord
       };
     }
 
+ChordInstructionWithSpacing
+  = _S_ instruction:ChordInstruction ![a-zA-Z] _S_ {
+      return instruction;
+    }
+
+ChordInstruction
+  = "(" ([1-7] "x"i / "x"i [1-7]) ")" {
+      return {
+        type: "instruction",
+        value: text(),
+        column: location().start.column
+      };
+    }
+
 ChordWithSpacing
-  = _S_ chord:Chord ![a-zA-Z] _S_ {
+  = _S_ !ChordInstruction chord:Chord ![a-zA-Z] _S_ {
       return chord;
     }
 

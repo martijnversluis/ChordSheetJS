@@ -714,6 +714,39 @@ describe('ChordsOverWordsParser', () => {
     expect(song.getChords()).toEqual(['Eb', 'Dbmmaj7']);
   });
 
+  describe('ChordInstruction notation', () => {
+    it.each([
+      '(x1)',
+      '(x2)',
+      '(x3)',
+      '(x4)',
+      '(1x)',
+      '(2x)',
+      '(3x)',
+      '(4x)',
+    ])('parses chords correctly even when the line has the %s instruction', (instruction) => {
+      const chordOverWords = heredoc`
+          N.C.   A/C#      ${instruction}
+      Let it be, let it be`;
+
+      const parser = new ChordsOverWordsParser();
+      const song = parser.parse(chordOverWords);
+
+      expect(song.getChords()).toEqual(['A/C#']);
+
+      const { lines } = song;
+
+      const linePairs = lines[0].items;
+      expect(linePairs[0]).toBeChordLyricsPair('', 'Let ');
+      expect(linePairs[1]).toBeChordLyricsPair('N.C.', 'it ');
+      expect(linePairs[2]).toBeChordLyricsPair('', 'be, ');
+      expect(linePairs[3]).toBeChordLyricsPair('A/C#', 'let ');
+      expect(linePairs[4]).toBeChordLyricsPair('', 'it be');
+      expect(linePairs[5]).toBeChordLyricsPair(instruction, '');
+      expect((linePairs[5] as ChordLyricsPair).isInstruction).toBe(true);
+    });
+  });
+
   describe('N.C. (no chord) notation', () => {
     it('parses N.C. mixed with chords paired with lyrics', () => {
       const chordOverWords = heredoc`
@@ -722,12 +755,16 @@ describe('ChordsOverWordsParser', () => {
 
       const parser = new ChordsOverWordsParser();
       const song = parser.parse(chordOverWords);
+
+      expect(song.getChords()).toEqual(['D', 'A']);
+
       const { lines } = song;
 
       expect(lines).toHaveLength(1);
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey, ');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', 'Jude, ');
       expect(linePairs[2]).toBeChordLyricsPair('', 'don\'t make it ');
       expect(linePairs[3]).toBeChordLyricsPair('A', 'bad,');
@@ -746,6 +783,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey ');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('', 'Jude');
     });
 
@@ -760,6 +798,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', '');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
       expect(linePairs[2]).toBeChordLyricsPair('A', '');
     });
@@ -782,6 +821,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair(variant, '');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
     });
   });

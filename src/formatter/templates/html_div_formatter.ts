@@ -12,6 +12,8 @@ import {
   isComment,
   isEvaluatable,
   isImage,
+  isInstruction,
+  isNoChord,
   isRhythmSymbol,
   isTag,
   lineClasses,
@@ -67,7 +69,16 @@ export default (
                      ${ when(item.annotation).then(() => `
                        <div class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</div>
                      `).else(() => {
-                       const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                       let cls: string;
+                       if (isRhythmSymbol(item)) {
+                         cls = c.rhythmSymbol;
+                       } else if (isInstruction(item)) {
+                         cls = c.instruction;
+                       } else if (isNoChord(item)) {
+                         cls = c.noChord;
+                       } else {
+                         cls = c.chord;
+                       }
                        return `
                         <div class="${ cls }"${ fontStyleTag(line.chordFont) }>
                           ${ renderChord(

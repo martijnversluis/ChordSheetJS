@@ -857,6 +857,7 @@ describe('HtmlTableFormatter', () => {
       .annotation,
       .chord,
       .comment,
+      .instruction,
       .contents,
       .label-wrapper,
       .literal,
@@ -864,7 +865,8 @@ describe('HtmlTableFormatter', () => {
         padding: 3px 0;
       }
 
-      .chord:not(:last-child) {
+      .chord:not(:last-child),
+      .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -896,6 +898,7 @@ describe('HtmlTableFormatter', () => {
       .someScope .annotation,
       .someScope .chord,
       .someScope .comment,
+      .someScope .instruction,
       .someScope .contents,
       .someScope .label-wrapper,
       .someScope .literal,
@@ -903,7 +906,8 @@ describe('HtmlTableFormatter', () => {
         padding: 3px 0;
       }
 
-      .someScope .chord:not(:last-child) {
+      .someScope .chord:not(:last-child),
+      .someScope .instruction:not(:last-child) {
         padding-right: 10px;
       }
 
@@ -1561,6 +1565,74 @@ describe('HtmlTableFormatter', () => {
       const formatted = new HtmlTableFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
 
       expect(formatted).toContain('<td class="custom-rhythm">/</td>');
+    });
+  });
+
+  describe('ChordInstruction symbols', () => {
+    it('renders chord instruction symbols with instruction class', () => {
+      const song = createSongFromAst([
+        [
+          { type: 'chordLyricsPair', chords: 'Am', lyrics: '' },
+          {
+            type: 'chordLyricsPair', chords: '(x2)', lyrics: '', isInstruction: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter().format(song);
+
+      expect(formatted).toContain('<td class="chord">Am</td>');
+      expect(formatted).toContain('<td class="instruction">(x2)</td>');
+    });
+
+    it('allows customizing the instruction symbol CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: '(x2)', lyrics: '', isInstruction: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter({
+        cssClasses: { instruction: 'custom-instruction' },
+      }).format(song);
+
+      expect(formatted).toContain('<td class="custom-instruction">(x2)</td>');
+    });
+  });
+
+  describe('no chord (N.C.) notation', () => {
+    it('renders N.C. with no-chord class instead of chord class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+          chordLyricsPair('F', 'Hey'),
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter().format(song);
+
+      expect(formatted).toContain('<td class="no-chord">N.C.</td>');
+      expect(formatted).not.toContain('<td class="chord">N.C.</td>');
+    });
+
+    it('allows customizing the no-chord CSS class', () => {
+      const song = createSongFromAst([
+        [
+          {
+            type: 'chordLyricsPair', chords: 'N.C.', lyrics: '', isNoChord: true,
+          },
+        ],
+      ]);
+
+      const formatted = new HtmlTableFormatter({
+        cssClasses: { noChord: 'custom-no-chord' },
+      }).format(song);
+
+      expect(formatted).toContain('<td class="custom-no-chord">N.C.</td>');
     });
   });
 

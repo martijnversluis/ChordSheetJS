@@ -27,12 +27,18 @@ interface NoChord {
   column: number,
 }
 
+interface ChordInstruction {
+  type: 'instruction',
+  value: string,
+  column: number,
+}
+
 type DirectionLine = SerializedLine;
 type InlineMetadata = SerializedLine;
 
 interface ChordsLine {
   type: 'chordsLine',
-  items: (Chord | RhythmSymbol | NoChord)[]
+  items: (Chord | RhythmSymbol | NoChord | ChordInstruction)[]
 }
 
 interface LyricsLine {
@@ -62,6 +68,7 @@ function applySoftLineBreaks(line: string): (SerializedSoftLineBreak | Serialize
     ]));
 }
 
+type ChordItem = Chord | NoChord | ChordInstruction | RhythmSymbol;
 type ChordProperties = Omit<Chord, 'type'>;
 
 function chordProperties(chord: Chord): ChordProperties {
@@ -70,8 +77,20 @@ function chordProperties(chord: Chord): ChordProperties {
   return properties;
 }
 
-function getChordData(chord: Chord) {
-  return (chord.type === 'chord') ? { chord: chordProperties(chord) } : { chords: chord.value };
+function getChordData(item: ChordItem) {
+  if (item.type === 'chord') {
+    return { chord: chordProperties(item) };
+  }
+  if (item.type === 'instruction') {
+    return { chords: item.value, isInstruction: true };
+  }
+  if (item.type === 'symbol') {
+    return { chords: item.value, isRhythmSymbol: true };
+  }
+  if (item.type === 'noChord') {
+    return { chords: item.value, isNoChord: true };
+  }
+  throw new Error(`Unexpected chord item type ${item}`);
 }
 
 function buildSoftLineBreakResult(
@@ -92,17 +111,17 @@ function buildSoftLineBreakResult(
   return result;
 }
 
-function buildChordLyricsPairForChord(
-  chord: Chord,
-  nextChord: Chord | undefined,
+function buildChordLyricsPairForItem(
+  item: ChordItem,
+  nextItem: ChordItem | undefined,
   lyrics: string,
   chopFirstWord: boolean,
 ): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] | SerializedChordLyricsPair {
-  const start = chord.column - 1;
-  const end = nextChord ? nextChord.column - 1 : lyrics.length;
+  const start = item.column - 1;
+  const end = nextItem ? nextItem.column - 1 : lyrics.length;
   const pairLyrics = lyrics.substring(start, end);
   const [firstWord, rest] = chopFirstWord ? chopFirstWordFunc(pairLyrics) : [pairLyrics, null];
-  const chordData = getChordData(chord);
+  const chordData = getChordData(item);
 
   const hasSoftLineBreakInFirst = firstWord && /\\\s*$/.test(firstWord);
 
@@ -120,13 +139,17 @@ function buildChordLyricsPairForChord(
   return { ...chordData, type: 'chordLyricsPair', lyrics: firstWord } as SerializedChordLyricsPair;
 }
 
-function constructChordLyricsPairs(
-  chords: Chord[],
+function isChordItem(item: Chord | RhythmSymbol | NoChord | ChordInstruction): item is ChordItem {
+  return item.type === 'chord' || item.type === 'noChord' || item.type === 'instruction' || item.type === 'symbol';
+}
+
+function constructItemLyricsPairs(
+  items: ChordItem[],
   lyrics: string,
   chopFirstWord: boolean,
 ): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] {
-  return chords
-    .map((chord, i) => buildChordLyricsPairForChord(chord, chords[i + 1], lyrics, chopFirstWord))
+  return items
+    .map((item, i) => buildChordLyricsPairForItem(item, items[i + 1], lyrics, chopFirstWord))
     .flat();
 }
 
@@ -137,18 +160,18 @@ function pairChordsWithLyrics(
 ): SerializedLine {
   const { content: lyrics } = lyricsLine;
 
-  const chords = chordsLine.items as Chord[];
-  const chordLyricsPairs = constructChordLyricsPairs(chords, lyrics, chopFirstWord);
-  const firstChord = chords[0];
+  const chordItems = chordsLine.items.filter(isChordItem);
+  const chordLyricsPairs = constructItemLyricsPairs(chordItems, lyrics, chopFirstWord);
+  const firstItem = chordItems[0];
 
-  if (firstChord && firstChord.column > 1) {
-    const firstChordPosition = firstChord.column;
+  if (firstItem && firstItem.column > 1) {
+    const firstItemPosition = firstItem.column;
 
-    if (firstChordPosition > 0) {
+    if (firstItemPosition > 0) {
       chordLyricsPairs.unshift({
         type: 'chordLyricsPair',
         chords: '',
-        lyrics: lyrics.substring(0, firstChordPosition - 1),
+        lyrics: lyrics.substring(0, firstItemPosition - 1),
       });
     }
   }
@@ -169,7 +192,9 @@ function lyricsStringToLine(lyrics: string): SerializedLine {
   };
 }
 
-function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol | NoChord): SerializedChordLyricsPair {
+function chordsLineItemToChordLyricsPair(
+  item: Chord | RhythmSymbol | NoChord | ChordInstruction,
+): SerializedChordLyricsPair {
   switch (item.type) {
     case 'chord':
       return {
@@ -180,7 +205,13 @@ function chordsLineItemToChordLyricsPair(item: Chord | RhythmSymbol | NoChord): 
         type: 'chordLyricsPair', chords: item.value, lyrics: null, isRhythmSymbol: true,
       };
     case 'noChord':
-      return { type: 'chordLyricsPair', chords: item.value, lyrics: null };
+      return {
+        type: 'chordLyricsPair', chords: item.value, lyrics: null, isNoChord: true,
+      };
+    case 'instruction':
+      return {
+        type: 'chordLyricsPair', chords: item.value, lyrics: null, isInstruction: true,
+      };
     default:
       throw new Error(`Unexpected chordsLine item ${item}`);
   }
