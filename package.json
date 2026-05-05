@@ -77,7 +77,6 @@
     "dev:pdf": "parcel test/formatter/pdf/index.html --port=3302",
     "dev:html": "parcel test/formatter/pdf/html-test.html --port=3301",
     "eslint": "node_modules/.bin/eslint",
-    "jest": "node --no-experimental-webstorage ./node_modules/jest/bin/jest.js",
     "lint": "yarn unibuild lint",
     "lint:fix": "yarn unibuild lint --fix",
     "postversion": "yarn build:release",
