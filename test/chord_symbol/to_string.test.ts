@@ -88,6 +88,38 @@ describe('Chord', () => {
 
           expect(chord.toString({ useUnicodeModifier: true })).toEqual('F♯');
         });
+
+        it('replaces flat modifiers in the suffix', () => {
+          const chord = new Chord({
+            base: 'B',
+            accidental: 'b',
+            suffix: '7b9',
+            chordType: SYMBOL,
+          });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('B♭7♭9');
+        });
+
+        it('replaces sharp modifiers in the suffix', () => {
+          const chord = new Chord({
+            base: 'C',
+            suffix: '7#11',
+            chordType: SYMBOL,
+          });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('C7♯11');
+        });
+
+        it('replaces multiple modifiers in the suffix', () => {
+          const chord = new Chord({
+            base: 'B',
+            accidental: 'b',
+            suffix: '7b9#11',
+            chordType: SYMBOL,
+          });
+
+          expect(chord.toString({ useUnicodeModifier: true })).toEqual('B♭7♭9♯11');
+        });
       });
     });
   });
