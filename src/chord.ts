@@ -293,8 +293,12 @@ class Chord implements ChordProperties {
    */
   toString({ useUnicodeModifier = false } = {}): string {
     let chordString = '';
-    const suffix = this.suffix || '';
+    let suffix = this.suffix || '';
     const showMinor = suffix[0] !== 'm';
+
+    if (useUnicodeModifier) {
+      suffix = suffix.replace(/#(?=\d)/g, '\u266f').replace(/b(?=\d)/g, '\u266d');
+    }
 
     if (this.root) chordString = this.root.toString({ showMinor, useUnicodeModifier }) + suffix;
     if (this.bass) chordString = `${chordString}/${this.bass.toString({ useUnicodeModifier })}`;
