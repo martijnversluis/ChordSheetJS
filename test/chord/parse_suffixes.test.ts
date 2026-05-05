@@ -8,14 +8,14 @@ const baseKey = Key.parse('A')!;
 
 for (let i = 0; i < 12; i += 1) {
   keys.add(baseKey.transpose(i).toString());
-  keys.add(baseKey.transpose(i).useModifier('#').toString());
-  keys.add(baseKey.transpose(i).useModifier('b').toString());
+  keys.add(baseKey.transpose(i).useAccidental('#').toString());
+  keys.add(baseKey.transpose(i).useAccidental('b').toString());
   keys.add(baseKey.transpose(i).toNumeralString(baseKey));
-  keys.add(baseKey.transpose(i).useModifier('#').toNumeralString(baseKey));
-  keys.add(baseKey.transpose(i).useModifier('b').toNumeralString(baseKey));
+  keys.add(baseKey.transpose(i).useAccidental('#').toNumeralString(baseKey));
+  keys.add(baseKey.transpose(i).useAccidental('b').toNumeralString(baseKey));
   keys.add(baseKey.transpose(i).toNumericString(baseKey));
-  keys.add(baseKey.transpose(i).useModifier('#').toNumericString(baseKey));
-  keys.add(baseKey.transpose(i).useModifier('b').toNumericString(baseKey));
+  keys.add(baseKey.transpose(i).useAccidental('#').toNumericString(baseKey));
+  keys.add(baseKey.transpose(i).useAccidental('b').toNumericString(baseKey));
 }
 
 describe('Chord', () => {

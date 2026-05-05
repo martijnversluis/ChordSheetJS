@@ -675,7 +675,7 @@ describe('Song', () => {
         ],
       ]);
 
-      const modifiedSong = song.useModifier('b');
+      const modifiedSong = song.useAccidental('b');
 
       expect((modifiedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('Ab');
       expect((modifiedSong.paragraphs[0].lines[0].items[1] as ChordLyricsPair).chords).toEqual('Gb');
@@ -686,7 +686,7 @@ describe('Song', () => {
         [tag('key', 'F#')],
       ]);
 
-      const modifiedSong = song.useModifier('b');
+      const modifiedSong = song.useAccidental('b');
 
       expect(modifiedSong.key).toEqual('Gb');
     });

@@ -497,7 +497,7 @@ describe('Chord', () => {
           expect(chord).toMatchObject({
             root: {
               grade: 0,
-              modifier: null,
+              accidental: null,
               type: SYMBOL,
               minor: false,
               referenceKeyGrade: 11,
