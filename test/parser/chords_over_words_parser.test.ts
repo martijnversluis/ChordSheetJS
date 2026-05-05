@@ -764,6 +764,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey, ');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', 'Jude, ');
       expect(linePairs[2]).toBeChordLyricsPair('', 'don\'t make it ');
       expect(linePairs[3]).toBeChordLyricsPair('A', 'bad,');
@@ -782,6 +783,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey ');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('', 'Jude');
     });
 
@@ -796,6 +798,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair('N.C.', '');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
       expect(linePairs[2]).toBeChordLyricsPair('A', '');
     });
@@ -818,6 +821,7 @@ describe('ChordsOverWordsParser', () => {
 
       const linePairs = lines[0].items;
       expect(linePairs[0]).toBeChordLyricsPair(variant, '');
+      expect((linePairs[0] as ChordLyricsPair).isNoChord).toBe(true);
       expect(linePairs[1]).toBeChordLyricsPair('D', '');
     });
   });
