@@ -57,79 +57,192 @@ export const measuredHtmlSpecificDefaults: Partial<MeasuredHtmlFormatterConfigur
   },
   fonts: {
     title: {
-      name: 'NimbusSansL-Bol', style: 'bold', size: 24, color: 'black',
+      name: 'Arial', style: 'bold', size: 22, color: '#151515',
     },
     subtitle: {
-      name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 100,
+      name: 'Arial', style: 'normal', size: 11, color: '#6f6f6f',
     },
     metadata: {
-      name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 100,
+      name: 'Arial', style: 'normal', size: 10, color: '#8b8b8b',
     },
     text: {
-      name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 'black',
+      name: 'Arial', style: 'normal', size: 10, color: '#232323',
     },
     chord: {
-      name: 'NimbusSansL-Bol', style: 'bold', size: 9, color: 'black',
+      name: 'Arial', style: 'bold', size: 9, color: '#232323',
     },
     comment: {
-      name: 'NimbusSansL-Bol', style: 'bold', size: 10, color: 'black',
+      name: 'Arial', style: 'bold', size: 10, color: '#232323',
     },
     sectionLabel: {
-      name: 'NimbusSansL-Bol', style: 'bold', size: 10, color: 'black',
+      name: 'Arial', style: 'bold', size: 10, color: '#a1312d',
     },
     annotation: {
-      name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 'black',
+      name: 'Arial', style: 'normal', size: 10, color: '#232323',
     },
   },
   layout: {
     global: {
       margins: {
-        top: 35,
-        bottom: 10,
+        top: 14,
+        bottom: 12,
         left: 45,
         right: 45,
       },
     },
     header: {
-      height: 60,
+      height: 72,
       content: [
         {
           type: 'text',
           template: '%{title}',
           style: {
-            name: 'NimbusSansL-Bol', style: 'bold', size: 24, color: 'black',
+            name: 'Arial', style: 'bold', size: 19, color: '#151515', weight: 700,
           },
-          position: { x: 'left', y: 15 },
+          position: {
+            x: 'left', y: 0, clip: true, ellipsis: true,
+          },
+          condition: {
+            page: { first: true },
+          },
         },
         {
           type: 'text',
-          template: 'Key of %{key} - BPM %{tempo} - Time %{time}',
+          template: '%{artist}',
           style: {
-            name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+            name: 'Arial', style: 'normal', size: 11, color: '#6f6f6f',
           },
-          position: { x: 'left', y: 28 },
+          position: {
+            x: 'left', y: 25, clip: true, ellipsis: true,
+          },
+          condition: {
+            page: { first: true },
+          },
         },
         {
           type: 'text',
-          template: 'By %{artist} %{subtitle}',
+          template: '%{tempo|%{} BPM}%{time| \u00b7 %{}}%{capo| \u00b7 Capo %{}}',
           style: {
-            name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 100,
+            name: 'Arial', style: 'normal', size: 11, color: '#6f6f6f',
           },
-          position: { x: 'left', y: 38 },
+          position: {
+            x: 'left', y: 40, width: 240, clip: true, ellipsis: true,
+          },
+          condition: {
+            page: { first: true },
+          },
+        },
+        {
+          type: 'line',
+          style: { width: 1, color: '#d7d7d7' },
+          position: {
+            x: 0, y: 60, width: 'auto', height: 0,
+          },
+          condition: {
+            page: { first: true },
+          },
+        },
+        {
+          type: 'text',
+          template: '%{key}',
+          cssClass: 'measured-html-key-badge',
+          elementStyle: {
+            width: '28px',
+            height: '28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '999px',
+            backgroundColor: '#a1312d',
+            textAlign: 'center',
+            boxSizing: 'border-box',
+          },
+          style: {
+            name: 'Arial', style: 'bold', size: 12, color: '#ffffff', weight: 700,
+          },
+          position: {
+            x: 'right',
+            y: 12,
+            width: 28,
+            offsetX: -2,
+          },
+          condition: {
+            and: [
+              { page: { first: true } },
+              { key: { exists: true } },
+            ],
+          },
+        },
+        {
+          type: 'text',
+          template: '%{title}',
+          style: {
+            name: 'Arial', style: 'bold', size: 12, color: '#151515', weight: 700,
+          },
+          position: {
+            x: 'left', y: 0, clip: true, ellipsis: true,
+          },
+          condition: {
+            page: { greater_than: 1 },
+          },
+        },
+        {
+          type: 'text',
+          template: '%{page}/%{pages}',
+          style: {
+            name: 'Arial', style: 'normal', size: 10, color: '#9a9a9a',
+          },
+          position: { x: 'right', y: 4, offsetX: -38 },
+          condition: {
+            page: { greater_than: 1 },
+          },
+        },
+        {
+          type: 'text',
+          template: '%{key}',
+          cssClass: 'measured-html-key-badge',
+          elementStyle: {
+            width: '28px',
+            height: '28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '999px',
+            backgroundColor: '#a1312d',
+            textAlign: 'center',
+            boxSizing: 'border-box',
+          },
+          style: {
+            name: 'Arial', style: 'bold', size: 12, color: '#ffffff', weight: 700,
+          },
+          position: {
+            x: 'right',
+            y: 2,
+            width: 28,
+            offsetX: -2,
+          },
+          condition: {
+            and: [
+              { page: { greater_than: 1 } },
+              { key: { exists: true } },
+            ],
+          },
+        },
+        {
+          type: 'line',
+          style: { width: 1, color: '#d7d7d7' },
+          position: {
+            x: 0, y: 32, width: 'auto', height: 0,
+          },
+          condition: {
+            page: { greater_than: 1 },
+          },
         },
       ],
     },
     footer: {
-      height: 30,
+      height: 0,
       content: [
-        {
-          type: 'text',
-          value: '©2024 My Music Publishing',
-          style: {
-            name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: 'black',
-          },
-          position: { x: 'left', y: 0 },
-        },
       ],
     },
     sections: {
@@ -178,13 +291,13 @@ export const measuredHtmlSpecificDefaults: Partial<MeasuredHtmlFormatterConfigur
       },
       fonts: {
         title: {
-          name: 'NimbusSansL-Bol', style: 'bold', size: 9, color: 'black',
+          name: 'Arial', style: 'bold', size: 9, color: '#232323',
         },
         fingerings: {
-          name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: 'black',
+          name: 'Arial', style: 'bold', size: 6, color: '#232323',
         },
         baseFret: {
-          name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: 'black',
+          name: 'Arial', style: 'bold', size: 6, color: '#232323',
         },
       },
     },

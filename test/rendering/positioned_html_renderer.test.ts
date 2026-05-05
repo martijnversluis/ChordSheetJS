@@ -606,15 +606,145 @@ describe('PositionedHtmlRenderer', () => {
       });
 
       doc.pages = [new MockElement('div'), new MockElement('div')];
+      doc.totalPages = 2;
 
       (renderer as any).renderHeadersAndFooters();
 
       expect(doc.eachPage).toHaveBeenCalledTimes(2);
       expect(doc.addElement).toHaveBeenCalled();
-      expect(conditionCalls[0].metadata.page).toBe('1');
-      expect(conditionCalls[0].metadata.pages).toBe(doc.totalPages.toString());
+      expect(conditionCalls[0].metadata.page).toBe(1);
+      expect(conditionCalls[1].metadata.page).toBe(2);
+      expect(conditionCalls[0].metadata.pages).toBe(doc.totalPages);
       expect(conditionCalls[0].metadata.capoKey).toBeDefined();
       expect(song.metadata.getSingle('key')).toBe('C');
+    });
+
+    it('applies layout font styles to rendered header text', () => {
+      const { renderer, doc } = createRenderer({
+        layout: {
+          ...measuredHtmlSpecificDefaults.layout,
+          header: {
+            height: 45,
+            content: [
+              {
+                type: 'text',
+                value: 'Styled header',
+                style: {
+                  name: 'Arial',
+                  style: 'bold',
+                  size: 14,
+                  color: 120,
+                  lineHeight: 1.4,
+                },
+                position: {
+                  x: 'left',
+                  y: 10,
+                },
+              },
+            ],
+          },
+          footer: {
+            height: 0,
+            content: [],
+          },
+        } as any,
+      });
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const headerElement = doc.addedElements[0].element;
+      expect(headerElement.textContent).toBe('Styled header');
+      expect(headerElement.style.fontFamily).toBe('Arial');
+      expect(headerElement.style.fontSize).toBe('14px');
+      expect(headerElement.style.fontWeight).toBe('bold');
+      expect(headerElement.style.color).toBe('rgb(120, 120, 120)');
+      expect(headerElement.style.lineHeight).toBe('1.4');
+    });
+
+    it('applies configured line styles to rendered layout lines', () => {
+      const { renderer, doc } = createRenderer({
+        layout: {
+          ...measuredHtmlSpecificDefaults.layout,
+          header: {
+            height: 20,
+            content: [
+              {
+                type: 'line',
+                style: { width: 3, color: '#a1312d', dash: [4, 2] },
+                position: {
+                  x: 0,
+                  y: 8,
+                  width: 'auto',
+                },
+              },
+            ],
+          },
+          footer: {
+            height: 0,
+            content: [],
+          },
+        } as any,
+      });
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const lineElement = doc.addedElements[0].element;
+      expect(lineElement.className).toBe('test-line');
+      expect(lineElement.style.borderBottomWidth).toBe('3px');
+      expect(lineElement.style.borderBottomStyle).toBe('dashed');
+      expect(lineElement.style.borderBottomColor).toBe('#a1312d');
+    });
+
+    it('adds custom text classes, element styles, and right offsets for header badges', () => {
+      const { renderer, doc } = createRenderer({
+        layout: {
+          ...measuredHtmlSpecificDefaults.layout,
+          header: {
+            height: 45,
+            content: [
+              {
+                type: 'text',
+                value: 'A',
+                cssClass: 'measured-html-key-badge',
+                elementStyle: {
+                  width: '28px',
+                  height: '28px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '999px',
+                  backgroundColor: '#a1312d',
+                },
+                style: {
+                  name: 'Arial',
+                  style: 'bold',
+                  size: 12,
+                  color: '#ffffff',
+                },
+                position: {
+                  x: 'right',
+                  y: 4,
+                  width: 28,
+                  offsetX: -12,
+                  clip: true,
+                },
+              },
+            ],
+          },
+          footer: {
+            height: 0,
+            content: [],
+          },
+        } as any,
+      });
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const badgeElement = doc.addedElements[0].element;
+      expect(badgeElement.classList.contains('measured-html-key-badge')).toBe(true);
+      expect(badgeElement.style.backgroundColor).toBe('#a1312d');
+      expect(badgeElement.style.borderRadius).toBe('999px');
+      expect(doc.addedElements[0].x).toBe(515);
     });
   });
 

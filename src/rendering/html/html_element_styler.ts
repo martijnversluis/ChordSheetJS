@@ -58,12 +58,12 @@ export class HtmlElementStyler {
    * Gets conditional CSS styles from font configuration
    */
   getConditionalStyles(style: FontConfiguration): Partial<CSSStyleDeclaration> {
+    const normalizedFontStyles = this.getNormalizedFontStyles(style);
+
     return {
       ...(style.name && { fontFamily: style.name }),
       ...(style.size && { fontSize: `${style.size}px` }),
-      ...(style.weight && { fontWeight: style.weight }),
-      ...(style.style && { fontStyle: style.style }),
-      ...(style.color && { color: style.color }),
+      ...normalizedFontStyles,
       ...(style.underline && { textDecoration: 'underline' }),
       ...(style.textTransform && { textTransform: style.textTransform }),
       ...(style.textDecoration && { textDecoration: style.textDecoration }),
@@ -109,13 +109,13 @@ export class HtmlElementStyler {
    * Applies font styles to an HTML element
    */
   applyFontStyle(element: HTMLElement, style: FontConfiguration): void {
+    const normalizedFontStyles = this.getNormalizedFontStyles(style);
+
     const styles = {
       whiteSpace: 'pre',
       ...(style.name && { fontFamily: `${style.name}` }),
       ...(style.size && { fontSize: `${style.size}px` }),
-      ...(style.weight && { fontWeight: style.weight }),
-      ...(style.style && { fontStyle: style.style }),
-      ...(style.color && { color: style.color }),
+      ...normalizedFontStyles,
       ...(style.underline && { textDecoration: 'underline' }),
       ...(style.lineHeight && { lineHeight: `${style.lineHeight}` }),
     };
@@ -147,6 +147,30 @@ export class HtmlElementStyler {
    */
   getCustomClass(elementType: string): string | undefined {
     return this.config.cssClasses?.[elementType];
+  }
+
+  private getNormalizedFontStyles(style: FontConfiguration): Partial<CSSStyleDeclaration> {
+    const fontWeight = style.weight ?? (style.style === 'bold' ? 'bold' : undefined);
+    const fontStyle = style.style && style.style !== 'bold' ? style.style : undefined;
+    const color = this.normalizeColor(style.color);
+
+    return {
+      ...(fontWeight && { fontWeight }),
+      ...(fontStyle && { fontStyle }),
+      ...(color && { color }),
+    };
+  }
+
+  private normalizeColor(color: FontConfiguration['color']): string | undefined {
+    if (typeof color === 'number') {
+      return `rgb(${color}, ${color}, ${color})`;
+    }
+
+    if (typeof color === 'string' && /^\d+$/.test(color)) {
+      return `rgb(${color}, ${color}, ${color})`;
+    }
+
+    return color;
   }
 }
 

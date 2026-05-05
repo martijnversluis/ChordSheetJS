@@ -77,6 +77,7 @@ import {
   getBaseDefaultConfig,
   getDefaultConfig,
   getHTMLDefaultConfig,
+  getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
 } from './default_config_manager';
 
@@ -161,6 +162,7 @@ export {
   Configuration,
   getDefaultConfig,
   getHTMLDefaultConfig,
+  getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
 };
 

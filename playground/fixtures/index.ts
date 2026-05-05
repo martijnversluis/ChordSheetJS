@@ -9,11 +9,9 @@ import { pdfFormatterConfigs } from './configs/pdf-formatter-configs';
 import {
   getDefaultConfig,
   getHTMLDefaultConfig,
+  getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
 } from '../../src/formatter/configuration';
-
-// Define base config for all formatters
-const baseConfig = getDefaultConfig('base');
 
 // Create default configs for each formatter
 const formatterDefaultConfigs = {
@@ -21,6 +19,7 @@ const formatterDefaultConfigs = {
   'ChordPro': getDefaultConfig('base'),
   'ChordsOverWords': getDefaultConfig('base'),
   'HTML': getHTMLDefaultConfig(),
+  'MeasuredHTML': getMeasuredHtmlDefaultConfig(),
 };
 
 // Prepare array of config examples for each formatter
@@ -44,7 +43,7 @@ const formatterConfigExamples = {
   ],
   'MeasuredHTML': [
     ...measuredHtmlConfigs,
-    { name: 'Default Configuration', content: baseConfig },
+    { name: 'Default Configuration', content: formatterDefaultConfigs.MeasuredHTML },
   ],
 };
 

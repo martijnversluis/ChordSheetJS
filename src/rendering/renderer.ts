@@ -426,8 +426,6 @@ abstract class Renderer {
   protected recordRenderingTime(): void {
     const endTime = performance.now();
     this.renderTime = (endTime - this.startTime) / 1000;
-    // eslint-disable-next-line no-console
-    console.log(`Rendered in ${this.renderTime.toFixed(2)} seconds`);
   }
 
   /**

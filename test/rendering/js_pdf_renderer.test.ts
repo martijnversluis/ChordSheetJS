@@ -94,28 +94,28 @@ function createBaseConfig(): PDFFormatterConfiguration {
   return deepMerge(clone, {
     fonts: {
       text: {
-        name: 'TestText', style: 'normal', size: 12, color: '#111111',
+        name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: '#111111',
       },
       chord: {
-        name: 'TestChord', style: 'bold', size: 10, color: '#222222',
+        name: 'NimbusSansL-Bol', style: 'bold', size: 10, color: '#222222',
       },
       sectionLabel: {
-        name: 'TestSection', style: 'bold', size: 11, color: '#333333', underline: true,
+        name: 'NimbusSansL-Bol', style: 'bold', size: 11, color: '#333333', underline: true,
       },
       comment: {
-        name: 'TestComment', style: 'italic', size: 10, color: '#444444',
+        name: 'NimbusSansL-RegIta', style: 'italic', size: 10, color: '#444444',
       },
       metadata: {
-        name: 'TestMeta', style: 'normal', size: 9, color: '#555555',
+        name: 'NimbusSansL-Reg', style: 'normal', size: 9, color: '#555555',
       },
       subtitle: {
-        name: 'TestSubtitle', style: 'normal', size: 9, color: '#666666',
+        name: 'NimbusSansL-Reg', style: 'normal', size: 9, color: '#666666',
       },
       title: {
-        name: 'TestTitle', style: 'bold', size: 18, color: '#777777',
+        name: 'NimbusSansL-Bol', style: 'bold', size: 18, color: '#777777',
       },
       annotation: {
-        name: 'TestAnnotation', style: 'normal', size: 8, color: '#888888',
+        name: 'NimbusSansL-Reg', style: 'normal', size: 8, color: '#888888',
       },
     },
     layout: {
@@ -158,13 +158,13 @@ function createBaseConfig(): PDFFormatterConfiguration {
         enabled: true,
         fonts: {
           title: {
-            name: 'DiagramTitle', style: 'bold', size: 8, color: '#000000',
+            name: 'NimbusSansL-Bol', style: 'bold', size: 8, color: '#000000',
           },
           fingerings: {
-            name: 'DiagramFinger', style: 'bold', size: 6, color: '#000000',
+            name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: '#000000',
           },
           baseFret: {
-            name: 'DiagramBase', style: 'bold', size: 6, color: '#000000',
+            name: 'NimbusSansL-Bol', style: 'bold', size: 6, color: '#000000',
           },
         },
         overrides: {
@@ -476,7 +476,7 @@ describe('JsPdfRenderer', () => {
                 type: 'text',
                 value: 'Header',
                 style: {
-                  name: 'Test', style: 'normal', size: 12, color: '#000',
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: '#000',
                 },
                 position: { x: 'left', y: 5 },
               },
@@ -490,7 +490,7 @@ describe('JsPdfRenderer', () => {
                 type: 'text',
                 value: 'Footer',
                 style: {
-                  name: 'Test', style: 'normal', size: 10, color: '#000',
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: '#000',
                 },
                 position: { x: 'left', y: 5 },
               },
@@ -529,7 +529,7 @@ describe('JsPdfRenderer', () => {
                 type: 'text',
                 value: 'Capo Info',
                 style: {
-                  name: 'TestTitle',
+                  name: 'NimbusSansL-Bol',
                   style: 'bold',
                   size: 16,
                   color: '#777777',
