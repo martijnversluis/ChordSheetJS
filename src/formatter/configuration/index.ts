@@ -83,6 +83,8 @@ import {
 
 import { mergeConfigs } from '../../utilities';
 
+export { mergeConfigs } from '../../utilities';
+
 type Configuration = BaseFormatterConfiguration;
 
 /**

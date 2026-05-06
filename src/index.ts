@@ -25,6 +25,9 @@ import TextFormatter from './formatter/text_formatter';
 import UltimateGuitarParser from './parser/ultimate_guitar_parser';
 import version from './version';
 
+import formatterConfiguration from './formatter_configuration';
+import keyHelpers from './key_helpers';
+
 import {
   each,
   evaluate,
@@ -92,6 +95,8 @@ export { default as TextFormatter } from './formatter/text_formatter';
 export { default as UltimateGuitarParser } from './parser/ultimate_guitar_parser';
 export { default as templateHelpers } from './template_helpers';
 export { default as version } from './version';
+export { default as formatterConfiguration } from './formatter_configuration';
+export { default as keyHelpers } from './key_helpers';
 
 export { IMAGE } from './chord_sheet/tags';
 export { defaultPangoRenderer, pangoToHtml, stripPangoMarkup } from './pango/pango_helpers';
@@ -160,6 +165,8 @@ export default {
   CanvasMeasurer,
   JsPdfMeasurer,
   LayoutEngine,
+  formatterConfiguration,
+  keyHelpers,
   version,
   templateHelpers: {
     isEvaluatable,
