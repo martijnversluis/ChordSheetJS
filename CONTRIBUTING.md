@@ -59,6 +59,8 @@ Make your change. Add tests for your change. Make the tests pass:
 
     yarn test
 
+For stable and canary publishing notes, see [RELEASING.md](RELEASING.md).
+
 Push to your fork and [submit a pull request][pr].
 
 [pr]: https://github.com/martijnversluis/ChordSheetJS/compare/
