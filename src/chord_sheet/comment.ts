@@ -1,8 +1,12 @@
+import type Line from './line';
+
 /**
  * Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview
  */
 class Comment {
   content: string;
+
+  parentLine: Line | null = null;
 
   constructor(content: string) {
     this.content = content;

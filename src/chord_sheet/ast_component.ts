@@ -1,6 +1,9 @@
+import type Line from './line';
 import TraceInfo from './trace_info';
 
 abstract class AstComponent {
+  parentLine: Line | null = null;
+
   line: number | null = null;
 
   column: number | null = null;

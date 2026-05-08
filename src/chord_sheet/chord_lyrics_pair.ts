@@ -1,5 +1,6 @@
 import Chord from '../chord';
 import Key from '../key';
+import type Line from './line';
 
 import { Accidental } from '../constants';
 import { deprecate } from '../utilities';
@@ -15,6 +16,8 @@ class ChordLyricsPair {
   annotation: string | null;
 
   isRhythmSymbol: boolean;
+
+  parentLine: Line | null = null;
 
   private _chordObj: Chord | null = null;
 
