@@ -18,7 +18,9 @@ import SongMapper from './song_mapper';
 import Tag from './tag';
 
 import { Accidental } from '../constants';
+import { TEXTBLOCK } from '../constants';
 import { testSelector } from '../helpers';
+import { ABC, LILYPOND, SVG } from '../constants';
 import { CAPO, KEY } from './tags';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
@@ -282,7 +284,7 @@ class Song extends MetadataAccessors {
       if (item instanceof ChordLyricsPair) {
         return Song.transposeChordLyricsPair(item, delta, transposedKey, normalizeChordSuffix, accidental);
       }
-      if (item instanceof Literal) {
+      if (item instanceof Literal && Song.isMusicalSection(item.parentLine)) {
         return Song.transposeLiteral(item, delta, transposedKey, normalizeChordSuffix, accidental);
       }
       return item;
@@ -417,11 +419,15 @@ class Song extends MetadataAccessors {
       if (item instanceof ChordLyricsPair) {
         return item.changeChord(func);
       }
-      if (item instanceof Literal) {
+      if (item instanceof Literal && Song.isMusicalSection(item.parentLine)) {
         return Song.mapChordsInLiteral(item, func);
       }
       return item;
     });
+  }
+
+  private static isMusicalSection(line: Line | null): boolean {
+    return line === null || ![ABC, LILYPOND, SVG, TEXTBLOCK].includes(line.type);
   }
 
   private static mapChordsInLiteral(item: Literal, func: (chord: Chord) => Chord): Literal {

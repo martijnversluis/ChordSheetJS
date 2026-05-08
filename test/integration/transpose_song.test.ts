@@ -177,6 +177,68 @@ describe('transposing a song', () => {
     });
   });
 
+  describe('ABC section', () => {
+    it('does not alter ABC content when transposing', () => {
+      const chordpro = heredoc`
+        {key: C}
+        {start_of_abc}
+        X:1
+        M:4/4
+        L:1/4
+        K:C
+        ED | "Am"DCEG | "C/G"AGEE | "F"DCA,G, | "C"E2z2 |
+        {end_of_abc}
+        {start_of_chorus: Chorus}
+        Let it [Am]be, let it [C/G]be, let it [F]be, let it [C]be
+        {end_of_chorus}`;
+
+      const changedSheet = heredoc`
+        {key: Bb}
+        {start_of_abc}
+        X:1
+        M:4/4
+        L:1/4
+        K:C
+        ED | "Am"DCEG | "C/G"AGEE | "F"DCA,G, | "C"E2z2 |
+        {end_of_abc}
+        {start_of_chorus: Chorus}
+        Let it [Gm]be, let it [Bb/F]be, let it [Eb]be, let it [Bb]be
+        {end_of_chorus}`;
+
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.transpose(-2);
+
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+
+    it('does not alter ABC content with spaces in headers when transposing', () => {
+      const chordpro = heredoc`
+        {key: C}
+        {start_of_abc}
+        X: 1
+        M: 4/4
+        L: 1/4
+        K: C
+        ED | "Am"DCEG | "C/G"AGEE | "F"DCA,G, | "C"E2z2 |
+        {end_of_abc}`;
+
+      const changedSheet = heredoc`
+        {key: Bb}
+        {start_of_abc}
+        X: 1
+        M: 4/4
+        L: 1/4
+        K: C
+        ED | "Am"DCEG | "C/G"AGEE | "F"DCA,G, | "C"E2z2 |
+        {end_of_abc}`;
+
+      const song = new ChordProParser().parse(chordpro);
+      const updatedSong = song.transpose(-2);
+
+      expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
+    });
+  });
+
   describe('key change', () => {
     const chordpro = heredoc`
       {key: B}

@@ -100,7 +100,9 @@ class Line {
     } else if (item instanceof Comment) {
       this.addComment(item);
     } else {
-      this.items.push(item);
+      const addedItem = item;
+      addedItem.parentLine = this;
+      this.items.push(addedItem);
     }
   }
 
@@ -198,6 +200,7 @@ class Line {
       this.currentChordLyricsPair = new ChordLyricsPair(chords || '', lyrics || '');
     }
 
+    this.currentChordLyricsPair.parentLine = this;
     this.items.push(this.currentChordLyricsPair);
     return this.currentChordLyricsPair;
   }
@@ -220,12 +223,14 @@ class Line {
 
   addTag(nameOrTag: Tag | string, value: string | null = null): Tag {
     const tag = (nameOrTag instanceof Tag) ? nameOrTag : new Tag(nameOrTag, value);
+    tag.parentLine = this;
     this.items.push(tag);
     return tag;
   }
 
   addComment(content: Comment | string): Comment {
     const comment = (content instanceof Comment) ? content : new Comment(content);
+    comment.parentLine = this;
     this.items.push(comment);
     return comment;
   }
