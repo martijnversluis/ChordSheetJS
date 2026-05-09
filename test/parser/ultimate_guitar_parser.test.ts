@@ -478,6 +478,72 @@ describe('UltimateGuitarParser', () => {
     expect(line3Items[0]).toBeTag('end_of_part', '');
   });
 
+  it('CHORD_LINE_REGEX does not match solfege-like lyric words', () => {
+    const brokenRegex = /^\s*(([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+/;
+    const fixedRegex = /^\s*(((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?([^/\s]*)(\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?)?)(\s|$)+)+(\s|$)+/;
+
+    expect(brokenRegex.test('My God is alive')).toBe(true);
+    expect(fixedRegex.test('My God is alive')).toBe(false);
+
+    expect(brokenRegex.test('Forever rejoice')).toBe(true);
+    expect(fixedRegex.test('Forever rejoice')).toBe(false);
+
+    expect(brokenRegex.test('Solo instrument')).toBe(true);
+    expect(fixedRegex.test('Solo instrument')).toBe(false);
+
+    expect(fixedRegex.test('F#m')).toBe(true);
+    expect(fixedRegex.test('D')).toBe(true);
+    expect(fixedRegex.test('A E')).toBe(true);
+  });
+
+  it('does not treat solfege-like lyric words as chord lines', () => {
+    const chordSheet = heredoc`
+      [Chorus]
+      F#m
+      I won't be quiet
+          D
+      My God is alive
+       A                     E
+      How could I keep it inside`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: true });
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+
+    const fsharpLine = lines[1];
+    expect(fsharpLine.items[0]).toBeChordLyricsPair('F#m', 'I won\'t be quiet');
+
+    const dLine = lines[2];
+    expect(dLine.items[0]).toBeChordLyricsPair('   ', 'My G');
+    expect(dLine.items[1]).toBeChordLyricsPair('D', 'od is alive');
+
+    const aeLine = lines[3];
+    expect(aeLine.items[0]).toBeChordLyricsPair('', 'H');
+    expect(aeLine.items[1]).toBeChordLyricsPair('A                    ', 'ow could I keep it ins');
+    expect(aeLine.items[2]).toBeChordLyricsPair('E', 'ide');
+  });
+
+  it('does not treat common solfege-triggering lyrics as chord lines', () => {
+    const chordSheet = heredoc`
+      [Verse]
+      C     G
+      Forever rejoice
+      Am    F
+      Solo instrument`;
+
+    const parser = new UltimateGuitarParser({ preserveWhitespace: false });
+    const song = parser.parse(chordSheet);
+    const { lines } = song;
+
+    const verseLine1 = lines[1];
+    expect(verseLine1.items[0]).toBeChordLyricsPair('C', 'Foreve');
+    expect(verseLine1.items[1]).toBeChordLyricsPair('G', 'r rejoice');
+
+    const verseLine2 = lines[2];
+    expect(verseLine2.items[0]).toBeChordLyricsPair('Am', 'Solo i');
+    expect(verseLine2.items[1]).toBeChordLyricsPair('F', 'nstrument');
+  });
+
   it('correctly aligns chords with CJK lyrics', () => {
     const chordSheet = heredoc`
       [Verse]
