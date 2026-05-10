@@ -63,6 +63,7 @@
     "globals": "^17.0.0",
     "jest": "^30.0.0",
     "js-levenshtein": "^1.1.6",
+    "jspdf": "^4.0.0",
     "parcel": "2.16.4",
     "peggy": "^5.0.2",
     "pegjs-backtrace": "^0.2.1",
@@ -76,8 +77,7 @@
     "tsx": "^4.10.5",
     "typedoc": "^0.28.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.56.1",
-    "jspdf": "^4.0.0"
+    "typescript-eslint": "^8.56.1"
   },
   "scripts": {
     "build": "yarn unibuild",
@@ -99,7 +99,6 @@
     "test": "yarn unibuild lint && yarn unibuild test",
     "playground": "cd playground && parcel index.html --port=3300 --no-cache"
   },
-  "dependencies": {},
   "peerDependencies": {
     "jspdf": "^4.0.0"
   },

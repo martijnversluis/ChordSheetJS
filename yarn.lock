@@ -4060,6 +4060,11 @@ __metadata:
     typedoc: "npm:^0.28.0"
     typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.56.1"
+  peerDependencies:
+    jspdf: ^4.0.0
+  peerDependenciesMeta:
+    jspdf:
+      optional: true
   languageName: unknown
   linkType: soft
 
