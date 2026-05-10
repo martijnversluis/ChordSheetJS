@@ -1,4 +1,4 @@
-import { ImageCompression } from 'jspdf';
+import type { ImageCompression } from 'jspdf';
 
 import ChordProParser from '../../parser/chord_pro_parser';
 import Condition from '../../layout/engine/condition';

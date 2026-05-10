@@ -2,7 +2,7 @@ import { Blob } from 'buffer';
 import JsPDF from 'jspdf';
 
 import DocWrapper from './pdf_formatter/doc_wrapper';
-import { JsPdfMeasurer } from '../index';
+import { JsPdfMeasurer } from '../layout/measurement/js_pdf_measurer';
 import JsPdfRenderer from '../rendering/pdf/js_pdf_renderer';
 import MeasurementBasedFormatter from './measurement_based_formatter';
 import { PDFFormatterConfiguration } from './configuration';

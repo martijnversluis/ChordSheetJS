@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./lib/pdf",
+    "rootDir": "./src"
+  },
+  "include": ["src/pdf.ts"]
+}

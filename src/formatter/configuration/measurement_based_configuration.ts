@@ -1,4 +1,4 @@
-import { ImageCompression } from 'jspdf';
+import type { ImageCompression } from 'jspdf';
 
 import { ChordDiagramRenderingConfig } from '../../chord_diagram/chord_diagram';
 import Item from '../../chord_sheet/item';
