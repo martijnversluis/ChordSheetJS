@@ -137,10 +137,19 @@ const disp = formatter.format(song);
 
 > **Note:** `PdfFormatter` is currently in beta. Its API may change in future releases.
 
-Generates a PDF document directly. Requires configuration for page size and fonts.
+PDF support is available as a separate entry point to keep the main bundle small.
+To use it, install `jspdf` as a dependency:
+
+```bash
+npm install jspdf
+```
+
+Then import `PdfFormatter` from `chordsheetjs/pdf`:
 
 ```javascript
-const formatter = new ChordSheetJS.PdfFormatter();
+import { PdfFormatter } from 'chordsheetjs/pdf';
+
+const formatter = new PdfFormatter();
 const doc = formatter.format(song);
 doc.save('song.pdf');
 ```
@@ -163,7 +172,7 @@ and precise positioning of chords above lyrics. The layout engine uses measurers
 
 - `DomMeasurer` - Measures text using the browser's DOM
 - `CanvasMeasurer` - Measures text using HTML Canvas
-- `JsPdfMeasurer` - Measures text using jsPDF (for PDF output)
+- `JsPdfMeasurer` - Measures text using jsPDF (for PDF output, available from `chordsheetjs/pdf`)
 
 These are used internally by the measurement-based formatters but can also be accessed directly for advanced use cases.
 

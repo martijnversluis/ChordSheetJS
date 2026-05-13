@@ -129,6 +129,17 @@ export default unibuild((u: Config) => {
     releaseOnly: true,
   });
 
+  u.asset('pdfSources', {
+    input: jsBuild,
+    outfile: 'lib/pdf/index.js',
+    command: [
+      'esbuild src/pdf.ts --outfile=lib/pdf/index.js --format=cjs --bundle --external:jspdf',
+      'esbuild src/pdf.ts --outfile=lib/pdf/module.js --format=esm --bundle --external:jspdf',
+      'tsc -p tsconfig.pdf.json',
+    ].join(' && '),
+    releaseOnly: true,
+  });
+
   u.asset('bundle', {
     input: jsBuild,
     outfile: bundle.default,

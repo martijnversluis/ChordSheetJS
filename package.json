@@ -7,6 +7,18 @@
   "main": "lib/index.js",
   "module": "lib/module.js",
   "types": "lib/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/main.d.ts",
+      "import": "./lib/module.js",
+      "require": "./lib/index.js"
+    },
+    "./pdf": {
+      "types": "./lib/pdf/pdf.d.ts",
+      "import": "./lib/pdf/module.js",
+      "require": "./lib/pdf/index.js"
+    }
+  },
   "files": [
     "/lib"
   ],
@@ -51,6 +63,7 @@
     "globals": "^17.0.0",
     "jest": "^30.0.0",
     "js-levenshtein": "^1.1.6",
+    "jspdf": "^4.0.0",
     "parcel": "2.16.4",
     "peggy": "^5.0.2",
     "pegjs-backtrace": "^0.2.1",
@@ -86,8 +99,13 @@
     "test": "yarn unibuild lint && yarn unibuild test",
     "playground": "cd playground && parcel index.html --port=3300 --no-cache"
   },
-  "dependencies": {
+  "peerDependencies": {
     "jspdf": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "jspdf": {
+      "optional": true
+    }
   },
   "packageManager": "yarn@4.2.2"
 }
