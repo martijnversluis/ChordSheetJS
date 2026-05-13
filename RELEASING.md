@@ -1,5 +1,11 @@
 # Releasing
 
+## Version bump guidelines
+
+- **Patch** — only for fixing existing functionality, no API changes.
+- **Minor** — non-breaking changes, usually smaller additions.
+- **Major** — large changes and breaking changes.
+
 ## Stable releases
 
 Stable public releases use the normal package version and npm `latest` dist-tag. They should be cut from `master` after the change is ready for the open-source package.
