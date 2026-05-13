@@ -1,0 +1,6 @@
+{
+  "source": "../src/pdf.ts",
+  "main": "../lib/pdf/index.js",
+  "module": "../lib/pdf/module.js",
+  "types": "../lib/pdf/main.d.ts"
+}

@@ -14,7 +14,7 @@
       "require": "./lib/index.js"
     },
     "./pdf": {
-      "types": "./lib/pdf/pdf.d.ts",
+      "types": "./lib/pdf/main.d.ts",
       "import": "./lib/pdf/module.js",
       "require": "./lib/pdf/index.js"
     }

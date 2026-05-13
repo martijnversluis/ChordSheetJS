@@ -132,11 +132,7 @@ export default unibuild((u: Config) => {
   u.asset('pdfSources', {
     input: jsBuild,
     outfile: 'lib/pdf/index.js',
-    command: [
-      'esbuild src/pdf.ts --outfile=lib/pdf/index.js --format=cjs --bundle --external:jspdf',
-      'esbuild src/pdf.ts --outfile=lib/pdf/module.js --format=esm --bundle --external:jspdf',
-      'tsc -p tsconfig.pdf.json',
-    ].join(' && '),
+    command: 'rm -rf pdf/.parcel-cache && cd pdf && parcel build',
     releaseOnly: true,
   });
 
