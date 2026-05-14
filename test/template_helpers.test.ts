@@ -282,6 +282,12 @@ describe('template_helpers', () => {
 
       expect(lineClasses(line, defaultCssClasses)).toEqual('row');
     });
+
+    it('falls back to default css classes when cssClasses is omitted', () => {
+      const line = new Line({ type: NONE, items: [] });
+
+      expect(lineClasses(line)).toEqual('row empty-line');
+    });
   });
 
   describe('paragraphClasses', () => {
@@ -305,6 +311,14 @@ describe('template_helpers', () => {
       const paragraph = new Paragraph();
 
       expect(paragraphClasses(paragraph, defaultCssClasses)).toEqual('paragraph');
+    });
+
+    it('falls back to default css classes when cssClasses is omitted', () => {
+      const line = new Line({ type: CHORUS, items: [] });
+      const paragraph = new Paragraph();
+      paragraph.addLine(line);
+
+      expect(paragraphClasses(paragraph)).toEqual('paragraph chorus');
     });
   });
 

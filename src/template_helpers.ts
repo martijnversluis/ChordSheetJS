@@ -20,6 +20,7 @@ import {
   Configuration,
   Delegate,
   HtmlTemplateCssClasses,
+  defaultCssClasses,
   defaultDelegate,
 } from './formatter/configuration';
 
@@ -108,7 +109,7 @@ export function hasTextContents(line: Line): boolean {
   ));
 }
 
-export function lineClasses(line: Line, cssClasses: HtmlTemplateCssClasses): string {
+export function lineClasses(line: Line, cssClasses: HtmlTemplateCssClasses = defaultCssClasses): string {
   const classes = [cssClasses.row];
 
   if (!lineHasContents(line)) {
@@ -118,7 +119,7 @@ export function lineClasses(line: Line, cssClasses: HtmlTemplateCssClasses): str
   return classes.join(' ');
 }
 
-export function paragraphClasses(paragraph: Paragraph, cssClasses: HtmlTemplateCssClasses): string {
+export function paragraphClasses(paragraph: Paragraph, cssClasses: HtmlTemplateCssClasses = defaultCssClasses): string {
   const classes = [cssClasses.paragraph];
 
   if (paragraph.type !== INDETERMINATE && paragraph.type !== NONE) {
