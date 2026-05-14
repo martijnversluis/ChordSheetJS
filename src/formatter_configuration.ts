@@ -17,7 +17,16 @@ export {
   mergeConfigs,
 };
 
-export default {
+export interface FormatterConfigurationHelpers {
+  configure: typeof configure;
+  getDefaultConfig: typeof getDefaultConfig;
+  getHTMLDefaultConfig: typeof getHTMLDefaultConfig;
+  getMeasuredHtmlDefaultConfig: typeof getMeasuredHtmlDefaultConfig;
+  getPDFDefaultConfig: typeof getPDFDefaultConfig;
+  mergeConfigs: typeof mergeConfigs;
+}
+
+export const formatterConfiguration: FormatterConfigurationHelpers = {
   configure,
   getDefaultConfig,
   getHTMLDefaultConfig,
@@ -25,3 +34,5 @@ export default {
   getPDFDefaultConfig,
   mergeConfigs,
 };
+
+export default formatterConfiguration;
