@@ -48,6 +48,8 @@ import ChordSheetJS, {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  formatterConfiguration,
+  keyHelpers,
   pangoToHtml,
   stripPangoMarkup,
   templateHelpers,
@@ -110,6 +112,8 @@ describe('exports', () => {
     expect(SYMBOL).toBeDefined();
     expect(TAB).toBeDefined();
     expect(VERSE).toBeDefined();
+    expect(formatterConfiguration).toBeDefined();
+    expect(keyHelpers).toBeDefined();
     expect(pangoToHtml).toBeDefined();
     expect(stripPangoMarkup).toBeDefined();
     expect(templateHelpers).toBeDefined();
@@ -162,7 +166,28 @@ describe('exports', () => {
     expect(ChordSheetJS.NONE).toBeDefined();
     expect(ChordSheetJS.TAB).toBeDefined();
     expect(ChordSheetJS.VERSE).toBeDefined();
+    expect(ChordSheetJS.formatterConfiguration).toBeDefined();
+    expect(ChordSheetJS.keyHelpers).toBeDefined();
     expect(ChordSheetJS.version).toEqual(packageJSON.version);
+  });
+
+  it('supplies public key helper behavior from the package entrypoint', () => {
+    expect(keyHelpers.getCapos('Bb')).toEqual({
+      1: 'A', 3: 'G', 6: 'E', 8: 'D', 10: 'C',
+    });
+
+    expect(keyHelpers.getKeys('Dm')).toEqual([
+      'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm', 'Cm', 'C#m', 'Dm', 'D#m', 'Ebm', 'Em', 'Fm',
+    ]);
+  });
+
+  it('supplies public formatter configuration behavior from the package entrypoint', () => {
+    expect(formatterConfiguration.getPDFDefaultConfig()).toBeDefined();
+
+    expect(formatterConfiguration.mergeConfigs(
+      { layout: { columns: 1, content: ['title'] } },
+      { layout: { content: ['subtitle'] } },
+    )).toEqual({ layout: { columns: 1, content: ['subtitle'] } });
   });
 
   it('supplies template helpers on the default export', () => {

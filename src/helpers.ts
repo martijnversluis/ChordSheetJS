@@ -63,10 +63,13 @@ export function renderChord(
 }
 
 /**
- * Returns applicable capos for the provided key
- * @param {Key|string} key The key to get capos for
- * @returns {Object.<string, string>} The available capos, where the keys are capo numbers and the
- * values are the effective key for that capo.
+ * Returns recommended capo positions for the provided key.
+ *
+ * The returned object maps capo fret numbers to the effective key when using
+ * that capo position.
+ *
+ * @param {Key|string} key The key to get capo positions for.
+ * @returns {Object.<string, string>} The available capo positions, keyed by capo fret number.
  */
 export function getCapos(key: Key | string): Record<string, string> {
   const keyObj = Key.wrapOrFail(key);
@@ -75,9 +78,13 @@ export function getCapos(key: Key | string): Record<string, string> {
 }
 
 /**
- * Returns applicable keys to transpose to from the provided key
- * @param {Key|string} key The key to get keys for
- * @returns {Array<string>} The available keys
+ * Returns available transpose target keys for the provided key.
+ *
+ * The result uses symbol or solfege notation to match the input key, and major
+ * or minor keys depending on the input mode.
+ *
+ * @param {Key|string} key The key to get transpose targets for.
+ * @returns {Array<string>} The available target keys.
  */
 export function getKeys(key: Key | string): string[] {
   const keyObj = Key.wrapOrFail(key);
