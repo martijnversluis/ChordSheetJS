@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["es2018", "es2019", "es2022", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "noEmitOnError":  true,
     "noFallthroughCasesInSwitch":  true,
     "noImplicitAny": false,
