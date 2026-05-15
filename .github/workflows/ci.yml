@@ -56,7 +56,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [ 22.x ]
+        node-version: [ 24.x ]
     name: Windows NodeJS ${{ matrix.node-version }} sample
     steps:
       - uses: actions/checkout@v6
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22.x ]
+        node-version: [ 24.x ]
     name: Generate typedoc
     steps:
       - uses: actions/checkout@v6
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 22.x ]
+        node-version: [ 24.x ]
     name: Verify NodeJS installation
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
