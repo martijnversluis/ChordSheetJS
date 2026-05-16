@@ -27,7 +27,7 @@ const UG_METADATA_REGEX = /^(\w+):\s*(.+)$/;
 const OTHER_METADATA_LINE_REGEX = /^\[([^\]]+)]/;
 const REPEAT_NOTATION_REGEX = /\s+(x\d+)\s*$/i;
 // eslint-disable-next-line max-len
-const CHORD_LINE_REGEX = /^\s*((([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+)+(\s|$)+/;
+const CHORD_LINE_REGEX = /^\s*(((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?([^/\s]*)(\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
 const startSectionTags: Record<string, string> = {
   [VERSE]: START_OF_VERSE,
