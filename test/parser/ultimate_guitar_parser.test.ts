@@ -479,7 +479,10 @@ describe('UltimateGuitarParser', () => {
   });
 
   it('CHORD_LINE_REGEX does not match solfege-like lyric words', () => {
+    // eslint-disable-next-line max-len
     const brokenRegex = /^\s*(([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?([^/\s]*)(\/([A-G|Do|Re|Mi|Fa|Sol|La|Si])(#|b)?)?)(\s|$)+/;
+
+    // eslint-disable-next-line max-len
     const fixedRegex = /^\s*(((?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?([^/\s]*)(\/(?:[A-G]|Do|Re|Mi|Fa|Sol|La|Si)(#|b)?)?)(\s|$)+)+(\s|$)+/;
 
     expect(brokenRegex.test('My God is alive')).toBe(true);
