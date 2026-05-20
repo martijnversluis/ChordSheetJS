@@ -7298,6 +7298,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.8.0":
+  version: 7.8.0
+  resolution: "semver@npm:7.8.0"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/8f096ca9b80ffd47b308d03f9ce8c873e27e2983f36023c559cdc92c51e8433fc23ebbfe57ec9623fc155636a6961ee989501099841ae4bb1babc8d2b3f048cd
+  languageName: node
+  linkType: hard
+
 "set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
@@ -7676,8 +7685,8 @@ __metadata:
   linkType: hard
 
 "ts-jest@npm:^29.2.3":
-  version: 29.4.9
-  resolution: "ts-jest@npm:29.4.9"
+  version: 29.4.10
+  resolution: "ts-jest@npm:29.4.10"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -7685,7 +7694,7 @@ __metadata:
     json5: "npm:^2.2.3"
     lodash.memoize: "npm:^4.1.2"
     make-error: "npm:^1.3.6"
-    semver: "npm:^7.7.4"
+    semver: "npm:^7.8.0"
     type-fest: "npm:^4.41.0"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
@@ -7711,7 +7720,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/901eb382817d1f48fc56b6c9b82de989f176660295695ae1fcd55f06f71d2c107766e1413ab24a59fa964c2ef79a60dd23ac1f382b05ae04f2b454fb4eb5ad4f
+  checksum: 10c0/b11e034c7080c573a7b6b3a2f3f7527e2bf741c32f4b78a33fb2ff0a4eb4ad935dea5178dc5fbc6dc0020eabdeed77fc25589d93a599dc9ebfc3e6a9108cfcef
   languageName: node
   linkType: hard
 
