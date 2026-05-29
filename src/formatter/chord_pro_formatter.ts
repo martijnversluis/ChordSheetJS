@@ -11,10 +11,17 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 
+import { BaseFormatterConfiguration } from './configuration/base_configuration';
+import { getBaseDefaultConfig } from './configuration/default_config_manager';
+
 /**
  * Formats a song into a ChordPro chord sheet
  */
 class ChordProFormatter extends Formatter {
+  protected getDefaultConfiguration(): BaseFormatterConfiguration {
+    return { ...getBaseDefaultConfig(), normalizeChordSuffix: false };
+  }
+
   /**
    * Formats a song into a ChordPro chord sheet.
    * @param {Song} song The song to be formatted
@@ -210,7 +217,9 @@ class ChordProFormatter extends Formatter {
         return `[${chordLyricsPair.chords}]`;
       }
 
-      const finalChord = this.configuration.normalizeChords ? chordObj.normalize() : chordObj;
+      const finalChord = this.configuration.normalizeChords ?
+        chordObj.normalize(null, { normalizeSuffix: this.configuration.normalizeChordSuffix }) :
+        chordObj;
       return `[${finalChord}]`;
     }
 

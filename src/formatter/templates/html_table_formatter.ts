@@ -88,6 +88,7 @@ export default (
                                   renderKey: key,
                                   useUnicodeModifier: configuration.useUnicodeModifiers,
                                   normalizeChords: configuration.normalizeChords,
+                                  normalizeChordSuffix: configuration.normalizeChordSuffix,
                                   decapo: configuration.decapo,
                                 },
                               )

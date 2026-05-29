@@ -93,6 +93,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
       linePadding: this.configuration.layout.sections.global.linePadding,
       useUnicodeModifiers: this.configuration.useUnicodeModifiers,
       normalizeChords: this.configuration.normalizeChords,
+      normalizeChordSuffix: this.configuration.normalizeChordSuffix,
 
       // Column and page layout information
       minY: dimensions.minY,

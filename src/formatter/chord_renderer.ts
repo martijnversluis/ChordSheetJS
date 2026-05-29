@@ -9,6 +9,7 @@ interface ConstructorOptions {
   contextKey: Key | null;
   decapo: boolean;
   normalizeChords: boolean;
+  normalizeChordSuffix: boolean;
   renderKey: Key | null;
   songKey: Key | null;
   style: NullableChordStyle;
@@ -21,6 +22,7 @@ const defaultConstructorOptions = {
   contextKey: null,
   decapo: false,
   normalizeChords: true,
+  normalizeChordSuffix: true,
   renderKey: null,
   songKey: null,
   style: null,
@@ -34,6 +36,8 @@ class ChordRenderer {
   contextKey: Key | null;
 
   normalizeChords: boolean;
+
+  normalizeChordSuffix: boolean;
 
   renderKey: Key | null;
 
@@ -51,6 +55,7 @@ class ChordRenderer {
     this.capo = config.decapo ? config.capo : 0;
     this.contextKey = config.contextKey;
     this.normalizeChords = config.normalizeChords;
+    this.normalizeChordSuffix = config.normalizeChordSuffix;
     this.renderKey = config.renderKey;
     this.songKey = config.songKey;
     this.style = config.style;
@@ -70,7 +75,9 @@ class ChordRenderer {
       [
         (c: Chord) => c.transpose(this.effectiveTransposeDistance),
         (c: Chord) => (this.accidental ? c.useAccidental(this.accidental) : c),
-        (c: Chord) => (this.normalizeChords ? c.normalize(this.effectiveKey) : c),
+        (c: Chord) => (
+          this.normalizeChords ? c.normalize(this.effectiveKey, { normalizeSuffix: this.normalizeChordSuffix }) : c
+        ),
         (c: Chord) => this.changeChordType(c),
       ],
     ).toString({ useUnicodeModifier: this.useUnicodeModifier });

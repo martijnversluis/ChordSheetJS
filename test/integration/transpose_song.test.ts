@@ -15,7 +15,7 @@ describe('transposing a song', () => {
 
     const changedSheet = heredoc`
       {key: D}
-      Let it [Bm]be, let it [D/A]be, let it [G2]be, let it [D]be`;
+      Let it [Bm]be, let it [D/A]be, let it [Gsus2]be, let it [D]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transpose(2);
@@ -47,7 +47,7 @@ describe('transposing a song', () => {
 
     const changedSheet = heredoc`
       {key: C#}
-      Let it [A#m]be, let it [C#/G#]be, let it [F#2]be, let it [C#]be`;
+      Let it [A#m]be, let it [C#/G#]be, let it [F#sus2]be, let it [C#]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeUp();
@@ -79,7 +79,7 @@ describe('transposing a song', () => {
 
     const changedSheet = heredoc`
       {key: Db}
-      Let it [Bbm]be, let it [Db/Ab]be, let it [Gb2]be, let it [Db]be`;
+      Let it [Bbm]be, let it [Db/Ab]be, let it [Gbsus2]be, let it [Db]be`;
 
     const song = new ChordProParser().parse(chordpro);
     const updatedSong = song.transposeDown();
@@ -248,7 +248,7 @@ describe('transposing a song', () => {
 
     const changedSheet = heredoc`
       {key: C}
-      [C]Something in the way she [Cma7]moves
+      [C]Something in the way she [Cmaj7]moves
       {key: A}
       [A]You're asking m[C#m/G#]e will my love [F#m7]grow [A/E]`;
 

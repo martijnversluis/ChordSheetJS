@@ -71,6 +71,7 @@ export interface LayoutConfig {
   linePadding: number;
   useUnicodeModifiers: boolean;
   normalizeChords: boolean;
+  normalizeChordSuffix: boolean;
 
   // Add column and page layout information
   minY: number;
