@@ -12,8 +12,28 @@ describe('ChordProFormatter', () => {
     expect(new ChordProFormatter().format(exampleSongSolfege)).toEqual(chordProSheetSolfege);
   });
 
-  it('allows enabling chord normalization', () => {
-    const formatter = new ChordProFormatter({ normalizeChords: true });
+  it('preserves the user-chosen suffix variant by default', () => {
+    const song = createSongFromAst([
+      [
+        chordLyricsPair('Gsus2', 'one '),
+        chordLyricsPair('Csus4', 'two '),
+        chordLyricsPair('Cmaj7', 'three '),
+        chordLyricsPair('FM7', 'four'),
+      ],
+    ]);
+
+    expect(new ChordProFormatter().format(song)).toEqual('[Gsus2]one [Csus4]two [Cmaj7]three [FM7]four');
+  });
+
+  it('round-trips a ChordPro sheet without altering chord suffixes', () => {
+    const chordSheet = '[Cmaj7]Hello [Gsus2]world';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(new ChordProFormatter().format(song)).toEqual(chordSheet);
+  });
+
+  it('normalizes the chord suffix when normalizeChordSuffix is enabled', () => {
+    const formatter = new ChordProFormatter({ normalizeChordSuffix: true });
 
     const song = createSongFromAst([
       [chordLyricsPair('Dsus4', 'Let it be')],
@@ -22,14 +42,22 @@ describe('ChordProFormatter', () => {
     expect(formatter.format(song)).toEqual('[Dsus]Let it be');
   });
 
-  it('allows disabling chord normalization', () => {
+  it('normalizes enharmonic roots and bass notes by default', () => {
+    const song = createSongFromAst([
+      [chordLyricsPair('B#sus4', 'Let it be')],
+    ]);
+
+    expect(new ChordProFormatter().format(song)).toEqual('[Csus4]Let it be');
+  });
+
+  it('allows disabling chord normalization entirely', () => {
     const formatter = new ChordProFormatter({ normalizeChords: false });
 
     const song = createSongFromAst([
-      [chordLyricsPair('Dsus4', 'Let it be')],
+      [chordLyricsPair('B#sus4', 'Let it be')],
     ]);
 
-    expect(formatter.format(song)).toEqual('[Dsus4]Let it be');
+    expect(formatter.format(song)).toEqual('[B#sus4]Let it be');
   });
 
   it('formats image directive with attributes', () => {

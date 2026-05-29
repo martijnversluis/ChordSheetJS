@@ -160,6 +160,7 @@ export class ItemProcessor {
       renderKey: null,
       useUnicodeModifier: this.config.useUnicodeModifiers,
       normalizeChords: this.config.normalizeChords,
+      normalizeChordSuffix: this.config.normalizeChordSuffix,
       decapo: this.config.decapo,
     });
   }

@@ -109,6 +109,7 @@ function createTestConfig(overrides: Partial<LayoutConfig> = {}): LayoutConfig {
     linePadding: 2,
     useUnicodeModifiers: false,
     normalizeChords: false,
+    normalizeChordSuffix: true,
     minY: 50,
     columnWidth: 500,
     columnCount: 1,

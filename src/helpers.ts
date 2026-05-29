@@ -20,6 +20,7 @@ interface RenderChordOptions {
   renderKey?: Key | null;
   useUnicodeModifier?: boolean;
   normalizeChords?: boolean;
+  normalizeChordSuffix?: boolean;
   decapo?: boolean;
 }
 
@@ -33,33 +34,40 @@ interface RenderChordOptions {
  * @param useUnicodeModifier Whether to use unicode modifiers ('\u266f'/'\u266d') or plain text ('#'/'b').
  * Default `false`.
  * @param normalizeChords Whether to normalize the chord to the key (default `true`)
+ * @param normalizeChordSuffix Whether to normalize the chord suffix (e.g. `sus2` to `2`, `maj7` to `ma7`).
+ * Only takes effect when `normalizeChords` is `true`. Default `true`.
  * @param decapo Whether to transpose all chords to eliminate the capo (default `false`)
  */
+const renderChordDefaults: Required<RenderChordOptions> = {
+  renderKey: null,
+  useUnicodeModifier: false,
+  normalizeChords: true,
+  normalizeChordSuffix: true,
+  decapo: false,
+};
+
 export function renderChord(
   chordString: string,
   line: Line,
   song: Song,
-  {
-    renderKey = null,
-    useUnicodeModifier = false,
-    normalizeChords = true,
-    decapo = false,
-  }: RenderChordOptions = {},
+  options: RenderChordOptions = {},
 ): string {
+  const {
+    renderKey, useUnicodeModifier, normalizeChords, normalizeChordSuffix, decapo,
+  } = { ...renderChordDefaults, ...options };
   const capoString = song.metadata.getSingle(CAPO);
-
   return new ChordRenderer({
     capo: capoString ? parseInt(capoString, 10) : 0,
     contextKey: Key.wrap(line.key || song.key),
     decapo,
     normalizeChords,
+    normalizeChordSuffix,
     renderKey,
     songKey: Key.wrap(song.key),
     style: song.metadata.getSingle(CHORD_STYLE) as NullableChordStyle,
     transposeKey: line.transposeKey,
     useUnicodeModifier,
-  })
-    .render(chordString);
+  }).render(chordString);
 }
 
 /**

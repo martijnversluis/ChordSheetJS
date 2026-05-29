@@ -63,6 +63,7 @@ export interface BaseFormatterConfiguration {
   key: Key | null;
   metadata: MetadataConfiguration;
   normalizeChords: boolean;
+  normalizeChordSuffix: boolean;
   useUnicodeModifiers: boolean;
   user: UserConfigurationProperties | null;
 }
@@ -77,6 +78,7 @@ export type ConfigurationProperties = Record<string, any> & Partial<{
   key: Key | string | null;
   metadata: Partial<MetadataConfiguration>;
   normalizeChords: boolean;
+  normalizeChordSuffix: boolean;
   useUnicodeModifiers: boolean;
   user: Partial<UserConfigurationProperties>;
 }>;
@@ -91,6 +93,7 @@ export const defaultBaseConfiguration: BaseFormatterConfiguration = {
   key: null,
   metadata: defaultMetadataConfiguration,
   normalizeChords: true,
+  normalizeChordSuffix: true,
   useUnicodeModifiers: false,
   user: null,
 };
