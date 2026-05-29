@@ -25,6 +25,9 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp
    * symbols.
    * @param {boolean} [configuration.normalizeChords=true] Whether or not to automatically normalize chords
+   * @param {boolean} [configuration.normalizeChordSuffix=true] Whether to normalize chord suffixes (e.g.
+   * `sus2` to `2`, `maj7` to `ma7`). Only takes effect when `normalizeChords` is `true`. Defaults to `false`
+   * for {@link ChordProFormatter} so ChordPro round-trips preserve the user's suffix variant.
    */
   constructor(configuration: DeepPartial<T> = {} as DeepPartial<T>) {
     const defaultConfig = this.getDefaultConfiguration();
