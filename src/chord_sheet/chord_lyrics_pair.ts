@@ -128,7 +128,7 @@ class ChordLyricsPair {
   }
 
   changeChord(func: (chord: Chord) => Chord): ChordLyricsPair {
-    const chordObj = Chord.parse(this.chords.trim());
+    const chordObj = this.chord;
 
     if (chordObj) {
       const changedChord = func(chordObj);

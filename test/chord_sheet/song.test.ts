@@ -664,6 +664,22 @@ describe('Song', () => {
       const normalizedSong = song.normalizeChords('F#', { normalizeSuffix: true });
       expect((normalizedSong.paragraphs[0].lines[0].items[0] as ChordLyricsPair).chords).toEqual('E(9)');
     });
+
+    it('preserves an accidental that was explicitly chosen with useAccidental', () => {
+      const song = createSongFromAst([
+        [
+          chordLyricsPair('Bbdim7', 'one'),
+          chordLyricsPair('Eb+', 'two'),
+        ],
+      ]);
+
+      const sharpened = song.useAccidental('#');
+      const normalized = sharpened.normalizeChords('Bm');
+
+      const { items } = normalized.paragraphs[0].lines[0];
+      expect((items[0] as ChordLyricsPair).chords).toEqual('A#dim7');
+      expect((items[1] as ChordLyricsPair).chords).toEqual('D#+');
+    });
   });
 
   describe('#useModifier', () => {
