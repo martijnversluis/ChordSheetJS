@@ -2938,10 +2938,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web@npm:^0.0.349":
-  version: 0.0.349
-  resolution: "@types/web@npm:0.0.349"
-  checksum: 10c0/bc5a825131d27481f1f0f796073cd13c68d9530de4f960c872a4f469a52eeba9f20b5cc08774d20b54901a921d100998490f5f08e10e0556ddd4c972f68d655d
+"@types/web@npm:^0.0.350":
+  version: 0.0.350
+  resolution: "@types/web@npm:0.0.350"
+  checksum: 10c0/b4e075c6444475fe43e9c80dbd50eba6dca29910c49d723c45c52fc730357c81e0fd9575d726a30a888e3f2a596c55d4c0ee2f495a30509b109fd6f15b8cf764
   languageName: node
   linkType: hard
 
@@ -3731,7 +3731,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/js-levenshtein": "npm:^1"
     "@types/node": "npm:^25.0.3"
-    "@types/web": "npm:^0.0.349"
+    "@types/web": "npm:^0.0.350"
     "@typescript-eslint/utils": "npm:^8.56.1"
     esbuild: "npm:^0.28.0"
     eslint: "npm:^10.0.1"
