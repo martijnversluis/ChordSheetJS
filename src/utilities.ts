@@ -3,10 +3,10 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
-import { GRADE_TO_KEY } from './scales';
+import { GRADE_TO_KEY, KEY_TO_GRADE } from './scales';
 
 import {
-  Accidental, AccidentalMaybe, ChordType, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, SHARP,
+  Accidental, AccidentalMaybe, ChordType, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, SHARP, SYMBOL,
 } from './constants';
 
 export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
@@ -21,6 +21,18 @@ export function translateGermanNote(key: string): string {
   if (key === 'H') return 'B';
   if (key === 'h') return 'b';
   return key;
+}
+
+export function keyToGrade(key: string, accidental: AccidentalMaybe, type: ChordType, minor: boolean): number | null {
+  const grades = KEY_TO_GRADE[type][(minor ? MINOR : MAJOR)][accidental];
+  const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
+
+  if (lookupKey in grades) return grades[lookupKey];
+
+  const upperCaseKey = lookupKey.toUpperCase();
+  if (upperCaseKey in grades) return grades[upperCaseKey];
+
+  return null;
 }
 
 export function hasChordContents(line: Line): boolean {

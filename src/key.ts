@@ -2,7 +2,6 @@ import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 
 import {
   Accidental,
-  AccidentalMaybe,
   ChordType,
   FLAT,
   MAJOR,
@@ -16,9 +15,8 @@ import {
   SYMBOL,
 } from './constants';
 
-import { KEY_TO_GRADE } from './scales';
 import {
-  deprecate, gradeToKey, isGermanNote, translateGermanNote,
+  deprecate, gradeToKey, isGermanNote, keyToGrade,
 } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
@@ -171,7 +169,7 @@ class Key implements KeyProperties {
     const isMinor = this.isMinor(keyString, keyType, minor);
 
     if (keyType === SYMBOL || keyType === SOLFEGE) {
-      const grade = this.toGrade(keyString, accidental || NO_ACCIDENTAL, keyType, isMinor);
+      const grade = keyToGrade(keyString, accidental || NO_ACCIDENTAL, keyType, isMinor);
 
       if (grade !== null) {
         return new Key({
@@ -227,19 +225,6 @@ class Key implements KeyProperties {
   static keyWithModifier(key: string, accidental: Accidental | null, type: ChordType): string {
     deprecate('keyWithModifier is deprecated, use keyWithAccidental instead');
     return this.keyWithAccidental(key, accidental, type);
-  }
-
-  static toGrade(key: string, accidental: AccidentalMaybe, type: ChordType, isMinor: boolean): number | null {
-    const mode = (isMinor ? MINOR : MAJOR);
-    const grades = KEY_TO_GRADE[type][mode][accidental];
-    const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
-
-    if (lookupKey in grades) return grades[lookupKey];
-
-    const upperCaseKey = lookupKey.toUpperCase();
-    if (upperCaseKey in grades) return grades[upperCaseKey];
-
-    return null;
   }
 
   static isMinor(key: string, keyType: ChordType, minor: string | undefined | boolean) {
@@ -370,13 +355,7 @@ class Key implements KeyProperties {
       throw new Error('Cannot calculate grade, number is null');
     }
 
-    this.grade = Key.toGrade(
-      this.number.toString(),
-      this.accidental || NO_ACCIDENTAL,
-      NUMERIC,
-      this.isMinor(),
-    );
-
+    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
     this.number = null;
   }
 
