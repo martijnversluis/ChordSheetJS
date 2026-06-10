@@ -13,6 +13,16 @@ export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
   return functions.reduce((acc, fn) => fn(acc), value);
 }
 
+export function isGermanNote(key: string): boolean {
+  return key === 'H' || key === 'h';
+}
+
+export function translateGermanNote(key: string): string {
+  if (key === 'H') return 'B';
+  if (key === 'h') return 'b';
+  return key;
+}
+
 export function hasChordContents(line: Line): boolean {
   return line.items.some((item) => (item instanceof ChordLyricsPair) && !!item.chords);
 }

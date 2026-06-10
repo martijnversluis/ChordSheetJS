@@ -17,10 +17,12 @@ import {
 } from './constants';
 
 import { KEY_TO_GRADE } from './scales';
-import { deprecate, gradeToKey } from './utilities';
+import {
+  deprecate, gradeToKey, isGermanNote, translateGermanNote,
+} from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
-  symbol: /^(?<key>((?<note>[A-Ga-g])(?<accidental>#|b)?))(?<minor>m)?$/,
+  symbol: /^(?<key>((?<note>[A-Ha-h])(?<accidental>#|b)?))(?<minor>m)?$/,
   solfege: /^(?<key>((?<note>Do|Re|Mi|Fa|Sol|La|Si|do|re|mi|fa|sol|la|si)(?<accidental>#|b)?))(?<minor>m)?$/,
   numeric: /^(?<key>(?<accidental>#|b)?(?<note>[1-7]))(?<minor>m)?$/,
   numeral: /^(?<key>(?<accidental>#|b)?(?<note>I{1,3}|IV|VI{0,2}|i{1,3}|iv|vi{0,2}))$/,
@@ -36,6 +38,7 @@ interface KeyProperties {
   referenceKeyMode?: string | null;
   preferredAccidental?: Accidental | null;
   explicitAccidental?: boolean;
+  preferH?: boolean;
 }
 
 const KEY_TYPES: ChordType[] = [SYMBOL, SOLFEGE, NUMERIC, NUMERAL];
@@ -57,6 +60,7 @@ interface ConstructorOptions {
   originalKeyString?: string | null;
   preferredAccidental: Accidental | null;
   explicitAccidental?: boolean;
+  preferH?: boolean;
 }
 
 /**
@@ -114,6 +118,8 @@ class Key implements KeyProperties {
 
   explicitAccidental = false;
 
+  preferH = false;
+
   static parse(keyString: string | null): null | Key {
     if (!keyString) return null;
 
@@ -141,6 +147,7 @@ class Key implements KeyProperties {
       keyType,
       minor: minor || false,
       accidental: accidental || null,
+      preferH: keyType === SYMBOL && isGermanNote(note),
     });
   }
 
@@ -151,11 +158,13 @@ class Key implements KeyProperties {
       keyType,
       minor,
       accidental,
+      preferH,
     }: {
       key: string | number,
       keyType: ChordType,
       minor: string | boolean,
       accidental: Accidental | null,
+      preferH?: boolean,
     },
   ): Key | null {
     const keyString = `${key}`;
@@ -173,6 +182,7 @@ class Key implements KeyProperties {
           preferredAccidental: accidental || null,
           referenceKeyGrade: grade,
           originalKeyString: keyString,
+          preferH: preferH ?? isGermanNote(keyString),
         });
       }
     }
@@ -222,16 +232,12 @@ class Key implements KeyProperties {
   static toGrade(key: string, accidental: AccidentalMaybe, type: ChordType, isMinor: boolean): number | null {
     const mode = (isMinor ? MINOR : MAJOR);
     const grades = KEY_TO_GRADE[type][mode][accidental];
+    const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
 
-    if (key in grades) {
-      return grades[key];
-    }
+    if (lookupKey in grades) return grades[lookupKey];
 
-    const upperCaseKey = key.toUpperCase();
-
-    if (upperCaseKey in grades) {
-      return grades[upperCaseKey];
-    }
+    const upperCaseKey = lookupKey.toUpperCase();
+    if (upperCaseKey in grades) return grades[upperCaseKey];
 
     return null;
   }
@@ -296,7 +302,7 @@ class Key implements KeyProperties {
     {
       grade = null, number = null, minor, type, accidental, referenceKeyGrade = null,
       referenceKeyMode = null, originalKeyString = null, preferredAccidental = null,
-      explicitAccidental = false,
+      explicitAccidental = false, preferH = false,
     }: ConstructorOptions,
   ) {
     this.grade = grade;
@@ -309,6 +315,7 @@ class Key implements KeyProperties {
     this.referenceKeyMode = referenceKeyMode;
     this.originalKeyString = originalKeyString;
     this.explicitAccidental = explicitAccidental;
+    this.preferH = preferH;
   }
 
   distanceTo(otherKey: Key | string): number {
@@ -552,13 +559,15 @@ class Key implements KeyProperties {
       minor = this.referenceKeyMode === MINOR;
     }
 
-    return gradeToKey({
+    const rendered = gradeToKey({
       type: this.type,
       accidental: this.accidental,
       preferredAccidental: this.preferredAccidental,
       grade: this.effectiveGrade,
       minor,
     });
+
+    return (this.preferH && this.isChordSymbol() && rendered === 'B') ? 'H' : rendered;
   }
 
   private getNoteForNumber() {
@@ -722,6 +731,7 @@ class Key implements KeyProperties {
       originalKeyString: this.originalKeyString,
       preferredAccidental: this.preferredAccidental,
       explicitAccidental: this.explicitAccidental,
+      preferH: this.preferH,
       ...(overwrite ? attributes : {}),
     });
   }
