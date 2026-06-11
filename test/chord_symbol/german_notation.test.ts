@@ -84,7 +84,7 @@ describe('Chord', () => {
           expect(Chord.parse('Hm')?.transposeUp().toString()).toEqual('Cm');
         });
 
-        it('transposes A up by 2 semitones to H notation if input used H', () => {
+        it('does not switch to H notation when transposing a non-H chord', () => {
           // A doesn't use H, so result is B (English default)
           expect(Chord.parse('A')?.transpose(2).toString()).toEqual('B');
         });
@@ -105,6 +105,11 @@ describe('Chord', () => {
 
         it('keeps Hm as Hm after normalize', () => {
           expect(Chord.parse('Hm')?.normalize().toString()).toEqual('Hm');
+        });
+
+        it('normalizes enharmonic bass note for H-rooted minor chord', () => {
+          // Mirrors existing Bm/A# -> Bm/Bb behaviour; H notation should not break the lookup
+          expect(Chord.parse('Hm/A#')?.normalize().toString()).toEqual('Hm/Bb');
         });
       });
     });

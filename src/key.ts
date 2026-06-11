@@ -16,7 +16,7 @@ import {
 } from './constants';
 
 import {
-  deprecate, gradeToKey, isGermanNote, keyToGrade,
+  canonicalizeForEnharmonicLookup, deprecate, gradeToKey, isGermanNote, keyToGrade,
 } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
@@ -684,14 +684,14 @@ class Key implements KeyProperties {
       // Preserve explicit accidental choices made via useAccidental()
       if (this.explicitAccidental) return this.clone();
 
-      const rootKeyString = Key.wrapOrFail(key).toString({ showMinor: true });
+      const rootKeyString = canonicalizeForEnharmonicLookup(Key.wrapOrFail(key).toString({ showMinor: true }));
       const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
-      const thisKeyString = this.toString({ showMinor: false });
+      const thisKeyString = canonicalizeForEnharmonicLookup(this.toString({ showMinor: false }));
 
       if (enharmonics && enharmonics[thisKeyString]) {
         return Key
           .parseOrFail(enharmonics[thisKeyString])
-          .set({ minor: this.minor });
+          .set({ minor: this.minor, preferH: this.preferH });
       }
     }
 

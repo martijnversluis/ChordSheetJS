@@ -23,6 +23,10 @@ export function translateGermanNote(key: string): string {
   return key;
 }
 
+export function canonicalizeForEnharmonicLookup(keyString: string): string {
+  return keyString.startsWith('H') ? `B${keyString.slice(1)}` : keyString;
+}
+
 export function keyToGrade(key: string, accidental: AccidentalMaybe, type: ChordType, minor: boolean): number | null {
   const grades = KEY_TO_GRADE[type][(minor ? MINOR : MAJOR)][accidental];
   const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
