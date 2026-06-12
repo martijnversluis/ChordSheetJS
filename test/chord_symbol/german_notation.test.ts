@@ -1,0 +1,117 @@
+import '../util/matchers';
+
+import { Chord, SYMBOL } from '../../src';
+
+describe('Chord', () => {
+  describe('chord symbol', () => {
+    describe('German notation (H = B natural)', () => {
+      describe('parse', () => {
+        it('parses H as B natural (grade 11)', () => {
+          const chord = Chord.parse('H');
+
+          expect(chord).toMatchObject({
+            root: {
+              grade: 0,
+              accidental: null,
+              type: SYMBOL,
+              minor: false,
+              referenceKeyGrade: 11,
+              originalKeyString: 'H',
+              preferH: true,
+            },
+          });
+        });
+
+        it('parses Hm as B minor', () => {
+          const chord = Chord.parse('Hm');
+
+          expect(chord).toMatchObject({
+            root: {
+              referenceKeyGrade: 11,
+              minor: true,
+              preferH: true,
+            },
+            suffix: 'm',
+          });
+        });
+
+        it('parses H7', () => {
+          const chord = Chord.parse('H7');
+
+          expect(chord?.toString()).toEqual('H7');
+          expect(chord?.root?.effectiveGrade).toEqual(11);
+        });
+
+        it('parses Hsus4', () => {
+          const chord = Chord.parse('Hsus4');
+
+          expect(chord?.toString()).toEqual('Hsus4');
+          expect(chord?.root?.effectiveGrade).toEqual(11);
+        });
+
+        it('parses a slash chord with H as bass', () => {
+          const chord = Chord.parse('D/H');
+
+          expect(chord?.toString()).toEqual('D/H');
+          expect(chord?.bass?.effectiveGrade).toEqual(11);
+        });
+
+        it('parses a slash chord with H as root', () => {
+          const chord = Chord.parse('H/D');
+
+          expect(chord?.toString()).toEqual('H/D');
+          expect(chord?.root?.effectiveGrade).toEqual(11);
+        });
+
+        it('still parses B as B natural (English notation, unchanged)', () => {
+          const chord = Chord.parse('B');
+
+          expect(chord?.toString()).toEqual('B');
+          expect(chord?.root?.effectiveGrade).toEqual(11);
+        });
+      });
+
+      describe('transpose', () => {
+        it('transposes H up to C', () => {
+          expect(Chord.parse('H')?.transposeUp().toString()).toEqual('C');
+        });
+
+        it('transposes H down to Bb', () => {
+          expect(Chord.parse('H')?.transposeDown().toString()).toEqual('Bb');
+        });
+
+        it('transposes Hm up to Cm', () => {
+          expect(Chord.parse('Hm')?.transposeUp().toString()).toEqual('Cm');
+        });
+
+        it('does not switch to H notation when transposing a non-H chord', () => {
+          // A doesn't use H, so result is B (English default)
+          expect(Chord.parse('A')?.transpose(2).toString()).toEqual('B');
+        });
+
+        it('preserves H notation when transposing by full octave', () => {
+          expect(Chord.parse('H')?.transpose(12).toString()).toEqual('H');
+        });
+
+        it('transposes a slash chord with H bass', () => {
+          expect(Chord.parse('D/H')?.transposeUp().toString()).toEqual('D#/C');
+        });
+      });
+
+      describe('normalize', () => {
+        it('keeps H as H after normalize', () => {
+          expect(Chord.parse('H')?.normalize().toString()).toEqual('H');
+        });
+
+        it('keeps Hm as Hm after normalize', () => {
+          expect(Chord.parse('Hm')?.normalize().toString()).toEqual('Hm');
+        });
+
+        it('normalizes enharmonic bass note for H-rooted minor chord', () => {
+          // Mirrors existing Bm/A# -> Bm/Bb behaviour; H notation should not break the lookup
+          expect(Chord.parse('Hm/A#')?.normalize().toString()).toEqual('Hm/Bb');
+        });
+      });
+    });
+  });
+});
