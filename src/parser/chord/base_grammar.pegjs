@@ -21,7 +21,7 @@ ChordSymbol
     }
 
 ChordSymbolRoot
-  = [A-Ga-g]
+  = [A-Ha-h]
 
 ChordSymbolBass
   = "/" root:ChordSymbolRoot accidental:ChordAccidental? {

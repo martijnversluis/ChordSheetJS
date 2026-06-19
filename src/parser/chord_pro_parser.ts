@@ -1,14 +1,17 @@
 import ChordSheetSerializer from '../chord_sheet_serializer';
 import NullTracer from './null_tracer';
 import ParserWarning from './parser_warning';
-import { SerializedSong } from '../serialized_types';
 import Song from '../chord_sheet/song';
+
+import { Notation } from '../constants';
+import { SerializedSong } from '../serialized_types';
 import { normalizeLineEndings } from '../utilities';
 import { ParseOptions, parse } from './chord_pro/peg_parser';
 
 export type ChordProParserOptions = ParseOptions & {
   softLineBreaks?: boolean;
   chopFirstWord?: boolean;
+  notation?: Notation | null;
 };
 
 /**
@@ -34,6 +37,9 @@ class ChordProParser {
    * followed by * a space is treated as a soft line break
    * @param {ChordProParserOptions.chopFirstWord} options.chopFirstWord=true If true, only the first lyric
    * word is paired with the chord, the rest of the lyric is put in a separate chord lyric pair
+   * @param {Notation|null} [options.notation] When `'german'`, every chord in the song is parsed using
+   * German notation (`B` = B-flat, `H` = B natural) and rendered accordingly. Defaults to English
+   * semantics where `B` is B natural and `H` is accepted as an alias for it.
    * @see https://peggyjs.org/documentation.html#using-the-parser
    * @returns {Song} The parsed song
    */
@@ -43,7 +49,7 @@ class ChordProParser {
       { tracer: new NullTracer(), ...options },
     ) as SerializedSong;
 
-    this.song = new ChordSheetSerializer().deserialize(ast);
+    this.song = new ChordSheetSerializer().deserialize(ast, { notation: options?.notation ?? null });
     return this.song;
   }
 }

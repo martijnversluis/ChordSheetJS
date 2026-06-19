@@ -8,9 +8,14 @@ import {
   ChordType,
   NUMERAL,
   NUMERIC,
+  Notation,
   SOLFEGE,
   SYMBOL,
 } from './constants';
+
+export interface ChordParseOptions {
+  notation?: Notation | null;
+}
 
 interface ChordProperties {
   root?: Key | null;
@@ -33,6 +38,7 @@ export interface ChordConstructorOptions {
   bass?: Key | null;
   chordType?: ChordType | null;
   optional?: boolean;
+  notation?: Notation | null;
 }
 
 /**
@@ -70,22 +76,26 @@ class Chord implements ChordProperties {
    * Tries to parse a chord string into a chord
    * Any leading or trailing whitespace is removed first, so a chord like `  \n  E/G# \r ` is valid.
    * @param chordString the chord string, eg `Esus4/G#` or `1sus4/#3`.
+   * @param {ChordParseOptions} [options] parse options
+   * @param {Notation|null} [options.notation] when `'german'`, `B` is interpreted as B-flat (grade 10)
+   * and `H` as B natural (grade 11), and output renders accordingly. Defaults to English semantics where
+   * `B` is B natural and `H` is accepted as an alias for it.
    * @returns {Chord|null}
    */
-  static parse(chordString: string): Chord | null {
+  static parse(chordString: string, options: ChordParseOptions = {}): Chord | null {
     try {
-      return this.parseOrFail(chordString);
+      return this.parseOrFail(chordString, options);
     } catch (_error) {
       return null;
     }
   }
 
-  static parseOrFail(chordString: string): Chord {
+  static parseOrFail(chordString: string, options: ChordParseOptions = {}): Chord {
     const trimmedChord = chordString.trim();
 
     try {
       const ast = parse(trimmedChord);
-      return new Chord(ast);
+      return new Chord({ ...ast, notation: options.notation ?? null });
     } catch (error) {
       const errorObj = error as Error;
       throw new ChordParsingError(`Failed parsing '${trimmedChord}': ${errorObj.message}`);
@@ -414,7 +424,7 @@ class Chord implements ChordProperties {
 
   static determineRoot(options: ChordConstructorOptions & { suffix?: string | null }): Key | null {
     const {
-      root, base, accidental, suffix, chordType,
+      root, base, accidental, suffix, chordType, notation,
     } = options;
     if (root) return root;
     if (!base) return null;
@@ -425,12 +435,13 @@ class Chord implements ChordProperties {
       keyType: chordType,
       minor: isMinor(base, chordType, suffix ?? null),
       accidental: accidental ?? null,
+      preferredNotation: notation ?? null,
     });
   }
 
   static determineBass(options: ChordConstructorOptions): Key | null {
     const {
-      bass, bassBase, bassAccidental, chordType,
+      bass, bassBase, bassAccidental, chordType, notation,
     } = options;
     if (bass) return bass;
     if (!bassBase) return null;
@@ -441,6 +452,7 @@ class Chord implements ChordProperties {
       accidental: bassAccidental ?? null,
       minor: false,
       keyType: chordType,
+      preferredNotation: notation ?? null,
     });
   }
 

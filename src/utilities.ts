@@ -3,14 +3,53 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
-import { GRADE_TO_KEY } from './scales';
+import { GRADE_TO_KEY, KEY_TO_GRADE } from './scales';
 
 import {
-  Accidental, AccidentalMaybe, ChordType, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, SHARP,
+  Accidental, AccidentalMaybe, ChordType, FLAT, GERMAN, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, Notation, SHARP, SYMBOL,
 } from './constants';
 
 export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
   return functions.reduce((acc, fn) => fn(acc), value);
+}
+
+export function isGermanNote(key: string): boolean {
+  return key === 'H' || key === 'h';
+}
+
+export function translateGermanNote(key: string): string {
+  if (key === 'H') return 'B';
+  if (key === 'h') return 'b';
+  return key;
+}
+
+export function canonicalizeForEnharmonicLookup(keyString: string): string {
+  return keyString.startsWith('H') ? `B${keyString.slice(1)}` : keyString;
+}
+
+// In German notation, an unadorned `B` denotes B-flat. Returns the accidental to use for grade
+// lookup so `B` maps to grade 10 (Bb); the stored accidental on the Key stays null so the
+// output renders as `B` rather than `Bb`.
+export function germanBLookupAccidental(key: string, accidental: Accidental | null, notation: Notation | null) {
+  if (notation === GERMAN && accidental === null && (key === 'B' || key === 'b')) return FLAT;
+  return null;
+}
+
+export function resolveNotation(keyString: string, explicit?: Notation | null): Notation | null {
+  if (explicit) return explicit;
+  return isGermanNote(keyString) ? GERMAN : null;
+}
+
+export function keyToGrade(key: string, accidental: AccidentalMaybe, type: ChordType, minor: boolean): number | null {
+  const grades = KEY_TO_GRADE[type][(minor ? MINOR : MAJOR)][accidental];
+  const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
+
+  if (lookupKey in grades) return grades[lookupKey];
+
+  const upperCaseKey = lookupKey.toUpperCase();
+  if (upperCaseKey in grades) return grades[upperCaseKey];
+
+  return null;
 }
 
 export function hasChordContents(line: Line): boolean {

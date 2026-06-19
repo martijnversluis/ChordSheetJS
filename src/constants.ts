@@ -152,3 +152,6 @@ export type Fret = FretNumber | OpenFret | NonSoundingString;
 export const START_TAG = 'start_tag';
 export const END_TAG = 'end_tag';
 export const AUTO = 'auto';
+
+export const GERMAN = 'german';
+export type Notation = 'german';
