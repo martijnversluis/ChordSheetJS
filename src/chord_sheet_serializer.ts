@@ -13,6 +13,7 @@ import SongBuilder from './song_builder';
 import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
 
+import { Notation } from './constants';
 import { warn } from './utilities';
 
 import {
@@ -41,6 +42,8 @@ class ChordSheetSerializer {
   song: Song = new Song();
 
   songBuilder: SongBuilder = new SongBuilder(this.song);
+
+  notation: Notation | null = null;
 
   /**
    * Serializes the chord sheet to a plain object, which can be converted to any format like JSON, XML etc
@@ -148,9 +151,14 @@ class ChordSheetSerializer {
   /**
    * Deserializes a song that has been serialized using {@link serialize}
    * @param {object} serializedSong The serialized song
+   * @param {object} [options] Deserialization options
+   * @param {Notation|null} [options.notation] When `'german'`, chord strings on the song are eagerly
+   * parsed with German notation (`B` = B-flat, `H` = B natural) so the preference survives transpose
+   * and re-serialization. Defaults to English semantics.
    * @returns {Song} The deserialized song
    */
-  deserialize(serializedSong: SerializedSong): Song {
+  deserialize(serializedSong: SerializedSong, options: { notation?: Notation | null } = {}): Song {
+    this.notation = options.notation ?? null;
     this.parseAstComponent(serializedSong);
     return this.song;
   }
@@ -205,11 +213,16 @@ class ChordSheetSerializer {
       chord, chords, lyrics, annotation, isRhythmSymbol,
     } = astComponent;
 
+    const chordString = chord ? new Chord(chord).toString() : chords;
+    const eagerChord = this.notation && chordString ?
+      Chord.parse(chordString, { notation: this.notation }) :
+      null;
+
     return new ChordLyricsPair(
-      chord ? new Chord(chord).toString() : chords,
+      eagerChord ? eagerChord.toString() : chordString,
       lyrics,
       annotation,
-      null,
+      eagerChord,
       isRhythmSymbol || false,
     );
   }
