@@ -147,7 +147,7 @@ class ChordsOverWordsFormatter extends Formatter {
 
   renderChord(item: ChordLyricsPair, line: Line) {
     return renderChord(
-      item.chords,
+      item.chord ?? item.chords,
       line,
       this.song,
       {

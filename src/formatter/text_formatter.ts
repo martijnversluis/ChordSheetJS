@@ -121,7 +121,7 @@ class TextFormatter extends Formatter {
 
   private renderChords(chordLyricsPair: ChordLyricsPair, line: Line) {
     const chords = renderChord(
-      chordLyricsPair.chords,
+      chordLyricsPair.chord ?? chordLyricsPair.chords,
       line,
       this.song,
       {
