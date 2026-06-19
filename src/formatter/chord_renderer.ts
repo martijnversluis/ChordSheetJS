@@ -63,11 +63,10 @@ class ChordRenderer {
     this.useUnicodeModifier = config.useUnicodeModifier;
   }
 
-  render(chordOrString: Chord | string | null): string {
+  render(chordOrString: Chord | string): string {
     if (chordOrString instanceof Chord) return this.renderChord(chordOrString);
-    const input = chordOrString || '';
-    const chord = Chord.parse(input);
-    return chord ? this.renderChord(chord) : input;
+    const chord = Chord.parse(chordOrString);
+    return chord ? this.renderChord(chord) : chordOrString;
   }
 
   private renderChord(chord: Chord): string {

@@ -1,4 +1,4 @@
-import Chord from './chord';
+import type Chord from './chord';
 import ChordRenderer from './formatter/chord_renderer';
 import FormattingContext from './formatter/formatting_context';
 import Key from './key';
@@ -49,7 +49,7 @@ const renderChordDefaults: Required<RenderChordOptions> = {
 };
 
 export function renderChord(
-  chord: Chord | string | null,
+  chord: Chord | string,
   line: Line,
   song: Song,
   options: RenderChordOptions = {},
