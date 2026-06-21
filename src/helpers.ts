@@ -1,3 +1,4 @@
+import type Chord from './chord';
 import ChordRenderer from './formatter/chord_renderer';
 import FormattingContext from './formatter/formatting_context';
 import Key from './key';
@@ -26,7 +27,8 @@ interface RenderChordOptions {
 
 /**
  * Renders a chord in the context of a line and song and taking into account some options
- * @param chordString The chord to render
+ * @param chord The chord to render. Accepts either a {@link Chord} object (preferred \u2014 preserves
+ * explicit accidental choices) or a chord string.
  * @param line The line the chord is in
  * @param song The song the line is in
  * @param renderKey The key to render the chord in. If not provided, the line key will be used,
@@ -47,7 +49,7 @@ const renderChordDefaults: Required<RenderChordOptions> = {
 };
 
 export function renderChord(
-  chordString: string,
+  chord: Chord | string,
   line: Line,
   song: Song,
   options: RenderChordOptions = {},
@@ -67,7 +69,7 @@ export function renderChord(
     style: song.metadata.getSingle(CHORD_STYLE) as NullableChordStyle,
     transposeKey: line.transposeKey,
     useUnicodeModifier,
-  }).render(chordString);
+  }).render(chord);
 }
 
 /**

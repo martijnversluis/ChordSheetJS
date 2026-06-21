@@ -81,7 +81,7 @@ export default (
                             return `
                             <td class="${ cls }"${ fontStyleTag(line.chordFont) }>${
                               renderChord(
-                                item.chords,
+                                item.chord ?? item.chords,
                                 line,
                                 song,
                                 {

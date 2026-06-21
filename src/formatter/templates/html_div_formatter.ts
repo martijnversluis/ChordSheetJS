@@ -71,7 +71,7 @@ export default (
                        return `
                         <div class="${ cls }"${ fontStyleTag(line.chordFont) }>
                           ${ renderChord(
-                            item.chords,
+                            item.chord ?? item.chords,
                             line,
                             song,
                             {
