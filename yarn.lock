@@ -501,7 +501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.6.0, @codemirror/state@npm:^6.7.0":
+"@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.7.0":
   version: 6.7.0
   resolution: "@codemirror/state@npm:6.7.0"
   dependencies:
@@ -511,14 +511,14 @@ __metadata:
   linkType: hard
 
 "@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.42.0":
-  version: 6.43.1
-  resolution: "@codemirror/view@npm:6.43.1"
+  version: 6.43.2
+  resolution: "@codemirror/view@npm:6.43.2"
   dependencies:
-    "@codemirror/state": "npm:^6.6.0"
+    "@codemirror/state": "npm:^6.7.0"
     crelt: "npm:^1.0.6"
     style-mod: "npm:^4.1.0"
     w3c-keyname: "npm:^2.2.4"
-  checksum: 10c0/1ef96bfc756703f6675957793a3ea0f9aef8b2014172c15fc4063b58cefd6974688148eb25c1f2277d6b59d7ca9cb7f66d05e7b6e8c15d68bf050795c902fc18
+  checksum: 10c0/7e735a96bc61f774699a4fbba94c8e50b1c54d03df27fd8629fef0cb17cdf53db4320f38b2b367f8d0553b818d3eb157e55dac9c82dd9b1c78fe43062559bef7
   languageName: node
   linkType: hard
 
