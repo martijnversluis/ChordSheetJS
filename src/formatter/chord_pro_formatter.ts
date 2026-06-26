@@ -1,8 +1,10 @@
+import Chord from '../chord';
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Comment from '../chord_sheet/comment';
 import Evaluatable from '../chord_sheet/chord_pro/evaluatable';
 import Formatter from './formatter';
 import Item from '../chord_sheet/item';
+import Key from '../key';
 import Line from '../chord_sheet/line';
 import Literal from '../chord_sheet/chord_pro/literal';
 import Metadata from '../chord_sheet/metadata';
@@ -11,15 +13,22 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 
-import { BaseFormatterConfiguration } from './configuration/base_configuration';
+import { CHORD_STYLE } from '../chord_sheet/tags';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
+import {
+  ChordProFormatterConfiguration,
+  chordProSpecificDefaults,
+} from './configuration/chord_pro_configuration';
+import {
+  NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
+} from '../constants';
 
 /**
  * Formats a song into a ChordPro chord sheet
  */
-class ChordProFormatter extends Formatter {
-  protected getDefaultConfiguration(): BaseFormatterConfiguration {
-    return { ...getBaseDefaultConfig(), normalizeChordSuffix: false };
+class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
+  protected getDefaultConfiguration(): ChordProFormatterConfiguration {
+    return { ...getBaseDefaultConfig(), ...chordProSpecificDefaults } as ChordProFormatterConfiguration;
   }
 
   /**
@@ -32,7 +41,7 @@ class ChordProFormatter extends Formatter {
     const metadata = song.getMetadata(this.configuration);
     const { metadataLines, contentLines } = this.separateMetadataFromContent(lines);
     const formattedMetadataLines = this.formatMetadataSection(metadataLines);
-    const formattedContentLines = this.formatContentSection(contentLines, metadata);
+    const formattedContentLines = this.formatContentSection(contentLines, metadata, song);
     return this.combineMetadataAndContent(formattedMetadataLines, formattedContentLines);
   }
 
@@ -72,36 +81,25 @@ class ChordProFormatter extends Formatter {
     });
   }
 
-  private formatContentSection(contentLines: Line[], metadata: Metadata): string {
+  private formatContentSection(contentLines: Line[], metadata: Metadata, song: Song): string {
     return contentLines
-      .map((line) => this.formatLine(line, metadata))
+      .map((line) => this.formatLine(line, metadata, song))
       .join('\n');
   }
 
-  private combineMetadataAndContent(formattedMetadataLines: string[], formattedContentLines: string): string {
-    if (formattedMetadataLines.length > 0) {
-      if (formattedContentLines.trim().length > 0) {
-        return `${formattedMetadataLines.join('\n')}\n${formattedContentLines}`;
-      }
-      return formattedMetadataLines.join('\n');
-    }
-
-    return formattedContentLines;
-  }
-
-  formatLine(line: Line, metadata: Metadata): string {
+  formatLine(line: Line, metadata: Metadata, song: Song): string {
     return line.items
-      .map((item) => this.formatItem(item, metadata))
+      .map((item) => this.formatItem(item, metadata, line, song))
       .join('');
   }
 
-  formatItem(item: Item, metadata: Metadata): string {
+  formatItem(item: Item, metadata: Metadata, line: Line, song: Song): string {
     type constructor = any;
     type handlerFunc = any;
 
     const handlers = new Map<constructor, handlerFunc>([
       [Tag, (i: Item) => this.formatTag(i as Tag)],
-      [ChordLyricsPair, (i: Item) => this.formatChordLyricsPair(i as ChordLyricsPair)],
+      [ChordLyricsPair, (i: Item) => this.formatChordLyricsPair(i as ChordLyricsPair, line, song)],
       [Comment, (i: Item) => this.formatComment(i as Comment)],
       [SoftLineBreak, (_i: Item) => '\\ '],
     ]);
@@ -117,6 +115,17 @@ class ChordProFormatter extends Formatter {
     }
 
     throw new Error(`Don't know how to format a ${item}`);
+  }
+
+  private combineMetadataAndContent(formattedMetadataLines: string[], formattedContentLines: string): string {
+    if (formattedMetadataLines.length > 0) {
+      if (formattedContentLines.trim().length > 0) {
+        return `${formattedMetadataLines.join('\n')}\n${formattedContentLines}`;
+      }
+      return formattedMetadataLines.join('\n');
+    }
+
+    return formattedContentLines;
   }
 
   formatOrEvaluateItem(item: Evaluatable, metadata: Metadata): string {
@@ -203,23 +212,30 @@ class ChordProFormatter extends Formatter {
     return keys.map((key) => `${key}="${tag.attributes[key]}"`).join(' ');
   }
 
-  formatChordLyricsPair(chordLyricsPair: ChordLyricsPair): string {
+  formatChordLyricsPair(chordLyricsPair: ChordLyricsPair, line: Line, song: Song): string {
     return [
-      this.formatChordLyricsPairChords(chordLyricsPair),
+      this.formatChordLyricsPairChords(chordLyricsPair, line, song),
       this.formatChordLyricsPairLyrics(chordLyricsPair),
     ].join('');
   }
 
-  formatChordLyricsPairChords(chordLyricsPair: ChordLyricsPair): string {
+  formatChordLyricsPairChords(chordLyricsPair: ChordLyricsPair, line: Line, song: Song): string {
     if (chordLyricsPair.chords) {
       const chordObj = chordLyricsPair.chord;
       if (!chordObj) {
         return `[${chordLyricsPair.chords}]`;
       }
 
-      const finalChord = this.configuration.normalizeChords ?
-        chordObj.normalize(null, { normalizeSuffix: this.configuration.normalizeChordSuffix }) :
+      const contextKey = this.configuration.applyChordStyle ? Key.wrap(line.key || song.key) : null;
+
+      const normalizedChord = this.configuration.normalizeChords ?
+        chordObj.normalize(contextKey, { normalizeSuffix: this.configuration.normalizeChordSuffix }) :
         chordObj;
+
+      const finalChord = this.configuration.applyChordStyle ?
+        this.changeChordType(normalizedChord, contextKey, song) :
+        normalizedChord;
+
       return `[${finalChord}]`;
     }
 
@@ -228,6 +244,23 @@ class ChordProFormatter extends Formatter {
     }
 
     return '';
+  }
+
+  private changeChordType(chord: Chord, contextKey: Key | null, song: Song): Chord {
+    const style = song.metadata.getSingle(CHORD_STYLE) as NullableChordStyle;
+
+    switch (style) {
+      case SYMBOL:
+        return chord.toChordSymbol(contextKey);
+      case SOLFEGE:
+        return chord.toChordSolfege(contextKey);
+      case NUMERAL:
+        return chord.toNumeral(contextKey);
+      case NUMBER:
+        return chord.toNumeric(contextKey);
+      default:
+        return chord;
+    }
   }
 
   formatChordLyricsPairLyrics(chordLyricsPair: ChordLyricsPair): string {
