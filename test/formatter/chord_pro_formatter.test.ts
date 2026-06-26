@@ -1,5 +1,7 @@
 import { ChordProFormatter, ChordProParser } from '../../src';
-import { chordLyricsPair, createSongFromAst, tag } from '../util/utilities';
+import {
+  chordLyricsPair, createSongFromAst, heredoc, tag,
+} from '../util/utilities';
 import { chordProSheetSolfege, chordProSheetSymbol } from '../fixtures/chord_pro_sheet';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
@@ -82,6 +84,57 @@ describe('ChordProFormatter', () => {
     const formatted = new ChordProFormatter().format(song);
 
     expect(formatted).toEqual(chordSheet);
+  });
+
+  describe('applyChordStyle', () => {
+    const chordSheet = heredoc`
+      {key: C}
+      {chord_style: numeral}
+
+      Let it [Am]be, let it [F]be, let it [C]be
+      [C]Whisper words of [G]wisdom, let it [F]be`;
+
+    it('preserves original chord notation by default (backward compatible)', () => {
+      const song = new ChordProParser().parse(chordSheet);
+      const formatted = new ChordProFormatter().format(song);
+
+      expect(formatted).toContain('[Am]');
+      expect(formatted).toContain('[F]');
+      expect(formatted).toContain('[G]');
+    });
+
+    it('applies chord_style directive when enabled', () => {
+      const song = new ChordProParser().parse(chordSheet);
+      const formatted = new ChordProFormatter({ applyChordStyle: true }).format(song);
+
+      expect(formatted).toContain('[VIm]');
+      expect(formatted).toContain('[IV]');
+      expect(formatted).toContain('[I]');
+      expect(formatted).toContain('[V]');
+      expect(formatted).not.toContain('[Am]');
+    });
+
+    it('applies chord_style: number when enabled', () => {
+      const numberSheet = chordSheet.replace('numeral', 'number');
+      const song = new ChordProParser().parse(numberSheet);
+      const formatted = new ChordProFormatter({ applyChordStyle: true }).format(song);
+
+      expect(formatted).toContain('[6m]');
+      expect(formatted).toContain('[4]');
+      expect(formatted).toContain('[1]');
+      expect(formatted).toContain('[5]');
+    });
+
+    it('leaves chord notation untouched when chord_style is absent even if enabled', () => {
+      const noStyle = heredoc`
+        {key: C}
+
+        Let it [Am]be`;
+      const song = new ChordProParser().parse(noStyle);
+      const formatted = new ChordProFormatter({ applyChordStyle: true }).format(song);
+
+      expect(formatted).toContain('[Am]');
+    });
   });
 
   it('correctly formats non-standard metadata', () => {

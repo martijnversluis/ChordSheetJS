@@ -13,6 +13,11 @@ import {
 } from './base_configuration';
 
 import {
+  ChordProFormatterConfiguration,
+  chordProSpecificDefaults,
+} from './chord_pro_configuration';
+
+import {
   CSS,
   HTMLConfigurationProperties,
   HTMLFormatterConfiguration,
@@ -147,6 +152,9 @@ export {
   MeasuredHtmlFormatterConfiguration,
   MeasuredHtmlConfigurationProperties,
   measuredHtmlSpecificDefaults,
+
+  ChordProFormatterConfiguration,
+  chordProSpecificDefaults,
 
   CSS,
   HtmlTemplateCssClasses,
