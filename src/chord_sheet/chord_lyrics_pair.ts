@@ -4,11 +4,16 @@ import type Line from './line';
 
 import { Accidental } from '../constants';
 import { deprecate } from '../utilities';
+import { CHORD_LYRICS_PAIR_BRAND, brandPrototype, hasBrand } from './object_brand';
 
 /**
  * Represents a chord with the corresponding (partial) lyrics
  */
 class ChordLyricsPair {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, CHORD_LYRICS_PAIR_BRAND);
+  }
+
   chords: string;
 
   lyrics: string | null;
@@ -138,5 +143,7 @@ class ChordLyricsPair {
     return this.clone();
   }
 }
+
+brandPrototype(ChordLyricsPair.prototype, CHORD_LYRICS_PAIR_BRAND);
 
 export default ChordLyricsPair;

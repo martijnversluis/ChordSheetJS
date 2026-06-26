@@ -1,9 +1,14 @@
 import type Line from './line';
+import { COMMENT_BRAND, brandPrototype, hasBrand } from './object_brand';
 
 /**
  * Represents a comment. See https://www.chordpro.org/chordpro/chordpro-file-format-specification/#overview
  */
 class Comment {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, COMMENT_BRAND);
+  }
+
   content: string;
 
   parentLine: Line | null = null;
@@ -32,5 +37,7 @@ class Comment {
     return `Comment(content=${this.content})`;
   }
 }
+
+brandPrototype(Comment.prototype, COMMENT_BRAND);
 
 export default Comment;

@@ -49,6 +49,7 @@ import {
 } from './tags';
 
 import { END_TAG, START_TAG } from '../constants';
+import { TAG_BRAND, brandPrototype, hasBrand } from './object_brand';
 
 const CHORDFONT_SHORT = 'cf';
 const CHORDSIZE_SHORT = 'cs';
@@ -170,6 +171,10 @@ const translateTagNameAlias = (name: string) => {
  * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
  */
 class Tag extends AstComponent {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, TAG_BRAND);
+  }
+
   _isMetaTag = false;
 
   _originalName = '';
@@ -411,5 +416,7 @@ class Tag extends AstComponent {
     );
   }
 }
+
+brandPrototype(Tag.prototype, TAG_BRAND);
 
 export default Tag;
