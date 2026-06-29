@@ -511,14 +511,14 @@ __metadata:
   linkType: hard
 
 "@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.42.0":
-  version: 6.43.3
-  resolution: "@codemirror/view@npm:6.43.3"
+  version: 6.43.4
+  resolution: "@codemirror/view@npm:6.43.4"
   dependencies:
     "@codemirror/state": "npm:^6.7.0"
     crelt: "npm:^1.0.6"
     style-mod: "npm:^4.1.0"
     w3c-keyname: "npm:^2.2.4"
-  checksum: 10c0/4d294569aeff07f77e01db5729fa14acfb822da6869ba95f116297f78e975b984ada324c26f972005c45f227c0534afc7475d4d6c7ff14dcea3d9133f2713e27
+  checksum: 10c0/89c45d39c7c7832920e1660835a0a2a54b72239ebcae26a431c498820968d8462e63aba92a7007f2893499dc384a363eba0303bcfa144d512f6a12698d2b06ec
   languageName: node
   linkType: hard
 
