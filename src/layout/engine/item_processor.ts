@@ -139,7 +139,7 @@ export class ItemProcessor {
     const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly);
 
     return {
-      item: new ChordLyricsPair(chords, lyrics),
+      item: new ChordLyricsPair(chords, lyrics, splitItem.annotation, null, splitItem.isRhythmSymbol),
       width: measurements.totalWidth,
       chordHeight: measurements.chordHeight,
     };
@@ -275,17 +275,28 @@ export class ItemProcessor {
     const firstLyrics = splitLines[0];
     const secondLyrics = splitLines.slice(1).join(' ');
     return [
-      {
-        item: new ChordLyricsPair(item.item.chords, firstLyrics),
-        width: this.measurer.measureTextWidth(firstLyrics, lyricsFont),
-        chordHeight: item.chordHeight,
-      },
+      this.createSplitMeasuredItem(item, firstLyrics, item.item.chords, item.item.isRhythmSymbol),
       {
         item: new ChordLyricsPair('', secondLyrics),
         width: this.measurer.measureTextWidth(secondLyrics, lyricsFont),
         chordHeight: 0,
       },
     ];
+  }
+
+  private createSplitMeasuredItem(
+    originalItem: MeasuredItem,
+    lyrics: string,
+    chords: string,
+    isRhythmSymbol: boolean,
+  ): MeasuredItem {
+    const annotation = originalItem.item instanceof ChordLyricsPair ? originalItem.item.annotation : null;
+
+    return {
+      item: new ChordLyricsPair(chords, lyrics, annotation, null, isRhythmSymbol),
+      width: this.measurer.measureTextWidth(lyrics, this.config.fonts.lyrics),
+      chordHeight: originalItem.chordHeight,
+    };
   }
 
   /**
@@ -324,11 +335,11 @@ export class ItemProcessor {
       }
 
       if (index === 0 && lyricFragments.length === 1) {
-        items.push(new ChordLyricsPair(chords, fragment, annotation));
+        items.push(new ChordLyricsPair(chords, fragment, annotation, null, pair.isRhythmSymbol));
       } else if (index === 0 && lyricFragments.length > 1) {
         let commaAdjustedFragment = fragment;
         commaAdjustedFragment += ',';
-        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation));
+        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation, null, pair.isRhythmSymbol));
       }
     });
 
