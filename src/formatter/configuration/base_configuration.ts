@@ -17,6 +17,8 @@ export interface MetadataConfiguration {
   order: (string | MetadataRule)[];
 }
 
+export type DirectiveNameNormalization = 'none' | 'prefer-long' | 'prefer-short';
+
 export interface InstrumentConfiguration {
   type?: string;
   description?: string;
@@ -57,6 +59,7 @@ export const defaultDelegatesConfiguration: DelegatesConfiguration = {
 export interface BaseFormatterConfiguration {
   decapo: boolean;
   delegates: Partial<Record<ContentType, Delegate>>;
+  directiveNameNormalization: DirectiveNameNormalization;
   evaluate: boolean;
   expandChorusDirective: boolean;
   instrument: InstrumentConfiguration | null;
@@ -72,6 +75,7 @@ export interface BaseFormatterConfiguration {
 export type ConfigurationProperties = Record<string, any> & Partial<{
   decapo: boolean;
   delegates: Partial<DelegatesConfiguration>;
+  directiveNameNormalization: DirectiveNameNormalization;
   evaluate: boolean;
   expandChorusDirective: boolean;
   instrument: Partial<InstrumentConfiguration>;
@@ -87,6 +91,7 @@ export type ConfigurationProperties = Record<string, any> & Partial<{
 export const defaultBaseConfiguration: BaseFormatterConfiguration = {
   decapo: false,
   delegates: defaultDelegatesConfiguration,
+  directiveNameNormalization: 'none',
   evaluate: false,
   expandChorusDirective: false,
   instrument: null,

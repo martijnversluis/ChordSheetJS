@@ -146,6 +146,14 @@ const ALIASES: Record<string, string> = {
   [TITLE_SHORT]: TITLE,
 };
 
+const SHORT_ALIASES = Object.entries(ALIASES).reduce<Record<string, string>>((acc, [shortName, longName]) => {
+  if (!(longName in acc)) {
+    acc[longName] = shortName;
+  }
+
+  return acc;
+}, {});
+
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
@@ -153,7 +161,7 @@ export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
 }
 
-const translateTagNameAlias = (name: string) => {
+export const longTagName = (name: string) => {
   if (!name) {
     return name;
   }
@@ -165,6 +173,11 @@ const translateTagNameAlias = (name: string) => {
   }
 
   return sanitizedName;
+};
+
+export const shortTagName = (name: string) => {
+  const longName = longTagName(name);
+  return SHORT_ALIASES[longName] || longName;
 };
 
 /**
@@ -302,7 +315,7 @@ class Tag extends AstComponent {
   }
 
   set name(name) {
-    this._name = translateTagNameAlias(name);
+    this._name = longTagName(name);
     this._originalName = name;
   }
 
