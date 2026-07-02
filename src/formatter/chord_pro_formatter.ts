@@ -13,15 +13,16 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 
+import { longTagName, shortTagName } from '../chord_sheet/tag';
 import { CHORD_STYLE } from '../chord_sheet/tags';
-import { getBaseDefaultConfig } from './configuration/default_config_manager';
+import {
+  NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
+} from '../constants';
 import {
   ChordProFormatterConfiguration,
   chordProSpecificDefaults,
 } from './configuration/chord_pro_configuration';
-import {
-  NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
-} from '../constants';
+import { getBaseDefaultConfig } from './configuration/default_config_manager';
 
 /**
  * Formats a song into a ChordPro chord sheet
@@ -191,15 +192,29 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
   }
 
   formatTag(tag: Tag): string {
+    const directiveName = this.formatDirectiveName(tag);
+
     if (tag.hasAttributes()) {
-      return `{${tag.originalName}: ${this.formatTagAttributes(tag)}}`;
+      return `{${directiveName}: ${this.formatTagAttributes(tag)}}`;
     }
 
     if (tag.hasValue()) {
-      return `{${tag.originalName}: ${tag.value}}`;
+      return `{${directiveName}: ${tag.value}}`;
     }
 
-    return `{${tag.originalName}}`;
+    return `{${directiveName}}`;
+  }
+
+  private formatDirectiveName(tag: Tag): string {
+    switch (this.configuration.directiveNameNormalization) {
+      case 'prefer-long':
+        return longTagName(tag.name);
+      case 'prefer-short':
+        return shortTagName(tag.name);
+      case 'none':
+      default:
+        return tag.originalName;
+    }
   }
 
   formatTagAttributes(tag: Tag) {

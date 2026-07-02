@@ -2,7 +2,9 @@ import fs from 'fs';
 
 import { heredoc } from '../util/utilities';
 import { normalizeLineEndings } from '../../src/utilities';
-import { ChordProFormatter, ChordsOverWordsParser } from '../../src';
+import {
+  ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser,
+} from '../../src';
 
 describe('chords over words to chordpro', () => {
   it('correctly parses and converts the song structure', () => {
@@ -54,6 +56,22 @@ describe('chords over words to chordpro', () => {
       [D] Praying[Dsus] for a miracle,[D] thirsty[Dsus]`;
 
     const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('round trips optional key change comments with periods', () => {
+    const chordpro = heredoc`
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordPro = heredoc`
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const chordsOverWords = new ChordsOverWordsFormatter().format(new ChordProParser().parse(chordpro));
+    const song = new ChordsOverWordsParser().parse(chordsOverWords);
     const actualChordPro = new ChordProFormatter().format(song);
 
     expect(actualChordPro).toEqual(expectedChordPro);
