@@ -34,7 +34,7 @@ describe('ChordsOverWordsFormatter', () => {
       D       strong   G  A           G  D/F# Em D
       Whisper words of wisdom, let it be
 
-      Breakdown
+      comment: Breakdown
       Em               F              C  G
       Whisper words of wisdom, let it be
 
@@ -92,7 +92,7 @@ Let it be, let it be, let it be, let it be
 Re      strong   Sol La          Sol Re/Fa# Mim Re
 Whisper words of wis dom, let it be
 
-Breakdown
+comment: Breakdown
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
@@ -141,6 +141,47 @@ Textblock line 2`;
       Let it be, let it be, let it be, let it be`;
 
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
+  });
+
+  it('preserves directive names by default', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {st: The Subtitle}
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      t: My Song
+      st: The Subtitle
+
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+
+    expect(new ChordsOverWordsFormatter().format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('normalizes directive names to long names when configured', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {st: The Subtitle}
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+      subtitle: The Subtitle
+
+      comment: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({ directiveNameNormalization: 'prefer-long' });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
   it('allows to disable normalizing chords', () => {

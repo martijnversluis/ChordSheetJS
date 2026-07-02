@@ -6,12 +6,22 @@ import Metadata from '../chord_sheet/metadata';
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
-
 import { renderChord } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
 import { SoftLineBreak, Ternary } from '../index';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import { hasTextContents, processMetadata, renderSection } from '../template_helpers';
+import { longTagName, shortTagName } from '../chord_sheet/tag';
+
+const DIRECTION_KEYWORDS = [
+  'verse',
+  'chorus',
+  'bridge',
+  'tag',
+  'interlude',
+  'instrumental',
+  'intro',
+];
 
 /**
  * Formats a song into a plain text chord sheet
@@ -54,13 +64,15 @@ class ChordsOverWordsFormatter extends Formatter {
 
     const metadata = orderedMetadata
       .map(([key, value]) => {
+        const directiveName = this.formatMetadataName(key);
+
         if (Array.isArray(value)) {
-          return `${key}: ${value.join(',')}`;
+          return `${directiveName}: ${value.join(',')}`;
         }
         if (typeof value === 'undefined' || value === null || value === '') {
-          return `${key}:`;
+          return `${directiveName}:`;
         }
-        return `${key}: ${value}`;
+        return `${directiveName}: ${value}`;
       })
       .join('\n');
 
@@ -184,7 +196,7 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof Tag && item.isRenderable()) {
-      return item.label;
+      return this.formatTag(item);
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -200,6 +212,46 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     return '';
+  }
+
+  private formatTag(item: Tag): string {
+    if (item.isComment() && !this.isBareCommentLabel(item.label)) {
+      return `${this.formatDirectiveName(item)}: ${item.label}`;
+    }
+
+    return item.label;
+  }
+
+  private formatDirectiveName(tag: Tag): string {
+    return this.formatTagName(tag.name, tag.originalName);
+  }
+
+  private formatMetadataName(name: string): string {
+    return this.formatTagName(name, this.findOriginalMetadataName(name));
+  }
+
+  private formatTagName(name: string, originalName: string): string {
+    switch (this.configuration.directiveNameNormalization) {
+      case 'prefer-long':
+        return longTagName(name);
+      case 'prefer-short':
+        return shortTagName(name);
+      case 'none':
+      default:
+        return originalName;
+    }
+  }
+
+  private findOriginalMetadataName(name: string): string {
+    const item = this.song.lines
+      .flatMap((line) => line.items)
+      .find((lineItem) => lineItem instanceof Tag && lineItem.isMetaTag() && lineItem.name === name);
+
+    return item instanceof Tag ? item.originalName : name;
+  }
+
+  private isBareCommentLabel(label: string): boolean {
+    return DIRECTION_KEYWORDS.some((keyword) => label.trim().toLowerCase().startsWith(keyword));
   }
 
   private formatEvaluatable(item: Ternary, metadata: Metadata) {
