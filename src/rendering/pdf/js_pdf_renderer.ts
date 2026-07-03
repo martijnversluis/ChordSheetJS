@@ -126,16 +126,14 @@ class JsPdfRenderer extends Renderer {
   }
 
   protected renderHeadersAndFooters(): void {
-    const layoutRenderer = this.createLayoutRenderer();
-
     if (this.getHeaderConfig()) {
       this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getHeaderConfig()!, 'header');
+        this.createLayoutRenderer().renderLayout(this.getHeaderConfig()!, 'header');
       });
     }
     if (this.getFooterConfig()) {
       this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getFooterConfig()!, 'footer');
+        this.createLayoutRenderer().renderLayout(this.getFooterConfig()!, 'footer');
       });
     }
   }
