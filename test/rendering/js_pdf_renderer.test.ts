@@ -515,6 +515,50 @@ describe('JsPdfRenderer', () => {
       expect(footerItems).toHaveLength(3);
     });
 
+    it('evaluates header and footer conditions with per-page metadata', () => {
+      const baseLayout = createBaseConfig().layout;
+      const conditionRule = { page: { first: true } };
+      const overrides: Partial<PDFFormatterConfiguration> = {
+        layout: {
+          ...baseLayout,
+          footer: {
+            ...baseLayout.footer,
+            height: 20,
+            content: [
+              {
+                type: 'text',
+                value: 'First page only',
+                style: {
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: '#000',
+                },
+                position: { x: 'left', y: 5 },
+                condition: conditionRule,
+              },
+            ],
+          },
+        } as any,
+      };
+
+      const { renderer, doc } = createRenderer(overrides);
+      const docWrapper = renderer.getDoc();
+      docWrapper.totalPages = 3;
+      docWrapper.currentPage = 3;
+
+      conditionEvaluator = (rule, metadata) => {
+        expect(rule).toBe(conditionRule);
+        return metadata.page === 1;
+      };
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const stubDoc = getStubDoc(doc);
+      const textItems = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
+
+      expect(conditionCalls.map((call) => call.metadata.page)).toEqual([1, 2, 3]);
+      expect(conditionCalls.map((call) => call.metadata.pages)).toEqual([3, 3, 3]);
+      expect(textItems.filter((item) => item.text === 'First page only')).toHaveLength(1);
+    });
+
     it('evaluates layout content conditions before rendering', () => {
       const conditionRule = { capoKey: { equals: 'Db' } };
       const baseLayout = createBaseConfig().layout;
