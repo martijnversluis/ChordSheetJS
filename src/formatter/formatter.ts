@@ -12,8 +12,9 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   /**
    * Instantiate
    * @param {DeepPartial<T>} [configuration={}] options
-   * @param {'none'|'prefer-long'|'prefer-short'} [configuration.directiveNameNormalization='none'] Whether to
-   * preserve directive names, prefer long directive names, or prefer short aliases where available.
+   * @param {'none'|'prefer-long'|'prefer-short'|object} [configuration.directiveNameNormalization='none'] Whether
+   * to preserve directive names, prefer long directive names, or prefer short aliases. May be set globally or per
+   * directive name, with an optional `default` fallback.
    * @param {boolean} [configuration.evaluate=false] Whether or not to evaluate meta expressions.
    * For more info about meta expressions, see: https://bit.ly/2SC9c2u
    * @param {object} [configuration.metadata={}]
