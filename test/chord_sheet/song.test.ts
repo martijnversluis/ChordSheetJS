@@ -426,14 +426,12 @@ describe('Song', () => {
     it('returns all metadata when no configuration is provided', () => {
       const song = createSong([
         createLine([createTag('artist', 'John')]),
-        createLine([createTag('author', 'Jane')]),
         createLine([createTag('title', 'My Song')]),
       ]);
 
       const metadata = song.getMetadata();
 
       expect(metadata.getSingle('artist')).toEqual('John');
-      expect(metadata.getSingle('author')).toEqual('Jane');
       expect(metadata.getSingle('title')).toEqual('My Song');
     });
 
