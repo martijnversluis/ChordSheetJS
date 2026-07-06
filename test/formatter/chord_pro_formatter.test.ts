@@ -55,6 +55,16 @@ describe('ChordProFormatter', () => {
     expect(formatter.format(song)).toEqual('{t: My Song}\n{c: Opt.}\n[C]Hi');
   });
 
+  it('normalizes directive names per directive when configured', () => {
+    const chordSheet = '{t: My Song}\n{comment: Opt.}\n[C]Hi';
+    const song = new ChordProParser().parse(chordSheet);
+    const formatter = new ChordProFormatter({
+      directiveNameNormalization: { default: 'prefer-long', comment: 'prefer-short' },
+    });
+
+    expect(formatter.format(song)).toEqual('{title: My Song}\n{c: Opt.}\n[C]Hi');
+  });
+
   it('normalizes the chord suffix when normalizeChordSuffix is enabled', () => {
     const formatter = new ChordProFormatter({ normalizeChordSuffix: true });
 

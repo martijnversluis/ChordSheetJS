@@ -197,7 +197,7 @@ class ChordProFormatter extends Formatter {
   }
 
   private formatDirectiveName(tag: Tag): string {
-    switch (this.configuration.directiveNameNormalization) {
+    switch (this.directiveNameNormalizationFor(tag.name)) {
       case 'prefer-long':
         return longTagName(tag.name);
       case 'prefer-short':
@@ -206,6 +206,17 @@ class ChordProFormatter extends Formatter {
       default:
         return tag.originalName;
     }
+  }
+
+  private directiveNameNormalizationFor(name: string) {
+    const { directiveNameNormalization } = this.configuration;
+
+    if (typeof directiveNameNormalization === 'string') {
+      return directiveNameNormalization;
+    }
+
+    return directiveNameNormalization[longTagName(name)] || directiveNameNormalization[name] ||
+      directiveNameNormalization.default || 'none';
   }
 
   formatTagAttributes(tag: Tag) {

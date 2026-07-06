@@ -215,11 +215,19 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatTag(item: Tag): string {
-    if (item.isComment() && !this.isBareCommentLabel(item.label)) {
+    if (item.isComment() && this.shouldFormatExplicitComment(item)) {
       return `${this.formatDirectiveName(item)}: ${item.label}`;
     }
 
     return item.label;
+  }
+
+  private shouldFormatExplicitComment(item: Tag): boolean {
+    if (!this.isBareCommentLabel(item.label)) {
+      return true;
+    }
+
+    return this.directiveNameNormalizationFor(item.name) !== 'none';
   }
 
   private formatDirectiveName(tag: Tag): string {
@@ -231,7 +239,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatTagName(name: string, originalName: string): string {
-    switch (this.configuration.directiveNameNormalization) {
+    switch (this.directiveNameNormalizationFor(name)) {
       case 'prefer-long':
         return longTagName(name);
       case 'prefer-short':
@@ -240,6 +248,17 @@ class ChordsOverWordsFormatter extends Formatter {
       default:
         return originalName;
     }
+  }
+
+  private directiveNameNormalizationFor(name: string) {
+    const { directiveNameNormalization } = this.configuration;
+
+    if (typeof directiveNameNormalization === 'string') {
+      return directiveNameNormalization;
+    }
+
+    return directiveNameNormalization[longTagName(name)] || directiveNameNormalization[name] ||
+      directiveNameNormalization.default || 'none';
   }
 
   private findOriginalMetadataName(name: string): string {
