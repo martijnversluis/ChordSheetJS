@@ -61,6 +61,24 @@ describe('chords over words to chordpro', () => {
     expect(actualChordPro).toEqual(expectedChordPro);
   });
 
+  it('round trips known heading comments as bare section labels', () => {
+    const chordpro = heredoc`
+      {comment: Verse 1}
+      [C]Hi`;
+
+    const expectedChordPro = heredoc`
+      {comment: Verse 1}
+      [C]Hi`;
+
+    const chordsOverWords = new ChordsOverWordsFormatter().format(new ChordProParser().parse(chordpro));
+    const song = new ChordsOverWordsParser().parse(chordsOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(chordsOverWords).toContain('Verse 1\n');
+    expect(chordsOverWords).not.toContain('comment: Verse 1');
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
   it('round trips optional key change comments with periods', () => {
     const chordpro = heredoc`
       {c: Opt. Key Change}
