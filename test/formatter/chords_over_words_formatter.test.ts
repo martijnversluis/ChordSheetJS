@@ -205,6 +205,27 @@ Textblock line 2`;
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
+  it('normalizes directive names per directive when configured', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {comment: Intro}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+
+      c: Intro
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { default: 'prefer-long', comment: 'prefer-short' },
+    });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
   it('allows to disable normalizing chords', () => {
     const formatter = new ChordsOverWordsFormatter({ normalizeChords: false });
 
