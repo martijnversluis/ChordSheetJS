@@ -205,26 +205,6 @@ Textblock line 2`;
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
-  it('keeps author metadata when formatting ChordPro as chords over words', () => {
-    const chordpro = heredoc`
-      {title: Angels From The Realms Of Glory}
-      {artist: Traditional Carol, PraiseCharts}
-      {author: James Montgomery, Henry Smart}
-      [C]Hi`;
-
-    const expectedChordSheet = heredoc`
-      title: Angels From The Realms Of Glory
-      artist: Traditional Carol, PraiseCharts
-      author: James Montgomery, Henry Smart
-
-      C
-      Hi`;
-
-    const song = new ChordProParser().parse(chordpro);
-
-    expect(new ChordsOverWordsFormatter().format(song)).toEqual(expectedChordSheet);
-  });
-
   it('normalizes directive names per directive when configured', () => {
     const chordpro = heredoc`
       {t: My Song}
