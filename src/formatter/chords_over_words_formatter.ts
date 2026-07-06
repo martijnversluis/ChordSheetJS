@@ -215,23 +215,11 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private formatTag(item: Tag): string {
-    if (item.isComment() && !this.shouldFormatBareComment(item)) {
+    if (item.isComment() && !this.isBareCommentLabel(item.label)) {
       return `${this.formatDirectiveName(item)}: ${item.label}`;
     }
 
     return item.label;
-  }
-
-  private shouldFormatBareComment(item: Tag): boolean {
-    if (!this.isBareCommentLabel(item.label)) {
-      return false;
-    }
-
-    if (this.configuration.directiveNameNormalization === 'prefer-short') {
-      return false;
-    }
-
-    return this.configuration.directiveNameNormalization !== 'none' || item.originalName === item.name;
   }
 
   private formatDirectiveName(tag: Tag): string {
