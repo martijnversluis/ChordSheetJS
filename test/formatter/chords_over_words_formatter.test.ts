@@ -208,6 +208,7 @@ Textblock line 2`;
       {t: My Song}
       {st: The Subtitle}
       {c: Opt. Key Change}
+      {c: Verse 1}
       [C]Hi`;
 
     const expectedChordSheet = heredoc`
@@ -215,6 +216,7 @@ Textblock line 2`;
       st: The Subtitle
 
       c: Opt. Key Change
+      c: Verse 1
       C
       Hi`;
 
