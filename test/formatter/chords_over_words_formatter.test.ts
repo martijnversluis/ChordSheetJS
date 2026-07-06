@@ -184,6 +184,27 @@ Textblock line 2`;
     expect(formatter.format(song)).toEqual(expectedChordSheet);
   });
 
+  it('normalizes directive names to short names when configured', () => {
+    const chordpro = heredoc`
+      {title: My Song}
+      {subtitle: The Subtitle}
+      {comment: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      t: My Song
+      st: The Subtitle
+
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({ directiveNameNormalization: 'prefer-short' });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
   it('allows to disable normalizing chords', () => {
     const formatter = new ChordsOverWordsFormatter({ normalizeChords: false });
 
