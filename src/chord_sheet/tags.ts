@@ -11,6 +11,12 @@ export const ALBUM = 'album';
 export const ARRANGER = 'arranger';
 
 /**
+ * Author meta directive.
+ * @type {string}
+ */
+export const AUTHOR = 'author';
+
+/**
  * Artist meta directive. See https://www.chordpro.org/chordpro/directives-artist/
  * @type {string}
  */
