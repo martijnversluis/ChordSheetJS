@@ -4,7 +4,7 @@ import MeasurementBasedFormatter from './measurement_based_formatter';
 import PositionedHtmlRenderer from '../rendering/html/positioned_html_renderer';
 import Song from '../chord_sheet/song';
 import { getMeasuredHtmlDefaultConfig } from './configuration/default_config_manager';
-import { LayoutConfig, LayoutEngine } from '../layout/engine';
+import { LayoutConfig, LayoutEngine, layoutNeedsTotalPageAwareAutoHeight } from '../layout/engine';
 
 declare type HTMLElement = any;
 
@@ -56,21 +56,45 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
     // Initialize the renderer
     this.renderer.initialize();
 
-    // Create the layout engine
-    const layoutEngine = this.createLayoutEngine();
-
-    // Compute paragraph layouts
-    const paragraphLayouts = layoutEngine.computeParagraphLayouts();
+    const layoutResult = this.computePageAwareParagraphLayouts();
 
     // Render everything with a single call
-    this.renderer.render(paragraphLayouts);
+    this.renderer.render(layoutResult.layouts, { totalPages: layoutResult.totalPages });
+  }
+
+  private computeParagraphLayouts(totalPages?: number) {
+    const layoutEngine = this.createLayoutEngine(totalPages);
+    const layouts = layoutEngine.computeParagraphLayouts();
+
+    return {
+      layouts,
+      totalPages: layoutEngine.getComputedPageCount(),
+    };
+  }
+
+  private computePageAwareParagraphLayouts() {
+    let result = this.computeParagraphLayouts();
+
+    if (!layoutNeedsTotalPageAwareAutoHeight(this.configuration.layout)) {
+      return result;
+    }
+
+    for (let i = 0; i < 3; i += 1) {
+      const nextResult = this.computeParagraphLayouts(result.totalPages);
+      if (nextResult.totalPages === result.totalPages) {
+        return nextResult;
+      }
+      result = nextResult;
+    }
+
+    return result;
   }
 
   /**
    * Create the layout engine with the appropriate configuration
    */
   // eslint-disable-next-line max-lines-per-function
-  private createLayoutEngine(): LayoutEngine {
+  private createLayoutEngine(totalPages = Number.MAX_SAFE_INTEGER): LayoutEngine {
     if (!this.renderer) {
       throw new Error('Renderer not initialized');
     }
@@ -96,14 +120,17 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
       normalizeChordSuffix: this.configuration.normalizeChordSuffix,
 
       // Column and page layout information
-      minY: dimensions.minY,
+      totalPages,
+      minY: this.renderer.getContentStartY(1, totalPages),
+      getMinYForPage: (page, pages) => this.renderer!.getContentStartY(page, pages),
       columnWidth: dimensions.columnWidth,
       columnCount: this.configuration.layout.sections.global.columnCount,
       columnSpacing: this.configuration.layout.sections.global.columnSpacing,
       minColumnWidth: this.configuration.layout.sections.global.minColumnWidth,
       maxColumnWidth: this.configuration.layout.sections.global.maxColumnWidth,
       paragraphSpacing: this.configuration.layout.sections.global.paragraphSpacing || 0,
-      columnBottomY: this.renderer.getContentBottomY(),
+      columnBottomY: this.renderer.getContentBottomY(1, totalPages),
+      getColumnBottomYForPage: (page, pages) => this.renderer!.getContentBottomY(page, pages),
       displayLyricsOnly: !!this.configuration.layout.sections?.base?.display?.lyricsOnly,
       decapo: this.configuration.decapo,
       repeatedSections: this.configuration.layout.sections?.base?.display?.repeatedSections,

@@ -14,6 +14,7 @@ import Renderer, { PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  LayoutItem,
   PDFFormatterConfiguration,
 } from '../../formatter/configuration';
 
@@ -128,30 +129,32 @@ class JsPdfRenderer extends Renderer {
   protected renderHeadersAndFooters(): void {
     if (this.getHeaderConfig()) {
       this.doc.eachPage(() => {
-        this.createLayoutRenderer().renderLayout(this.getHeaderConfig()!, 'header');
+        this.createLayoutRenderer(this.doc.currentPage, this.doc.totalPages)
+          .renderLayout(this.getHeaderConfig()!, 'header');
       });
     }
     if (this.getFooterConfig()) {
       this.doc.eachPage(() => {
-        this.createLayoutRenderer().renderLayout(this.getFooterConfig()!, 'footer');
+        this.createLayoutRenderer(this.doc.currentPage, this.doc.totalPages)
+          .renderLayout(this.getFooterConfig()!, 'footer');
       });
     }
   }
 
-  private createLayoutRenderer(): LayoutSectionRenderer {
-    const backend = this.createLayoutBackend();
+  private createLayoutRenderer(page = this.doc.currentPage, totalPages = this.doc.totalPages): LayoutSectionRenderer {
+    const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.getMetadata(this.configuration),
+      metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
-      extraMetadata: this.getExtraMetadata(this.doc.currentPage, this.doc.totalPages),
+      extraMetadata: this.getExtraMetadata(page, totalPages),
     });
   }
 
-  private createLayoutBackend(): LayoutRenderingBackend {
+  private createLayoutBackend(page = this.doc.currentPage, totalPages = this.doc.totalPages): LayoutRenderingBackend {
     return {
       pageSize: this.doc.pageSize,
-      currentPage: this.doc.currentPage,
-      totalPages: this.doc.totalPages,
+      currentPage: page,
+      totalPages,
       text: (content, x, y) => this.doc.text(content, x, y),
       getTextWidth: (text) => this.doc.getTextWidth(text),
       splitTextToSize: (text, maxWidth) => this.doc.splitTextToSize(text, maxWidth),
@@ -218,6 +221,26 @@ class JsPdfRenderer extends Renderer {
 
   protected getDocPageSize(): { width: number; height: number } {
     return this.doc.pageSize;
+  }
+
+  protected override getHeaderHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getHeaderConfig(), page, totalPages);
+  }
+
+  protected override getFooterHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getFooterConfig(), page, totalPages);
+  }
+
+  private measureLayoutSectionHeight(
+    layoutConfig: LayoutItem | undefined,
+    page: number,
+    totalPages: number,
+  ): number {
+    if (!layoutConfig) {
+      return 0;
+    }
+
+    return this.createLayoutRenderer(page, totalPages).measureLayoutHeight(layoutConfig);
   }
 
   //
