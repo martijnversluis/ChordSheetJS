@@ -15,6 +15,7 @@ export interface MetadataRule {
 export interface MetadataConfiguration {
   separator: string;
   order: (string | MetadataRule)[];
+  additionalMetadataDirectives?: string[];
 }
 
 export type DirectiveNameNormalization = 'none' | 'prefer-long' | 'prefer-short';
@@ -36,6 +37,7 @@ export interface UserConfigurationProperties {
 
 export const defaultMetadataConfiguration: MetadataConfiguration = {
   separator: ',',
+  additionalMetadataDirectives: [],
   order: [
     ...META_TAGS,
     // x_ metadata - alphabetical
