@@ -85,7 +85,7 @@ export class LayoutSectionRenderer {
    * Renders a layout section (header or footer)
    */
   renderLayout(layoutConfig: LayoutItem, section: LayoutSection): void {
-    const { height } = layoutConfig;
+    const height = this.measureLayoutHeight(layoutConfig);
     const { height: pageHeight } = this.backend.pageSize;
     const sectionY = section === 'header' ?
       this.context.margins.top :
@@ -104,6 +104,65 @@ export class LayoutSectionRenderer {
         }
       }
     });
+  }
+
+  /**
+   * Measures a layout section height, resolving auto height from renderable content.
+   */
+  measureLayoutHeight(layoutConfig: LayoutItem): number {
+    if (layoutConfig.height !== 'auto') {
+      return layoutConfig.height;
+    }
+
+    return layoutConfig.content.reduce((height, item) => {
+      if (!this.shouldRenderContent(item)) {
+        return height;
+      }
+
+      return Math.max(height, this.measureContentBottom(item));
+    }, 0);
+  }
+
+  private measureContentBottom(contentItem: LayoutContentItem): number {
+    if (contentItem.type === 'text') {
+      return this.measureTextBottom(contentItem as LayoutContentItemWithText);
+    }
+    if (contentItem.type === 'image') {
+      return this.measureImageBottom(contentItem as LayoutContentItemWithImage);
+    }
+    return this.measureLineBottom(contentItem as LayoutContentItemWithLine);
+  }
+
+  private measureTextBottom(textItem: LayoutContentItemWithText): number {
+    const textValue = this.getTextValue(textItem);
+    if (!textValue) {
+      return 0;
+    }
+
+    return textItem.position.y + this.measureTextHeight(textValue, textItem);
+  }
+
+  private measureTextHeight(textValue: string, textItem: LayoutContentItemWithText): number {
+    const { position, style } = textItem;
+    if (position.height !== undefined) {
+      return position.height;
+    }
+
+    const lineHeight = style.size * (style.lineHeight ?? 1.2);
+    if (position.clip) {
+      return lineHeight;
+    }
+
+    const lines = this.backend.splitTextToSize(textValue, position.width || this.getAvailableWidth(), style);
+    return lines.length * lineHeight;
+  }
+
+  private measureImageBottom(imageItem: LayoutContentItemWithImage): number {
+    return imageItem.position.y + imageItem.size.height;
+  }
+
+  private measureLineBottom(lineItem: LayoutContentItemWithLine): number {
+    return lineItem.position.y + (lineItem.position.height || 0);
   }
 
   /**
@@ -136,12 +195,8 @@ export class LayoutSectionRenderer {
    * Renders a text item
    */
   private renderTextItem(textItem: LayoutContentItemWithText, sectionY: number): void {
-    const {
-      value, template = '', style, position,
-    } = textItem;
-
-    const mergedMetadata = this.context.metadata.merge(this.context.extraMetadata);
-    const textValue = value || this.evaluateTemplate(template, mergedMetadata);
+    const { style, position } = textItem;
+    const textValue = this.getTextValue(textItem);
 
     if (!textValue) {
       return;
@@ -156,6 +211,12 @@ export class LayoutSectionRenderer {
     } else {
       this.renderMultilineText(textValue, textItem, availableWidth, y, style);
     }
+  }
+
+  private getTextValue(textItem: LayoutContentItemWithText): string {
+    const { value, template = '' } = textItem;
+    const mergedMetadata = this.context.metadata.merge(this.context.extraMetadata);
+    return value || this.evaluateTemplate(template, mergedMetadata);
   }
 
   /**
