@@ -57,6 +57,8 @@ abstract class Renderer {
 
   protected currentPage = 1;
 
+  protected totalPagesHint: number | null = null;
+
   constructor(song: Song) {
     this.song = song;
     this.startTime = performance.now();
@@ -83,7 +85,8 @@ abstract class Renderer {
    * @param paragraphLayouts The layouts to render
    * @param config Additional configuration options
    */
-  render(paragraphLayouts: ParagraphLayout[], _config?: any): void {
+  render(paragraphLayouts: ParagraphLayout[], config?: { totalPages?: number }): void {
+    this.totalPagesHint = config?.totalPages ?? null;
     this.initialize();
 
     // Render the main content
@@ -105,8 +108,15 @@ abstract class Renderer {
   /**
    * Get the bottom Y position available for content
    */
-  getContentBottomY(): number {
-    return this.getColumnBottomY();
+  getContentBottomY(page = this.currentPage, totalPages = Number.MAX_SAFE_INTEGER): number {
+    return this.getPageHeight() - this.getBottomMargin() - this.getFooterHeightForPage(page, totalPages);
+  }
+
+  /**
+   * Get the top Y position available for content
+   */
+  getContentStartY(page = this.currentPage, totalPages = Number.MAX_SAFE_INTEGER): number {
+    return this.getTopMargin() + this.getHeaderHeightForPage(page, totalPages);
   }
 
   /**
@@ -564,14 +574,34 @@ abstract class Renderer {
    * Get the header height
    */
   protected getHeaderHeight(): number {
-    return this.getHeaderConfig()?.height ?? 0;
+    return this.getHeaderHeightForPage(this.currentPage, this.getTotalPagesForLayout());
   }
 
   /**
    * Get the footer height
    */
   protected getFooterHeight(): number {
-    return this.getFooterConfig()?.height ?? 0;
+    return this.getFooterHeightForPage(this.currentPage, this.getTotalPagesForLayout());
+  }
+
+  /**
+   * Get the header height for a page. Concrete renderers may resolve auto heights.
+   */
+  protected getHeaderHeightForPage(_page: number, _totalPages: number): number {
+    const height = this.getHeaderConfig()?.height ?? 0;
+    return typeof height === 'number' ? height : 0;
+  }
+
+  /**
+   * Get the footer height for a page. Concrete renderers may resolve auto heights.
+   */
+  protected getFooterHeightForPage(_page: number, _totalPages: number): number {
+    const height = this.getFooterConfig()?.height ?? 0;
+    return typeof height === 'number' ? height : 0;
+  }
+
+  private getTotalPagesForLayout(): number {
+    return this.totalPagesHint ?? Number.MAX_SAFE_INTEGER;
   }
 
   /**

@@ -245,8 +245,10 @@ export type LayoutContentItem =
   | LayoutContentItemWithImage
   | LayoutContentItemWithLine;
 
+export type LayoutSectionHeight = number | 'auto';
+
 export interface LayoutItem {
-  height: number,
+  height: LayoutSectionHeight,
   content: LayoutContentItem[],
 }
 

@@ -173,7 +173,7 @@ class PositionedHtmlRenderer extends Renderer {
   private createLayoutRenderer(page: number, totalPages: number): LayoutSectionRenderer {
     const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.getMetadata(this.configuration),
+      metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(page, totalPages),
     });
@@ -503,6 +503,26 @@ class PositionedHtmlRenderer extends Renderer {
 
   protected getDocPageSize(): { width: number; height: number } {
     return this.doc.pageSize;
+  }
+
+  protected override getHeaderHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getHeaderConfig(), page, totalPages);
+  }
+
+  protected override getFooterHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getFooterConfig(), page, totalPages);
+  }
+
+  private measureLayoutSectionHeight(
+    layoutConfig: LayoutItem | undefined,
+    page: number,
+    totalPages: number,
+  ): number {
+    if (!layoutConfig) {
+      return 0;
+    }
+
+    return this.createLayoutRenderer(page, totalPages).measureLayoutHeight(layoutConfig);
   }
 
   //
