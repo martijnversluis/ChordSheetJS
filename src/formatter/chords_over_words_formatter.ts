@@ -23,8 +23,6 @@ const DIRECTION_KEYWORDS = [
   'intro',
 ];
 
-const STANDALONE_DIRECTIVES = ['new_key'];
-
 /**
  * Formats a song into a plain text chord sheet
  */
@@ -83,7 +81,7 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatParagraphs(): string {
     const metadata = this.song.getMetadata(this.configuration);
-    const paragraphs = this.song.filterParagraphs(this.bodyParagraphs(), this.configuration);
+    const paragraphs = this.song.filterParagraphs(this.song.bodyParagraphs, this.configuration);
     const count = paragraphs.length;
 
     const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
@@ -96,37 +94,6 @@ class ChordsOverWordsFormatter extends Formatter {
     return combined;
   }
 
-  private bodyParagraphs(): Paragraph[] {
-    const bodyLines = [...this.song.lines];
-    while (bodyLines.length && !this.shouldIncludeBodyLine(bodyLines[0])) {
-      bodyLines.shift();
-    }
-
-    return this.linesToParagraphs(bodyLines);
-  }
-
-  private linesToParagraphs(lines: Line[]): Paragraph[] {
-    let currentParagraph = new Paragraph();
-    const paragraphs = [currentParagraph];
-
-    lines.forEach((line, index) => {
-      const nextLine: Line | null = lines[index + 1] || null;
-      if (line.isEmpty() || (line.isSectionEnd() && nextLine && !nextLine.isEmpty())) {
-        currentParagraph = new Paragraph();
-        paragraphs.push(currentParagraph);
-      } else if (this.shouldIncludeBodyLine(line)) {
-        currentParagraph.addLine(line);
-      }
-    });
-
-    return paragraphs.filter((paragraph) => paragraph.hasRenderableItems() ||
-      paragraph.lines.some((line) => this.hasStandaloneDirective(line)));
-  }
-
-  private shouldIncludeBodyLine(line: Line): boolean {
-    return line.hasRenderableItems() || this.hasStandaloneDirective(line);
-  }
-
   formatParagraph(paragraph: Paragraph, metadata: Metadata): string {
     if (paragraph.isLiteral()) {
       return [paragraph.label, renderSection(paragraph, this.configuration)]
@@ -135,17 +102,12 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     return paragraph.lines
-      .filter((line) => this.shouldIncludeBodyLine(line))
+      .filter((line) => line.hasRenderableItems())
       .map((line) => this.formatLine(line, metadata))
       .join('\n');
   }
 
   formatLine(line: Line, metadata: Metadata): string {
-    const standaloneDirective = this.formatStandaloneDirective(line);
-    if (standaloneDirective !== null) {
-      return standaloneDirective;
-    }
-
     const parts = [
       this.formatLineTop(line, metadata),
       this.formatLineBottom(line, metadata),
@@ -155,29 +117,6 @@ class ChordsOverWordsFormatter extends Formatter {
       .filter((p) => !isEmptyString(p))
       .map((part) => (part || '').trimRight())
       .join('\n');
-  }
-
-  private hasStandaloneDirective(line: Line): boolean {
-    return this.standaloneDirective(line) !== null;
-  }
-
-  private formatStandaloneDirective(line: Line): string | null {
-    const item = this.standaloneDirective(line);
-    if (!item) {
-      return null;
-    }
-
-    const directiveName = this.formatDirectiveName(item);
-    return item.hasValue() ? `${directiveName}: ${item.value}` : directiveName;
-  }
-
-  private standaloneDirective(line: Line): Tag | null {
-    if (line.items.length !== 1 || !(line.items[0] instanceof Tag)) {
-      return null;
-    }
-
-    const item = line.items[0];
-    return STANDALONE_DIRECTIVES.includes(item.name) ? item : null;
   }
 
   formatLineTop(line: Line, metadata: Metadata): string | null {
