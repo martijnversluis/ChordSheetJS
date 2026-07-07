@@ -141,7 +141,7 @@ class JsPdfRenderer extends Renderer {
   private createLayoutRenderer(): LayoutSectionRenderer {
     const backend = this.createLayoutBackend();
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
+      metadata: this.song.getMetadata(this.configuration),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(this.doc.currentPage, this.doc.totalPages),
     });

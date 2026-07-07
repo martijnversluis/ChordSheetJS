@@ -15,15 +15,88 @@ import Ternary from '../chord_sheet/chord_pro/ternary';
 import parseMetaValue from '../chord_sheet/chord_pro/parse_meta_value';
 
 import { longTagName, shortTagName } from '../chord_sheet/tag';
-import { CHORD_STYLE } from '../chord_sheet/tags';
+import {
+  CHORDCOLOUR,
+  CHORDFONT,
+  CHORDSIZE,
+  CHORD_STYLE,
+  END_OF_ABC,
+  END_OF_BRIDGE,
+  END_OF_CHORUS,
+  END_OF_GRID,
+  END_OF_LY,
+  END_OF_PART,
+  END_OF_SVG,
+  END_OF_TAB,
+  END_OF_TEXTBLOCK,
+  END_OF_VERSE,
+  IMAGE,
+  NEW_KEY,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_PART,
+  START_OF_SVG,
+  START_OF_TAB,
+  START_OF_TEXTBLOCK,
+  START_OF_VERSE,
+  TEXTCOLOUR,
+  TEXTFONT,
+  TEXTSIZE,
+  TITLECOLOUR,
+  TITLEFONT,
+  TITLESIZE,
+  TRANSPOSE,
+} from '../chord_sheet/tags';
 import {
   NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
 } from '../constants';
+import { BaseFormatterConfiguration } from './configuration/base_configuration';
 import {
   ChordProFormatterConfiguration,
   chordProSpecificDefaults,
 } from './configuration/chord_pro_configuration';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
+
+const NON_METADATA_HEADER_DIRECTIVES = [
+  'chord',
+  'column_break',
+  'define',
+  CHORDCOLOUR,
+  CHORDFONT,
+  CHORDSIZE,
+  END_OF_ABC,
+  END_OF_BRIDGE,
+  END_OF_CHORUS,
+  END_OF_GRID,
+  END_OF_LY,
+  END_OF_PART,
+  END_OF_SVG,
+  END_OF_TAB,
+  END_OF_TEXTBLOCK,
+  END_OF_VERSE,
+  IMAGE,
+  NEW_KEY,
+  START_OF_ABC,
+  START_OF_BRIDGE,
+  START_OF_CHORUS,
+  START_OF_GRID,
+  START_OF_LY,
+  START_OF_PART,
+  START_OF_SVG,
+  START_OF_TAB,
+  START_OF_TEXTBLOCK,
+  START_OF_VERSE,
+  TEXTCOLOUR,
+  TEXTFONT,
+  TEXTSIZE,
+  TITLECOLOUR,
+  TITLEFONT,
+  TITLESIZE,
+  TRANSPOSE,
+];
 
 /**
  * Formats a song into a ChordPro chord sheet
@@ -53,9 +126,7 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     let foundContentLine = false;
 
     lines.forEach((line) => {
-      const isMetadataLine = line.items.length === 1 &&
-        line.items[0] instanceof Tag &&
-        (line.items[0] as Tag).isMetaTag();
+      const isMetadataLine = this.isMetadataHeaderLine(line);
 
       // Only treat as metadata if it appears before any content line
       // This preserves contextual directives like key changes within the song
@@ -72,11 +143,33 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     return { metadataLines, contentLines };
   }
 
+  private isMetadataHeaderLine(line: Line): boolean {
+    if (line.items.length !== 1 || !(line.items[0] instanceof Tag)) {
+      return false;
+    }
+
+    const tag = line.items[0] as Tag;
+    const additionalMetadataDirectives = this.configuration.metadata.additionalMetadataDirectives ?? [];
+
+    return tag.isMetaTag(additionalMetadataDirectives) || this.isNonStandardMetadataHeaderTag(tag);
+  }
+
+  private isNonStandardMetadataHeaderTag(tag: Tag): boolean {
+    return tag.hasValue() &&
+      !tag.hasAttributes() &&
+      !tag.isRenderable() &&
+      !tag.isSectionDelimiter() &&
+      !tag.chordDefinition &&
+      !NON_METADATA_HEADER_DIRECTIVES.includes(tag.name);
+  }
+
   private formatMetadataSection(metadataLines: Line[], metadata: Metadata): string[] {
+    const additionalMetadataDirectives = this.configuration.metadata.additionalMetadataDirectives ?? [];
+
     return metadataLines.map((line) => {
       const tag = line.items[0] as Tag;
 
-      if (!tag.isStandardOrCustomMetaTag()) {
+      if (!tag.isStandardOrCustomMetaTag(additionalMetadataDirectives)) {
         return `{meta: ${tag.originalName} ${this.formatTagValue(tag.value, metadata)}}`;
       }
       return this.formatTag(tag, metadata);
