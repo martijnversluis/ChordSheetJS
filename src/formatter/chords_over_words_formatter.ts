@@ -87,7 +87,7 @@ class ChordsOverWordsFormatter extends Formatter {
     const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
     const combined = formattedParagraphs.join('\n\n');
 
-    if (formattedParagraphs[count - 1].length === 0) {
+    if (count > 0 && formattedParagraphs[count - 1].length === 0) {
       return combined.substring(0, combined.length - 1);
     }
 
@@ -262,9 +262,12 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private findOriginalMetadataName(name: string): string {
+    const additionalMetadataDirectives = this.configuration.metadata.additionalMetadataDirectives ?? [];
     const item = this.song.lines
       .flatMap((line) => line.items)
-      .find((lineItem) => lineItem instanceof Tag && lineItem.isMetaTag() && lineItem.name === name);
+      .find((lineItem) => lineItem instanceof Tag &&
+        lineItem.isMetaTag(additionalMetadataDirectives) &&
+        lineItem.name === name);
 
     return item instanceof Tag ? item.originalName : name;
   }
