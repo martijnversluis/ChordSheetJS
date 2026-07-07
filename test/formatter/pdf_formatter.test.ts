@@ -1,4 +1,5 @@
 import '../util/matchers';
+import { LayoutEngine } from '../../src/layout/engine';
 import { PDFConfigurationProperties } from '../../src/formatter/configuration';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
@@ -153,6 +154,64 @@ describe('PdfFormatter', () => {
     expect(doc.renderedItems).toHaveLength(1);
 
     expect(doc).toHaveText('Page 1 of 1', 275, 750);
+  });
+
+  it('uses an extra layout pass only for auto-height sections with total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        footer: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'Last page footer',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'center', y: 28, height: 12 },
+              condition: { page: { last: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(2);
+
+    computeSpy.mockRestore();
+  });
+
+  it('keeps one layout pass for auto-height sections without total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        header: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'First page header',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'left', y: 0, height: 12 },
+              condition: { page: { first: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(1);
+
+    computeSpy.mockRestore();
   });
 
   it('renders conditional content when the condition matches', () => {

@@ -559,6 +559,122 @@ describe('JsPdfRenderer', () => {
       expect(textItems.filter((item) => item.text === 'First page only')).toHaveLength(1);
     });
 
+    it('uses page-specific auto header height for content start', () => {
+      const baseLayout = createBaseConfig().layout;
+      const overrides: Partial<PDFFormatterConfiguration> = {
+        layout: {
+          ...baseLayout,
+          header: {
+            ...baseLayout.header,
+            height: 'auto',
+            content: [
+              {
+                type: 'text',
+                value: 'Large first page title',
+                style: {
+                  name: 'NimbusSansL-Bol', style: 'bold', size: 20, color: '#000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 60,
+                },
+                condition: { page: { first: true } },
+              },
+              {
+                type: 'text',
+                value: 'Small running title',
+                style: {
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: '#000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 20,
+                },
+                condition: { page: { greater_than: 1 } },
+              },
+            ],
+          },
+        } as any,
+      };
+
+      const { renderer, config } = createRenderer(overrides);
+      conditionEvaluator = (rule, metadata) => {
+        if (rule.page?.first) return metadata.page === 1;
+        if (rule.page?.greater_than) return metadata.page > rule.page.greater_than;
+        return true;
+      };
+
+      (renderer as any).currentPage = 1;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 60);
+
+      (renderer as any).currentPage = 2;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 20);
+    });
+
+    it('measures auto section height from visible content only', () => {
+      const {
+        renderer, config, song,
+      } = createRenderer();
+      const visibleRule = { page: { equals: 2 } };
+      const hiddenRule = { page: { equals: 1 } };
+      const layoutRenderer = new LayoutSectionRenderer(
+        {
+          pageSize: renderer.getDoc().pageSize,
+          currentPage: 2,
+          totalPages: 3,
+          text: () => {},
+          getTextWidth: (text) => renderer.getDoc().getTextWidth(text),
+          splitTextToSize: (text, maxWidth) => renderer.getDoc().splitTextToSize(text, maxWidth),
+          setFontStyle: () => {},
+          addImage: () => {},
+          line: () => {},
+          setLineStyle: () => {},
+          resetDash: () => {},
+        },
+        {
+          metadata: song.metadata,
+          margins: config.layout.global.margins,
+          extraMetadata: { page: '2', pages: '3' },
+        },
+      );
+      conditionEvaluator = (rule, metadata) => metadata.page === rule.page.equals;
+
+      const height = layoutRenderer.measureLayoutHeight({
+        height: 'auto',
+        content: [
+          {
+            type: 'text',
+            value: 'Hidden',
+            style: config.fonts.title,
+            position: { x: 'left', y: 0, height: 80 },
+            condition: hiddenRule,
+          },
+          {
+            type: 'line',
+            style: {
+              color: '#000000',
+              width: 1,
+            },
+            position: {
+              x: 0,
+              y: 36,
+              width: 'auto',
+              height: 0,
+            },
+            condition: visibleRule,
+          },
+          {
+            type: 'image',
+            src: 'badge.png',
+            compression: 'NONE' as any,
+            size: { width: 10, height: 24 },
+            position: { x: 'left', y: 20 },
+            condition: visibleRule,
+          },
+        ],
+      });
+
+      expect(height).toBe(44);
+    });
+
     it('evaluates layout content conditions before rendering', () => {
       const conditionRule = { capoKey: { equals: 'Db' } };
       const baseLayout = createBaseConfig().layout;

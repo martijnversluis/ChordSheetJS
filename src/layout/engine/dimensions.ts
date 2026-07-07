@@ -34,7 +34,8 @@ class Dimensions {
   }
 
   get minY() {
-    return this.margins.top + this.layoutConfig.header.height;
+    const headerHeight = this.layoutConfig.header.height;
+    return this.margins.top + (typeof headerHeight === 'number' ? headerHeight : 0);
   }
 
   get maxY() {
