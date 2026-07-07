@@ -619,6 +619,56 @@ describe('PositionedHtmlRenderer', () => {
       expect(song.metadata.getSingle('key')).toBe('C');
     });
 
+    it('uses page-specific auto header height for content start', () => {
+      const firstPageRule = { page: { first: true } };
+      const laterPageRule = { page: { greater_than: 1 } };
+      const { renderer, config } = createRenderer({
+        layout: {
+          header: {
+            height: 'auto',
+            content: [
+              {
+                type: 'text',
+                value: 'Large first page title',
+                style: {
+                  name: 'Arial', style: 'bold', size: 20, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 64,
+                },
+                condition: firstPageRule,
+              },
+              {
+                type: 'text',
+                value: 'Small running title',
+                style: {
+                  name: 'Arial', style: 'normal', size: 10, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 18,
+                },
+                condition: laterPageRule,
+              },
+            ],
+          },
+        } as any,
+      });
+
+      ConditionMock.mockImplementation((rule: any, metadata: Record<string, any>) => ({
+        evaluate: () => {
+          if (rule === firstPageRule) return metadata.page === 1;
+          if (rule === laterPageRule) return metadata.page > 1;
+          return true;
+        },
+      }));
+
+      (renderer as any).currentPage = 1;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 64);
+
+      (renderer as any).currentPage = 2;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 18);
+    });
+
     it('applies layout font styles to rendered header text', () => {
       const { renderer, doc } = createRenderer({
         layout: {
