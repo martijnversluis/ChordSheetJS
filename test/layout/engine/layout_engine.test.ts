@@ -5,6 +5,7 @@ import Song from '../../../src/chord_sheet/song';
 import Tag from '../../../src/chord_sheet/tag';
 
 import { LayoutEngine } from '../../../src/layout/engine/layout_engine';
+import { layoutNeedsTotalPageAwareAutoHeight } from '../../../src/layout/engine/auto_section_height';
 import { LayoutConfig, ParagraphLayoutResult } from '../../../src/layout/engine/types';
 import { Measurer, TextDimensions } from '../../../src/layout/measurement';
 import {
@@ -246,6 +247,60 @@ describe('LayoutEngine', () => {
     });
   });
 
+  describe('layoutNeedsTotalPageAwareAutoHeight', () => {
+    it('only flags auto-height sections with page-count-dependent conditions', () => {
+      const layout = {
+        header: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'First page',
+              position: { x: 'left', y: 0 },
+              condition: { page: { first: true } },
+            },
+          ],
+        },
+        footer: {
+          height: 20,
+          content: [
+            {
+              type: 'text',
+              value: 'Last page',
+              position: { x: 'left', y: 0 },
+              condition: { page: { last: true } },
+            },
+          ],
+        },
+      } as any;
+
+      expect(layoutNeedsTotalPageAwareAutoHeight(layout)).toBe(false);
+
+      layout.footer.height = 'auto';
+
+      expect(layoutNeedsTotalPageAwareAutoHeight(layout)).toBe(true);
+    });
+
+    it('flags nested pages conditions in auto-height sections', () => {
+      const layout = {
+        header: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'Page count aware',
+              position: { x: 'left', y: 0 },
+              condition: { and: [{ pages: { greater_than: 2 } }] },
+            },
+          ],
+        },
+        footer: { height: 0, content: [] },
+      } as any;
+
+      expect(layoutNeedsTotalPageAwareAutoHeight(layout)).toBe(true);
+    });
+  });
+
   describe('computeParagraphLayouts', () => {
     it('computes layouts for all paragraphs', () => {
       const paragraphs = [createSimpleParagraph(1), createSimpleParagraph(1), createSimpleParagraph(1)];
@@ -316,6 +371,42 @@ describe('LayoutEngine', () => {
       const result = engine.computeParagraphLayouts();
 
       expect(hasColumnBreak(result)).toBe(true);
+    });
+
+    it('uses page-specific minY after a column break advances to a new page', () => {
+      const paragraphs = [createSimpleParagraph(1), createSimpleParagraph(1)];
+      const song = createTestSong(paragraphs);
+      const getMinYForPage = jest.fn((page: number) => (page === 1 ? 100 : 20));
+      const config = createTestConfig({
+        minY: 100,
+        getMinYForPage,
+        columnBottomY: 140,
+        columnCount: 1,
+        paragraphSpacing: 10,
+      });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      const result = engine.computeParagraphLayouts();
+
+      expect(hasColumnBreak(result)).toBe(true);
+      expect(getMinYForPage).toHaveBeenCalledWith(2, Number.MAX_SAFE_INTEGER);
+    });
+
+    it('passes configured total pages to page-specific boundary callbacks', () => {
+      const song = createTestSong([createSimpleParagraph(1)]);
+      const getMinYForPage = jest.fn(() => 50);
+      const getColumnBottomYForPage = jest.fn(() => 750);
+      const config = createTestConfig({
+        totalPages: 3,
+        getMinYForPage,
+        getColumnBottomYForPage,
+      });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      engine.computeParagraphLayouts();
+
+      expect(getMinYForPage).toHaveBeenCalledWith(1, 3);
+      expect(getColumnBottomYForPage).toHaveBeenCalledWith(1, 3);
     });
 
     it('keeps paragraph together when it fits', () => {
