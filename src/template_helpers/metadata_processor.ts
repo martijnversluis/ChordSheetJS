@@ -29,6 +29,10 @@ class MetadataProcessor {
       }
     });
 
+    this.config.additionalMetadataDirectives?.forEach((directiveName) => {
+      this.addItemByStringKey(directiveName);
+    });
+
     return this.result;
   }
 

@@ -98,7 +98,7 @@ class Song extends MetadataAccessors {
   }
 
   filterParagraphs(paragraphs: Paragraph[], configuration: Configuration): Paragraph[] {
-    const context: FormattingContext = { configuration, metadata: this.metadata };
+    const context: FormattingContext = { configuration, metadata: this.getMetadata(configuration) };
 
     return paragraphs.filter((paragraph) => {
       const { selector, selectorIsNegated } = paragraph;
@@ -628,17 +628,23 @@ Or set the song key before changing key:
     metadata.setProvider('key_from', () => metadata.getSingle('key'));
 
     this.foreachItem((item: Item) => {
-      if (!(item instanceof Tag) || !item.isMetaTag()) {
+      if (!(item instanceof Tag)) {
         return;
       }
 
-      const { selector, isNegated } = item;
+      const tag = item as Tag;
+
+      if (!tag.isMetaTag(configuration?.metadata.additionalMetadataDirectives ?? [])) {
+        return;
+      }
+
+      const { selector, isNegated } = tag;
 
       if (selector && configuration && !testSelector({ selector, isNegated }, { metadata, configuration })) {
         return;
       }
 
-      metadata.add(item.name, item.value, item.expression);
+      metadata.add(tag.name, tag.value, tag.expression);
     });
 
     return metadata;

@@ -173,7 +173,7 @@ class PositionedHtmlRenderer extends Renderer {
   private createLayoutRenderer(page: number, totalPages: number): LayoutSectionRenderer {
     const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
+      metadata: this.song.getMetadata(this.configuration),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(page, totalPages),
     });
