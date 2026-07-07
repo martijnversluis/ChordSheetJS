@@ -7,7 +7,8 @@ import { GRID } from '../../src/constants';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
-  ABC, ChordProParser, ChordsOverWordsFormatter, LILYPOND, TAB, TEXTBLOCK,
+  ABC, ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser, LILYPOND, TAB,
+  TEXTBLOCK,
 } from '../../src';
 
 import {
@@ -247,6 +248,39 @@ Textblock line 2`;
     });
 
     expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('preserves nk directives in body content', () => {
+    const chordpro = heredoc`
+      {title: My Song}
+      {key: C}
+
+      {c: Verse}
+      [C]Hi
+      {nk: G}
+      [G]There`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+      key: C
+
+      Verse
+      C
+      Hi
+      nk: G
+      D
+      There`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const chordSheet = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { comment: 'prefer-short' },
+    }).format(song);
+
+    expect(chordSheet).toEqual(expectedChordSheet);
+    expect(
+      new ChordProFormatter({ directiveNameNormalization: { comment: 'prefer-short' } })
+        .format(new ChordsOverWordsParser().parse(chordSheet)),
+    ).toContain('{nk: G}');
   });
 
   it('allows to disable normalizing chords', () => {
