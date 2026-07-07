@@ -208,13 +208,36 @@ Textblock line 2`;
   it('normalizes directive names per directive when configured', () => {
     const chordpro = heredoc`
       {t: My Song}
-      {comment: Intro}
+      {comment: Opt. Key Change}
       [C]Hi`;
 
     const expectedChordSheet = heredoc`
       title: My Song
 
-      c: Intro
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { default: 'prefer-long', comment: 'prefer-short' },
+    });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('omits bare comment directive names even when short comment names are preferred', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {comment: Verse 1}
+      {c: Chorus}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+
+      Verse 1
+      Chorus
       C
       Hi`;
 

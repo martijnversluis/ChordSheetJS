@@ -223,11 +223,7 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private shouldFormatExplicitComment(item: Tag): boolean {
-    if (!this.isBareCommentLabel(item.label)) {
-      return true;
-    }
-
-    return this.directiveNameNormalizationFor(item.name) !== 'none';
+    return !this.isBareCommentLabel(item.label);
   }
 
   private formatDirectiveName(tag: Tag): string {
