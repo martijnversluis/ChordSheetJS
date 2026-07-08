@@ -268,6 +268,114 @@ Let it be, let it be, let it be, let it be`;
     expect(rendered).toEqual('Composers: John and Jane');
   });
 
+  it('renders configured header and footer templates without legacy title casing', () => {
+    const song = new ChordProParser().parse(heredoc`
+      {title: My Mixed Case Song}
+      {artist: The Artist}
+      {copyright: Copyright 2026}
+
+      [C]Sing a lyric
+    `);
+
+    const rendered = new TextFormatter({
+      layout: {
+        header: {
+          content: [
+            { type: 'text', template: '%{title}' },
+            { type: 'text', template: '%{artist}' },
+          ],
+        },
+        footer: {
+          content: [
+            { type: 'text', template: '%{copyright}' },
+          ],
+        },
+      },
+    }).format(song);
+
+    expect(rendered).toEqual(heredoc`
+      My Mixed Case Song
+      The Artist
+
+      C
+      Sing a lyric
+
+      Copyright 2026
+    `);
+  });
+
+  it('renders header and footer templates without recursively applying template configuration', () => {
+    const song = new ChordProParser().parse(heredoc`
+      {title: Safe Template Song}
+
+      Body lyric
+    `);
+
+    const rendered = new TextFormatter({
+      layout: {
+        header: {
+          content: [
+            { type: 'text', template: '%{title}' },
+          ],
+        },
+        footer: {
+          content: [
+            { type: 'text', template: '%{title}' },
+          ],
+        },
+      },
+    }).format(song);
+
+    expect(rendered).toEqual(heredoc`
+      Safe Template Song
+
+      Body lyric
+
+      Safe Template Song
+    `);
+  });
+
+  it('honors lyricsOnly text layout configuration', () => {
+    const song = new ChordProParser().parse(heredoc`
+      {start_of_verse: Intro}
+      [C] [G]
+      {end_of_verse}
+
+      {start_of_grid: Grid}
+      [C] [G]
+      {end_of_grid}
+
+      {start_of_verse: Verse 1}
+      [C]Keep [G]singing
+      [Am]
+      {end_of_verse}
+
+      {start_of_chorus: Chorus}
+      [Fmaj7]Hi [G]there
+      {end_of_chorus}
+    `);
+
+    const rendered = new TextFormatter({
+      layout: {
+        sections: {
+          base: {
+            display: {
+              lyricsOnly: true,
+            },
+          },
+        },
+      },
+    }).format(song);
+
+    expect(rendered).toEqual(heredoc`
+      Verse 1
+      Keep singing
+
+      Chorus
+      Hi there
+    `);
+  });
+
   describe('conditional metadata', () => {
     it('excludes metadata with a non-matching selector from ternary expressions', () => {
       const song = new ChordProParser().parse(heredoc`
