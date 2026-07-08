@@ -1,4 +1,5 @@
 import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
+import ChordProParser from '../parser/chord_pro_parser';
 import Formatter from './formatter';
 import Item from '../chord_sheet/item';
 import Line from '../chord_sheet/line';
@@ -7,15 +8,21 @@ import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 
+import { getTextDefaultConfig } from './configuration/default_config_manager';
 import { renderChord } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
 import { evaluate, hasTextContents, renderSection } from '../template_helpers';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 
+import {
+  TextFormatterConfiguration,
+  TextLayoutContentItemWithText,
+} from './configuration/text_configuration';
+
 /**
  * Formats a song into a plain text chord sheet
  */
-class TextFormatter extends Formatter {
+class TextFormatter extends Formatter<TextFormatterConfiguration> {
   song: Song = new Song();
 
   metadata: Metadata = new Metadata();
@@ -30,10 +37,65 @@ class TextFormatter extends Formatter {
     this.song = song;
     this.metadata = metadata || song.getMetadata(this.configuration);
 
-    return [
+    return this.formatSong();
+  }
+
+  protected getDefaultConfiguration(): TextFormatterConfiguration {
+    return getTextDefaultConfig();
+  }
+
+  private formatSong(): string {
+    const customHeader = this.formatTemplateContent(this.configuration.layout.header.content);
+    const body = this.formatParagraphs();
+    const customFooter = this.formatTemplateContent(this.configuration.layout.footer.content);
+
+    if (customHeader !== null) {
+      return [customHeader, body, customFooter]
+        .filter((part): part is string => !isEmptyString(part))
+        .join('\n\n');
+    }
+
+    const legacyOutput = [
       this.formatHeader(),
-      this.formatParagraphs(),
+      body,
     ].join('');
+
+    return [legacyOutput, customFooter]
+      .filter((part): part is string => !isEmptyString(part))
+      .join('\n\n');
+  }
+
+  private formatTemplateContent(content: TextLayoutContentItemWithText[] = []): string | null {
+    if (content.length === 0) {
+      return null;
+    }
+
+    return content
+      .map((item) => this.formatTemplateContentItem(item))
+      .filter((line) => !isEmptyString(line))
+      .join('\n');
+  }
+
+  private formatTemplateContentItem(item: TextLayoutContentItemWithText): string {
+    if (item.value) {
+      return item.value;
+    }
+
+    if (item.template) {
+      return this.evaluateTemplate(item.template);
+    }
+
+    return '';
+  }
+
+  private evaluateTemplate(template: string): string {
+    const parsed = new ChordProParser().parse(template);
+    const formatter = new TextFormatter({ metadata: this.configuration.metadata });
+
+    formatter.song = parsed;
+    formatter.metadata = this.metadata;
+
+    return formatter.formatParagraphs();
   }
 
   formatHeader(): string {
@@ -54,10 +116,15 @@ class TextFormatter extends Formatter {
 
     return this.song.filterParagraphs(paragraphs, this.configuration)
       .map((paragraph: Paragraph) => this.formatParagraph(paragraph, this.metadata))
+      .filter((paragraph) => !isEmptyString(paragraph))
       .join('\n\n');
   }
 
   formatParagraph(paragraph: Paragraph, metadata: Metadata): string {
+    if (this.isLyricsOnly() && !this.paragraphHasLyrics(paragraph, metadata)) {
+      return '';
+    }
+
     if (paragraph.isLiteral()) {
       return [paragraph.label, renderSection(paragraph, this.configuration)]
         .filter((part) => part)
@@ -65,7 +132,7 @@ class TextFormatter extends Formatter {
     }
 
     return paragraph.lines
-      .filter((line) => line.hasRenderableItems())
+      .filter((line) => this.shouldFormatLine(line, paragraph, metadata))
       .map((line) => this.formatLine(line, metadata))
       .join('\n');
   }
@@ -99,6 +166,10 @@ class TextFormatter extends Formatter {
   }
 
   formatLineTop(line: Line, metadata: Metadata): string | null {
+    if (this.isLyricsOnly()) {
+      return null;
+    }
+
     if (hasRemarkContents(line)) {
       return this.formatLineWithFormatter(line, this.formatItemTop, metadata);
     }
@@ -173,7 +244,13 @@ class TextFormatter extends Formatter {
     }
 
     if (item instanceof ChordLyricsPair) {
-      return padLeft(stripPangoMarkup(item.lyrics || ''), this.chordLyricsPairLength(item, line));
+      const lyrics = stripPangoMarkup(item.lyrics || '');
+
+      if (this.isLyricsOnly()) {
+        return lyrics;
+      }
+
+      return padLeft(lyrics, this.chordLyricsPairLength(item, line));
     }
 
     if ('evaluate' in item) {
@@ -181,6 +258,49 @@ class TextFormatter extends Formatter {
     }
 
     return '';
+  }
+
+  private isLyricsOnly(): boolean {
+    return !!this.configuration.layout.sections?.base?.display?.lyricsOnly;
+  }
+
+  private shouldFormatLine(line: Line, paragraph: Paragraph, metadata: Metadata): boolean {
+    if (!this.isLyricsOnly()) {
+      return line.hasRenderableItems();
+    }
+
+    return this.lineHasLyrics(line, metadata) ||
+      (this.lineHasRenderableLabel(line) && this.paragraphHasLyrics(paragraph, metadata));
+  }
+
+  private paragraphHasLyrics(paragraph: Paragraph, metadata: Metadata): boolean {
+    if (paragraph.isLiteral()) {
+      return false;
+    }
+
+    return paragraph.lines.some((line) => this.lineHasLyrics(line, metadata));
+  }
+
+  private lineHasLyrics(line: Line, metadata: Metadata): boolean {
+    return line.items.some((item) => {
+      if (item instanceof ChordLyricsPair) {
+        return this.hasVisibleText(stripPangoMarkup(item.lyrics || ''));
+      }
+
+      if ('evaluate' in item) {
+        return this.hasVisibleText(evaluate(item, metadata, this.configuration));
+      }
+
+      return false;
+    });
+  }
+
+  private lineHasRenderableLabel(line: Line): boolean {
+    return line.items.some((item) => item instanceof Tag && item.hasRenderableLabel());
+  }
+
+  private hasVisibleText(text: string): boolean {
+    return text.trim().length > 0;
   }
 }
 

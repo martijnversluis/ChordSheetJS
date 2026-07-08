@@ -74,11 +74,22 @@ import {
 } from './pdf_configuration';
 
 import {
+  TextConfigurationProperties,
+  TextFormatterConfiguration,
+  TextLayoutConfig,
+  TextLayoutContentItemWithText,
+  TextLayoutItem,
+  defaultTextLayout,
+  textSpecificDefaults,
+} from './text_configuration';
+
+import {
   getBaseDefaultConfig,
   getDefaultConfig,
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
 } from './default_config_manager';
 
 import { mergeConfigs } from '../../utilities';
@@ -160,12 +171,21 @@ export {
   PDFConfigurationProperties,
   pdfSpecificDefaults,
 
+  TextLayoutContentItemWithText,
+  TextLayoutItem,
+  TextLayoutConfig,
+  TextFormatterConfiguration,
+  TextConfigurationProperties,
+  defaultTextLayout,
+  textSpecificDefaults,
+
   BaseFormatterConfiguration,
   Configuration,
   getDefaultConfig,
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
 };
 
 export default Configuration;

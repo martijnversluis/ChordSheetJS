@@ -6,6 +6,7 @@ import {
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
 } from './formatter/configuration';
 
 export {
@@ -14,6 +15,7 @@ export {
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
   mergeConfigs,
 };
 
@@ -23,6 +25,7 @@ export interface FormatterConfigurationHelpers {
   getHTMLDefaultConfig: typeof getHTMLDefaultConfig;
   getMeasuredHtmlDefaultConfig: typeof getMeasuredHtmlDefaultConfig;
   getPDFDefaultConfig: typeof getPDFDefaultConfig;
+  getTextDefaultConfig: typeof getTextDefaultConfig;
   mergeConfigs: typeof mergeConfigs;
 }
 
@@ -32,6 +35,7 @@ export const formatterConfiguration: FormatterConfigurationHelpers = {
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
   mergeConfigs,
 };
 
