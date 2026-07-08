@@ -282,6 +282,23 @@ describe('ChordsOverWordsParser', () => {
     expect(line6Pairs[4]).toBeChordLyricsPair('/', '');
   });
 
+  it('preserves rhythm symbols in chords over words lines', () => {
+    const chordOverWords = heredoc`
+      N.C. Am    C                -
+      Hey, Jude, don't make it bad`;
+
+    const parser = new ChordsOverWordsParser();
+    const song = parser.parse(chordOverWords, { chopFirstWord: false });
+    const { lines } = song;
+
+    const linePairs = lines[0].items;
+    expect(linePairs[0]).toBeChordLyricsPair('N.C.', 'Hey, ');
+    expect(linePairs[1]).toBeChordLyricsPair('Am', 'Jude, ');
+    expect(linePairs[2]).toBeChordLyricsPair('C', 'don\'t make it bad');
+    expect(linePairs[3]).toBeChordLyricsPair('-', '');
+    expect((linePairs[3] as ChordLyricsPair).isRhythmSymbol).toBe(true);
+  });
+
   it('parses comment without a ":"', () => {
     const chordOverWords = heredoc`
       title: Let it be
