@@ -270,7 +270,7 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
     }
 
     return this.lineHasLyrics(line, metadata) ||
-      (this.lineHasRenderableText(line) && this.paragraphHasLyrics(paragraph, metadata));
+      (this.lineHasRenderableText(line) && this.renderableTextLineHasFollowingLyrics(line, paragraph, metadata));
   }
 
   private paragraphHasLyrics(paragraph: Paragraph, metadata: Metadata): boolean {
@@ -297,6 +297,21 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
 
   private lineHasRenderableText(line: Line): boolean {
     return line.items.some((item) => item instanceof Tag && item.isRenderable());
+  }
+
+  private renderableTextLineHasFollowingLyrics(line: Line, paragraph: Paragraph, metadata: Metadata): boolean {
+    const lineIndex = paragraph.lines.indexOf(line);
+
+    if (lineIndex === -1) {
+      return this.paragraphHasLyrics(paragraph, metadata);
+    }
+
+    const followingLines = paragraph.lines.slice(lineIndex + 1);
+    const nextContentLine = followingLines.find((followingLine) => (
+      this.lineHasLyrics(followingLine, metadata) || this.lineHasRenderableText(followingLine)
+    ));
+
+    return !!nextContentLine && this.lineHasLyrics(nextContentLine, metadata);
   }
 
   private hasVisibleText(text: string): boolean {
