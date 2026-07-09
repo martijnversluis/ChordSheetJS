@@ -272,7 +272,7 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
     }
 
     return this.lineHasLyrics(line, metadata) ||
-      (this.lineHasRenderableLabel(line) && this.paragraphHasLyrics(paragraph, metadata));
+      (this.lineHasRenderableText(line) && this.paragraphHasLyrics(paragraph, metadata));
   }
 
   private paragraphHasLyrics(paragraph: Paragraph, metadata: Metadata): boolean {
@@ -297,8 +297,8 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
     });
   }
 
-  private lineHasRenderableLabel(line: Line): boolean {
-    return line.items.some((item) => item instanceof Tag && item.hasRenderableLabel());
+  private lineHasRenderableText(line: Line): boolean {
+    return line.items.some((item) => item instanceof Tag && item.isRenderable());
   }
 
   private hasVisibleText(text: string): boolean {

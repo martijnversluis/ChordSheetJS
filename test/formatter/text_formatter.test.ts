@@ -350,6 +350,12 @@ Let it be, let it be, let it be, let it be`;
       [Am]
       {end_of_verse}
 
+      {comment: Verse 2}
+      [Dm]Keep [G]going
+
+      {comment: Solo}
+      [C] [G]
+
       {start_of_chorus: Chorus}
       [Fmaj7]Hi [G]there
       {end_of_chorus}
@@ -370,6 +376,9 @@ Let it be, let it be, let it be, let it be`;
     expect(rendered).toEqual(heredoc`
       Verse 1
       Keep singing
+
+      Verse 2
+      Keep going
 
       Chorus
       Hi there
