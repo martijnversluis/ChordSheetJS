@@ -352,7 +352,6 @@ Let it be, let it be, let it be, let it be`;
 
       {comment: Verse 2}
       [Dm]Keep [G]going
-
       {comment: Solo}
       [C] [G]
 
