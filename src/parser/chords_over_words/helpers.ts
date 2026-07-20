@@ -17,7 +17,7 @@ type Chord = { column: number, value: string } & SerializedChord;
 
 interface RhythmSymbol {
   type: 'symbol',
-  value: '/' | '|' | '-' | 'x',
+  value: string,
   column: number,
 }
 
