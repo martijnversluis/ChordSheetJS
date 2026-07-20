@@ -14,6 +14,7 @@ import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
 
 import { Notation } from './constants';
+import { isRhythmSymbolValue } from './chord_sheet/rhythm_symbol';
 import { warn } from './utilities';
 
 import {
@@ -214,7 +215,8 @@ class ChordSheetSerializer {
     } = astComponent;
 
     const chordString = chord ? new Chord(chord).toString() : chords;
-    const eagerChord = this.notation && chordString ?
+    const rhythmSymbol = isRhythmSymbol || isRhythmSymbolValue(chordString);
+    const eagerChord = this.notation && chordString && !rhythmSymbol ?
       Chord.parse(chordString, { notation: this.notation }) :
       null;
 
@@ -223,7 +225,7 @@ class ChordSheetSerializer {
       lyrics,
       annotation,
       eagerChord,
-      isRhythmSymbol || false,
+      rhythmSymbol,
     );
   }
 
