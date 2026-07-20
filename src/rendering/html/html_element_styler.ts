@@ -1,6 +1,5 @@
 import { FontConfiguration } from '../../formatter/configuration';
 import { PositionedElement } from '../renderer';
-import { isRhythmSymbolValue } from '../../chord_sheet/rhythm_symbol';
 
 declare type HTMLElement = any;
 declare type CSSStyleDeclaration = any;
@@ -96,10 +95,10 @@ export class HtmlElementStyler {
    */
   chordStyles(element: PositionedElement): Partial<CSSStyleDeclaration> {
     const { style } = element;
-    const contentIsRhythm = isRhythmSymbolValue(element.content);
+    const contentUsesLighterWeight = element.content === '|' || element.content === '/';
     const chordStyles: Partial<CSSStyleDeclaration> = { color: style?.color || '#0066cc' };
 
-    if (contentIsRhythm && style?.weight && style.weight > 500) {
+    if (contentUsesLighterWeight && style?.weight && style.weight > 500) {
       chordStyles.fontWeight = '500';
     }
 
