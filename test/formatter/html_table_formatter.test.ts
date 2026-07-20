@@ -1544,8 +1544,8 @@ describe('HtmlTableFormatter', () => {
       const formatted = new HtmlTableFormatter().format(song);
 
       expect(formatted).toContain('<td class="chord">Am</td>');
-      expect(formatted).toContain('<td class="rhythm-symbol">/</td>');
-      expect(formatted).toContain('<td class="rhythm-symbol">|</td>');
+      expect(formatted).toContain('<td class="rhythm-symbol rhythm-symbol-continuation">/</td>');
+      expect(formatted).toContain('<td class="barline barline-single">|</td>');
       expect(formatted).not.toMatch(/<td class="chord">[/|]<\/td>/);
     });
 
@@ -1560,7 +1560,22 @@ describe('HtmlTableFormatter', () => {
 
       const formatted = new HtmlTableFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
 
-      expect(formatted).toContain('<td class="custom-rhythm">/</td>');
+      expect(formatted).toContain('<td class="custom-rhythm custom-rhythm-continuation">/</td>');
+    });
+
+    it('uses semantic classes for non-chord tokens', () => {
+      const song = createSongFromAst([[
+        { type: 'chordLyricsPair', chords: ':||', lyrics: '' },
+        { type: 'chordLyricsPair', chords: '(6x)', lyrics: '' },
+        { type: 'chordLyricsPair', chords: 'N.C.', lyrics: '' },
+      ]]);
+
+      const formatted = new HtmlTableFormatter().format(song);
+
+      expect(formatted).toContain('<td class="barline barline-repeat-end">:||</td>');
+      expect(formatted).toContain('<td class="instruction instruction-repeat-count">(6x)</td>');
+      expect(formatted).toContain('<td class="no-chord no-chord-marker">N.C.</td>');
+      expect(formatted).not.toContain('<td class="chord">(6x)</td>');
     });
   });
 

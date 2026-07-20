@@ -1,4 +1,5 @@
 import { Accidental, ChordType, Fret } from './constants';
+import { ChordLineTokenKind, ChordLineTokenVariant } from './chord_sheet/chord_line_token';
 
 export interface SerializedTraceInfo {
   location?: {
@@ -26,6 +27,8 @@ export interface SerializedChordLyricsPair {
   lyrics: string | null,
   annotation?: string | null,
   isRhythmSymbol?: boolean,
+  tokenKind?: ChordLineTokenKind,
+  tokenVariant?: ChordLineTokenVariant,
 }
 
 export interface SerializedChordDefinition {

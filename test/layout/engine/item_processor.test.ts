@@ -496,7 +496,7 @@ describe('ItemProcessor', () => {
       expect(result[0]).toEqual(pair);
     });
 
-    it('preserves rhythm symbols when splitting or measuring chord-lyrics pairs', () => {
+    it('preserves token kinds when splitting or measuring chord-lyrics pairs', () => {
       const { processor } = createProcessor();
       const pair = new ChordLyricsPair('|', '', null, null, true);
       const line = new Line();
@@ -504,7 +504,21 @@ describe('ItemProcessor', () => {
 
       const result = processor.measureLineItems(line);
 
-      expect((result[0].item as ChordLyricsPair).isRhythmSymbol).toBe(true);
+      expect((result[0].item as ChordLyricsPair).tokenKind).toBe('barline');
+    });
+
+    it('measures tokens with their resolved font role', () => {
+      const fonts = {
+        ...createTestConfig().fonts,
+        rhythmSymbol: { ...baseFonts.chord, size: 8 },
+      };
+      const { processor } = createProcessor({ config: { fonts } });
+      const line = new Line();
+      line.addChordLyricsPair(new ChordLyricsPair('/', ''));
+
+      const result = processor.measureLineItems(line);
+
+      expect(result[0].chordHeight).toBe(9.6);
     });
 
     it('returns pair when lyrics empty', () => {

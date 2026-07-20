@@ -3,6 +3,7 @@ import { ItemProcessor } from './item_processor';
 import { LayoutFactory } from './layout_factory';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
+import { isFlowSymbolKind } from '../../chord_sheet/chord_line_token';
 import { LineLayout, MeasuredItem } from './types';
 
 /**
@@ -282,13 +283,13 @@ export class LineBreaker {
   }
 
   private startsWithRhythmSymbol(items: MeasuredItem[]): boolean {
-    return this.isRhythmSymbolItem(items[0]);
+    return this.isFlowSymbolItem(items[0]);
   }
 
   private countLeadingRhythmSymbols(items: MeasuredItem[]): number {
     let count = 0;
 
-    while (count < items.length && this.isRhythmSymbolItem(items[count])) {
+    while (count < items.length && this.isFlowSymbolItem(items[count])) {
       count += 1;
     }
 
@@ -309,13 +310,13 @@ export class LineBreaker {
     return -1;
   }
 
-  private isRhythmSymbolItem(item: MeasuredItem | undefined): boolean {
-    return item?.item instanceof ChordLyricsPair && item.item.isRhythmSymbol;
+  private isFlowSymbolItem(item: MeasuredItem | undefined): boolean {
+    return item?.item instanceof ChordLyricsPair && isFlowSymbolKind(item.item.tokenKind);
   }
 
   private isNonRhythmChordItem(item: MeasuredItem | undefined): boolean {
     return item?.item instanceof ChordLyricsPair &&
-      !item.item.isRhythmSymbol &&
+      !isFlowSymbolKind(item.item.tokenKind) &&
       (item.item.chords || '').trim() !== '';
   }
 
@@ -386,9 +387,8 @@ export class LineBreaker {
   }
 
   private measureChordAndLyricWidths(pair: ChordLyricsPair): { chordWidth: number; lyricsWidth: number } {
-    const chordFont = this.itemProcessor.config.fonts.chord;
+    const chordFont = this.itemProcessor.config.fonts[pair.styleRole] || this.itemProcessor.config.fonts.chord;
     const lyricsFont = this.itemProcessor.config.fonts.lyrics;
-
     const chordWidth = pair.chords ? this.itemProcessor.measurer.measureTextWidth(pair.chords, chordFont) : 0;
     const lyricsWidth = pair.lyrics ? this.itemProcessor.measurer.measureTextWidth(pair.lyrics, lyricsFont) : 0;
 
@@ -411,7 +411,7 @@ export class LineBreaker {
       return widths.chordWidth;
     }
 
-    const chordFont = this.itemProcessor.config.fonts.chord;
+    const chordFont = this.itemProcessor.config.fonts[pair.styleRole] || this.itemProcessor.config.fonts.chord;
     const spacing = ' '.repeat(this.itemProcessor.config.chordSpacing);
     const chordsWithSpacing = `${pair.chords || ''}${spacing}`;
 

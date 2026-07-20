@@ -64,6 +64,22 @@ const parser = new ChordSheetJS.ChordsOverWordsParser();
 const song = parser.parse(chordSheet);
 ```
 
+#### Chord-line tokens
+
+ChordSheetJS recognizes non-chord tokens in its chords-over-words dialect. These tokens remain in the chord row,
+but are not transposed, normalized, included in `Song#getChords`, or used for chord diagrams:
+
+- `/`, `x`, and `-` are rhythm symbols.
+- `|`, `||`, `|.`, `|:`, `:|`, and `:|:` are barlines.
+- `:||` is supported as a ChordSheetJS repeat-barline extension.
+- Repeat counts such as `(2x)` and `(6x)` are instructions.
+- `N.C.`, `N.C`, `N/C`, and `NC` are no-chord markers.
+
+For example, `D2 / / / :|| (6x)` converts to `[D2][/][/][/][:||][(6x)]` in ChordPro and back without
+changing the tokens. ChordPro permits bracketed display content, but `:||` and unstarred repeat counts are
+ChordSheetJS conventions rather than official semantic ChordPro constructs. Explicit ChordPro annotations such as
+`[*Coda]` remain annotations.
+
 #### Ultimate Guitar chord sheets
 
 ```javascript
@@ -176,6 +192,24 @@ and precise positioning of chords above lyrics. The layout engine uses measurers
 
 These are used internally by the measurement-based formatters but can also be accessed directly for advanced use cases.
 
+Token fonts are optional and inherit from the final configured chord font. Existing configurations that only set
+`fonts.chord` continue to apply to barlines, instructions, and no-chord markers. Rhythm symbols use the chord font with
+a default weight of `500`; the exact single barline `|` uses the same lighter font role. Optional overrides can be
+provided without duplicating the complete chord font:
+
+```javascript
+const formatter = new PdfFormatter({
+  fonts: {
+    chord: { name: 'Helvetica', style: 'bold', size: 13, weight: 700, color: '#000' },
+    instruction: { inherit: 'chord', style: 'italic' },
+    barline: { inherit: 'chord' },
+  },
+});
+```
+
+Font inheritance is resolved after defaults and user configuration are merged, so later `fonts.chord` overrides also
+flow through to token fonts.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by
@@ -206,6 +240,18 @@ HtmlTableFormatter.cssObject();
 //   marginBottom: '1em'
 // }
 ```
+
+Chord-line tokens use semantic classes instead of the `.chord` class:
+
+- `.rhythm-symbol` with variants such as `.rhythm-symbol-continuation`
+- `.barline` with variants such as `.barline-single` and `.barline-repeat-end`
+- `.instruction` with `.instruction-repeat-count`
+- `.no-chord` with `.no-chord-marker`
+
+This class distinction is a breaking styling change for consumers that previously selected all chord-row content via
+`.chord`. Add the semantic classes to existing selectors when those tokens should retain chord-like presentation.
+The legacy `ChordLyricsPair#isRhythmSymbol` property now applies only to rhythm symbols; use `tokenKind` and
+`tokenVariant` when handling barlines, instructions, or no-chord markers.
 
 ### Parsing and modifying chords
 

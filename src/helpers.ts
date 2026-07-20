@@ -6,9 +6,9 @@ import Line from './chord_sheet/line';
 import Song from './chord_sheet/song';
 
 import { NullableChordStyle } from './constants';
-import { isRhythmSymbolValue } from './chord_sheet/rhythm_symbol';
 import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
 import { capos, majorKeys, minorKeys } from './key_config';
+import { classifyChordLineToken, isChordTokenKind } from './chord_sheet/chord_line_token';
 
 export function transposeDistance(transposeKey: string, songKey: string | Key): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -55,7 +55,7 @@ export function renderChord(
   song: Song,
   options: RenderChordOptions = {},
 ): string {
-  if (typeof chord === 'string' && isRhythmSymbolValue(chord)) return chord;
+  if (typeof chord === 'string' && !isChordTokenKind(classifyChordLineToken(chord).kind)) return chord;
 
   const {
     renderKey, useUnicodeModifier, normalizeChords, normalizeChordSuffix, decapo,

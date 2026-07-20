@@ -358,6 +358,26 @@ describe('PositionedHtmlRenderer', () => {
       expect(renderer.getFontConfiguration('text')).toEqual(config.fonts.text);
     });
 
+    it('resolves token fonts from the configured chord font', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 900, color: 'red',
+          },
+        } as any,
+      });
+
+      expect(renderer.getFontConfiguration('rhythmSymbol')).toMatchObject({
+        name: 'Custom', size: 17, weight: 500, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('barline')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('instruction')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+    });
+
     it('provides document metadata including dimensions and page info', () => {
       const { renderer, doc } = createRenderer();
       (renderer as any).renderTime = 3.5;

@@ -40,6 +40,21 @@ export function isRhythmSymbol(item: Item): boolean {
   return item instanceof ChordLyricsPair && item.isRhythmSymbol;
 }
 
+function tokenClasses(baseClass: string, variant: string | null): string {
+  return variant ? `${baseClass} ${baseClass}-${variant}` : baseClass;
+}
+
+export function chordLineClasses(item: ChordLyricsPair, cssClasses: HtmlTemplateCssClasses): string {
+  switch (item.tokenKind) {
+    case 'rhythm-symbol': return tokenClasses(cssClasses.rhythmSymbol, item.tokenVariant);
+    case 'barline': return tokenClasses(cssClasses.barline, item.tokenVariant);
+    case 'instruction': return tokenClasses(cssClasses.instruction, item.tokenVariant);
+    case 'no-chord': return tokenClasses(cssClasses.noChord, item.tokenVariant);
+    case 'chord':
+    default: return cssClasses.chord;
+  }
+}
+
 export function lineHasContents(line: Line): boolean {
   return line.items.some((item: Item) => item.isRenderable());
 }

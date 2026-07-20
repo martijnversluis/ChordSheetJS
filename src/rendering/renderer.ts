@@ -1,15 +1,31 @@
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
+import { chordLineElementType } from '../chord_sheet/chord_line_token';
 import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import { LineLayout, MeasuredItem } from '../layout/engine';
 import { isColumnBreak, isComment, renderChord } from '../template_helpers';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutItem,
   MeasurementBasedFormatterConfiguration,
 } from '../formatter/configuration';
+
+const FONT_SECTIONS_BY_TYPE: Record<string, FontSection> = {
+  'chord': 'chord',
+  'rhythmSymbol': 'rhythmSymbol',
+  'rhythm-symbol': 'rhythmSymbol',
+  'barline': 'barline',
+  'instruction': 'instruction',
+  'noChord': 'noChord',
+  'no-chord': 'noChord',
+  'annotation': 'annotation',
+  'lyrics': 'text',
+  'sectionLabel': 'sectionLabel',
+  'comment': 'comment',
+};
 
 /**
  * Interface representing paragraph layouts from the layout engine
@@ -33,6 +49,7 @@ export interface PositionedElement {
   style?: any;
   page: number;
   column: number;
+  tokenVariant?: string;
 }
 
 /**
@@ -127,7 +144,7 @@ abstract class Renderer {
   /**
    * Get the font configuration for a specific object type
    */
-  abstract getFontConfiguration(objectType: string): FontConfiguration;
+  abstract getFontConfiguration(objectType: FontSection): FontConfiguration;
 
   /**
    * Get the current rendering time in seconds
@@ -243,13 +260,24 @@ abstract class Renderer {
     // Add chord element if not lyrics-only mode
     if (!this.isLyricsOnly() && chords) {
       const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
-      this.addTextElement(chords, currentX, chordBaseline, 'chord');
+      this.addChordLineToken(item, chords, currentX, chordBaseline);
     }
 
     // Always add lyrics if present
     if (lyrics && lyrics.trim() !== '') {
       this.addTextElement(lyrics, currentX, lyricsYOffset, 'lyrics');
     }
+  }
+
+  private addChordLineToken(item: ChordLyricsPair, content: string, x: number, y: number): void {
+    this.addTextElement(
+      content,
+      x,
+      y,
+      chordLineElementType(item.tokenKind),
+      item.styleRole,
+      item.tokenVariant || undefined,
+    );
   }
 
   /**
@@ -331,8 +359,15 @@ abstract class Renderer {
   /**
    * Add a text element to the elements array
    */
-  protected addTextElement(text: string, x: number, y: number, type: string): void {
-    const font = this.getFontForType(type);
+  protected addTextElement(
+    text: string,
+    x: number,
+    y: number,
+    type: string,
+    fontType = type,
+    tokenVariant?: string,
+  ): void {
+    const font = this.getFontForType(fontType);
     const { width, height } = this.measureText(text, font);
 
     this.elements.push({
@@ -345,6 +380,7 @@ abstract class Renderer {
       style: font,
       page: this.currentPage,
       column: this.currentColumn,
+      ...(tokenVariant && { tokenVariant }),
     });
   }
 
@@ -366,18 +402,7 @@ abstract class Renderer {
    * Get the font configuration for a specific element type
    */
   protected getFontForType(type: string): FontConfiguration {
-    switch (type) {
-      case 'chord':
-        return this.getFontConfiguration('chord');
-      case 'lyrics':
-        return this.getFontConfiguration('text');
-      case 'sectionLabel':
-        return this.getFontConfiguration('sectionLabel');
-      case 'comment':
-        return this.getFontConfiguration('comment');
-      default:
-        return this.getFontConfiguration('text');
-    }
+    return this.getFontConfiguration(FONT_SECTIONS_BY_TYPE[type] || 'text');
   }
 
   /**
