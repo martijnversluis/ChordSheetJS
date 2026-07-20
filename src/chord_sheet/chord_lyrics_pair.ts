@@ -50,6 +50,10 @@ class ChordLyricsPair {
 
   /** Returns the Chord object if available, otherwise parses from string */
   get chord(): Chord | null {
+    if (this.isRhythmSymbol) {
+      return null;
+    }
+
     return this._chordObj || Chord.parse(this.chords.trim());
   }
 
