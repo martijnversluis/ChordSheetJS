@@ -21,7 +21,7 @@ export interface Margins {
 }
 
 // Font and layout types
-export type FontSection =
+export type BaseFontSection =
   'title' |
   'subtitle' |
   'metadata' |
@@ -30,6 +30,9 @@ export type FontSection =
   'comment' |
   'annotation' |
   'sectionLabel';
+
+export type TokenFontSection = 'rhythmSymbol' | 'barline' | 'instruction' | 'noChord';
+export type FontSection = BaseFontSection | TokenFontSection;
 
 export type LayoutSection = 'header' | 'footer';
 export type Alignment = 'left' | 'center' | 'right' | number;
@@ -85,13 +88,15 @@ export interface FontConfiguration {
   lineHeight?: number;
   color: string | number;
   underline?: boolean;
-  inherit?: string;
+  inherit?: FontSection;
   textTransform?: string;
   textDecoration?: string;
   letterSpacing?: string;
 }
 
-export type FontConfigurations = Record<FontSection, FontConfiguration>;
+export type FontConfigurations =
+  Record<BaseFontSection, FontConfiguration> &
+  Partial<Record<TokenFontSection, Partial<FontConfiguration>>>;
 export type ChordDiagramFontConfigurations = Record<'title' | 'fingerings' | 'baseFret', FontConfiguration>;
 
 export const defaultFontConfigurations: FontConfigurations = {
@@ -136,6 +141,19 @@ export const defaultFontConfigurations: FontConfigurations = {
     style: 'normal',
     size: 10,
     color: '#000000',
+  },
+  rhythmSymbol: {
+    inherit: 'chord',
+    weight: 500,
+  },
+  barline: {
+    inherit: 'chord',
+  },
+  instruction: {
+    inherit: 'chord',
+  },
+  noChord: {
+    inherit: 'chord',
   },
   sectionLabel: {
     name: 'Helvetica',

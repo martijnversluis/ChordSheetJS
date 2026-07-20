@@ -17,14 +17,8 @@ function chordElement(content: string): PositionedElement {
 }
 
 describe('HtmlElementStyler', () => {
-  it.each(['/', '|'])('uses a lighter weight for %s', (symbol) => {
-    const styler = new HtmlElementStyler({});
-
-    expect(styler.chordStyles(chordElement(symbol)).fontWeight).toBe('500');
-  });
-
-  it.each(['||', '|.', '|:', ':|', ':|:', ':||', '(6x)', 'D2'])(
-    'keeps the configured chord weight for %s',
+  it.each(['/', '|', '||', ':||', '(6x)', 'D2'])(
+    'does not override the resolved font weight for %s',
     (content) => {
       const styler = new HtmlElementStyler({});
 

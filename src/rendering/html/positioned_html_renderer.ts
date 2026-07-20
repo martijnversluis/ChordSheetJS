@@ -15,10 +15,12 @@ import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutContentItemWithText,
   LayoutItem,
   LineStyle,
   MeasuredHtmlFormatterConfiguration,
+  resolveFontConfiguration,
 } from '../../formatter/configuration';
 
 declare const document: any;
@@ -84,8 +86,8 @@ class PositionedHtmlRenderer extends Renderer {
   // PUBLIC API
   //
 
-  getFontConfiguration(objectType: string): FontConfiguration {
-    return this.configuration.fonts[objectType];
+  getFontConfiguration(objectType: FontSection): FontConfiguration {
+    return resolveFontConfiguration(this.configuration.fonts, objectType);
   }
 
   getDocumentMetadata(): Record<string, any> {
@@ -616,6 +618,7 @@ class PositionedHtmlRenderer extends Renderer {
       element.content,
       [
         `${prefix}element ${prefix}${element.type}`,
+        element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
         this.styler.getCustomClass(element.type),
       ],
     );
@@ -627,6 +630,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawElement(element: PositionedElement): void {
     switch (element.type) {
       case 'chord':
+      case 'rhythm-symbol':
+      case 'barline':
+      case 'instruction':
+      case 'no-chord':
+      case 'annotation':
       case 'lyrics':
       case 'sectionLabel':
       case 'comment':
@@ -642,7 +650,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawTextElement(element: PositionedElement): void {
     const htmlElement = document.createElement('div');
     const { prefix } = this.styler;
-    htmlElement.className = `${prefix}element ${prefix}${element.type}`;
+    htmlElement.className = this.styler.createClassName(
+      `${prefix}element`,
+      `${prefix}${element.type}`,
+      element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
+    );
 
     const customClass = this.styler.getCustomClass(element.type);
     if (customClass) {

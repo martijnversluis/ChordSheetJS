@@ -23,18 +23,18 @@ describe('ChordProParser', () => {
     const song = new ChordProParser().parse('[E][/][|][||][|.][|:][:|][:|:][:||][(6x)][A/E]');
     const pairs = song.lines[0].items as ChordLyricsPair[];
 
-    expect(pairs.map((pair) => [pair.chords, pair.isRhythmSymbol])).toEqual([
-      ['E', false],
-      ['/', true],
-      ['|', true],
-      ['||', true],
-      ['|.', true],
-      ['|:', true],
-      [':|', true],
-      [':|:', true],
-      [':||', true],
-      ['(6x)', true],
-      ['A/E', false],
+    expect(pairs.map((pair) => [pair.chords, pair.tokenKind])).toEqual([
+      ['E', 'chord'],
+      ['/', 'rhythm-symbol'],
+      ['|', 'barline'],
+      ['||', 'barline'],
+      ['|.', 'barline'],
+      ['|:', 'barline'],
+      [':|', 'barline'],
+      [':|:', 'barline'],
+      [':||', 'barline'],
+      ['(6x)', 'instruction'],
+      ['A/E', 'chord'],
     ]);
     expect(pairs[9].chord).toBeNull();
   });

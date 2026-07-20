@@ -64,6 +64,8 @@ import {
   measurementSpecificDefaults,
 } from './measurement_based_configuration';
 
+import { resolveFontConfiguration } from './font_resolver';
+
 import {
   MeasuredHtmlConfigurationProperties,
   MeasuredHtmlFormatterConfiguration,
@@ -118,6 +120,7 @@ export {
   InstrumentConfiguration,
   UserConfigurationProperties,
   defaultMetadataConfiguration,
+  resolveFontConfiguration,
   DelegatesConfiguration,
   defaultDelegatesConfiguration,
   ConfigurationProperties,
