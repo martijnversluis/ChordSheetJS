@@ -20,7 +20,7 @@ import {
 
 describe('ChordProParser', () => {
   it('marks chord-only rhythm tokens as rhythm symbols', () => {
-    const song = new ChordProParser().parse('[E][/][|][-][x][A/E]');
+    const song = new ChordProParser().parse('[E][/][|][-][x][||][|.][|:][:|][:|:][:||][(6x)][A/E]');
     const pairs = song.lines[0].items as ChordLyricsPair[];
 
     expect(pairs.map((pair) => [pair.chords, pair.isRhythmSymbol])).toEqual([
@@ -29,8 +29,16 @@ describe('ChordProParser', () => {
       ['|', true],
       ['-', true],
       ['x', true],
+      ['||', true],
+      ['|.', true],
+      ['|:', true],
+      [':|', true],
+      [':|:', true],
+      [':||', true],
+      ['(6x)', true],
       ['A/E', false],
     ]);
+    expect(pairs.find((pair) => pair.chords === '(6x)')?.chord).toBeNull();
   });
 
   it('parses a ChordPro chord sheet correctly', () => {
