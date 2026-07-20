@@ -17,18 +17,18 @@ function chordElement(content: string): PositionedElement {
 }
 
 describe('HtmlElementStyler', () => {
-  it.each(['/', '|', '||', '|.', '|:', ':|', ':|:', ':||', '(6x)'])(
-    'uses the rhythm-symbol weight for %s',
-    (symbol) => {
-      const styler = new HtmlElementStyler({});
-
-      expect(styler.chordStyles(chordElement(symbol)).fontWeight).toBe('500');
-    },
-  );
-
-  it('does not change the configured weight for chords', () => {
+  it.each(['/', '|'])('uses a lighter weight for %s', (symbol) => {
     const styler = new HtmlElementStyler({});
 
-    expect(styler.chordStyles(chordElement('D2')).fontWeight).toBeUndefined();
+    expect(styler.chordStyles(chordElement(symbol)).fontWeight).toBe('500');
   });
+
+  it.each(['||', '|.', '|:', ':|', ':|:', ':||', '(6x)', 'D2'])(
+    'keeps the configured chord weight for %s',
+    (content) => {
+      const styler = new HtmlElementStyler({});
+
+      expect(styler.chordStyles(chordElement(content)).fontWeight).toBeUndefined();
+    },
+  );
 });
