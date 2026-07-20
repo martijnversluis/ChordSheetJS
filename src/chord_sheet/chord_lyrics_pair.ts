@@ -5,6 +5,51 @@ import type Line from './line';
 import { Accidental } from '../constants';
 import { deprecate } from '../utilities';
 import { CHORD_LYRICS_PAIR_BRAND, brandPrototype, hasBrand } from './object_brand';
+import {
+  ChordLineTokenKind,
+  ChordLineTokenVariant,
+  chordLineStyleRole,
+  classifyChordLineToken,
+  isChordTokenKind,
+  isTokenVariantValid,
+} from './chord_line_token';
+
+function resolveClassification(
+  chords: string,
+  annotation: string,
+  isRhythmSymbol: boolean,
+  tokenKind?: ChordLineTokenKind,
+  tokenVariant?: ChordLineTokenVariant,
+) {
+  const inferred = classifyChordLineToken(chords, annotation, isRhythmSymbol);
+  const kind = tokenKind ?? inferred.kind;
+  let variant = kind === inferred.kind ? inferred.variant : null;
+  if (tokenVariant !== undefined) variant = tokenVariant;
+
+  if (!isTokenVariantValid(kind, variant)) {
+    throw new Error(`Invalid ${kind} token variant: ${variant}`);
+  }
+
+  return { kind, variant };
+}
+
+function preservedClassification(
+  tokenContentChanged: boolean,
+  tokenKind: ChordLineTokenKind,
+  tokenVariant: ChordLineTokenVariant,
+): Partial<{ tokenKind: ChordLineTokenKind, tokenVariant: ChordLineTokenVariant }> {
+  return tokenContentChanged ? {} : { tokenKind, tokenVariant };
+}
+
+interface ChordLyricsPairChanges {
+  chords?: string,
+  lyrics?: string,
+  annotation?: string,
+  chordObj?: Chord | null,
+  isRhythmSymbol?: boolean,
+  tokenKind?: ChordLineTokenKind,
+  tokenVariant?: ChordLineTokenVariant,
+}
 
 /**
  * Represents a chord with the corresponding (partial) lyrics
@@ -20,7 +65,12 @@ class ChordLyricsPair {
 
   annotation: string | null;
 
+  /** @deprecated Use tokenKind instead. */
   isRhythmSymbol: boolean;
+
+  tokenKind: ChordLineTokenKind;
+
+  tokenVariant: ChordLineTokenVariant;
 
   parentLine: Line | null = null;
 
@@ -40,17 +90,22 @@ class ChordLyricsPair {
     annotation: string | null = null,
     chordObj: Chord | null = null,
     isRhythmSymbol = false,
+    tokenKind?: ChordLineTokenKind,
+    tokenVariant?: ChordLineTokenVariant,
   ) {
     this.chords = chords || '';
     this.lyrics = lyrics || '';
     this.annotation = annotation || '';
-    this._chordObj = chordObj;
-    this.isRhythmSymbol = isRhythmSymbol;
+    const classification = resolveClassification(this.chords, this.annotation, isRhythmSymbol, tokenKind, tokenVariant);
+    this.tokenKind = classification.kind;
+    this.tokenVariant = classification.variant;
+    this._chordObj = isChordTokenKind(this.tokenKind) ? chordObj : null;
+    this.isRhythmSymbol = this.tokenKind === 'rhythm-symbol';
   }
 
   /** Returns the Chord object if available, otherwise parses from string */
   get chord(): Chord | null {
-    if (this.isRhythmSymbol) {
+    if (!isChordTokenKind(this.tokenKind)) {
       return null;
     }
 
@@ -78,7 +133,15 @@ class ChordLyricsPair {
    */
   clone(): ChordLyricsPair {
     const chordObj = this._chordObj?.clone() || null;
-    return new ChordLyricsPair(this.chords, this.lyrics, this.annotation, chordObj, this.isRhythmSymbol);
+    return new ChordLyricsPair(
+      this.chords,
+      this.lyrics,
+      this.annotation,
+      chordObj,
+      this.isRhythmSymbol,
+      this.tokenKind,
+      this.tokenVariant,
+    );
   }
 
   toString(): string {
@@ -87,17 +150,24 @@ class ChordLyricsPair {
 
   set(
     {
-      chords, lyrics, annotation, chordObj, isRhythmSymbol,
-    }:
-    { chords?: string, lyrics?: string, annotation?: string, chordObj?: Chord | null, isRhythmSymbol?: boolean },
+      chords, lyrics, annotation, chordObj, isRhythmSymbol, tokenKind, tokenVariant,
+    }: ChordLyricsPairChanges,
   ): ChordLyricsPair {
+    const tokenContentChanged = chords !== undefined || annotation !== undefined || isRhythmSymbol !== undefined;
+    const preserved = preservedClassification(tokenContentChanged, this.tokenKind, this.tokenVariant);
     return new ChordLyricsPair(
       chords ?? this.chords,
       lyrics ?? this.lyrics,
       annotation ?? this.annotation,
       chordObj ?? null,
       isRhythmSymbol ?? this.isRhythmSymbol,
+      tokenKind ?? preserved.tokenKind,
+      tokenVariant === undefined ? preserved.tokenVariant : tokenVariant,
     );
+  }
+
+  get styleRole() {
+    return chordLineStyleRole(this.tokenKind, this.chords);
   }
 
   setLyrics(lyrics: string): ChordLyricsPair {

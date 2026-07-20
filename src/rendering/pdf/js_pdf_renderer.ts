@@ -14,8 +14,10 @@ import Renderer, { PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutItem,
   PDFFormatterConfiguration,
+  resolveFontConfiguration,
 } from '../../formatter/configuration';
 
 class JsPdfRenderer extends Renderer {
@@ -41,8 +43,8 @@ class JsPdfRenderer extends Renderer {
   // PUBLIC API IMPLEMENTATION
   //
 
-  getFontConfiguration(objectType: string): FontConfiguration {
-    return this.configuration.fonts[objectType];
+  getFontConfiguration(objectType: FontSection): FontConfiguration {
+    return resolveFontConfiguration(this.configuration.fonts, objectType);
   }
 
   getDocumentMetadata(): Record<string, any> {
@@ -254,6 +256,11 @@ class JsPdfRenderer extends Renderer {
 
     switch (element.type) {
       case 'chord':
+      case 'rhythm-symbol':
+      case 'barline':
+      case 'instruction':
+      case 'no-chord':
+      case 'annotation':
       case 'lyrics':
       case 'sectionLabel':
       case 'comment': {

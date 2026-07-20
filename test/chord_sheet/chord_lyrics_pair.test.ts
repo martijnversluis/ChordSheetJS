@@ -33,6 +33,13 @@ describe('ChordLyricsPair', () => {
 
       expect(transposedPair.chords).toEqual('F#');
     });
+
+    it.each(['/', '|', ':||', '(6x)', 'N.C.'])('does not transpose non-chord token %s', (token) => {
+      const pair = new ChordLyricsPair(token, '');
+
+      expect(pair.transpose(2).chords).toBe(token);
+      expect(pair.chord).toBeNull();
+    });
   });
 
   describe('#hasLyrics', () => {
@@ -52,6 +59,37 @@ describe('ChordLyricsPair', () => {
       const chordLyricsPair = new ChordLyricsPair('C', '   ');
 
       expect(chordLyricsPair.hasLyrics()).toBe(false);
+    });
+  });
+
+  describe('#set', () => {
+    it('reclassifies tokens when chord content changes', () => {
+      const instruction = new ChordLyricsPair('(6x)', '');
+
+      expect(instruction.set({ chords: 'D' }).tokenKind).toBe('chord');
+    });
+
+    it('preserves token classification when only lyrics change', () => {
+      const instruction = new ChordLyricsPair('(6x)', '');
+
+      expect(instruction.setLyrics('repeat').tokenKind).toBe('instruction');
+    });
+
+    it('clears an inferred variant when overriding only the token kind', () => {
+      const pair = new ChordLyricsPair('/', '', '', null, false, 'instruction');
+
+      expect(pair.tokenVariant).toBeNull();
+    });
+
+    it('preserves an explicit null variant when updating a pair', () => {
+      const rhythmSymbol = new ChordLyricsPair('/', '');
+
+      expect(rhythmSymbol.set({ tokenVariant: null }).tokenVariant).toBeNull();
+    });
+
+    it('rejects incompatible explicit token kinds and variants', () => {
+      expect(() => new ChordLyricsPair('C', '', '', null, false, 'chord', 'repeat-count'))
+        .toThrow('Invalid chord token variant: repeat-count');
     });
   });
 });

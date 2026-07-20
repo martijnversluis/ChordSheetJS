@@ -62,6 +62,11 @@ export interface LayoutConfig {
   width: number;
   fonts: {
     chord: FontConfiguration;
+    rhythmSymbol?: FontConfiguration;
+    barline?: FontConfiguration;
+    instruction?: FontConfiguration;
+    noChord?: FontConfiguration;
+    annotation?: FontConfiguration;
     lyrics: FontConfiguration;
     comment: FontConfiguration;
     sectionLabel: FontConfiguration;
