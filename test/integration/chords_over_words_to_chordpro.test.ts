@@ -95,6 +95,27 @@ describe('chords over words to chordpro', () => {
     expect(actualChordPro).toEqual(expectedChordPro);
   });
 
+  it('round trips chord-only rhythm sections without changing their tokens', () => {
+    const chordproRhythmLine = [
+      '[D2][/][/][/][:||][(6x)][Bm7][/][/][/][|][/][/][/][/][|]',
+      '[D/A][/][/][/][|][/][/][/][/][|][G2][/][/][/][|][/][/][/][/][||]',
+      '[D5][/][/][/][:||][(4x)]',
+    ].join('');
+    const chordpro = `{c: Intro}\n${chordproRhythmLine}`;
+    const expectedChordsOverWords = heredoc`
+      Intro
+      D2 / / / :|| (6x) Bm7 / / / | / / / / | D/A / / / | / / / / | G2 / / / | / / / / || D5 / / / :|| (4x)`;
+    const configuration = { directiveNameNormalization: { comment: 'prefer-short' as const } };
+
+    const chordsOverWords = new ChordsOverWordsFormatter(configuration)
+      .format(new ChordProParser().parse(chordpro));
+    const actualChordPro = new ChordProFormatter(configuration)
+      .format(new ChordsOverWordsParser().parse(chordsOverWords));
+
+    expect(chordsOverWords).toEqual(expectedChordsOverWords);
+    expect(actualChordPro).toEqual(chordpro);
+  });
+
   it('allows for a variance in space between trailing chord and next lyric', () => {
     const chordOverWords = heredoc`
       title: Honey In The Rock
