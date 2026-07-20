@@ -5,11 +5,11 @@ import DocWrapper from './pdf_formatter/doc_wrapper';
 import { JsPdfMeasurer } from '../layout/measurement/js_pdf_measurer';
 import JsPdfRenderer from '../rendering/pdf/js_pdf_renderer';
 import MeasurementBasedFormatter from './measurement_based_formatter';
-import { PDFFormatterConfiguration } from './configuration';
 import { PdfConstructor } from './pdf_formatter/types';
 import Song from '../chord_sheet/song';
 import { getPDFDefaultConfig } from './configuration';
 import { LayoutConfig, LayoutEngine, layoutNeedsTotalPageAwareAutoHeight } from '../layout/engine';
+import { PDFFormatterConfiguration, resolveFontConfiguration } from './configuration';
 
 /**
  * PdfFormatter formats a song into a PDF document.
@@ -98,8 +98,13 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
     const layoutConfig: LayoutConfig = {
       width: dimensions.columnWidth,
       fonts: {
-        chord: this.configuration.fonts.chord,
-        lyrics: this.configuration.fonts.text,
+        chord: resolveFontConfiguration(this.configuration.fonts, 'chord'),
+        rhythmSymbol: resolveFontConfiguration(this.configuration.fonts, 'rhythmSymbol'),
+        barline: resolveFontConfiguration(this.configuration.fonts, 'barline'),
+        instruction: resolveFontConfiguration(this.configuration.fonts, 'instruction'),
+        noChord: resolveFontConfiguration(this.configuration.fonts, 'noChord'),
+        annotation: resolveFontConfiguration(this.configuration.fonts, 'annotation'),
+        lyrics: resolveFontConfiguration(this.configuration.fonts, 'text'),
         comment: this.configuration.fonts.comment,
         sectionLabel: this.configuration.fonts.sectionLabel,
       },

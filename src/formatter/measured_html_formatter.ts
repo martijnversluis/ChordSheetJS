@@ -1,10 +1,10 @@
 import { DomMeasurer } from '../layout/measurement';
-import { MeasuredHtmlFormatterConfiguration } from './configuration';
 import MeasurementBasedFormatter from './measurement_based_formatter';
 import PositionedHtmlRenderer from '../rendering/html/positioned_html_renderer';
 import Song from '../chord_sheet/song';
 import { getMeasuredHtmlDefaultConfig } from './configuration/default_config_manager';
 import { LayoutConfig, LayoutEngine, layoutNeedsTotalPageAwareAutoHeight } from '../layout/engine';
+import { MeasuredHtmlFormatterConfiguration, resolveFontConfiguration } from './configuration';
 
 declare type HTMLElement = any;
 
@@ -107,8 +107,13 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
     const layoutConfig: LayoutConfig = {
       width: dimensions.columnWidth,
       fonts: {
-        chord: this.configuration.fonts.chord,
-        lyrics: this.configuration.fonts.text,
+        chord: resolveFontConfiguration(this.configuration.fonts, 'chord'),
+        rhythmSymbol: resolveFontConfiguration(this.configuration.fonts, 'rhythmSymbol'),
+        barline: resolveFontConfiguration(this.configuration.fonts, 'barline'),
+        instruction: resolveFontConfiguration(this.configuration.fonts, 'instruction'),
+        noChord: resolveFontConfiguration(this.configuration.fonts, 'noChord'),
+        annotation: resolveFontConfiguration(this.configuration.fonts, 'annotation'),
+        lyrics: resolveFontConfiguration(this.configuration.fonts, 'text'),
         comment: this.configuration.fonts.comment,
         sectionLabel: this.configuration.fonts.sectionLabel,
       },
