@@ -4,6 +4,7 @@ import { renderChord } from '../../helpers';
 import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 
 import {
+  chordLineClasses,
   each,
   evaluate,
   expandMeta,
@@ -14,7 +15,6 @@ import {
   isComment,
   isImage,
   isLiteral,
-  isRhythmSymbol,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -78,7 +78,7 @@ export default (
                           ${ when(item.annotation).then(() => `
                             <td class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
                           `).else(() => {
-                            const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                            const cls = chordLineClasses(item, c);
                             return `
                             <td class="${ cls }"${ fontStyleTag(line.chordFont) }>${
                               renderChord(
