@@ -522,6 +522,61 @@ describe('PositionedHtmlRenderer', () => {
       expect(currentPage).toBe(1);
     });
 
+    it('renders chord-line tokens with semantic types and font roles', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 700, color: 'red',
+          },
+          rhythmSymbol: { inherit: 'chord', weight: 500 },
+          barline: { inherit: 'chord' },
+          instruction: { inherit: 'chord' },
+          noChord: { inherit: 'chord' },
+        } as any,
+      });
+      renderer.initialize();
+
+      const pairs = ['D2', '/', '|', ':||', '(6x)', 'N.C.']
+        .map((chords) => new ChordLyricsPair(chords));
+      const line = new Line();
+      pairs.forEach((pair) => line.addItem(pair));
+
+      (renderer as any).renderLines([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: pairs.map((item) => ({ item, width: 50, chordHeight: 17 })),
+        line,
+      }]);
+
+      const tokens = (renderer as any).elements.map((element: any) => ({
+        content: element.content,
+        type: element.type,
+        weight: element.style.weight,
+        tokenVariant: element.tokenVariant,
+      }));
+
+      expect(tokens).toEqual([
+        {
+          content: 'D2', type: 'chord', weight: 700, tokenVariant: undefined,
+        },
+        {
+          content: '/', type: 'rhythm-symbol', weight: 500, tokenVariant: 'continuation',
+        },
+        {
+          content: '|', type: 'barline', weight: 500, tokenVariant: 'single',
+        },
+        {
+          content: ':||', type: 'barline', weight: 700, tokenVariant: 'repeat-end',
+        },
+        {
+          content: '(6x)', type: 'instruction', weight: 700, tokenVariant: 'repeat-count',
+        },
+        {
+          content: 'N.C.', type: 'no-chord', weight: 700, tokenVariant: 'marker',
+        },
+      ]);
+    });
+
     it('delegates measurements and calculates chord baseline', () => {
       const { renderer, doc } = createRenderer();
       const font = renderer.getFontConfiguration('text');
