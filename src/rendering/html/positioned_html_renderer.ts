@@ -382,7 +382,7 @@ class PositionedHtmlRenderer extends Renderer {
 
     if (!this.isLyricsOnly() && chords) {
       const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
-      this.addTextElement(chords, currentX, chordBaseline, 'chord');
+      this.addChordLineToken(item, chords, currentX, chordBaseline);
       this.updatePosition(ctx.column, ctx.page);
     }
 
