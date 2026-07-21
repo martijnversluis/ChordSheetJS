@@ -27,12 +27,14 @@ interface NoChord {
   column: number,
 }
 
+type ChordsLineItem = Chord | RhythmSymbol | NoChord;
+
 type DirectionLine = SerializedLine;
 type InlineMetadata = SerializedLine;
 
 interface ChordsLine {
   type: 'chordsLine',
-  items: (Chord | RhythmSymbol | NoChord)[]
+  items: ChordsLineItem[]
 }
 
 interface LyricsLine {
@@ -70,8 +72,17 @@ function chordProperties(chord: Chord): ChordProperties {
   return properties;
 }
 
-function getChordData(chord: Chord) {
-  return (chord.type === 'chord') ? { chord: chordProperties(chord) } : { chords: chord.value };
+function getChordData(item: ChordsLineItem) {
+  switch (item.type) {
+    case 'chord':
+      return { chord: chordProperties(item) };
+    case 'symbol':
+      return { chords: item.value, isRhythmSymbol: true };
+    case 'noChord':
+      return { chords: item.value };
+    default:
+      throw new Error(`Unexpected chordsLine item ${item}`);
+  }
 }
 
 function buildSoftLineBreakResult(
@@ -93,8 +104,8 @@ function buildSoftLineBreakResult(
 }
 
 function buildChordLyricsPairForChord(
-  chord: Chord,
-  nextChord: Chord | undefined,
+  chord: ChordsLineItem,
+  nextChord: ChordsLineItem | undefined,
   lyrics: string,
   chopFirstWord: boolean,
 ): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] | SerializedChordLyricsPair {
@@ -121,7 +132,7 @@ function buildChordLyricsPairForChord(
 }
 
 function constructChordLyricsPairs(
-  chords: Chord[],
+  chords: ChordsLineItem[],
   lyrics: string,
   chopFirstWord: boolean,
 ): (SerializedChordLyricsPair | SerializedSoftLineBreak)[] {
@@ -137,7 +148,7 @@ function pairChordsWithLyrics(
 ): SerializedLine {
   const { content: lyrics } = lyricsLine;
 
-  const chords = chordsLine.items as Chord[];
+  const chords = chordsLine.items;
   const chordLyricsPairs = constructChordLyricsPairs(chords, lyrics, chopFirstWord);
   const firstChord = chords[0];
 
