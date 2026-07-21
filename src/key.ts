@@ -342,18 +342,14 @@ class Key implements KeyProperties {
     return this.set({});
   }
 
-  private ensureGrade() {
-    if (this.grade === null) {
-      this.calculateGradeFromNumber();
-    }
+  private ensureGrade(forceMajorLookup = false) {
+    if (this.grade === null) this.calculateGradeFromNumber(forceMajorLookup);
   }
 
-  private calculateGradeFromNumber() {
-    if (this.number === null) {
-      throw new Error('Cannot calculate grade, number is null');
-    }
-
-    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
+  private calculateGradeFromNumber(forceMajorLookup = false) {
+    if (this.number === null) throw new Error('Cannot calculate grade, number is null');
+    const asMinor = forceMajorLookup ? false : this.isMinor();
+    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, asMinor);
     this.number = null;
   }
 
@@ -369,8 +365,10 @@ class Key implements KeyProperties {
 
   private convertToChordType(key: Key | string | null, type: ChordType, referenceKeyWasMinor: boolean): Key {
     const { accidental } = this;
-    this.ensureGrade();
     const keyObj = Key.wrapOrFail(key);
+    // `vi` in C → Am, not Abm: for a major-key reference the parse-time minor grade
+    // is rebased to the major table so lowercase numerals keep their scale degree.
+    this.ensureGrade(!referenceKeyWasMinor);
 
     const minorResult = this.handleMinorKeyConversion(keyObj, referenceKeyWasMinor);
     if (minorResult) return minorResult;
