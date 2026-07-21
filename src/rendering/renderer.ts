@@ -269,7 +269,7 @@ abstract class Renderer {
     }
   }
 
-  private addChordLineToken(item: ChordLyricsPair, content: string, x: number, y: number): void {
+  protected addChordLineToken(item: ChordLyricsPair, content: string, x: number, y: number): void {
     this.addTextElement(
       content,
       x,
