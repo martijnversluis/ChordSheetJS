@@ -342,14 +342,13 @@ class Key implements KeyProperties {
     return this.set({});
   }
 
-  private ensureGrade(forceMajorLookup = false) {
-    if (this.grade === null) this.calculateGradeFromNumber(forceMajorLookup);
+  private ensureGrade() {
+    if (this.grade === null) this.calculateGradeFromNumber();
   }
 
-  private calculateGradeFromNumber(forceMajorLookup = false) {
+  private calculateGradeFromNumber() {
     if (this.number === null) throw new Error('Cannot calculate grade, number is null');
-    const asMinor = forceMajorLookup ? false : this.isMinor();
-    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, asMinor);
+    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
     this.number = null;
   }
 
@@ -366,7 +365,8 @@ class Key implements KeyProperties {
   private convertToChordType(key: Key | string | null, type: ChordType, referenceKeyWasMinor: boolean): Key {
     const { accidental } = this;
     const keyObj = Key.wrapOrFail(key);
-    this.ensureGrade(!referenceKeyWasMinor);
+    this.rebaseNumeralGradeForMajorReference(referenceKeyWasMinor);
+    this.ensureGrade();
 
     const minorResult = this.handleMinorKeyConversion(keyObj, referenceKeyWasMinor);
     if (minorResult) return minorResult;
@@ -381,6 +381,14 @@ class Key implements KeyProperties {
 
     const normalized = converted.normalizeEnharmonics(keyObj);
     return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
+  }
+
+  private rebaseNumeralGradeForMajorReference(referenceKeyWasMinor: boolean) {
+    if (referenceKeyWasMinor || !this.minor || !this.originalKeyString) return;
+    if (!(this.isNumeral() || this.isNumeric())) return;
+    const num = Key.getNumberFromKey(this.originalKeyString, this.type);
+    const grade = num ? keyToGrade(num.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, false) : null;
+    if (grade !== null) { this.grade = grade; this.number = null; }
   }
 
   private handleMinorKeyConversion(keyObj: Key, referenceKeyWasMinor: boolean): Key | null {
