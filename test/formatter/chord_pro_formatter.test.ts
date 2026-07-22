@@ -107,7 +107,7 @@ describe('ChordProFormatter', () => {
       const song = new ChordProParser().parse(chordSheet);
       const formatted = new ChordProFormatter({ applyChordStyle: true }).format(song);
 
-      expect(formatted).toContain('[VIm]');
+      expect(formatted).toContain('[vi]');
       expect(formatted).toContain('[IV]');
       expect(formatted).toContain('[I]');
       expect(formatted).toContain('[V]');
