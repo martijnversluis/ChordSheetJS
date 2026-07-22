@@ -366,8 +366,6 @@ class Key implements KeyProperties {
   private convertToChordType(key: Key | string | null, type: ChordType, referenceKeyWasMinor: boolean): Key {
     const { accidental } = this;
     const keyObj = Key.wrapOrFail(key);
-    // `vi` in C → Am, not Abm: for a major-key reference the parse-time minor grade
-    // is rebased to the major table so lowercase numerals keep their scale degree.
     this.ensureGrade(!referenceKeyWasMinor);
 
     const minorResult = this.handleMinorKeyConversion(keyObj, referenceKeyWasMinor);
