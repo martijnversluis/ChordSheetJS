@@ -302,23 +302,29 @@ class Chord implements ChordProperties {
    * @returns {string} the chord string
    */
   toString({ useUnicodeModifier = false } = {}): string {
-    let chordString = '';
-    let suffix = this.suffix || '';
-    const showMinor = suffix[0] !== 'm';
-
-    if (useUnicodeModifier) {
-      suffix = suffix.replace(/#(?=\d)/g, '\u266f').replace(/b(?=\d)/g, '\u266d');
-    }
-
-    if (this.root) chordString = this.root.toString({ showMinor, useUnicodeModifier }) + suffix;
+    const suffix = this.unicodeSuffix(useUnicodeModifier);
+    const { root, suffix: renderedSuffix } = this.renderRoot(suffix, useUnicodeModifier);
+    let chordString = root + renderedSuffix;
     if (this.bass) chordString = `${chordString}/${this.bass.toString({ useUnicodeModifier })}`;
-
-    // Wrap in parentheses if optional
-    if (this.optional) {
-      chordString = `(${chordString})`;
-    }
-
+    if (this.optional) chordString = `(${chordString})`;
     return chordString;
+  }
+
+  private unicodeSuffix(useUnicodeModifier: boolean): string {
+    const suffix = this.suffix || '';
+    if (!useUnicodeModifier) return suffix;
+    return suffix.replace(/#(?=\d)/g, '\u266f').replace(/b(?=\d)/g, '\u266d');
+  }
+
+  private renderRoot(suffix: string, useUnicodeModifier: boolean): { root: string; suffix: string } {
+    if (!this.root) return { root: '', suffix };
+    const showMinor = suffix[0] !== 'm';
+    const rootString = this.root.toString({ showMinor, useUnicodeModifier });
+    if (this.root.is(NUMERAL) && this.isMinor()) {
+      const remainingSuffix = suffix.startsWith('m') ? suffix.substring(1) : suffix;
+      return { root: rootString.toLowerCase(), suffix: remainingSuffix };
+    }
+    return { root: rootString, suffix };
   }
 
   /**

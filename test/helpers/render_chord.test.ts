@@ -167,7 +167,7 @@ describe('renderChord helper', () => {
        1 | "Gm"        |         | "symbol"   | "Gm"    |
        2 | "Gm"        | "Bb"    | "symbol"   | "Gm"    |
        s | "Gm"        | "Bb"    | "number"   | "6"     |
-       s | "Gm"        | "Bb"    | "numeral"  | "vi"    |
+       4 | "Gm"        | "Bb"    | "numeral"  | "vi"    |
        5 | "IV"        |         | "numeral"  | "IV"    |
        6 | "IV"        |         | "number"   | "4"     |
        7 | "IV"        | "Bb"    | "symbol"   | "Eb"    |
