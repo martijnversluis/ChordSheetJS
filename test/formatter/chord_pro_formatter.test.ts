@@ -135,6 +135,18 @@ describe('ChordProFormatter', () => {
 
       expect(formatted).toContain('[Am]');
     });
+
+    it('converts lowercase Roman input to the correct major-scale symbol', () => {
+      const romanSheet = heredoc`
+        {key: C}
+        {chord_style: symbol}
+
+        [I] [ii] [iii] [IV] [V] [vi] [vii]`;
+      const song = new ChordProParser().parse(romanSheet);
+      const formatted = new ChordProFormatter({ applyChordStyle: true }).format(song);
+
+      expect(formatted).toContain('[C] [Dm] [Em] [F] [G] [Am] [Bm]');
+    });
   });
 
   it('correctly formats non-standard metadata', () => {
