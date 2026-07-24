@@ -107,13 +107,19 @@ class ChordLyricsPair {
   transpose(
     delta: number,
     key: string | Key | null = null,
-    { normalizeChordSuffix }: { normalizeChordSuffix: boolean } = { normalizeChordSuffix: false },
+    {
+      normalizeChordSuffix = false,
+      sourceKey = null,
+    }: { normalizeChordSuffix?: boolean; sourceKey?: Key | null } = {},
   ): ChordLyricsPair {
     return this.changeChord((chord: Chord) => {
-      const transposedChord = chord.transpose(delta);
+      const targetKey = Key.wrap(key);
+      const transposedChord = sourceKey && targetKey ?
+        chord.transposeInKey(delta, sourceKey, targetKey) :
+        chord.transpose(delta);
 
-      if (key) {
-        return transposedChord.normalize(key, { normalizeSuffix: normalizeChordSuffix });
+      if (targetKey) {
+        return transposedChord.normalize(targetKey, { normalizeSuffix: normalizeChordSuffix });
       }
 
       return transposedChord;
@@ -122,6 +128,10 @@ class ChordLyricsPair {
 
   useAccidental(accidental: Accidental) {
     return this.changeChord((chord: Chord) => chord.useAccidental(accidental));
+  }
+
+  preferAccidental(accidental: Accidental) {
+    return this.changeChord((chord: Chord) => chord.preferAccidental(accidental));
   }
 
   /**

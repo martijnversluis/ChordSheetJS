@@ -14,7 +14,7 @@ describe('ChordProParser', () => {
     it('transposing up keeps German notation', () => {
       const song = new ChordProParser().parse(text, { notation: 'german' });
 
-      expect(new ChordProFormatter().format(song.transposeUp())).toContain('[C]Heut[H]ig [G#]lied [D#/C]wee');
+      expect(new ChordProFormatter().format(song.transposeUp())).toContain('[C]Heut[H]ig [G#]lied [D#/B#]wee');
     });
 
     it('default mode still interprets B as B natural', () => {
