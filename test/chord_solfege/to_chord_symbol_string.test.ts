@@ -11,6 +11,10 @@ describe('Chord', () => {
         it('converts correctly minor chord to a string', () => {
           expect(Chord.parse('Solm7/Do')?.toChordSolfegeString()).toEqual('Solm7/Do');
         });
+
+        it('spells a converted bass against the converted chord root', () => {
+          expect(Chord.parseOrFail('Solb/Si').toChordSymbolString('Do')).toEqual('Gb/Cb');
+        });
       });
     });
   });

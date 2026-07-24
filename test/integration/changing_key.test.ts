@@ -1,5 +1,8 @@
+import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 import { heredoc } from '../util/utilities';
-import { ChordProFormatter, ChordProParser, TextFormatter } from '../../src';
+import {
+  ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser, TextFormatter,
+} from '../../src';
 
 describe('changing the key of an existing song (symbol chords)', () => {
   it('updates the key directive and transposes the chords', () => {
@@ -51,6 +54,37 @@ describe('changing the key of an existing song (symbol chords)', () => {
     const output = new TextFormatter().format(transposedSong);
 
     expect(output).toEqual('Bb\nLet it be');
+  });
+
+  it.each([
+    ['{key: C}\n[F/F]x', 'Gb', 'Cb/Cb'],
+    ['{key: C}\n[A#/A#]x', 'Gb', 'Fb/Fb'],
+    ['{key: C}\n[E/E]x', 'C#', 'E#/E#'],
+    ['{key: C}\n[B/B]x', 'F#', 'E#/E#'],
+    ['{key: C}\n[A/A]x', 'G#', 'E#/E#'],
+    ['{key: C}\n[D/D]x', 'D#m', 'E#/E#'],
+    ['{key: C}\n[A/E]x', 'C#', 'A#/E#'],
+    ['{key: C}\n[C/C#]x', 'Ebm', 'Eb/E'],
+    ['{key: C}\n[C/F]x', 'Gb', 'Gb/Cb'],
+    ['{key: C}\n[A#m/F]x', 'Gb', 'Fbm/Cb'],
+    ['{key: Do}\n[La/Mi]x', 'Do#', 'La#/Mi#'],
+    ['{key: Do}\n[Do/Do#]x', 'Mibm', 'Mib/Mi'],
+  ])('preserves contextual root and bass spelling for %s changed to %s', (source, target, expected) => {
+    const changedSong = new ChordProParser().parse(source).changeKey(target);
+    const formatted = new ChordsOverWordsFormatter().format(changedSong);
+    const roundTripped = new ChordsOverWordsParser().parse(formatted);
+    const chord = roundTripped.lines
+      .flatMap((line) => line.items)
+      .find((item): item is ChordLyricsPair => item instanceof ChordLyricsPair)?.chords;
+
+    expect(chord).toEqual(expected);
+  });
+
+  it('keeps a requested G# tonic instead of rewriting it to Ab', () => {
+    const song = new ChordProParser().parse('{key: C}\n[C]x').changeKey('G#');
+
+    expect(song.key).toEqual('G#');
+    expect(new ChordProFormatter().format(song)).toContain('[G#]');
   });
 });
 
