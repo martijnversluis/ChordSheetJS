@@ -32,7 +32,7 @@ describe('Chord', () => {
         expect(Chord.parse('Fm')?.toNumeric('Em').toString()).toEqual('b7m');
         expect(Chord.parse('b7m')?.toNumeric('Em').toString()).toEqual('b7m');
         expect(Chord.parse('b7m')?.toChordSymbol('Em').toString()).toEqual('Fm');
-        expect(Chord.parse('#6m')?.toChordSymbol('Em').toString()).toEqual('Fm');
+        expect(Chord.parse('#6m')?.toChordSymbol('Em').toString()).toEqual('E#m');
       });
 
       it('properly handles 4 with minor key', () => {
