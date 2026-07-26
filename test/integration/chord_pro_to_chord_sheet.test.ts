@@ -144,6 +144,42 @@ describe('chordpro to chord sheet', () => {
     expect(formatted).toEqual(expectedText);
   });
 
+  it('uses the original chorus label when {chorus} has no label', () => {
+    const chordSheet = heredoc`
+      {start_of_chorus: REFRAIN}
+      [G]Chorus [C]lyrics [G]here
+      More chorus [D]lyrics here
+      {end_of_chorus}
+
+      {start_of_verse: Verse 1}
+      [G]Amazing [C]grace
+      {end_of_verse}
+
+      {chorus}`;
+
+    const expectedText = heredoc`
+      REFRAIN
+      G      C      G
+      Chorus lyrics here
+                  D
+      More chorus lyrics here
+
+      Verse 1
+      G       C
+      Amazing grace
+
+      REFRAIN
+      G      C      G
+      Chorus lyrics here
+                  D
+      More chorus lyrics here`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new TextFormatter({ expandChorusDirective: true }).format(song);
+
+    expect(formatted).toEqual(expectedText);
+  });
+
   it('does not expand chorus directives when expandChorusDirective=false', () => {
     const chordSheet = heredoc`
       {start_of_chorus: Chorus 1:}
