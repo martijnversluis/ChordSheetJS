@@ -23,7 +23,7 @@ class LineExpander {
   expand(): Line[] {
     const expandedLines = this.line.items.flatMap((item: Item) => {
       if (item instanceof Tag && item.name === CHORUS) {
-        return this.getLastChorusBefore(this.line.lineNumber);
+        return this.getLastChorusBefore(this.line.lineNumber, { keepOriginalLabel: !item.hasLabel() });
       }
 
       return [];
@@ -32,7 +32,10 @@ class LineExpander {
     return [this.line, ...expandedLines];
   }
 
-  private getLastChorusBefore(lineNumber: number | null): Line[] {
+  private getLastChorusBefore(
+    lineNumber: number | null,
+    { keepOriginalLabel }: { keepOriginalLabel: boolean },
+  ): Line[] {
     const lines: Line[] = [];
 
     if (!lineNumber) {
@@ -46,7 +49,7 @@ class LineExpander {
         break;
       }
 
-      if (line.type === CHORUS && (line.isEmpty() || this.lineHasMoreThanChorusDirectives(line))) {
+      if (line.type === CHORUS && (line.isEmpty() || this.lineHasChorusContent(line, { keepOriginalLabel }))) {
         lines.unshift(line);
       }
     }
@@ -54,12 +57,11 @@ class LineExpander {
     return lines;
   }
 
-  private lineHasMoreThanChorusDirectives(line: Line): boolean {
+  private lineHasChorusContent(line: Line, { keepOriginalLabel }: { keepOriginalLabel: boolean }): boolean {
     return line.items.some((item: Item) => {
       if (item instanceof Tag) {
-        if (item.name === START_OF_CHORUS || item.name === END_OF_CHORUS) {
-          return false;
-        }
+        if (item.name === END_OF_CHORUS) return false;
+        if (item.name === START_OF_CHORUS) return keepOriginalLabel && item.hasLabel();
       }
 
       return true;
