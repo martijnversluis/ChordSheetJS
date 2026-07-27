@@ -172,6 +172,31 @@ describe('changing the key of an existing song (symbol chords)', () => {
     },
   );
 
+  it.each([
+    ['/F', '/Cb', false],
+    ['(/F)', '(/Cb)', true],
+  ])(
+    'spells the flat-side slash-only bass %s against the inherited root',
+    (sourceBass, expectedBass, optional) => {
+      const chordPro = `{key: C}\n[C]root\n[${sourceBass}]continuation`;
+      const changedSong = new ChordProParser().parse(chordPro).changeKey('Gb');
+      const formatted = new ChordProFormatter().format(changedSong);
+      const roundTripped = new ChordProParser().parse(formatted);
+      const chords = roundTripped.lines
+        .flatMap((line) => line.items)
+        .filter((item): item is ChordLyricsPair => item instanceof ChordLyricsPair)
+        .map((item) => item.chord)
+        .filter((chord): chord is Chord => chord !== null);
+
+      expect(chords.map((chord) => chord.toString())).toEqual(['Gb', expectedBass]);
+      expect(chords[1].root).toBeNull();
+      expect(chords[1].bass?.toString()).toEqual('Cb');
+      expect(chords[1].bass?.effectiveGrade).toEqual(11);
+      expect(chords[1].optional).toEqual(optional);
+      expect(formatted).toContain(`[Gb]root\n[${expectedBass}]continuation`);
+    },
+  );
+
   it('preserves the source bass degree for slash-only continuations', () => {
     const format = (source: string) => new ChordProFormatter().format(
       new ChordProParser().parse(`{key: C}\n${source}`).changeKey('C#'),
