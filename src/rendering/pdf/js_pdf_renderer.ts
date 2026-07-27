@@ -5,10 +5,10 @@ import DocWrapper from '../../formatter/pdf_formatter/doc_wrapper';
 import PdfChordDiagramRenderer from './pdf_chord_diagram_renderer';
 import Song from '../../chord_sheet/song';
 
-import { MeasuredItem } from '../../layout/engine';
 import { PdfConstructor } from '../../formatter/pdf_formatter/types';
 import { getCapos } from '../../helpers';
 
+import { buildChordRuns } from '../chord_shaper';
 import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
 import Renderer, { PositionedElement } from '../renderer';
 
@@ -180,12 +180,6 @@ class JsPdfRenderer extends Renderer {
     };
   }
 
-  protected calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number {
-    const chordFont = this.getFontConfiguration('chord');
-    const chordDimensions = this.doc.getTextDimensions(chordText, chordFont);
-    return yOffset + this.getMaxChordHeight(items) - chordDimensions.h;
-  }
-
   protected finalizeRendering(): void {
     const pageCount = Math.max(this.currentPage, this.doc.totalPages);
 
@@ -250,12 +244,13 @@ class JsPdfRenderer extends Renderer {
   //
 
   private drawElement(element: PositionedElement): void {
-    if (element.style) {
-      this.doc.setFontStyle(element.style);
-    }
+    if (element.style) this.doc.setFontStyle(element.style);
 
     switch (element.type) {
-      case 'chord':
+      case 'chord': {
+        this.drawChordElement(element);
+        break;
+      }
       case 'rhythm-symbol':
       case 'barline':
       case 'instruction':
@@ -273,6 +268,25 @@ class JsPdfRenderer extends Renderer {
         console.warn(`Unknown element type: ${element.type}`);
         break;
     }
+  }
+
+  private drawChordElement(element: PositionedElement): void {
+    const superscript = this.configuration.chordSuperscript;
+    const runs = superscript?.enabled && element.style ?
+      buildChordRuns(element.content, this.useUnicodeModifiers(), superscript, element.style) :
+      null;
+
+    if (!runs) {
+      this.doc.text(element.content, element.x, element.y);
+      this.drawUnderlineIfNeeded(element);
+      return;
+    }
+
+    let { x } = element;
+    runs.forEach((run) => {
+      this.doc.text(run.text, x, element.y + run.yOffset, run.font);
+      x += this.doc.getTextWidth(run.text, run.font);
+    });
   }
 
   private drawUnderlineIfNeeded(element: PositionedElement): void {

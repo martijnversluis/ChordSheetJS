@@ -1,5 +1,18 @@
 export const chordproExamples = [
   {
+    name: 'Superscript Demo',
+    content: `{title: Chord Extension Superscript}
+{artist: ChordSheetJS}
+{key: C}
+
+{comment: Extensions, qualities, accidentals, and slash basses}
+[C]C [C7]C7 [Cmaj7]Cmaj7 [Am7]Am7 [F#dim7]F#dim7 [G13(b9)]G13(b9)
+[Cmaj7/E]Cmaj7/E [(Dm11)](Dm11) [Bbsus4]Bbsus4 [Ebma9]Ebma9
+
+{comment: Semantic chord-line tokens stay unchanged}
+[|][Cmaj7][/][/][|][(2x)][N.C.]`,
+  },
+  {
     name: 'Goodness of God',
     content: `{t:Test}
 {artist: Cody Carnes}

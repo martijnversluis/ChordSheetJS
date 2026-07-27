@@ -1,8 +1,8 @@
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
-import { FontConfiguration } from '../../formatter/configuration';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
+import { ChordSuperscriptConfig, FontConfiguration } from '../../formatter/configuration';
 
 export interface Measurer {
   measureTextWidth(text: string, font: { size: number; lineHeight?: number }): number;
@@ -25,6 +25,8 @@ export interface MeasuredItem {
   item: ChordLyricsPair | Tag | SoftLineBreak | null;
   width: number;
   chordHeight?: number;
+  chordBaselineHeight?: number;
+  adjustedChord?: string;
   chordLyricWidthDifference?: number;
 }
 
@@ -77,6 +79,7 @@ export interface LayoutConfig {
   useUnicodeModifiers: boolean;
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
+  chordSuperscript?: ChordSuperscriptConfig;
 
   // Add column and page layout information
   minY: number;

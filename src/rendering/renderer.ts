@@ -259,7 +259,7 @@ abstract class Renderer {
 
     // Add chord element if not lyrics-only mode
     if (!this.isLyricsOnly() && chords) {
-      const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
+      const chordBaseline = this.getChordBaseline(item, chordsYOffset, items, chords);
       this.addChordLineToken(item, chords, currentX, chordBaseline);
     }
 
@@ -278,6 +278,16 @@ abstract class Renderer {
       item.styleRole,
       item.tokenVariant || undefined,
     );
+  }
+
+  protected getChordBaseline(
+    item: ChordLyricsPair,
+    chordsYOffset: number,
+    items: MeasuredItem[],
+    chords: string,
+  ): number {
+    const measuredItem = items.find(({ item: candidate }) => candidate === item);
+    return this.calculateChordBaseline(chordsYOffset, items, chords, measuredItem?.chordBaselineHeight);
   }
 
   /**
@@ -322,7 +332,7 @@ abstract class Renderer {
 
     if (hasChords && hasLyrics) {
       chordsYOffset = yOffset;
-      lyricsYOffset = chordsYOffset + this.getMaxChordHeight(items) + chordLyricSpacing;
+      lyricsYOffset = chordsYOffset + this.getMaxChordContentHeight(items) + chordLyricSpacing;
     } else if (hasChords && !hasLyrics) {
       chordsYOffset = yOffset;
     } else if (!hasChords && hasLyrics) {
@@ -339,6 +349,22 @@ abstract class Renderer {
     return items.reduce((maxHeight, { chordHeight }) => Math.max(maxHeight, chordHeight || 0), 0);
   }
 
+  protected getMaxChordBaselineHeight(items: MeasuredItem[]): number {
+    return items.reduce((maxHeight, { chordBaselineHeight, chordHeight }) => (
+      Math.max(maxHeight, chordBaselineHeight ?? chordHeight ?? 0)
+    ), 0);
+  }
+
+  protected getMaxChordAscent(items: MeasuredItem[]): number {
+    return items.reduce((maxAscent, { chordBaselineHeight, chordHeight }) => (
+      Math.max(maxAscent, (chordHeight ?? 0) - (chordBaselineHeight ?? chordHeight ?? 0))
+    ), 0);
+  }
+
+  protected getMaxChordContentHeight(items: MeasuredItem[]): number {
+    return this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items);
+  }
+
   /**
    * Process chords for display (handle modifiers, normalization)
    */
@@ -351,6 +377,7 @@ abstract class Renderer {
         renderKey: null,
         useUnicodeModifier: this.useUnicodeModifiers(),
         normalizeChords: this.normalizeChords(),
+        normalizeChordSuffix: this.getConfiguration().normalizeChordSuffix,
         decapo: this.getConfiguration().decapo,
       },
     );
@@ -499,10 +526,16 @@ abstract class Renderer {
    */
   protected abstract measureText(text: string, font: FontConfiguration): { width: number; height: number };
 
-  /**
-   * Calculate chord baseline position
-   */
-  protected abstract calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number;
+  protected calculateChordBaseline(
+    yOffset: number,
+    items: MeasuredItem[],
+    chordText: string,
+    chordBaselineHeight?: number,
+  ): number {
+    const chordFont = this.getFontConfiguration('chord');
+    const height = chordBaselineHeight ?? this.measureText(chordText, chordFont).height;
+    return yOffset + this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items) - height;
+  }
 
   /**
    * Finalize the rendering process

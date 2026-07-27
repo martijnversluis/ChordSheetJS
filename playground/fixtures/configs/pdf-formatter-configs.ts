@@ -986,6 +986,16 @@ export const pdfFormatterConfigs = [
     },
   },
   {
+    name: 'Superscript Demo',
+    content: {
+      chordSuperscript: {
+        enabled: true,
+        fontSizeRatio: 0.7,
+        riseRatio: 0.35,
+      },
+    },
+  },
+  {
     name: 'Library Default',
     content: pdfSpecificDefaults,
   },

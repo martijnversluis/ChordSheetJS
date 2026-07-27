@@ -380,24 +380,32 @@ export class LineBreaker {
     }
 
     const pair = item.item;
-    const widths = this.measureChordAndLyricWidths(pair);
+    const widths = this.measureChordAndLyricWidths(item);
     const adjustedChordWidth = this.adjustChordWidth(pair, widths, nextItem);
 
     return Math.max(adjustedChordWidth, widths.lyricsWidth);
   }
 
-  private measureChordAndLyricWidths(pair: ChordLyricsPair): { chordWidth: number; lyricsWidth: number } {
+  private measureChordAndLyricWidths(
+    measuredItem: MeasuredItem,
+  ): { chordWidth: number; lyricsWidth: number; chordText: string } {
+    const pair = measuredItem.item as ChordLyricsPair;
     const chordFont = this.itemProcessor.config.fonts[pair.styleRole] || this.itemProcessor.config.fonts.chord;
     const lyricsFont = this.itemProcessor.config.fonts.lyrics;
-    const chordWidth = pair.chords ? this.itemProcessor.measurer.measureTextWidth(pair.chords, chordFont) : 0;
+    const chordText = measuredItem.adjustedChord ?? pair.chords ?? '';
+    const chordWidth = this.itemProcessor.measureChordMetrics(
+      chordText,
+      chordFont,
+      pair.tokenKind === 'chord',
+    ).width;
     const lyricsWidth = pair.lyrics ? this.itemProcessor.measurer.measureTextWidth(pair.lyrics, lyricsFont) : 0;
 
-    return { chordWidth, lyricsWidth };
+    return { chordWidth, lyricsWidth, chordText };
   }
 
   private adjustChordWidth(
     pair: ChordLyricsPair,
-    widths: { chordWidth: number; lyricsWidth: number },
+    widths: { chordWidth: number; lyricsWidth: number; chordText: string },
     nextItem: MeasuredItem | null,
   ): number {
     if (this.shouldSkipChordSpacing(widths.chordWidth, nextItem)) {
@@ -413,9 +421,10 @@ export class LineBreaker {
 
     const chordFont = this.itemProcessor.config.fonts[pair.styleRole] || this.itemProcessor.config.fonts.chord;
     const spacing = ' '.repeat(this.itemProcessor.config.chordSpacing);
-    const chordsWithSpacing = `${pair.chords || ''}${spacing}`;
+    const plainWidth = this.itemProcessor.measurer.measureTextWidth(widths.chordText, chordFont);
+    const widthWithSpacing = this.itemProcessor.measurer.measureTextWidth(`${widths.chordText}${spacing}`, chordFont);
 
-    return this.itemProcessor.measurer.measureTextWidth(chordsWithSpacing, chordFont);
+    return widths.chordWidth + widthWithSpacing - plainWidth;
   }
 
   private shouldSkipChordSpacing(chordWidth: number, nextItem: MeasuredItem | null): boolean {
