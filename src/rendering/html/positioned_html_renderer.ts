@@ -8,6 +8,7 @@ import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
 import { getCapos } from '../../helpers';
 import { isComment } from '../../template_helpers';
+import renderChordRuns from './chord_run_renderer';
 import { LineLayout, MeasuredItem } from '../../layout/engine';
 
 import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
@@ -381,7 +382,7 @@ class PositionedHtmlRenderer extends Renderer {
     if (chords) chords = this.processChords(chords, line);
 
     if (!this.isLyricsOnly() && chords) {
-      const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
+      const chordBaseline = this.getChordBaseline(item, chordsYOffset, items, chords);
       this.addChordLineToken(item, chords, currentX, chordBaseline);
       this.updatePosition(ctx.column, ctx.page);
     }
@@ -460,12 +461,6 @@ class PositionedHtmlRenderer extends Renderer {
   protected measureText(text: string, font: FontConfiguration): { width: number; height: number } {
     const { w, h } = this.doc.getTextDimensions(text, font);
     return { width: w, height: h };
-  }
-
-  protected calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number {
-    const chordFont = this.getFontConfiguration('chord');
-    const { height } = this.measureText(chordText, chordFont);
-    return yOffset + this.getMaxChordHeight(items) - height;
   }
 
   protected finalizeRendering(): void {
@@ -623,6 +618,7 @@ class PositionedHtmlRenderer extends Renderer {
       ],
     );
 
+    renderChordRuns(htmlElement, element, this.configuration, this.styler, this.useUnicodeModifiers());
     this.styler.applyElementStyle(htmlElement, element);
     paragraphDiv.appendChild(htmlElement);
   }
@@ -662,6 +658,7 @@ class PositionedHtmlRenderer extends Renderer {
     }
 
     htmlElement.textContent = element.content;
+    renderChordRuns(htmlElement, element, this.configuration, this.styler, this.useUnicodeModifiers());
 
     if (element.style) {
       this.styler.applyElementStyle(htmlElement, element);
