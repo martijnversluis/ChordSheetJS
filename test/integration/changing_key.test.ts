@@ -1,3 +1,4 @@
+import Chord from '../../src/chord';
 import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 import { heredoc } from '../util/utilities';
 import {
@@ -79,6 +80,74 @@ describe('changing the key of an existing song (symbol chords)', () => {
 
     expect(chord).toEqual(expected);
   });
+
+  it.each([
+    {
+      sourceKey: 'E',
+      targetKey: 'C#',
+      source: ['E', 'A', 'E/G#', 'A', 'C#m'],
+      preChange: ['C#', 'F#', 'C#/F', 'F#', 'A#m'],
+      expected: ['C#', 'F#', 'C#/E#', 'F#', 'A#m'],
+    },
+    {
+      sourceKey: 'C',
+      targetKey: 'C#',
+      source: ['Dsus', 'G', 'Em', 'C', 'D5'],
+      preChange: ['D#sus', 'G#', 'Fm', 'C#', 'D#5'],
+      expected: ['D#sus', 'G#', 'E#m', 'C#', 'D#5'],
+    },
+    {
+      sourceKey: 'D',
+      targetKey: 'Gb',
+      source: ['D', 'G', 'A', 'D'],
+      preChange: ['Gb', 'B', 'Db', 'Gb'],
+      expected: ['Gb', 'Cb', 'Db', 'Gb'],
+    },
+    {
+      sourceKey: 'C',
+      targetKey: 'D#',
+      source: ['G', 'C', 'Am7', 'F2', 'G'],
+      preChange: ['A#', 'D#', 'Cm7', 'G#2', 'A#'],
+      expected: ['A#', 'D#', 'B#m7', 'G#2', 'A#'],
+    },
+  ])(
+    'changes only contextual spelling across a $sourceKey to $targetKey progression',
+    ({
+      sourceKey, targetKey, source, preChange, expected,
+    }) => {
+      const chordPro = `{key: ${sourceKey}}\n${source.map((chord) => `[${chord}]x`).join(' ')}`;
+      const changedSong = new ChordProParser().parse(chordPro).changeKey(targetKey);
+      const formatted = new ChordProFormatter().format(changedSong);
+      const roundTripped = new ChordProParser().parse(formatted);
+      const actual = roundTripped.lines
+        .flatMap((line) => line.items)
+        .filter((item): item is ChordLyricsPair => item instanceof ChordLyricsPair)
+        .map((item) => item.chords)
+        .filter((chord): chord is string => chord !== null);
+      const semantics = (value: string) => {
+        const chord = Chord.parseOrFail(value);
+        return {
+          rootPitch: chord.root?.effectiveGrade,
+          rootMinor: chord.root?.minor,
+          suffix: chord.suffix,
+          bassPitch: chord.bass?.effectiveGrade ?? null,
+          hasBass: chord.bass !== null,
+          optional: chord.optional,
+        };
+      };
+      const differences = actual.flatMap((chord, index) => (chord === preChange[index] ?
+        [] :
+        [{ index, before: preChange[index], after: chord }]));
+      const expectedDifferences = expected.flatMap((chord, index) => (chord === preChange[index] ?
+        [] :
+        [{ index, before: preChange[index], after: chord }]));
+
+      expect(actual).toEqual(expected);
+      expect(actual).toHaveLength(preChange.length);
+      actual.forEach((chord, index) => expect(semantics(chord)).toEqual(semantics(preChange[index])));
+      expect(differences).toEqual(expectedDifferences);
+    },
+  );
 
   it('keeps a requested G# tonic instead of rewriting it to Ab', () => {
     const song = new ChordProParser().parse('{key: C}\n[C]x').changeKey('G#');

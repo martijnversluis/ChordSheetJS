@@ -434,6 +434,7 @@ class Key implements KeyProperties {
     if (!spelling) return this.normalizeEnharmonics(context);
 
     return Key.parseOrFail(spelling).set({
+      contextualSpelling: true,
       minor: this.minor,
       preferredNotation: this.preferredNotation,
       type,
@@ -777,6 +778,7 @@ class Key implements KeyProperties {
     if (!spelling) return this.clone();
 
     return Key.parseOrFail(spelling).set({
+      contextualSpelling: true,
       minor: this.minor,
       preferredNotation: this.preferredNotation,
       type: this.type,

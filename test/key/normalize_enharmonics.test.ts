@@ -80,6 +80,14 @@ describe('contextual enharmonic normalization', () => {
     expect(normalized.toString()).toEqual(expected);
   });
 
+  it.each(['3', 'III'])('keeps contextual spelling after converting scale degree %s', (degree) => {
+    const converted = Key.parseOrFail(degree).toChordSymbol(Key.parseOrFail('C#'));
+
+    expect(converted.toString()).toEqual('E#');
+    expect(converted.contextualSpelling).toBe(true);
+    expect(converted.preferAccidental('b').normalize().toString()).toEqual('E#');
+  });
+
   it('allows derived accidental preference to normalize against context', () => {
     const derived = Key.parseOrFail('F').preferAccidental('#');
 
