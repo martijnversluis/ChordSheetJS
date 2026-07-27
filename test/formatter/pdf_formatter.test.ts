@@ -46,6 +46,24 @@ describe('PdfFormatter', () => {
     }
   });
 
+  it('renders chord extensions as superscript end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
+    const formatter = new PdfFormatter({
+      chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
+      layout: { chordDiagrams: { enabled: false } },
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const chordRuns = doc.renderedItems.filter((item) => (
+      item.type === 'text' && ['C', 'ma7', '/E'].includes(item.text)
+    )) as any[];
+
+    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'ma7', '/E']);
+    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 6.3, 9]);
+    expect(chordRuns[1].y).toBeLessThan(chordRuns[0].y);
+  });
+
   it('correctly formats a basic song', () => {
     const formatter = new PdfFormatter();
     formatter.format(exampleSongSymbol, StubbedPdfDoc);
