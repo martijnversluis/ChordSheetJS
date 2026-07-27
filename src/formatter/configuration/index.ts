@@ -60,9 +60,12 @@ import {
   SectionTypeConfig,
   SectionsConfig,
   SingleCondition,
+  UnicodeFallbackConfig,
+  UnicodeFallbackFonts,
   defaultChordSuperscriptConfig,
   defaultFontConfigurations,
   defaultMeasurementBasedLayout,
+  defaultUnicodeFallbackConfig,
   measurementSpecificDefaults,
 } from './measurement_based_configuration';
 
@@ -159,6 +162,9 @@ export {
   ChordDiagramsConfig,
   ChordSuperscriptConfig,
   defaultChordSuperscriptConfig,
+  UnicodeFallbackConfig,
+  UnicodeFallbackFonts,
+  defaultUnicodeFallbackConfig,
   MeasuredItem,
   LineLayout,
   MeasurementBasedLayoutConfig,

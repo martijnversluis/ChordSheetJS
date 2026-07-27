@@ -4,6 +4,7 @@ import {
   Accidental,
   ChordType,
   FLAT,
+  FLAT_UNICODE,
   GERMAN,
   MAJOR,
   MINOR,
@@ -13,6 +14,7 @@ import {
   Notation,
   ROMAN_NUMERALS,
   SHARP,
+  SHARP_UNICODE,
   SOLFEGE,
   SYMBOL,
 } from './constants';
@@ -124,7 +126,9 @@ class Key implements KeyProperties {
   static parse(keyString: string | null): null | Key {
     if (!keyString) return null;
 
-    const trimmed = keyString.trim();
+    const trimmed = keyString.trim()
+      .replaceAll(FLAT_UNICODE, FLAT)
+      .replaceAll(SHARP_UNICODE, SHARP);
     if (!trimmed) return null;
 
     for (let i = 0, count = KEY_TYPES.length; i < count; i += 1) {

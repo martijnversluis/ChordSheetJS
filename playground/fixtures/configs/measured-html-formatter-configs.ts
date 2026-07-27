@@ -2,6 +2,7 @@ export const measuredHtmlConfigs = [
   {
     name: 'Superscript Demo',
     content: {
+      useUnicodeModifiers: true,
       chordSuperscript: {
         enabled: true,
         fontSizeRatio: 0.7,

@@ -7,7 +7,7 @@ Chord
     }
 
 ChordAccidental
-  = "#" / "b"
+  = "#" / "b" / "\u266F" / "\u266D"
 
 ChordSymbol
   = root:ChordSymbolRoot accidental:ChordAccidental? suffix:ChordSuffix bass:ChordSymbolBass? {
