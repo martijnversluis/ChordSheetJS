@@ -130,9 +130,10 @@ export default unibuild((u: Config) => {
   });
 
   u.asset('pdfSources', {
-    input: jsBuild,
+    input: [jsBuild, 'src/formatter/pdf_formatter/fonts/NotoSansSymbols.OFL.txt'],
     outfile: 'lib/pdf/index.js',
-    command: 'rm -rf pdf/.parcel-cache && cd pdf && parcel build',
+    command: 'rm -rf pdf/.parcel-cache && cd pdf && parcel build && ' +
+      'cp ../src/formatter/pdf_formatter/fonts/NotoSansSymbols.OFL.txt ../lib/pdf/',
     releaseOnly: true,
   });
 

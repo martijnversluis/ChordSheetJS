@@ -10,6 +10,11 @@ import {
   NimbusSansLRegNormal,
 } from './fonts/NimbusSansLFonts.base64';
 
+import {
+  NotoSansSymbolsBold,
+  NotoSansSymbolsRegular,
+} from './fonts/NotoSansSymbolsFonts.base64';
+
 const defaultOptions: jsPDFOptions = {
   orientation: 'p',
   unit: 'pt',
@@ -253,6 +258,16 @@ class DocWrapper {
     this.doc.setLineWidth(previousLineWidth);
   }
 
+  hasGlyph(codePoint: number, fontConfig?: FontConfiguration): boolean {
+    return this.withFontConfiguration(fontConfig || null, () => {
+      const font = typeof this.doc.getFont === 'function' ? this.doc.getFont() : null;
+      const codeMap = font?.metadata?.cmap?.unicode?.codeMap;
+      if (!codeMap) return codePoint < 128;
+      const glyphId = codeMap[codePoint];
+      return glyphId !== undefined && glyphId !== 0;
+    });
+  }
+
   private addFonts() {
     this.doc.addFileToVFS('NimbusSansL-Reg.ttf', NimbusSansLRegNormal);
     this.doc.addFont('NimbusSansL-Reg.ttf', 'NimbusSansL-Reg', 'normal');
@@ -265,6 +280,18 @@ class DocWrapper {
 
     this.doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
     this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', 'NimbusSansL-BolIta', 'bolditalic');
+
+    this.addNotoSansSymbolsFonts();
+  }
+
+  private addNotoSansSymbolsFonts() {
+    this.doc.addFileToVFS('NotoSansSymbols-Regular.ttf', NotoSansSymbolsRegular);
+    this.doc.addFont('NotoSansSymbols-Regular.ttf', 'NotoSansSymbols', 'normal');
+    this.doc.addFont('NotoSansSymbols-Regular.ttf', 'NotoSansSymbols', 'italic');
+
+    this.doc.addFileToVFS('NotoSansSymbols-Bold.ttf', NotoSansSymbolsBold);
+    this.doc.addFont('NotoSansSymbols-Bold.ttf', 'NotoSansSymbols-Bold', 'bold');
+    this.doc.addFont('NotoSansSymbols-Bold.ttf', 'NotoSansSymbols-Bold', 'bolditalic');
   }
 }
 

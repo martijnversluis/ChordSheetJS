@@ -301,6 +301,30 @@ export const defaultChordSuperscriptConfig: ChordSuperscriptConfig = {
   riseRatio: 0.35,
 };
 
+export interface UnicodeFallbackFonts {
+  normal: string;
+  bold: string;
+  italic: string;
+  bolditalic: string;
+}
+
+export interface UnicodeFallbackConfig {
+  enabled: boolean;
+  warnOnMissingGlyph: boolean;
+  fallbackFonts: UnicodeFallbackFonts;
+}
+
+export const defaultUnicodeFallbackConfig: UnicodeFallbackConfig = {
+  enabled: true,
+  warnOnMissingGlyph: true,
+  fallbackFonts: {
+    normal: 'NotoSansSymbols',
+    bold: 'NotoSansSymbols-Bold',
+    italic: 'NotoSansSymbols',
+    bolditalic: 'NotoSansSymbols-Bold',
+  },
+};
+
 // Measurement items
 export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
@@ -370,6 +394,7 @@ export const measurementSpecificDefaults = {
   measurer: 'canvas',
   layout: defaultMeasurementBasedLayout,
   chordSuperscript: defaultChordSuperscriptConfig,
+  unicodeFallback: defaultUnicodeFallbackConfig,
 };
 
 // Base measurement-based formatter configuration
@@ -378,6 +403,7 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
   chordSuperscript?: ChordSuperscriptConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
 }
 
 // Configuration properties type for measurement-based formatters
@@ -386,4 +412,5 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
   chordSuperscript?: Partial<ChordSuperscriptConfig>;
+  unicodeFallback?: Partial<UnicodeFallbackConfig>;
 }
