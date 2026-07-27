@@ -885,6 +885,31 @@ describe('JsPdfRenderer', () => {
   });
 
   describe('finalization and drawing', () => {
+    it('draws superscript chord extensions as positioned text runs', () => {
+      const { renderer, doc, config } = createRenderer({
+        chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
+      });
+      const stubDoc = getStubDoc(doc);
+
+      (renderer as any).drawElement({
+        x: 40,
+        y: 100,
+        width: 30,
+        height: 10,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style: config.fonts.chord,
+        page: 1,
+        column: 1,
+      });
+
+      const textRuns = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
+      expect(textRuns.map(({ text }) => text)).toEqual(['C', 'maj7', '/E']);
+      expect(textRuns.map(({ fontSize }) => fontSize)).toEqual([10, 7, 10]);
+      expect(textRuns[1].y).toBeLessThan(textRuns[0].y);
+      expect(textRuns[2].x).toBeGreaterThan(textRuns[1].x);
+    });
+
     it('adds pages as needed and draws elements during finalizeRendering', () => {
       const { renderer, doc, config } = createRenderer();
       const docWrapper = renderer.getDoc();

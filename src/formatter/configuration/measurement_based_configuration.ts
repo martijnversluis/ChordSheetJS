@@ -289,12 +289,25 @@ export interface ChordDiagramsConfig {
   fonts: ChordDiagramFontConfigurations;
 }
 
+export interface ChordSuperscriptConfig {
+  enabled: boolean;
+  fontSizeRatio: number;
+  riseRatio: number;
+}
+
+export const defaultChordSuperscriptConfig: ChordSuperscriptConfig = {
+  enabled: false,
+  fontSizeRatio: 0.7,
+  riseRatio: 0.35,
+};
+
 // Measurement items
 export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
+  chordBaselineHeight?: number,
   adjustedChord?: string,
 }
 
@@ -356,6 +369,7 @@ export const measurementSpecificDefaults = {
   fonts: defaultFontConfigurations,
   measurer: 'canvas',
   layout: defaultMeasurementBasedLayout,
+  chordSuperscript: defaultChordSuperscriptConfig,
 };
 
 // Base measurement-based formatter configuration
@@ -363,6 +377,7 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   fonts: FontConfigurations;
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
+  chordSuperscript?: ChordSuperscriptConfig;
 }
 
 // Configuration properties type for measurement-based formatters
@@ -370,4 +385,5 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   fonts?: Partial<FontConfigurations>;
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
+  chordSuperscript?: Partial<ChordSuperscriptConfig>;
 }

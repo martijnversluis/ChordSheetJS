@@ -28,12 +28,20 @@ export class LayoutFactory {
   createLineLayout(items: MeasuredItem[], line: Line): LineLayout {
     const flags = this.analyzeLineContent(items);
     const type = this.determineLineType(flags);
-    const maxChordHeight = Math.max(...items.map((mi) => mi.chordHeight || 0));
+    const maxChordHeight = this.getMaxChordContentHeight(items);
     const lineHeight = this.calculateLineHeight(flags, maxChordHeight);
 
     return {
       type, items, lineHeight, line,
     };
+  }
+
+  private getMaxChordContentHeight(items: MeasuredItem[]): number {
+    const maxBaseline = Math.max(...items.map((item) => item.chordBaselineHeight ?? item.chordHeight ?? 0), 0);
+    const maxAscent = Math.max(...items.map((item) => (
+      (item.chordHeight ?? 0) - (item.chordBaselineHeight ?? item.chordHeight ?? 0)
+    )), 0);
+    return maxBaseline + maxAscent;
   }
 
   private analyzeLineContent(items: MeasuredItem[]): LineContentFlags {
