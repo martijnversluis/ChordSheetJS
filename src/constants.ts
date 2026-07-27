@@ -106,6 +106,8 @@ export const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
 
 export const FLAT = 'b';
 export const SHARP = '#';
+export const FLAT_UNICODE = '\u266d';
+export const SHARP_UNICODE = '\u266f';
 export type Accidental = '#' | 'b';
 export const NO_ACCIDENTAL = 'NM';
 export type NoAccidental = 'NM';
