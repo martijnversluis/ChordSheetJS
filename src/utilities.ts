@@ -3,53 +3,10 @@ import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
 import SUFFIX_MAPPING from './normalize_mappings/suffix-normalize-mapping';
 
-import { GRADE_TO_KEY, KEY_TO_GRADE } from './scales';
-
-import {
-  Accidental, AccidentalMaybe, ChordType, FLAT, GERMAN, MAJOR, MINOR, NO_ACCIDENTAL, NUMERAL, Notation, SHARP, SYMBOL,
-} from './constants';
+import { ChordType, NUMERAL } from './constants';
 
 export function callChain<T>(value: T, functions: ((_value: T) => T)[]): T {
   return functions.reduce((acc, fn) => fn(acc), value);
-}
-
-export function isGermanNote(key: string): boolean {
-  return key === 'H' || key === 'h';
-}
-
-export function translateGermanNote(key: string): string {
-  if (key === 'H') return 'B';
-  if (key === 'h') return 'b';
-  return key;
-}
-
-export function canonicalizeForEnharmonicLookup(keyString: string): string {
-  return keyString.startsWith('H') ? `B${keyString.slice(1)}` : keyString;
-}
-
-// In German notation, an unadorned `B` denotes B-flat. Returns the accidental to use for grade
-// lookup so `B` maps to grade 10 (Bb); the stored accidental on the Key stays null so the
-// output renders as `B` rather than `Bb`.
-export function germanBLookupAccidental(key: string, accidental: Accidental | null, notation: Notation | null) {
-  if (notation === GERMAN && accidental === null && (key === 'B' || key === 'b')) return FLAT;
-  return null;
-}
-
-export function resolveNotation(keyString: string, explicit?: Notation | null): Notation | null {
-  if (explicit) return explicit;
-  return isGermanNote(keyString) ? GERMAN : null;
-}
-
-export function keyToGrade(key: string, accidental: AccidentalMaybe, type: ChordType, minor: boolean): number | null {
-  const grades = KEY_TO_GRADE[type][(minor ? MINOR : MAJOR)][accidental];
-  const lookupKey = type === SYMBOL ? translateGermanNote(key) : key;
-
-  if (lookupKey in grades) return grades[lookupKey];
-
-  const upperCaseKey = lookupKey.toUpperCase();
-  if (upperCaseKey in grades) return grades[upperCaseKey];
-
-  return null;
 }
 
 export function hasChordContents(line: Line): boolean {
@@ -145,77 +102,6 @@ export function isMinor(key: string | number, keyType: ChordType, suffix: any): 
 
 export function normalizeLineEndings(string: string): string {
   return string.replace(/\r\n?/g, '\n');
-}
-
-class GradeSet {
-  grades: Record<AccidentalMaybe, Record<number, string>>;
-
-  constructor(grades: Record<AccidentalMaybe, Record<number, string>>) {
-    this.grades = grades;
-  }
-
-  determineGrade(accidental: AccidentalMaybe | null, preferredAccidental: Accidental | null, grade: number) {
-    return this.getGradeForAccidental(accidental, grade) ||
-      this.getGradeForAccidental(NO_ACCIDENTAL, grade) ||
-      this.getGradeForAccidental(preferredAccidental, grade) ||
-      this.getGradeForAccidental(SHARP, grade);
-  }
-
-  getGradeForAccidental(accidental: AccidentalMaybe | null, grade: number) {
-    if (accidental) {
-      return this.grades[accidental][grade];
-    }
-
-    return null;
-  }
-}
-
-function determineKey({
-  type,
-  accidental,
-  preferredAccidental,
-  grade,
-  minor,
-}: {
-  type: ChordType,
-  accidental: AccidentalMaybe | null,
-  preferredAccidental: Accidental | null,
-  grade: number,
-  minor: boolean,
-}) {
-  const mode = (minor ? MINOR : MAJOR);
-  const grades = GRADE_TO_KEY[type][mode];
-  return new GradeSet(grades).determineGrade(accidental, preferredAccidental, grade);
-}
-
-export function gradeToKey(options: {
-  type: ChordType,
-  accidental: AccidentalMaybe | null,
-  preferredAccidental: Accidental | null,
-  grade: number,
-  minor: boolean,
-}): string {
-  const {
-    type,
-    accidental,
-    preferredAccidental,
-    grade,
-    minor,
-  } = options;
-
-  let key = determineKey({
-    type, accidental, preferredAccidental, grade, minor,
-  });
-
-  if (!key) {
-    throw new Error(`Could not resolve ${options} to a key`);
-  }
-
-  if (minor && type === NUMERAL) {
-    key = key.toLowerCase();
-  }
-
-  return key;
 }
 
 export function normalizeChordSuffix(suffix: string | null): string | null {
