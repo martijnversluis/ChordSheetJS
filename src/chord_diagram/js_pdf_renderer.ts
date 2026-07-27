@@ -3,10 +3,27 @@ import {
 } from './renderer';
 
 import DocWrapper from '../formatter/pdf_formatter/doc_wrapper';
-import { ChordDiagramFontConfigurations, FontConfiguration } from '../formatter/configuration';
+import {
+  ChordDiagramFontConfigurations,
+  ChordSuperscriptConfig,
+  FontConfiguration,
+  UnicodeFallbackConfig,
+  defaultChordSuperscriptConfig,
+} from '../formatter/configuration';
+import { ChordTextRun, buildChordRuns } from '../rendering/chord_shaper';
 
 const defaultWidth = 150;
 const defaultHeight = 270;
+
+interface JsPDFDiagramRendererOptions {
+  x: number;
+  y: number;
+  width: number;
+  fonts: ChordDiagramFontConfigurations;
+  chordSuperscript?: ChordSuperscriptConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
+  useUnicodeModifiers?: boolean;
+}
 
 /**
  * Renderer implementation for drawing chord diagrams to a jsPDF document.
@@ -26,27 +43,23 @@ class JsPDFRenderer implements Renderer {
 
   fonts: ChordDiagramFontConfigurations;
 
-  constructor(
-    doc: DocWrapper,
-    {
-      x,
-      y,
-      width,
-      fonts,
-    }: {
-      x: number;
-      y: number,
-      width: number,
-      fonts: ChordDiagramFontConfigurations,
-    },
-  ) {
+  chordSuperscript: ChordSuperscriptConfig;
+
+  unicodeFallback?: UnicodeFallbackConfig;
+
+  useUnicodeModifiers: boolean;
+
+  constructor(doc: DocWrapper, options: JsPDFDiagramRendererOptions) {
     this.doc = doc;
-    this.#x = x;
-    this.#y = y;
-    this.#scale = width / defaultWidth;
-    this.width = width;
+    this.#x = options.x;
+    this.#y = options.y;
+    this.#scale = options.width / defaultWidth;
+    this.width = options.width;
     this.height = defaultHeight * this.#scale;
-    this.fonts = fonts;
+    this.fonts = options.fonts;
+    this.chordSuperscript = options.chordSuperscript ?? defaultChordSuperscriptConfig;
+    this.unicodeFallback = options.unicodeFallback;
+    this.useUnicodeModifiers = options.useUnicodeModifiers ?? false;
   }
 
   static calculateHeight(width: number): number {
@@ -98,9 +111,34 @@ class JsPDFRenderer implements Renderer {
   text(text: string, { fontStyle, x, y }: { fontSize: number, fontStyle?: string, x: number, y: number }) {
     const style = fontStyle ?? 'title';
     const font = this.fonts[style] ?? this.fonts.title;
+    const runs = style === 'title' ? this.getChordRuns(text, font) : null;
+    if (runs) {
+      this.drawChordTitleRuns(runs, x, y);
+      return;
+    }
     this.withFontConfiguration(font, () => {
       const textDimensions = this.doc.getTextDimensions(text);
       this.doc.text(text, this.tx(x) - (textDimensions.w / 2), this.ty(y), font);
+    });
+  }
+
+  private getChordRuns(text: string, font: FontConfiguration): ChordTextRun[] | null {
+    return buildChordRuns(
+      text,
+      this.useUnicodeModifiers,
+      this.chordSuperscript,
+      font,
+      this.unicodeFallback,
+      { hasGlyph: (codePoint, runFont) => this.doc.hasGlyph(codePoint, runFont) },
+    );
+  }
+
+  private drawChordTitleRuns(runs: ChordTextRun[], x: number, y: number): void {
+    const width = runs.reduce((sum, run) => sum + this.doc.getTextWidth(run.text, run.font), 0);
+    let runX = this.tx(x) - width / 2;
+    runs.forEach((run) => {
+      this.doc.text(run.text, runX, this.ty(y) + run.yOffset, run.font);
+      runX += this.doc.getTextWidth(run.text, run.font);
     });
   }
 

@@ -2,7 +2,11 @@ import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
-import { ChordSuperscriptConfig, FontConfiguration } from '../../formatter/configuration';
+import {
+  ChordSuperscriptConfig,
+  FontConfiguration,
+  UnicodeFallbackConfig,
+} from '../../formatter/configuration';
 
 export interface Measurer {
   measureTextWidth(text: string, font: { size: number; lineHeight?: number }): number;
@@ -80,6 +84,10 @@ export interface LayoutConfig {
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
   chordSuperscript?: ChordSuperscriptConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
+  glyphChecker?: {
+    hasGlyph(codePoint: number, font: FontConfiguration): boolean;
+  };
 
   // Add column and page layout information
   minY: number;
