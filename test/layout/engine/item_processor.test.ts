@@ -209,6 +209,34 @@ describe('ItemProcessor', () => {
       expect(preservedItem.chordHeight).toBe(preservedItem.chordBaselineHeight);
     });
 
+    it('measures Unicode fallback runs with their selected fonts', () => {
+      const { processor, measurer } = createProcessor({
+        config: {
+          useUnicodeModifiers: true,
+          unicodeFallback: {
+            enabled: true,
+            warnOnMissingGlyph: false,
+            fallbackFonts: {
+              normal: 'NotoSansSymbols',
+              bold: 'NotoSansSymbols-Bold',
+              italic: 'NotoSansSymbols',
+              bolditalic: 'NotoSansSymbols-Bold',
+            },
+          },
+          glyphChecker: {
+            hasGlyph: (codePoint, font) => codePoint < 128 || font.name.startsWith('NotoSansSymbols'),
+          },
+        },
+      });
+      jest.spyOn(measurer, 'measureTextWidth').mockImplementation((text, font: any) => (
+        text.length * (font.name.startsWith('NotoSansSymbols') ? 5 : 8)
+      ));
+
+      const metrics = processor.measureChordMetrics('F♯', baseFonts.chord);
+
+      expect(metrics.width).toBe(13);
+    });
+
     it('measures soft line breaks', () => {
       const { processor } = createProcessor();
       const line = new Line();
