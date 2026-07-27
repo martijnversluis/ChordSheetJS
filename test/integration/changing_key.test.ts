@@ -197,6 +197,30 @@ describe('changing the key of an existing song (symbol chords)', () => {
     },
   );
 
+  it('inherits one root for same-line slash-only chords across output formats', () => {
+    const source = '{key: G}\n[G]Let it [/E]be [/A]';
+    const changedSong = new ChordProParser().parse(source).changeKey('G#');
+    const chordPro = new ChordProFormatter().format(changedSong);
+    const chordsOverWords = new ChordsOverWordsFormatter().format(changedSong);
+    const roundTrips = [
+      new ChordProParser().parse(chordPro),
+      new ChordsOverWordsParser().parse(chordsOverWords),
+    ];
+
+    expect(chordPro).toContain('[G#]Let it [/E#]be [/A#]');
+    expect(chordsOverWords).toContain('G#     /E# /A#\nLet it be');
+    roundTrips.forEach((roundTripped) => {
+      const chords = roundTripped.lines
+        .flatMap((line) => line.items)
+        .filter((item): item is ChordLyricsPair => item instanceof ChordLyricsPair)
+        .map((item) => item.chord)
+        .filter((chord): chord is Chord => chord !== null);
+
+      expect(chords.map((chord) => chord.toString())).toEqual(['G#', '/E#', '/A#']);
+      expect(chords.slice(1).every((chord) => chord.root === null)).toBe(true);
+    });
+  });
+
   it('preserves the source bass degree for slash-only continuations', () => {
     const format = (source: string) => new ChordProFormatter().format(
       new ChordProParser().parse(`{key: C}\n${source}`).changeKey('C#'),
