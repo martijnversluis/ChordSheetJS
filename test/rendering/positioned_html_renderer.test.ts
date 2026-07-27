@@ -622,6 +622,52 @@ describe('PositionedHtmlRenderer', () => {
       expect(baseline).toBe(100 + 16 - chordHeight);
     });
 
+    it('shifts chord baselines down to reserve superscript ascent', () => {
+      const { renderer } = createRenderer();
+      const pair = new ChordLyricsPair('Cmaj7', 'Lyric');
+      const items = [{
+        item: pair,
+        width: 50,
+        chordHeight: 20,
+        chordBaselineHeight: 14,
+      }];
+
+      const baseline = (renderer as any).calculateChordBaseline(100, items, 'Cmaj7', 14);
+      const offsets = (renderer as any).calculateChordLyricYOffsets(items, 100);
+
+      expect(baseline).toBe(106);
+      expect(offsets.lyricsYOffset).toBe(100 + 20 + (renderer as any).getChordLyricSpacing());
+    });
+
+    it('renders chord extensions as superscript spans', () => {
+      const { renderer, doc } = createRenderer({
+        chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10,
+        y: 20,
+        width: 40,
+        height: 13,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style,
+        page: 1,
+        column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.className).toContain('chord');
+      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj7', '/E']);
+      expect(htmlElement.children[1].className).toContain('chord-extension');
+      expect(htmlElement.children[1].style).toMatchObject({
+        fontSize: `${style.size * 0.7}px`,
+        position: 'relative',
+        top: `${-style.size * 0.35}px`,
+      });
+    });
+
     it('finalizes rendering across multiple pages', () => {
       const { renderer, doc } = createRenderer();
 
