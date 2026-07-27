@@ -1,6 +1,14 @@
 /* eslint-disable max-lines */
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
-import scaleDegreeSpelling, { scaleDegreeForSpelling } from './scale_degree';
+import {
+  germanBLookupAccidental,
+  isGermanNote,
+  keyToPitchClass,
+  pitchClassToKey,
+  resolveNotation,
+  scaleDegreeBetween,
+  spellPitchForScaleDegree,
+} from './note_spelling';
 
 import {
   Accidental,
@@ -21,9 +29,7 @@ import {
   SYMBOL,
 } from './constants';
 
-import {
-  deprecate, germanBLookupAccidental, gradeToKey, isGermanNote, keyToGrade, resolveNotation,
-} from './utilities';
+import { deprecate } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
   symbol: /^(?<key>((?<note>[A-Ha-h])(?<accidental>#|b)?))(?<minor>m)?$/,
@@ -182,7 +188,7 @@ class Key implements KeyProperties {
     const notation = resolveNotation(keyString, preferredNotation);
     const lookupAccidental = germanBLookupAccidental(keyString, accidental, notation) ?? accidental;
     const grade = (keyType === SYMBOL || keyType === SOLFEGE) ?
-      keyToGrade(keyString, lookupAccidental || NO_ACCIDENTAL, keyType, isMinor) :
+      keyToPitchClass(keyString, lookupAccidental || NO_ACCIDENTAL, keyType, isMinor) :
       null;
 
     if (grade !== null) {
@@ -363,7 +369,7 @@ class Key implements KeyProperties {
 
   private calculateGradeFromNumber() {
     if (this.number === null) throw new Error('Cannot calculate grade, number is null');
-    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
+    this.grade = keyToPitchClass(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
     this.number = null;
   }
 
@@ -406,14 +412,14 @@ class Key implements KeyProperties {
     const { type } = this;
     const sourceContextNote = sourceContext.set({ type, preferredNotation: null }).note;
     const sourceNote = source.set({ type, preferredNotation: null }).note;
-    const degree = scaleDegreeForSpelling(sourceContextNote, sourceNote, type);
+    const degree = scaleDegreeBetween(sourceContextNote, sourceNote, type);
     if (!degree) return this.clone();
 
     const targetContextNote = targetContext.set({ type, preferredNotation: null }).note;
-    const spelling = scaleDegreeSpelling({
+    const spelling = spellPitchForScaleDegree({
       context: targetContextNote,
       degree,
-      pitch: this.effectiveGrade,
+      pitchClass: this.effectiveGrade,
       type,
     });
     if (!spelling) return this.clone();
@@ -428,10 +434,10 @@ class Key implements KeyProperties {
 
   private spellScaleDegree(context: Key, scaleDegree: number, type: ChordType): Key {
     const contextNote = context.set({ type, preferredNotation: null }).note;
-    const spelling = scaleDegreeSpelling({
+    const spelling = spellPitchForScaleDegree({
       context: contextNote,
       degree: scaleDegree,
-      pitch: this.effectiveGrade,
+      pitchClass: this.effectiveGrade,
       type,
     });
     if (!spelling) return this.normalizeEnharmonics(context);
@@ -454,7 +460,7 @@ class Key implements KeyProperties {
   private rebaseNumeralGradeForMajorReference(referenceKeyWasMinor: boolean) {
     if (referenceKeyWasMinor || !this.minor || !this.originalKeyString || this.transposedFromOriginal) return;
     const num = Key.getNumberFromKey(this.originalKeyString, this.type);
-    const grade = num ? keyToGrade(num.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, false) : null;
+    const grade = num ? keyToPitchClass(num.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, false) : null;
     if (grade === null) return;
     this.grade = grade;
     this.number = null;
@@ -609,11 +615,11 @@ class Key implements KeyProperties {
       minor = this.referenceKeyMode === MINOR;
     }
 
-    const rendered = gradeToKey({
+    const rendered = pitchClassToKey({
       type: this.type,
       accidental: this.accidental,
       preferredAccidental: this.preferredAccidental,
-      grade: this.effectiveGrade,
+      pitchClass: this.effectiveGrade,
       minor,
     });
 
