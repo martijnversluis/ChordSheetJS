@@ -163,6 +163,52 @@ describe('ItemProcessor', () => {
       expect(chordHeight).toBeGreaterThanOrEqual(0);
     });
 
+    it('measures superscript chord extensions without moving the baseline', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 },
+        },
+      });
+      const line = createLine([createChordLyricsPair('Cmaj7', 'Hello')]);
+      const [measured] = processor.measureLineItems(line);
+
+      expect(measured.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(measured.chordHeight).toBeCloseTo(19.68);
+    });
+
+    it('does not superscript semantic non-chord tokens', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 },
+        },
+      });
+      const instruction = new ChordLyricsPair('C7', '', null, null, false, 'instruction');
+      const line = createLine([instruction]);
+      const [measured] = processor.measureLineItems(line);
+
+      expect(measured.chordHeight).toBeCloseTo(14.4);
+      expect(measured.chordBaselineHeight).toBeCloseTo(14.4);
+    });
+
+    it('uses the configured suffix normalization consistently for shaping', () => {
+      const superscript = { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 };
+      const normalized = createProcessor({
+        config: { chordSuperscript: superscript, normalizeChords: true },
+      });
+      const preserved = createProcessor({
+        config: { chordSuperscript: superscript, normalizeChords: true, normalizeChordSuffix: false },
+      });
+      const line = createLine([createChordLyricsPair('Csus2', '')]);
+
+      const [normalizedItem] = normalized.processor.measureLineItems(line);
+      const [preservedItem] = preserved.processor.measureLineItems(line);
+
+      expect(normalizedItem.adjustedChord).toBe('C2');
+      expect(normalizedItem.chordHeight).toBeGreaterThan(normalizedItem.chordBaselineHeight!);
+      expect(preservedItem.adjustedChord).toBe('Csus2');
+      expect(preservedItem.chordHeight).toBe(preservedItem.chordBaselineHeight);
+    });
+
     it('measures soft line breaks', () => {
       const { processor } = createProcessor();
       const line = new Line();
