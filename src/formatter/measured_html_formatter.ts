@@ -124,6 +124,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
       normalizeChords: this.configuration.normalizeChords,
       normalizeChordSuffix: this.configuration.normalizeChordSuffix,
       chordSuperscript: this.configuration.chordSuperscript,
+      unicodeFallback: this.configuration.unicodeFallback,
 
       // Column and page layout information
       totalPages,

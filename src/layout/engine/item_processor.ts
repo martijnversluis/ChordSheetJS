@@ -242,18 +242,33 @@ export class ItemProcessor {
     chordFont: FontConfiguration,
     allowSuperscript = true,
   ): { width: number; boxHeight: number; baselineHeight: number } {
-    const width = chordText ? this.measurer.measureTextWidth(chordText, chordFont) : 0;
-    const height = chordText ? this.measurer.measureTextHeight(chordText, chordFont) : 0;
-    const superscript = this.config.chordSuperscript;
-    if (!allowSuperscript || !superscript?.enabled) return { width, boxHeight: height, baselineHeight: height };
-
-    const runs = buildChordRuns(chordText, this.config.useUnicodeModifiers, superscript, chordFont);
+    const { width, height } = this.measurePlainChord(chordText, chordFont);
+    const { chordSuperscript: superscript, unicodeFallback } = this.config;
+    const canFallback = unicodeFallback?.enabled && this.config.glyphChecker;
+    if (!allowSuperscript || (!superscript?.enabled && !canFallback)) {
+      return { width, boxHeight: height, baselineHeight: height };
+    }
+    const runs = buildChordRuns(
+      chordText,
+      this.config.useUnicodeModifiers,
+      superscript!,
+      chordFont,
+      unicodeFallback,
+      this.config.glyphChecker,
+    );
     if (!runs) return { width, boxHeight: height, baselineHeight: height };
 
     return getChordRunsMetrics(runs, (text, font) => ({
       width: this.measurer.measureTextWidth(text, font),
       height: this.measurer.measureTextHeight(text, font),
     }));
+  }
+
+  private measurePlainChord(chordText: string, chordFont: FontConfiguration): { width: number; height: number } {
+    return {
+      width: chordText ? this.measurer.measureTextWidth(chordText, chordFont) : 0,
+      height: chordText ? this.measurer.measureTextHeight(chordText, chordFont) : 0,
+    };
   }
 
   private getAdjustedChordWidth(

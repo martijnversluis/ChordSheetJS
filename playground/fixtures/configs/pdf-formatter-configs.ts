@@ -988,6 +988,7 @@ export const pdfFormatterConfigs = [
   {
     name: 'Superscript Demo',
     content: {
+      useUnicodeModifiers: true,
       chordSuperscript: {
         enabled: true,
         fontSizeRatio: 0.7,

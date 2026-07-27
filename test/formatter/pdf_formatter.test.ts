@@ -4,7 +4,7 @@ import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 
-import { PDFConfigurationProperties } from '../../src/formatter/configuration';
+import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
 import { exampleSongSymbol } from '../fixtures/song';
 import { LayoutConfig, LayoutEngine } from '../../src/layout/engine';
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
@@ -69,6 +69,24 @@ describe('PdfFormatter', () => {
     expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'ma7', '/E']);
     expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 6.3, 9]);
     expect(chordRuns[1].y).toBeLessThan(chordRuns[0].y);
+  });
+
+  it('uses bundled fallback fonts for Unicode accidentals end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('F#7b9/C#', 'word')]]);
+    const formatter = new PdfFormatter({
+      useUnicodeModifiers: true,
+      unicodeFallback: { ...defaultUnicodeFallbackConfig, warnOnMissingGlyph: false },
+      layout: { chordDiagrams: { enabled: false } },
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const accidentals = doc.renderedItems.filter((item) => (
+      item.type === 'text' && (item.text === '♯' || item.text === '♭')
+    )) as any[];
+
+    expect(accidentals.map(({ text }) => text)).toEqual(['♯', '♭', '♯']);
+    expect(accidentals.every(({ fontName }) => fontName === 'NotoSansSymbols-Bold')).toBe(true);
   });
 
   it('correctly formats a basic song', () => {

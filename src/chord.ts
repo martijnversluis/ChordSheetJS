@@ -6,9 +6,13 @@ import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 import {
   Accidental,
   ChordType,
+  FLAT,
+  FLAT_UNICODE,
   NUMERAL,
   NUMERIC,
   Notation,
+  SHARP,
+  SHARP_UNICODE,
   SOLFEGE,
   SYMBOL,
 } from './constants';
@@ -440,7 +444,7 @@ class Chord implements ChordProperties {
       key: base,
       keyType: chordType,
       minor: isMinor(base, chordType, suffix ?? null),
-      accidental: accidental ?? null,
+      accidental: Chord.normalizeAccidental(accidental),
       preferredNotation: notation ?? null,
     });
   }
@@ -455,11 +459,17 @@ class Chord implements ChordProperties {
 
     return Key.resolve({
       key: bassBase,
-      accidental: bassAccidental ?? null,
+      accidental: Chord.normalizeAccidental(bassAccidental),
       minor: false,
       keyType: chordType,
       preferredNotation: notation ?? null,
     });
+  }
+
+  private static normalizeAccidental(accidental: string | null | undefined): Accidental | null {
+    if (accidental === FLAT_UNICODE) return FLAT;
+    if (accidental === SHARP_UNICODE) return SHARP;
+    return (accidental as Accidental | null | undefined) ?? null;
   }
 
   isMinor(): boolean {
