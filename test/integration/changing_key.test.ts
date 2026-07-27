@@ -149,6 +149,52 @@ describe('changing the key of an existing song (symbol chords)', () => {
     },
   );
 
+  it.each([
+    ['C#', 'D#m', '/E#', 5],
+    ['G#', 'A#m', '/B#', 0],
+  ])(
+    'spells a slash-only bass against the preceding root when changing to %s',
+    (targetKey, expectedRoot, expectedBass, expectedBassPitch) => {
+      const chordPro = '{key: C}\n[C]old [Dm]root\n[/E]continuation';
+      const changedSong = new ChordProParser().parse(chordPro).changeKey(targetKey);
+      const formatted = new ChordProFormatter().format(changedSong);
+      const roundTripped = new ChordProParser().parse(formatted);
+      const chords = roundTripped.lines
+        .flatMap((line) => line.items)
+        .filter((item): item is ChordLyricsPair => item instanceof ChordLyricsPair)
+        .map((item) => item.chord)
+        .filter((chord): chord is Chord => chord !== null);
+
+      expect(chords.map((chord) => chord.toString())).toEqual([targetKey, expectedRoot, expectedBass]);
+      expect(chords[2].root).toBeNull();
+      expect(chords[2].bass?.effectiveGrade).toEqual(expectedBassPitch);
+      expect(formatted).toContain(`[${expectedRoot}]root\n[${expectedBass}]continuation`);
+    },
+  );
+
+  it('preserves the source bass degree for slash-only continuations', () => {
+    const format = (source: string) => new ChordProFormatter().format(
+      new ChordProParser().parse(`{key: C}\n${source}`).changeKey('C#'),
+    );
+
+    expect(format('[Eb/A]rooted')).toContain('[E/A#]rooted');
+    expect(format('[Eb]root\n[/A]continuation')).toContain('[E]root\n[/A#]continuation');
+  });
+
+  it('leaves a slash-only bass unchanged when no root precedes it', () => {
+    const song = new ChordProParser().parse('{key: C}\n[/E]continuation').changeKey('C#');
+
+    expect(new ChordProFormatter().format(song)).toContain('[/F]continuation');
+  });
+
+  it('preserves inherited bass spelling through repeated transposition', () => {
+    const song = new ChordProParser().parse('{key: C}\n[Dm]root\n[/E]continuation');
+    const formatter = new ChordProFormatter();
+
+    expect(formatter.format(song.transpose(1).transpose(1))).toEqual(formatter.format(song.transpose(2)));
+    expect(formatter.format(song.transpose(2))).toContain('[Em]root\n[/F#]continuation');
+  });
+
   it('keeps a requested G# tonic instead of rewriting it to Ab', () => {
     const song = new ChordProParser().parse('{key: C}\n[C]x').changeKey('G#');
 

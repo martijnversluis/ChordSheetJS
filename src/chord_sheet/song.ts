@@ -2,6 +2,7 @@ import Chord from '../chord';
 import ChordDefinition from '../chord_definition/chord_definition';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import ChordLyricsPair from './chord_lyrics_pair';
+import ChordTranspositionContext from './chord_transposition_context';
 import Configuration from '../formatter/configuration';
 import FormattingContext from '../formatter/formatting_context';
 import Item from './item';
@@ -18,8 +19,9 @@ import SongMapper from './song_mapper';
 import Tag from './tag';
 
 import { testSelector } from '../helpers';
-import { ABC, LILYPOND, SVG } from '../constants';
-import { Accidental, TEXTBLOCK } from '../constants';
+import {
+  ABC, Accidental, LILYPOND, SVG, TEXTBLOCK,
+} from '../constants';
 import { CAPO, KEY } from './tags';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
@@ -280,6 +282,7 @@ class Song extends MetadataAccessors {
   ): Song {
     let sourceKey: Key | null = null;
     let transposedKey: Key | null = null;
+    const chordContext = ChordTranspositionContext.forSong(this);
     return this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         sourceKey = Key.wrapOrFail(item.value);
@@ -288,26 +291,13 @@ class Song extends MetadataAccessors {
         return item.set({ value: transposedKey.toString() });
       }
       if (item instanceof ChordLyricsPair) {
-        return Song.transposeChordLyricsPair(item, delta, sourceKey, transposedKey, normalizeChordSuffix, accidental);
+        return chordContext.transpose(item, delta, sourceKey, transposedKey, normalizeChordSuffix, accidental);
       }
       if (item instanceof Literal && Song.isMusicalSection(item.parentLine)) {
         return Song.transposeLiteral(item, delta, sourceKey, transposedKey, normalizeChordSuffix, accidental);
       }
       return item;
     });
-  }
-
-  private static transposeChordLyricsPair(
-    item: ChordLyricsPair,
-    delta: number,
-    sourceKey: Key | null,
-    transposedKey: Key | null,
-    normalizeChordSuffix: boolean,
-    accidental: Accidental | null,
-  ): ChordLyricsPair {
-    let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix, sourceKey });
-    if (accidental) chord = chord.preferAccidental(accidental);
-    return chord;
   }
 
   private static transposeLiteral(
