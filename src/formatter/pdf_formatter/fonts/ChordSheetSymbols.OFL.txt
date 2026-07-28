@@ -1,3 +1,8 @@
+ChordSheet Symbols is a modified subset of Noto Sans Symbols.
+
+Modifications: selected chord-symbol glyphs, enlarged flat signs, and added major-triangle outlines.
+Copyright 2026 ChordSheetJS contributors for the modifications.
+
 Copyright 2022 The Noto Project Authors (https://github.com/notofonts/symbols)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
