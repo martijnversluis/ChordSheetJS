@@ -4,7 +4,7 @@ import Key from '../key';
 import Literal from './chord_pro/literal';
 import type Song from './song';
 
-import { hasSequenceEnharmonicCandidate } from './sequence_enharmonic_normalizer';
+import { hasLeadingToneDiminishedCandidate } from './sequence_enharmonic_rules';
 
 import { Accidental } from '../constants';
 
@@ -22,8 +22,8 @@ class ChordTranspositionContext {
     song.foreachItem((item) => {
       if (item instanceof ChordLyricsPair) {
         if (/^\(?\//.test(item.chords.trim())) context.trackInheritedBasses = true;
-        if (hasSequenceEnharmonicCandidate(item.chords)) context.sequenceEnharmonics = true;
-      } else if (item instanceof Literal && hasSequenceEnharmonicCandidate(item.string)) {
+        if (hasLeadingToneDiminishedCandidate(item.chords)) context.sequenceEnharmonics = true;
+      } else if (item instanceof Literal && hasLeadingToneDiminishedCandidate(item.string)) {
         context.sequenceEnharmonics = true;
       }
     });
