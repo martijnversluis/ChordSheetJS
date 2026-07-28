@@ -7,6 +7,7 @@ import SoftLineBreak from '../../../src/chord_sheet/soft_line_break';
 import Song from '../../../src/chord_sheet/song';
 import Tag from '../../../src/chord_sheet/tag';
 
+import { ChordProParser } from '../../../src';
 import { ItemProcessor } from '../../../src/layout/engine/item_processor';
 import { LayoutConfig, MeasuredItem } from '../../../src/layout/engine/types';
 import { Measurer, TextDimensions } from '../../../src/layout/measurement';
@@ -295,6 +296,26 @@ describe('ItemProcessor', () => {
       expect(metrics.width).toBe(13);
     });
 
+    it('keeps sequence-aware spelling provenance through measurement', () => {
+      const song = new ChordProParser()
+        .parse('{key: G}\n[Ebdim7]rise [Em]home')
+        .normalizeChordSequences();
+      const line = song.lines.find((candidate) => candidate.items.some((item) => item instanceof ChordLyricsPair));
+      if (!line) throw new Error('Expected a chord line');
+      const processor = new ItemProcessor(createMockMeasurer(), createTestConfig({ normalizeChords: true }), song);
+
+      const [measured] = processor.measureLineItems(line);
+      const pair = measured.item as ChordLyricsPair;
+
+      expect(pair.chord?.toString()).toEqual('D#dim7');
+      expect(pair.chord?.normalize('G').toString()).toEqual('D#dim7');
+
+      const [split] = processor.splitMeasuredItem(measured, 10);
+      const splitPair = split.item as ChordLyricsPair;
+      expect(splitPair.chord?.toString()).toEqual('D#dim7');
+      expect(splitPair.chord?.normalize('G').toString()).toEqual('D#dim7');
+    });
+
     it('measures soft line breaks', () => {
       const { processor } = createProcessor();
       const line = new Line();
@@ -341,10 +362,11 @@ describe('ItemProcessor', () => {
       const { processor } = createProcessor();
       const line = createLine([createChordLyricsPair('C', 'word-word')]);
       const measured = processor.measureLineItems(line, true);
-      const [{ item }] = measured;
+      const [{ item, chordHeight }] = measured;
       const pair = item as ChordLyricsPair;
       expect(pair.chords).toBe('');
       expect(pair.lyrics).toBe('wordword');
+      expect(chordHeight).toBe(0);
     });
 
     it('handles unsupported item types by returning placeholder', () => {

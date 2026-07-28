@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
+import { KEY_BRAND, brandPrototype, hasBrand } from './chord_sheet/object_brand';
 import {
   germanBLookupAccidental,
   isGermanNote,
@@ -49,6 +50,7 @@ interface KeyProperties {
   preferredAccidental?: Accidental | null;
   explicitAccidental?: boolean;
   contextualSpelling?: boolean;
+  sequenceSpelling?: boolean;
   transposedFromOriginal?: boolean;
   preferredNotation?: Notation | null;
 }
@@ -73,6 +75,7 @@ interface ConstructorOptions {
   preferredAccidental: Accidental | null;
   explicitAccidental?: boolean;
   contextualSpelling?: boolean;
+  sequenceSpelling?: boolean;
   transposedFromOriginal?: boolean;
   preferredNotation?: Notation | null;
 }
@@ -83,6 +86,10 @@ interface ConstructorOptions {
  * The only function considered public API is `Key.distance`
  */
 class Key implements KeyProperties {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, KEY_BRAND);
+  }
+
   grade: number | null;
 
   number: number | null = null;
@@ -133,6 +140,8 @@ class Key implements KeyProperties {
   explicitAccidental = false;
 
   contextualSpelling = false;
+
+  sequenceSpelling = false;
 
   transposedFromOriginal = false;
 
@@ -300,12 +309,13 @@ class Key implements KeyProperties {
     return this.wrapOrFail(oneKey).distanceTo(otherKey);
   }
 
+  // eslint-disable-next-line complexity
   constructor(
     {
       grade = null, number = null, minor, type, accidental, referenceKeyGrade = null,
       referenceKeyMode = null, originalKeyString = null, preferredAccidental = null,
-      explicitAccidental = false, contextualSpelling = false, transposedFromOriginal = false,
-      preferredNotation = null,
+      explicitAccidental = false, contextualSpelling = false, sequenceSpelling = false,
+      transposedFromOriginal = false, preferredNotation = null,
     }: ConstructorOptions,
   ) {
     this.grade = grade;
@@ -318,7 +328,7 @@ class Key implements KeyProperties {
     this.referenceKeyMode = referenceKeyMode;
     this.originalKeyString = originalKeyString;
     this.explicitAccidental = explicitAccidental;
-    Object.assign(this, { contextualSpelling, transposedFromOriginal });
+    Object.assign(this, { contextualSpelling, sequenceSpelling, transposedFromOriginal });
     this.preferredNotation = preferredNotation;
   }
 
@@ -432,7 +442,17 @@ class Key implements KeyProperties {
     });
   }
 
-  private spellScaleDegree(context: Key, scaleDegree: number, type: ChordType): Key {
+  respellAsScaleDegree(context: Key | string, scaleDegree: number): Key {
+    if (this.explicitAccidental) return this.clone();
+    return this.spellScaleDegree(Key.wrapOrFail(context), scaleDegree, this.type, true);
+  }
+
+  private spellScaleDegree(
+    context: Key,
+    scaleDegree: number,
+    type: ChordType,
+    sequenceSpelling = false,
+  ): Key {
     const contextNote = context.set({ type, preferredNotation: null }).note;
     const spelling = spellPitchForScaleDegree({
       context: contextNote,
@@ -444,6 +464,7 @@ class Key implements KeyProperties {
 
     return Key.parseOrFail(spelling).set({
       contextualSpelling: true,
+      sequenceSpelling,
       minor: this.minor,
       preferredNotation: this.preferredNotation,
       type,
@@ -672,15 +693,19 @@ class Key implements KeyProperties {
   transpose(delta: number): Key {
     if (delta === 0) return this;
 
-    const originalAccidental = this.accidental;
-    let transposedKey = this.set({ contextualSpelling: false });
+    const { accidental: originalAccidental, sequenceSpelling } = this;
+    let transposedKey = this.set({ contextualSpelling: false, sequenceSpelling: false });
     const func = (delta < 0) ? 'transposeDown' : 'transposeUp';
 
     for (let i = 0, count = Math.abs(delta); i < count; i += 1) {
       transposedKey = transposedKey[func]();
     }
 
-    return transposedKey.preferAccidental(originalAccidental).set({ transposedFromOriginal: true });
+    return transposedKey.preferAccidental(originalAccidental).set({
+      contextualSpelling: sequenceSpelling,
+      sequenceSpelling,
+      transposedFromOriginal: true,
+    });
   }
 
   changeGrade(delta) {
@@ -753,6 +778,7 @@ class Key implements KeyProperties {
       accidental: newAccidental,
       contextualSpelling: explicit ? false : this.contextualSpelling,
       explicitAccidental: newAccidental !== null && (explicit || this.explicitAccidental),
+      sequenceSpelling: explicit ? false : this.sequenceSpelling,
     });
   }
 
@@ -813,11 +839,14 @@ class Key implements KeyProperties {
       preferredAccidental: this.preferredAccidental,
       explicitAccidental: this.explicitAccidental,
       contextualSpelling: this.contextualSpelling,
+      sequenceSpelling: this.sequenceSpelling,
       transposedFromOriginal: this.transposedFromOriginal,
       preferredNotation: this.preferredNotation,
       ...(overwrite ? attributes : {}),
     });
   }
 }
+
+brandPrototype(Key.prototype, KEY_BRAND);
 
 export default Key;
