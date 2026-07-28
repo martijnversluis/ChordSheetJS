@@ -1,17 +1,23 @@
 import HtmlElementStyler from './html_element_styler';
 import { MeasuredHtmlFormatterConfiguration } from '../../formatter/configuration';
 import { PositionedElement } from '../renderer';
-import { ChordTextRun, buildChordRuns } from '../chord_shaper';
+import { ChordTextPart, ChordTextRun, buildChordRuns } from '../chord_shaper';
+
+function partClassNames(part: ChordTextPart, styler: HtmlElementStyler): string[] {
+  const classes = [`${styler.prefix}chord-${part}`];
+  if (part === 'extensions') classes.push(`${styler.prefix}chord-extension`);
+  return classes;
+}
 
 function appendRun(htmlElement: HTMLElement, run: ChordTextRun, styler: HtmlElementStyler) {
   const span = document.createElement('span');
   span.className = styler.createClassName(
     `${styler.prefix}chord-run`,
-    run.superscript ? `${styler.prefix}chord-extension` : undefined,
+    ...partClassNames(run.part, styler),
   );
   span.textContent = run.text;
-  if (run.superscript) {
-    span.style.fontSize = `${run.font.size}px`;
+  styler.applyFontStyle(span, run.font);
+  if (run.yOffset !== 0) {
     span.style.position = 'relative';
     span.style.top = `${run.yOffset}px`;
   }
@@ -27,10 +33,12 @@ export default function renderChordRuns(
 ): void {
   if (element.type !== 'chord' || !element.style) return;
 
-  const superscript = configuration.chordSuperscript;
-  if (!superscript?.enabled) return;
-
-  const runs = buildChordRuns(element.content, useUnicodeModifiers, superscript, element.style);
+  const runs = buildChordRuns(element.content, {
+    chordFont: element.style,
+    chordRendering: configuration.chordRendering,
+    chordSuperscript: configuration.chordSuperscript,
+    useUnicodeModifiers,
+  });
   if (!runs) return;
 
   const target = htmlElement;

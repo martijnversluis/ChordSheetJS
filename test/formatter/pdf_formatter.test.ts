@@ -8,7 +8,7 @@ import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
-  it('renders chord extensions as superscript end to end', () => {
+  it('preserves legacy chord superscript rendering end to end', () => {
     const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
     const formatter = new PdfFormatter({
       chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
@@ -18,12 +18,35 @@ describe('PdfFormatter', () => {
     formatter.format(song, StubbedPdfDoc);
     const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
     const chordRuns = doc.renderedItems.filter((item) => (
-      item.type === 'text' && ['C', 'ma7', '/E'].includes(item.text)
+      item.type === 'text' && ['C', 'ma', '7', '/E'].includes(item.text)
     )) as any[];
 
-    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'ma7', '/E']);
-    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 6.3, 9]);
-    expect(chordRuns[1].y).toBeLessThan(chordRuns[0].y);
+    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'ma', '7', '/E']);
+    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 9, 6.3, 9]);
+    expect(chordRuns[2].y).toBeLessThan(chordRuns[0].y);
+  });
+
+  it('renders independently styled chord qualities and extensions end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+        extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+      },
+      layout: { chordDiagrams: { enabled: false } },
+      normalizeChordSuffix: false,
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const chordRuns = doc.renderedItems.filter((item) => (
+      item.type === 'text' && ['C', 'maj', '7', '/E'].includes(item.text)
+    )) as any[];
+
+    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 7.56, 6.3, 9]);
+    expect(chordRuns[1]).toMatchObject({ fontName: 'NimbusSansL-Bol', fontStyle: 'normal' });
+    expect(chordRuns[2].y).toBeLessThan(chordRuns[0].y);
   });
 
   it('uses bundled fallback fonts for Unicode accidentals end to end', () => {
@@ -53,6 +76,36 @@ describe('PdfFormatter', () => {
       ...defaultUnicodeFallbackConfig,
       warnOnMissingGlyph: false,
     });
+  });
+
+  it('deep-merges independent quality and extension rendering styles', () => {
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      },
+    });
+
+    formatter.configure({ chordRendering: { extensions: { baselineShiftRatio: 0.35 } } });
+
+    expect(formatter.configuration.chordRendering).toEqual({
+      quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      extensions: { baselineShiftRatio: 0.35 },
+    });
+  });
+
+  it('keeps canonical chord rendering authoritative after legacy reconfiguration', () => {
+    const formatter = new PdfFormatter({
+      chordRendering: { extensions: { baselineShiftRatio: 0 } },
+    });
+
+    formatter.configure({
+      chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
+    });
+
+    expect(formatter.configuration.chordRendering).toEqual({
+      extensions: { baselineShiftRatio: 0 },
+    });
+    expect(formatter.configuration.chordSuperscript?.enabled).toBe(true);
   });
 
   it('correctly formats a basic song', () => {

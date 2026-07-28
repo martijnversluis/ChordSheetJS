@@ -152,13 +152,15 @@ export class HtmlElementStyler {
   }
 
   private getNormalizedFontStyles(style: FontConfiguration): Partial<CSSStyleDeclaration> {
-    const fontWeight = style.weight ?? (style.style === 'bold' ? 'bold' : undefined);
-    const fontStyle = style.style && style.style !== 'bold' ? style.style : undefined;
+    const bold = style.style.includes('bold');
+    const italic = style.style.includes('italic');
+    const fontWeight = style.weight ?? (bold ? 'bold' : 'normal');
+    const fontStyle = italic ? 'italic' : 'normal';
     const color = this.normalizeColor(style.color);
 
     return {
-      ...(fontWeight && { fontWeight }),
-      ...(fontStyle && { fontStyle }),
+      fontWeight,
+      fontStyle,
       ...(color && { color }),
     };
   }
