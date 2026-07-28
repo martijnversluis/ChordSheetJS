@@ -10,38 +10,21 @@ import {
   ABC, LILYPOND, SVG, TEXTBLOCK,
 } from '../constants';
 import { KEY, NEW_KEY } from './tags';
+import {
+  SequenceChord,
+  hasLeadingToneDiminishedCandidate,
+  respellLeadingToneDiminished,
+} from './sequence_enharmonic_rules';
 
-const FULLY_DIMINISHED_SUFFIXES = new Set(['dim', 'dim7', 'o', 'o7']);
-const DIMINISHED_PREFLIGHT = /(?:dim7?|o7?)(?:\s|\/|\)|$)/i;
 const GRID_TOKEN = /(\s|^)(\S+)(?=\s|$)/g;
 
-export function hasSequenceEnharmonicCandidate(chords: string): boolean {
-  return DIMINISHED_PREFLIGHT.test(chords);
-}
-
-interface ChordSequenceEntry {
-  source: Chord;
-  normalized: Chord;
+interface ChordSequenceEntry extends SequenceChord {
   segment: number;
 }
 
 type ChordLocation =
   | { pair: ChordLyricsPair }
   | { literal: Literal; tokenIndex: number };
-
-function respellLeadingToneDiminished(current: ChordSequenceEntry, following: Chord): Chord {
-  const { root } = current.normalized;
-  const followingRoot = following.root;
-  if (!root || !followingRoot || !FULLY_DIMINISHED_SUFFIXES.has(current.source.suffix || '')) {
-    return current.normalized;
-  }
-  if (root.explicitAccidental) return current.normalized;
-  if (!(root.isChordSymbol() || root.isChordSolfege())) return current.normalized;
-  if (!(followingRoot.isChordSymbol() || followingRoot.isChordSolfege())) return current.normalized;
-  if (root.effectiveGrade !== Key.shiftGrade(followingRoot.effectiveGrade - 1)) return current.normalized;
-
-  return current.source.set({ root: root.respellAsScaleDegree(followingRoot, 7) });
-}
 
 function normalizeEntries(entries: ChordSequenceEntry[]): Chord[] {
   const normalized = entries.map((entry) => entry.normalized);
@@ -94,8 +77,9 @@ class SongSequenceEnharmonicNormalizer {
 
   private hasDiminishedCandidate(): boolean {
     return this.song.lines.some((line) => line.items.some((item) => {
-      if (item instanceof ChordLyricsPair) return hasSequenceEnharmonicCandidate(item.chords);
-      return item instanceof Literal && this.isMusicalLiteral(item) && hasSequenceEnharmonicCandidate(item.string);
+      if (item instanceof ChordLyricsPair) return hasLeadingToneDiminishedCandidate(item.chords);
+      return item instanceof Literal && this.isMusicalLiteral(item) &&
+        hasLeadingToneDiminishedCandidate(item.string);
     }));
   }
 
