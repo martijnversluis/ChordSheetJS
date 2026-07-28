@@ -17,6 +17,7 @@ import ParserWarning from '../parser/parser_warning';
 import SongBuilder from '../song_builder';
 import SongMapper from './song_mapper';
 import Tag from './tag';
+import normalizeSongSequenceEnharmonics from './sequence_enharmonic_normalizer';
 
 import { testSelector } from '../helpers';
 import {
@@ -283,7 +284,7 @@ class Song extends MetadataAccessors {
     let sourceKey: Key | null = null;
     let transposedKey: Key | null = null;
     const chordContext = ChordTranspositionContext.forSong(this);
-    return this.mapItems((item) => {
+    const transposedSong = this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
         sourceKey = Key.wrapOrFail(item.value);
         transposedKey = sourceKey.transpose(delta).normalize();
@@ -298,6 +299,8 @@ class Song extends MetadataAccessors {
       }
       return item;
     });
+
+    return chordContext.sequenceEnharmonics ? transposedSong.normalizeChordSequences() : transposedSong;
   }
 
   private static transposeLiteral(
@@ -401,7 +404,12 @@ class Song extends MetadataAccessors {
     key: Key | string | null = null,
     { normalizeSuffix = true }: { normalizeSuffix?: boolean; } = {},
   ): Song {
-    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }));
+    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }))
+      .normalizeChordSequences(key);
+  }
+
+  normalizeChordSequences(key: Key | string | null = null): Song {
+    return normalizeSongSequenceEnharmonics(this, key);
   }
 
   mapChordLyricsPairs(func: (pair: ChordLyricsPair) => ChordLyricsPair): Song {
