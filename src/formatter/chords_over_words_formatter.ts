@@ -37,7 +37,7 @@ class ChordsOverWordsFormatter extends Formatter {
    * @returns {string} the chord sheet
    */
   format(song: Song): string {
-    this.song = song;
+    this.song = this.prepareSong(song);
 
     const header = this.formatHeader();
     const paragraphs = this.formatParagraphs();

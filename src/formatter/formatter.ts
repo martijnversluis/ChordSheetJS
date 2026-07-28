@@ -1,5 +1,6 @@
 import { BaseFormatterConfiguration } from './configuration/base_configuration';
 import { DeepPartial } from '../utilities';
+import Song from '../chord_sheet/song';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
 import { mergeConfigs } from '../utilities';
 
@@ -52,6 +53,10 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   configure(config: DeepPartial<T>): this {
     this.configuration = mergeConfigs(this.configuration, config) as T;
     return this;
+  }
+
+  protected prepareSong(song: Song): Song {
+    return this.configuration.normalizeChords ? song.normalizeChordSequences() : song;
   }
 
   /**
