@@ -39,7 +39,8 @@ character during PDF text extraction.
 ## Design adjustments
 
 `FLAT_X_SCALE` and `FLAT_Y_SCALE` in `build_symbol_fonts.py` control the flat
-outline and metrics. The initial design widens it by 20% and makes it 15% taller.
+outline and metrics. The current design is 15% larger in both dimensions than
+the previous widened flat, for total source scales of 1.38x and 1.3225y.
 `SHARP_BASELINE` raises each sharp outline so its lower edge rests exactly on the
 chord-letter baseline without changing its shape or advance width.
 The major triangle is constructed by `triangle_glyph`; Regular and Bold use
