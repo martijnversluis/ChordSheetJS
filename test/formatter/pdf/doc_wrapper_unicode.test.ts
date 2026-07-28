@@ -48,6 +48,16 @@ describe('DocWrapper Unicode glyph support', () => {
     expect(flatWidth).toBeGreaterThan(naturalWidth);
   });
 
+  it.each(['normal', 'bold'])('keeps the raised sharp close to the baseline in the %s face', (style) => {
+    const doc = DocWrapper.setup(JsPDF as any);
+    doc.doc.setFont('ChordSheetSymbols', style);
+    const { metadata } = doc.doc.getFont();
+    const glyphId = metadata.cmap.unicode.codeMap['♯'.codePointAt(0)!];
+    const sharp = metadata.glyf.glyphFor(glyphId);
+
+    expect(sharp.yMin).toBeGreaterThanOrEqual(-150);
+  });
+
   it('uses distinct glyph IDs for each major-triangle code point', () => {
     const doc = DocWrapper.setup(JsPDF as any);
     doc.doc.setFont('ChordSheetSymbols', 'bold');
