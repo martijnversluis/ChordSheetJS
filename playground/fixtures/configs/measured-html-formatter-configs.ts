@@ -1,6 +1,6 @@
 export const measuredHtmlConfigs = [
   {
-    name: 'Chord Parts Demo',
+    name: 'Html Config',
     content: {
       useUnicodeModifiers: true,
       chordRendering: {
