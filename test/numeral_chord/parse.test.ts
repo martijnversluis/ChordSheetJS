@@ -252,8 +252,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'maj9#11',
-          quality: null,
-          extensions: 'maj9#11',
+          quality: 'maj',
+          extensions: '9#11',
         });
       });
 
@@ -272,8 +272,8 @@ describe('Chord', () => {
           },
           bass: null,
           suffix: 'maj9b11',
-          quality: null,
-          extensions: 'maj9b11',
+          quality: 'maj',
+          extensions: '9b11',
         });
       });
     });
@@ -414,8 +414,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'maj9#11',
-          quality: null,
-          extensions: 'maj9#11',
+          quality: 'maj',
+          extensions: '9#11',
         });
       });
 
@@ -442,8 +442,8 @@ describe('Chord', () => {
             originalKeyString: 'I',
           },
           suffix: 'maj9b11',
-          quality: null,
-          extensions: 'maj9b11',
+          quality: 'maj',
+          extensions: '9b11',
         });
       });
     });

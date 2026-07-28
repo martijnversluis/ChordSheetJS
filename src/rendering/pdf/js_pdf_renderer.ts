@@ -17,7 +17,6 @@ import {
   FontSection,
   LayoutItem,
   PDFFormatterConfiguration,
-  defaultChordSuperscriptConfig,
   resolveFontConfiguration,
 } from '../../formatter/configuration';
 
@@ -126,6 +125,7 @@ class JsPdfRenderer extends Renderer {
       renderingConfig: chordDiagrams.renderingConfig,
       fonts: chordDiagrams.fonts,
       overrides: chordDiagrams.overrides,
+      chordRendering: this.configuration.chordRendering,
       chordSuperscript: this.configuration.chordSuperscript,
       unicodeFallback: this.configuration.unicodeFallback,
       useUnicodeModifiers: this.configuration.useUnicodeModifiers,
@@ -275,19 +275,14 @@ class JsPdfRenderer extends Renderer {
   }
 
   private drawChordElement(element: PositionedElement): void {
-    const superscript = this.configuration.chordSuperscript ?? defaultChordSuperscriptConfig;
-    const fallback = this.configuration.unicodeFallback;
-    const shouldShape = element.style && (superscript.enabled || fallback?.enabled);
-    const runs = shouldShape ?
-      buildChordRuns(
-        element.content,
-        this.useUnicodeModifiers(),
-        superscript,
-        element.style,
-        fallback,
-        { hasGlyph: (codePoint, font) => this.doc.hasGlyph(codePoint, font) },
-      ) :
-      null;
+    const runs = element.style ? buildChordRuns(element.content, {
+      chordFont: element.style,
+      chordRendering: this.configuration.chordRendering,
+      chordSuperscript: this.configuration.chordSuperscript,
+      glyphChecker: { hasGlyph: (codePoint, font) => this.doc.hasGlyph(codePoint, font) },
+      unicodeFallback: this.configuration.unicodeFallback,
+      useUnicodeModifiers: this.useUnicodeModifiers(),
+    }) : null;
 
     if (!runs) {
       this.doc.text(element.content, element.x, element.y);
