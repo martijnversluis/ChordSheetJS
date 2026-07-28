@@ -1,8 +1,12 @@
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
-import { FontConfiguration } from '../../formatter/configuration';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
+import {
+  ChordRenderingConfig,
+  FontConfiguration,
+  UnicodeFallbackConfig,
+} from '../../formatter/configuration';
 
 export interface Measurer {
   measureTextWidth(text: string, font: { size: number; lineHeight?: number }): number;
@@ -25,6 +29,9 @@ export interface MeasuredItem {
   item: ChordLyricsPair | Tag | SoftLineBreak | null;
   width: number;
   chordHeight?: number;
+  chordAscent?: number;
+  chordBaselineHeight?: number;
+  adjustedChord?: string;
   chordLyricWidthDifference?: number;
 }
 
@@ -62,6 +69,11 @@ export interface LayoutConfig {
   width: number;
   fonts: {
     chord: FontConfiguration;
+    rhythmSymbol?: FontConfiguration;
+    barline?: FontConfiguration;
+    instruction?: FontConfiguration;
+    noChord?: FontConfiguration;
+    annotation?: FontConfiguration;
     lyrics: FontConfiguration;
     comment: FontConfiguration;
     sectionLabel: FontConfiguration;
@@ -72,9 +84,16 @@ export interface LayoutConfig {
   useUnicodeModifiers: boolean;
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
+  glyphChecker?: {
+    hasGlyph(codePoint: number, font: FontConfiguration): boolean;
+  };
 
   // Add column and page layout information
   minY: number;
+  totalPages?: number;
+  getMinYForPage?: (page: number, totalPages: number) => number;
   columnWidth: number;
   columnCount?: number;
   columnSpacing: number;
@@ -82,6 +101,7 @@ export interface LayoutConfig {
   maxColumnWidth?: number;
   paragraphSpacing: number;
   columnBottomY: number;
+  getColumnBottomYForPage?: (page: number, totalPages: number) => number;
   displayLyricsOnly?: boolean;
   decapo: boolean;
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';

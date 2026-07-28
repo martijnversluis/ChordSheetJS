@@ -12,6 +12,9 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   /**
    * Instantiate
    * @param {DeepPartial<T>} [configuration={}] options
+   * @param {'none'|'prefer-long'|'prefer-short'|object} [configuration.directiveNameNormalization='none'] Whether
+   * to preserve directive names, prefer long directive names, or prefer short aliases. May be set globally or per
+   * directive name, with an optional `default` fallback.
    * @param {boolean} [configuration.evaluate=false] Whether or not to evaluate meta expressions.
    * For more info about meta expressions, see: https://bit.ly/2SC9c2u
    * @param {object} [configuration.metadata={}]
@@ -28,6 +31,9 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * @param {boolean} [configuration.normalizeChordSuffix=true] Whether to normalize chord suffixes (e.g.
    * `sus2` to `2`, `maj7` to `ma7`). Only takes effect when `normalizeChords` is `true`. Defaults to `false`
    * for {@link ChordProFormatter} so ChordPro round-trips preserve the user's suffix variant.
+   * @param {object} [configuration.chordRendering] Styling for semantic chord parts.
+   * @param {object} [configuration.chordRendering.quality] Chord-quality font and size/baseline ratios.
+   * @param {object} [configuration.chordRendering.extensions] Chord-extension font and size/baseline ratios.
    */
   constructor(configuration: DeepPartial<T> = {} as DeepPartial<T>) {
     const defaultConfig = this.getDefaultConfiguration();

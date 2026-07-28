@@ -21,7 +21,7 @@ export interface Margins {
 }
 
 // Font and layout types
-export type FontSection =
+export type BaseFontSection =
   'title' |
   'subtitle' |
   'metadata' |
@@ -30,6 +30,9 @@ export type FontSection =
   'comment' |
   'annotation' |
   'sectionLabel';
+
+export type TokenFontSection = 'rhythmSymbol' | 'barline' | 'instruction' | 'noChord';
+export type FontSection = BaseFontSection | TokenFontSection;
 
 export type LayoutSection = 'header' | 'footer';
 export type Alignment = 'left' | 'center' | 'right' | number;
@@ -85,13 +88,15 @@ export interface FontConfiguration {
   lineHeight?: number;
   color: string | number;
   underline?: boolean;
-  inherit?: string;
+  inherit?: FontSection;
   textTransform?: string;
   textDecoration?: string;
   letterSpacing?: string;
 }
 
-export type FontConfigurations = Record<FontSection, FontConfiguration>;
+export type FontConfigurations =
+  Record<BaseFontSection, FontConfiguration> &
+  Partial<Record<TokenFontSection, Partial<FontConfiguration>>>;
 export type ChordDiagramFontConfigurations = Record<'title' | 'fingerings' | 'baseFret', FontConfiguration>;
 
 export const defaultFontConfigurations: FontConfigurations = {
@@ -136,6 +141,19 @@ export const defaultFontConfigurations: FontConfigurations = {
     style: 'normal',
     size: 10,
     color: '#000000',
+  },
+  rhythmSymbol: {
+    inherit: 'chord',
+    weight: 500,
+  },
+  barline: {
+    inherit: 'chord',
+  },
+  instruction: {
+    inherit: 'chord',
+  },
+  noChord: {
+    inherit: 'chord',
   },
   sectionLabel: {
     name: 'Helvetica',
@@ -245,8 +263,10 @@ export type LayoutContentItem =
   | LayoutContentItemWithImage
   | LayoutContentItemWithLine;
 
+export type LayoutSectionHeight = number | 'auto';
+
 export interface LayoutItem {
-  height: number,
+  height: LayoutSectionHeight,
   content: LayoutContentItem[],
 }
 
@@ -269,12 +289,62 @@ export interface ChordDiagramsConfig {
   fonts: ChordDiagramFontConfigurations;
 }
 
+export type ChordPartFontConfig = Partial<Pick<FontConfiguration, 'color' | 'name' | 'style' | 'weight'>>;
+
+export interface ChordPartStyle {
+  /** Font size relative to the configured chord font size. */
+  fontSizeRatio?: number;
+  /** Baseline shift relative to the chord font size. Positive values raise the part. */
+  baselineShiftRatio?: number;
+  /** Font properties to override for this chord part. */
+  font?: ChordPartFontConfig;
+}
+
+export interface ChordRenderingConfig {
+  quality?: ChordPartStyle;
+  extensions?: ChordPartStyle;
+}
+
+export const defaultChordRenderingConfig: ChordRenderingConfig = {};
+
+export interface UnicodeFallbackFonts {
+  normal: string;
+  bold: string;
+  italic: string;
+  bolditalic: string;
+}
+
+export interface UnicodeFallbackConfig {
+  enabled: boolean;
+  preferChordSymbols?: boolean;
+  warnOnMissingGlyph: boolean;
+  fallbackFonts: UnicodeFallbackFonts;
+}
+
+export type UnicodeFallbackConfigProperties = Omit<Partial<UnicodeFallbackConfig>, 'fallbackFonts'> & {
+  fallbackFonts?: Partial<UnicodeFallbackFonts>;
+};
+
+export const defaultUnicodeFallbackConfig: UnicodeFallbackConfig = {
+  enabled: true,
+  preferChordSymbols: true,
+  warnOnMissingGlyph: true,
+  fallbackFonts: {
+    normal: 'ChordSheetSymbols',
+    bold: 'ChordSheetSymbols',
+    italic: 'ChordSheetSymbols',
+    bolditalic: 'ChordSheetSymbols',
+  },
+};
+
 // Measurement items
 export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
+  chordAscent?: number,
+  chordBaselineHeight?: number,
   adjustedChord?: string,
 }
 
@@ -335,7 +405,9 @@ export const defaultMeasurementBasedLayout: MeasurementBasedLayoutConfig = {
 export const measurementSpecificDefaults = {
   fonts: defaultFontConfigurations,
   measurer: 'canvas',
+  chordRendering: defaultChordRenderingConfig,
   layout: defaultMeasurementBasedLayout,
+  unicodeFallback: defaultUnicodeFallbackConfig,
 };
 
 // Base measurement-based formatter configuration
@@ -343,6 +415,8 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   fonts: FontConfigurations;
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
 }
 
 // Configuration properties type for measurement-based formatters
@@ -350,4 +424,6 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   fonts?: Partial<FontConfigurations>;
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfigProperties;
 }

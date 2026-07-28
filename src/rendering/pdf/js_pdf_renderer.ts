@@ -5,16 +5,19 @@ import DocWrapper from '../../formatter/pdf_formatter/doc_wrapper';
 import PdfChordDiagramRenderer from './pdf_chord_diagram_renderer';
 import Song from '../../chord_sheet/song';
 
-import { MeasuredItem } from '../../layout/engine';
 import { PdfConstructor } from '../../formatter/pdf_formatter/types';
 import { getCapos } from '../../helpers';
 
+import { buildChordRuns } from '../chord_shaper';
 import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
 import Renderer, { PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  FontSection,
+  LayoutItem,
   PDFFormatterConfiguration,
+  resolveFontConfiguration,
 } from '../../formatter/configuration';
 
 class JsPdfRenderer extends Renderer {
@@ -40,8 +43,8 @@ class JsPdfRenderer extends Renderer {
   // PUBLIC API IMPLEMENTATION
   //
 
-  getFontConfiguration(objectType: string): FontConfiguration {
-    return this.configuration.fonts[objectType];
+  getFontConfiguration(objectType: FontSection): FontConfiguration {
+    return resolveFontConfiguration(this.configuration.fonts, objectType);
   }
 
   getDocumentMetadata(): Record<string, any> {
@@ -122,38 +125,41 @@ class JsPdfRenderer extends Renderer {
       renderingConfig: chordDiagrams.renderingConfig,
       fonts: chordDiagrams.fonts,
       overrides: chordDiagrams.overrides,
+      chordRendering: this.configuration.chordRendering,
+      unicodeFallback: this.configuration.unicodeFallback,
+      useUnicodeModifiers: this.configuration.useUnicodeModifiers,
     };
   }
 
   protected renderHeadersAndFooters(): void {
-    const layoutRenderer = this.createLayoutRenderer();
-
     if (this.getHeaderConfig()) {
       this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getHeaderConfig()!, 'header');
+        this.createLayoutRenderer(this.doc.currentPage, this.doc.totalPages)
+          .renderLayout(this.getHeaderConfig()!, 'header');
       });
     }
     if (this.getFooterConfig()) {
       this.doc.eachPage(() => {
-        layoutRenderer.renderLayout(this.getFooterConfig()!, 'footer');
+        this.createLayoutRenderer(this.doc.currentPage, this.doc.totalPages)
+          .renderLayout(this.getFooterConfig()!, 'footer');
       });
     }
   }
 
-  private createLayoutRenderer(): LayoutSectionRenderer {
-    const backend = this.createLayoutBackend();
+  private createLayoutRenderer(page = this.doc.currentPage, totalPages = this.doc.totalPages): LayoutSectionRenderer {
+    const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
+      metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
-      extraMetadata: this.getExtraMetadata(this.doc.currentPage, this.doc.totalPages),
+      extraMetadata: this.getExtraMetadata(page, totalPages),
     });
   }
 
-  private createLayoutBackend(): LayoutRenderingBackend {
+  private createLayoutBackend(page = this.doc.currentPage, totalPages = this.doc.totalPages): LayoutRenderingBackend {
     return {
       pageSize: this.doc.pageSize,
-      currentPage: this.doc.currentPage,
-      totalPages: this.doc.totalPages,
+      currentPage: page,
+      totalPages,
       text: (content, x, y) => this.doc.text(content, x, y),
       getTextWidth: (text) => this.doc.getTextWidth(text),
       splitTextToSize: (text, maxWidth) => this.doc.splitTextToSize(text, maxWidth),
@@ -175,12 +181,6 @@ class JsPdfRenderer extends Renderer {
       width: dimensions.w,
       height: dimensions.h,
     };
-  }
-
-  protected calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number {
-    const chordFont = this.getFontConfiguration('chord');
-    const chordDimensions = this.doc.getTextDimensions(chordText, chordFont);
-    return yOffset + this.getMaxChordHeight(items) - chordDimensions.h;
   }
 
   protected finalizeRendering(): void {
@@ -222,17 +222,43 @@ class JsPdfRenderer extends Renderer {
     return this.doc.pageSize;
   }
 
+  protected override getHeaderHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getHeaderConfig(), page, totalPages);
+  }
+
+  protected override getFooterHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getFooterConfig(), page, totalPages);
+  }
+
+  private measureLayoutSectionHeight(
+    layoutConfig: LayoutItem | undefined,
+    page: number,
+    totalPages: number,
+  ): number {
+    if (!layoutConfig) {
+      return 0;
+    }
+
+    return this.createLayoutRenderer(page, totalPages).measureLayoutHeight(layoutConfig);
+  }
+
   //
   // PRIVATE HELPERS
   //
 
   private drawElement(element: PositionedElement): void {
-    if (element.style) {
-      this.doc.setFontStyle(element.style);
-    }
+    if (element.style) this.doc.setFontStyle(element.style);
 
     switch (element.type) {
-      case 'chord':
+      case 'chord': {
+        this.drawChordElement(element);
+        break;
+      }
+      case 'rhythm-symbol':
+      case 'barline':
+      case 'instruction':
+      case 'no-chord':
+      case 'annotation':
       case 'lyrics':
       case 'sectionLabel':
       case 'comment': {
@@ -247,10 +273,34 @@ class JsPdfRenderer extends Renderer {
     }
   }
 
-  private drawUnderlineIfNeeded(element: PositionedElement): void {
+  private drawChordElement(element: PositionedElement): void {
+    const runs = element.style ? buildChordRuns(element.content, {
+      chordFont: element.style,
+      chordRendering: this.configuration.chordRendering,
+      glyphChecker: { hasGlyph: (codePoint, font) => this.doc.hasGlyph(codePoint, font) },
+      unicodeFallback: this.configuration.unicodeFallback,
+      useUnicodeModifiers: this.useUnicodeModifiers(),
+    }) : null;
+
+    if (!runs) {
+      this.doc.text(element.content, element.x, element.y);
+      this.drawUnderlineIfNeeded(element);
+      return;
+    }
+
+    let { x } = element;
+    runs.forEach((run) => {
+      const font = run.font.underline ? { ...run.font, underline: false } : run.font;
+      this.doc.text(run.text, x, element.y + run.yOffset, font);
+      x += this.doc.getTextWidth(run.text, run.font);
+    });
+    this.drawUnderlineIfNeeded(element, x - element.x);
+  }
+
+  private drawUnderlineIfNeeded(element: PositionedElement, shapedWidth?: number): void {
     const isTitleSeparator = element.content?.trim() === '>';
     if (element.style?.underline && !isTitleSeparator) {
-      const { w: textWidth } = this.doc.getTextDimensions(element.content);
+      const textWidth = shapedWidth ?? this.doc.getTextDimensions(element.content).w;
       this.doc.setDrawColor(0);
       this.doc.setLineWidth(1.25);
       this.doc.line(element.x, element.y + 3, element.x + textWidth, element.y + 3);

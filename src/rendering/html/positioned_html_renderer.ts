@@ -8,6 +8,7 @@ import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
 import { getCapos } from '../../helpers';
 import { isComment } from '../../template_helpers';
+import renderChordRuns from './chord_run_renderer';
 import { LineLayout, MeasuredItem } from '../../layout/engine';
 
 import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
@@ -15,10 +16,12 @@ import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutContentItemWithText,
   LayoutItem,
   LineStyle,
   MeasuredHtmlFormatterConfiguration,
+  resolveFontConfiguration,
 } from '../../formatter/configuration';
 
 declare const document: any;
@@ -84,8 +87,8 @@ class PositionedHtmlRenderer extends Renderer {
   // PUBLIC API
   //
 
-  getFontConfiguration(objectType: string): FontConfiguration {
-    return this.configuration.fonts[objectType];
+  getFontConfiguration(objectType: FontSection): FontConfiguration {
+    return resolveFontConfiguration(this.configuration.fonts, objectType);
   }
 
   getDocumentMetadata(): Record<string, any> {
@@ -173,7 +176,7 @@ class PositionedHtmlRenderer extends Renderer {
   private createLayoutRenderer(page: number, totalPages: number): LayoutSectionRenderer {
     const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
+      metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(page, totalPages),
     });
@@ -379,8 +382,8 @@ class PositionedHtmlRenderer extends Renderer {
     if (chords) chords = this.processChords(chords, line);
 
     if (!this.isLyricsOnly() && chords) {
-      const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
-      this.addTextElement(chords, currentX, chordBaseline, 'chord');
+      const chordBaseline = this.getChordBaseline(item, chordsYOffset, items, chords);
+      this.addChordLineToken(item, chords, currentX, chordBaseline);
       this.updatePosition(ctx.column, ctx.page);
     }
 
@@ -460,12 +463,6 @@ class PositionedHtmlRenderer extends Renderer {
     return { width: w, height: h };
   }
 
-  protected calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number {
-    const chordFont = this.getFontConfiguration('chord');
-    const { height } = this.measureText(chordText, chordFont);
-    return yOffset + this.getMaxChordHeight(items) - height;
-  }
-
   protected finalizeRendering(): void {
     const pageCount = Math.max(this.currentPage, this.doc.totalPages);
 
@@ -503,6 +500,26 @@ class PositionedHtmlRenderer extends Renderer {
 
   protected getDocPageSize(): { width: number; height: number } {
     return this.doc.pageSize;
+  }
+
+  protected override getHeaderHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getHeaderConfig(), page, totalPages);
+  }
+
+  protected override getFooterHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getFooterConfig(), page, totalPages);
+  }
+
+  private measureLayoutSectionHeight(
+    layoutConfig: LayoutItem | undefined,
+    page: number,
+    totalPages: number,
+  ): number {
+    if (!layoutConfig) {
+      return 0;
+    }
+
+    return this.createLayoutRenderer(page, totalPages).measureLayoutHeight(layoutConfig);
   }
 
   //
@@ -596,10 +613,12 @@ class PositionedHtmlRenderer extends Renderer {
       element.content,
       [
         `${prefix}element ${prefix}${element.type}`,
+        element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
         this.styler.getCustomClass(element.type),
       ],
     );
 
+    renderChordRuns(htmlElement, element, this.configuration, this.styler, this.useUnicodeModifiers());
     this.styler.applyElementStyle(htmlElement, element);
     paragraphDiv.appendChild(htmlElement);
   }
@@ -607,6 +626,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawElement(element: PositionedElement): void {
     switch (element.type) {
       case 'chord':
+      case 'rhythm-symbol':
+      case 'barline':
+      case 'instruction':
+      case 'no-chord':
+      case 'annotation':
       case 'lyrics':
       case 'sectionLabel':
       case 'comment':
@@ -622,7 +646,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawTextElement(element: PositionedElement): void {
     const htmlElement = document.createElement('div');
     const { prefix } = this.styler;
-    htmlElement.className = `${prefix}element ${prefix}${element.type}`;
+    htmlElement.className = this.styler.createClassName(
+      `${prefix}element`,
+      `${prefix}${element.type}`,
+      element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
+    );
 
     const customClass = this.styler.getCustomClass(element.type);
     if (customClass) {
@@ -630,6 +658,7 @@ class PositionedHtmlRenderer extends Renderer {
     }
 
     htmlElement.textContent = element.content;
+    renderChordRuns(htmlElement, element, this.configuration, this.styler, this.useUnicodeModifiers());
 
     if (element.style) {
       this.styler.applyElementStyle(htmlElement, element);

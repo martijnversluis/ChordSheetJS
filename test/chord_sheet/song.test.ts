@@ -344,6 +344,20 @@ describe('Song', () => {
 
       expect(song.getChords()).toEqual([]);
     });
+
+    it('excludes rhythm symbols, barlines, instructions, and no-chord markers', () => {
+      const song = createSong([
+        createLine([
+          createChordLyricsPair('D2', ''),
+          createChordLyricsPair('/', ''),
+          createChordLyricsPair(':||', ''),
+          createChordLyricsPair('(6x)', ''),
+          createChordLyricsPair('N.C.', ''),
+        ]),
+      ]);
+
+      expect(song.getChords()).toEqual(['D2']);
+    });
   });
 
   describe('#getChordDefinitions', () => {

@@ -358,6 +358,26 @@ describe('PositionedHtmlRenderer', () => {
       expect(renderer.getFontConfiguration('text')).toEqual(config.fonts.text);
     });
 
+    it('resolves token fonts from the configured chord font', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 900, color: 'red',
+          },
+        } as any,
+      });
+
+      expect(renderer.getFontConfiguration('rhythmSymbol')).toMatchObject({
+        name: 'Custom', size: 17, weight: 500, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('barline')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('instruction')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+    });
+
     it('provides document metadata including dimensions and page info', () => {
       const { renderer, doc } = createRenderer();
       (renderer as any).renderTime = 3.5;
@@ -502,6 +522,61 @@ describe('PositionedHtmlRenderer', () => {
       expect(currentPage).toBe(1);
     });
 
+    it('renders chord-line tokens with semantic types and font roles', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 700, color: 'red',
+          },
+          rhythmSymbol: { inherit: 'chord', weight: 500 },
+          barline: { inherit: 'chord' },
+          instruction: { inherit: 'chord' },
+          noChord: { inherit: 'chord' },
+        } as any,
+      });
+      renderer.initialize();
+
+      const pairs = ['D2', '/', '|', ':||', '(6x)', 'N.C.']
+        .map((chords) => new ChordLyricsPair(chords));
+      const line = new Line();
+      pairs.forEach((pair) => line.addItem(pair));
+
+      (renderer as any).renderLines([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: pairs.map((item) => ({ item, width: 50, chordHeight: 17 })),
+        line,
+      }]);
+
+      const tokens = (renderer as any).elements.map((element: any) => ({
+        content: element.content,
+        type: element.type,
+        weight: element.style.weight,
+        tokenVariant: element.tokenVariant,
+      }));
+
+      expect(tokens).toEqual([
+        {
+          content: 'D2', type: 'chord', weight: 700, tokenVariant: undefined,
+        },
+        {
+          content: '/', type: 'rhythm-symbol', weight: 500, tokenVariant: 'continuation',
+        },
+        {
+          content: '|', type: 'barline', weight: 500, tokenVariant: 'single',
+        },
+        {
+          content: ':||', type: 'barline', weight: 700, tokenVariant: 'repeat-end',
+        },
+        {
+          content: '(6x)', type: 'instruction', weight: 700, tokenVariant: 'repeat-count',
+        },
+        {
+          content: 'N.C.', type: 'no-chord', weight: 700, tokenVariant: 'marker',
+        },
+      ]);
+    });
+
     it('delegates measurements and calculates chord baseline', () => {
       const { renderer, doc } = createRenderer();
       const font = renderer.getFontConfiguration('text');
@@ -516,6 +591,157 @@ describe('PositionedHtmlRenderer', () => {
       const baseline = (renderer as any).calculateChordBaseline(100, items, 'C');
       const chordHeight = (renderer as any).measureText('C', renderer.getFontConfiguration('chord')).height;
       expect(baseline).toBe(100 + 16 - chordHeight);
+    });
+
+    it('shifts chord baselines down to reserve raised-part ascent', () => {
+      const { renderer } = createRenderer();
+      const pair = new ChordLyricsPair('Cmaj7', 'Lyric');
+      const items = [{
+        item: pair,
+        width: 50,
+        chordHeight: 20,
+        chordBaselineHeight: 14,
+      }];
+
+      const baseline = (renderer as any).calculateChordBaseline(100, items, 'Cmaj7', 14);
+      const offsets = (renderer as any).calculateChordLyricYOffsets(items, 100);
+
+      expect(baseline).toBe(106);
+      expect(offsets.lyricsYOffset).toBe(100 + 20 + (renderer as any).getChordLyricSpacing());
+    });
+
+    it('renders configured raised extension spans', () => {
+      const { renderer, doc } = createRenderer({
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10,
+        y: 20,
+        width: 40,
+        height: 13,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style,
+        page: 1,
+        column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.className).toContain('chord');
+      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj', '7', '/E']);
+      expect(htmlElement.children[2].className).toContain('chord-extension');
+      expect(htmlElement.children[2].style).toMatchObject({
+        fontSize: `${style.size * 0.7}px`,
+        position: 'relative',
+        top: `${-style.size * 0.35}px`,
+      });
+    });
+
+    it('aligns adjacent roots while reserving space for a lowered chord part', () => {
+      const { renderer } = createRenderer();
+      const items = [
+        {
+          item: new ChordLyricsPair('Cm7', 'Lyric'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 19.2,
+        },
+        {
+          item: new ChordLyricsPair('C', 'Word'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 14.4,
+        },
+      ];
+
+      const styledBaseline = (renderer as any).calculateChordBaseline(100, items, 'Cm7', 14.4);
+      const plainBaseline = (renderer as any).calculateChordBaseline(100, items, 'C', 14.4);
+      const offsets = (renderer as any).calculateChordLyricYOffsets(items, 100);
+
+      expect(styledBaseline).toBe(100);
+      expect(plainBaseline).toBe(100);
+      expect(offsets.lyricsYOffset).toBe(100 + 19.2 + (renderer as any).getChordLyricSpacing());
+    });
+
+    it('aligns adjacent roots when an unshifted chord part is larger', () => {
+      const { renderer } = createRenderer();
+      const items = [
+        {
+          item: new ChordLyricsPair('Cm', 'Lyric'),
+          chordAscent: 14.4,
+          chordBaselineHeight: 14.4,
+          chordHeight: 28.8,
+        },
+        {
+          item: new ChordLyricsPair('C', 'Word'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 14.4,
+        },
+      ];
+
+      const styledBaseline = (renderer as any).calculateChordBaseline(100, items, 'Cm', 14.4);
+      const plainBaseline = (renderer as any).calculateChordBaseline(100, items, 'C', 14.4);
+
+      expect(styledBaseline).toBe(114.4);
+      expect(plainBaseline).toBe(114.4);
+    });
+
+    it('renders independently styled quality and extension spans', () => {
+      const { renderer, doc } = createRenderer({
+        chordRendering: {
+          quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+          extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+        },
+        normalizeChordSuffix: false,
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10,
+        y: 20,
+        width: 40,
+        height: 13,
+        content: 'Cmaj7',
+        type: 'chord',
+        style,
+        page: 1,
+        column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj', '7']);
+      expect(htmlElement.children[1].className).toContain('chord-quality');
+      expect(htmlElement.children[1].style).toMatchObject({
+        fontSize: `${style.size * 0.84}px`,
+        fontStyle: 'normal',
+        fontWeight: 500,
+      });
+      expect(htmlElement.children[2].className).toContain('chord-extensions');
+      expect(htmlElement.children[2].style).toMatchObject({
+        fontSize: `${style.size * 0.7}px`,
+        position: 'relative',
+        top: `${-style.size * 0.35}px`,
+      });
+    });
+
+    it('resets inherited bold styling for a normal quality face', () => {
+      const { renderer, doc } = createRenderer({
+        chordRendering: { quality: { font: { style: 'normal' } } },
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10, y: 20, width: 40, height: 13, content: 'Cm7', type: 'chord', style, page: 1, column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.children[1].style).toMatchObject({
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+      });
     });
 
     it('finalizes rendering across multiple pages', () => {
@@ -617,6 +843,56 @@ describe('PositionedHtmlRenderer', () => {
       expect(conditionCalls[0].metadata.pages).toBe(doc.totalPages);
       expect(conditionCalls[0].metadata.capoKey).toBeDefined();
       expect(song.metadata.getSingle('key')).toBe('C');
+    });
+
+    it('uses page-specific auto header height for content start', () => {
+      const firstPageRule = { page: { first: true } };
+      const laterPageRule = { page: { greater_than: 1 } };
+      const { renderer, config } = createRenderer({
+        layout: {
+          header: {
+            height: 'auto',
+            content: [
+              {
+                type: 'text',
+                value: 'Large first page title',
+                style: {
+                  name: 'Arial', style: 'bold', size: 20, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 64,
+                },
+                condition: firstPageRule,
+              },
+              {
+                type: 'text',
+                value: 'Small running title',
+                style: {
+                  name: 'Arial', style: 'normal', size: 10, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 18,
+                },
+                condition: laterPageRule,
+              },
+            ],
+          },
+        } as any,
+      });
+
+      ConditionMock.mockImplementation((rule: any, metadata: Record<string, any>) => ({
+        evaluate: () => {
+          if (rule === firstPageRule) return metadata.page === 1;
+          if (rule === laterPageRule) return metadata.page > 1;
+          return true;
+        },
+      }));
+
+      (renderer as any).currentPage = 1;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 64);
+
+      (renderer as any).currentPage = 2;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 18);
     });
 
     it('applies layout font styles to rendered header text', () => {

@@ -1,11 +1,97 @@
 import '../util/matchers';
-import { PDFConfigurationProperties } from '../../src/formatter/configuration';
+import { LayoutEngine } from '../../src/layout/engine';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 import { exampleSongSymbol } from '../fixtures/song';
+import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
+import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
+  it('uses neutral chord rendering in its default configuration', () => {
+    const formatter = new PdfFormatter();
+
+    expect(formatter.configuration.chordRendering).toEqual({});
+  });
+
+  it('renders independently styled chord qualities and extensions end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+        extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+      },
+      layout: { chordDiagrams: { enabled: false } },
+      normalizeChordSuffix: false,
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const chordRuns = doc.renderedItems.filter((item) => (
+      item.type === 'text' && ['C', 'maj', '7', '/E'].includes(item.text)
+    )) as any[];
+
+    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 7.56, 6.3, 9]);
+    expect(chordRuns[1]).toMatchObject({ fontName: 'NimbusSansL-Bol', fontStyle: 'normal' });
+    expect(chordRuns[2].y).toBeLessThan(chordRuns[0].y);
+  });
+
+  it('uses bundled fallback fonts for Unicode accidentals end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('F#7b9/C#', 'word')]]);
+    const formatter = new PdfFormatter({
+      useUnicodeModifiers: true,
+      unicodeFallback: { ...defaultUnicodeFallbackConfig, warnOnMissingGlyph: false },
+      layout: { chordDiagrams: { enabled: false } },
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const accidentals = doc.renderedItems.filter((item) => (
+      item.type === 'text' && (item.text === '♯' || item.text === '♭')
+    )) as any[];
+
+    expect(accidentals.map(({ text }) => text)).toEqual(['♯', '♭', '♯']);
+    expect(accidentals.every(({ fontName }) => fontName === 'ChordSheetSymbols')).toBe(true);
+  });
+
+  it('deep-merges partial Unicode fallback configuration', () => {
+    const formatter = new PdfFormatter({
+      unicodeFallback: { warnOnMissingGlyph: false },
+    });
+
+    expect(formatter.configuration.unicodeFallback).toEqual({
+      ...defaultUnicodeFallbackConfig,
+      warnOnMissingGlyph: false,
+    });
+  });
+
+  it('deep-merges partial Unicode fallback font configuration', () => {
+    const formatter = new PdfFormatter({
+      unicodeFallback: { fallbackFonts: { bold: 'CustomBoldSymbols' } },
+    });
+
+    expect(formatter.configuration.unicodeFallback?.fallbackFonts).toEqual({
+      ...defaultUnicodeFallbackConfig.fallbackFonts,
+      bold: 'CustomBoldSymbols',
+    });
+  });
+
+  it('deep-merges independent quality and extension rendering styles', () => {
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      },
+    });
+
+    formatter.configure({ chordRendering: { extensions: { baselineShiftRatio: 0.35 } } });
+
+    expect(formatter.configuration.chordRendering).toEqual({
+      quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      extensions: { baselineShiftRatio: 0.35 },
+    });
+  });
+
   it('correctly formats a basic song', () => {
     const formatter = new PdfFormatter();
     formatter.format(exampleSongSymbol, StubbedPdfDoc);
@@ -153,6 +239,64 @@ describe('PdfFormatter', () => {
     expect(doc.renderedItems).toHaveLength(1);
 
     expect(doc).toHaveText('Page 1 of 1', 275, 750);
+  });
+
+  it('uses an extra layout pass only for auto-height sections with total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        footer: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'Last page footer',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'center', y: 28, height: 12 },
+              condition: { page: { last: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(2);
+
+    computeSpy.mockRestore();
+  });
+
+  it('keeps one layout pass for auto-height sections without total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        header: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'First page header',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'left', y: 0, height: 12 },
+              condition: { page: { first: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(1);
+
+    computeSpy.mockRestore();
   });
 
   it('renders conditional content when the condition matches', () => {

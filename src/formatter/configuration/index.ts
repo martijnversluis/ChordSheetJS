@@ -31,6 +31,9 @@ import {
   ChordDiagramFontConfigurations,
   ChordDiagramOverrides,
   ChordDiagramsConfig,
+  ChordPartFontConfig,
+  ChordPartStyle,
+  ChordRenderingConfig,
   ColumnConfig,
   ConditionRule,
   ConditionalRule,
@@ -59,10 +62,17 @@ import {
   SectionTypeConfig,
   SectionsConfig,
   SingleCondition,
+  UnicodeFallbackConfig,
+  UnicodeFallbackConfigProperties,
+  UnicodeFallbackFonts,
+  defaultChordRenderingConfig,
   defaultFontConfigurations,
   defaultMeasurementBasedLayout,
+  defaultUnicodeFallbackConfig,
   measurementSpecificDefaults,
 } from './measurement_based_configuration';
+
+import { resolveFontConfiguration } from './font_resolver';
 
 import {
   MeasuredHtmlConfigurationProperties,
@@ -79,11 +89,22 @@ import {
 } from './pdf_configuration';
 
 import {
+  TextConfigurationProperties,
+  TextFormatterConfiguration,
+  TextLayoutConfig,
+  TextLayoutContentItemWithText,
+  TextLayoutItem,
+  defaultTextLayout,
+  textSpecificDefaults,
+} from './text_configuration';
+
+import {
   getBaseDefaultConfig,
   getDefaultConfig,
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
 } from './default_config_manager';
 
 import { mergeConfigs } from '../../utilities';
@@ -107,6 +128,7 @@ export {
   InstrumentConfiguration,
   UserConfigurationProperties,
   defaultMetadataConfiguration,
+  resolveFontConfiguration,
   DelegatesConfiguration,
   defaultDelegatesConfiguration,
   ConfigurationProperties,
@@ -141,6 +163,14 @@ export {
   LayoutItem,
   ChordDiagramOverrides,
   ChordDiagramsConfig,
+  ChordPartFontConfig,
+  ChordPartStyle,
+  ChordRenderingConfig,
+  defaultChordRenderingConfig,
+  UnicodeFallbackConfig,
+  UnicodeFallbackConfigProperties,
+  UnicodeFallbackFonts,
+  defaultUnicodeFallbackConfig,
   MeasuredItem,
   LineLayout,
   MeasurementBasedLayoutConfig,
@@ -168,12 +198,21 @@ export {
   PDFConfigurationProperties,
   pdfSpecificDefaults,
 
+  TextLayoutContentItemWithText,
+  TextLayoutItem,
+  TextLayoutConfig,
+  TextFormatterConfiguration,
+  TextConfigurationProperties,
+  defaultTextLayout,
+  textSpecificDefaults,
+
   BaseFormatterConfiguration,
   Configuration,
   getDefaultConfig,
   getHTMLDefaultConfig,
   getMeasuredHtmlDefaultConfig,
   getPDFDefaultConfig,
+  getTextDefaultConfig,
 };
 
 export default Configuration;

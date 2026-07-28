@@ -1,15 +1,31 @@
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
+import { chordLineElementType } from '../chord_sheet/chord_line_token';
 import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import { LineLayout, MeasuredItem } from '../layout/engine';
 import { isColumnBreak, isComment, renderChord } from '../template_helpers';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutItem,
   MeasurementBasedFormatterConfiguration,
 } from '../formatter/configuration';
+
+const FONT_SECTIONS_BY_TYPE: Record<string, FontSection> = {
+  'chord': 'chord',
+  'rhythmSymbol': 'rhythmSymbol',
+  'rhythm-symbol': 'rhythmSymbol',
+  'barline': 'barline',
+  'instruction': 'instruction',
+  'noChord': 'noChord',
+  'no-chord': 'noChord',
+  'annotation': 'annotation',
+  'lyrics': 'text',
+  'sectionLabel': 'sectionLabel',
+  'comment': 'comment',
+};
 
 /**
  * Interface representing paragraph layouts from the layout engine
@@ -33,6 +49,7 @@ export interface PositionedElement {
   style?: any;
   page: number;
   column: number;
+  tokenVariant?: string;
 }
 
 /**
@@ -57,12 +74,13 @@ abstract class Renderer {
 
   protected currentPage = 1;
 
+  protected totalPagesHint: number | null = null;
+
   constructor(song: Song) {
     this.song = song;
     this.startTime = performance.now();
   }
 
-  //
   // PUBLIC API - Methods that formatters will call
   //
 
@@ -83,7 +101,8 @@ abstract class Renderer {
    * @param paragraphLayouts The layouts to render
    * @param config Additional configuration options
    */
-  render(paragraphLayouts: ParagraphLayout[], _config?: any): void {
+  render(paragraphLayouts: ParagraphLayout[], config?: { totalPages?: number }): void {
+    this.totalPagesHint = config?.totalPages ?? null;
     this.initialize();
 
     // Render the main content
@@ -105,8 +124,15 @@ abstract class Renderer {
   /**
    * Get the bottom Y position available for content
    */
-  getContentBottomY(): number {
-    return this.getColumnBottomY();
+  getContentBottomY(page = this.currentPage, totalPages = Number.MAX_SAFE_INTEGER): number {
+    return this.getPageHeight() - this.getBottomMargin() - this.getFooterHeightForPage(page, totalPages);
+  }
+
+  /**
+   * Get the top Y position available for content
+   */
+  getContentStartY(page = this.currentPage, totalPages = Number.MAX_SAFE_INTEGER): number {
+    return this.getTopMargin() + this.getHeaderHeightForPage(page, totalPages);
   }
 
   /**
@@ -117,7 +143,7 @@ abstract class Renderer {
   /**
    * Get the font configuration for a specific object type
    */
-  abstract getFontConfiguration(objectType: string): FontConfiguration;
+  abstract getFontConfiguration(objectType: FontSection): FontConfiguration;
 
   /**
    * Get the current rendering time in seconds
@@ -232,14 +258,35 @@ abstract class Renderer {
 
     // Add chord element if not lyrics-only mode
     if (!this.isLyricsOnly() && chords) {
-      const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
-      this.addTextElement(chords, currentX, chordBaseline, 'chord');
+      const chordBaseline = this.getChordBaseline(item, chordsYOffset, items, chords);
+      this.addChordLineToken(item, chords, currentX, chordBaseline);
     }
 
     // Always add lyrics if present
     if (lyrics && lyrics.trim() !== '') {
       this.addTextElement(lyrics, currentX, lyricsYOffset, 'lyrics');
     }
+  }
+
+  protected addChordLineToken(item: ChordLyricsPair, content: string, x: number, y: number): void {
+    this.addTextElement(
+      content,
+      x,
+      y,
+      chordLineElementType(item.tokenKind),
+      item.styleRole,
+      item.tokenVariant || undefined,
+    );
+  }
+
+  protected getChordBaseline(
+    item: ChordLyricsPair,
+    chordsYOffset: number,
+    items: MeasuredItem[],
+    chords: string,
+  ): number {
+    const measuredItem = items.find(({ item: candidate }) => candidate === item);
+    return this.calculateChordBaseline(chordsYOffset, items, chords, measuredItem?.chordBaselineHeight);
   }
 
   /**
@@ -284,7 +331,7 @@ abstract class Renderer {
 
     if (hasChords && hasLyrics) {
       chordsYOffset = yOffset;
-      lyricsYOffset = chordsYOffset + this.getMaxChordHeight(items) + chordLyricSpacing;
+      lyricsYOffset = chordsYOffset + this.getMaxChordContentHeight(items) + chordLyricSpacing;
     } else if (hasChords && !hasLyrics) {
       chordsYOffset = yOffset;
     } else if (!hasChords && hasLyrics) {
@@ -294,11 +341,32 @@ abstract class Renderer {
     return { chordsYOffset, lyricsYOffset };
   }
 
-  /**
-   * Get the maximum chord height for a line
-   */
+  protected getMaxChordBaselineHeight(items: MeasuredItem[]): number {
+    return items.reduce((max, item) => Math.max(max, item.chordBaselineHeight ?? item.chordHeight ?? 0), 0);
+  }
+
   protected getMaxChordHeight(items: MeasuredItem[]): number {
-    return items.reduce((maxHeight, { chordHeight }) => Math.max(maxHeight, chordHeight || 0), 0);
+    return items.reduce((max, item) => Math.max(max, item.chordHeight || 0), 0);
+  }
+
+  protected getMaxChordAscent(items: MeasuredItem[]): number {
+    return items.reduce((maxAscent, { chordAscent, chordBaselineHeight, chordHeight }) => (
+      Math.max(maxAscent, chordAscent ?? (chordHeight ?? 0) - (chordBaselineHeight ?? chordHeight ?? 0))
+    ), 0);
+  }
+
+  protected getMaxChordDescent(items: MeasuredItem[]): number {
+    return items.reduce((maxDescent, {
+      chordAscent, chordBaselineHeight, chordHeight,
+    }) => {
+      const baseline = chordBaselineHeight ?? chordHeight ?? 0;
+      const ascent = chordAscent ?? (chordHeight ?? 0) - baseline;
+      return Math.max(maxDescent, (chordHeight ?? 0) - baseline - ascent);
+    }, 0);
+  }
+
+  protected getMaxChordContentHeight(items: MeasuredItem[]): number {
+    return this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items) + this.getMaxChordDescent(items);
   }
 
   /**
@@ -313,6 +381,7 @@ abstract class Renderer {
         renderKey: null,
         useUnicodeModifier: this.useUnicodeModifiers(),
         normalizeChords: this.normalizeChords(),
+        normalizeChordSuffix: this.getConfiguration().normalizeChordSuffix,
         decapo: this.getConfiguration().decapo,
       },
     );
@@ -321,8 +390,15 @@ abstract class Renderer {
   /**
    * Add a text element to the elements array
    */
-  protected addTextElement(text: string, x: number, y: number, type: string): void {
-    const font = this.getFontForType(type);
+  protected addTextElement(
+    text: string,
+    x: number,
+    y: number,
+    type: string,
+    fontType = type,
+    tokenVariant?: string,
+  ): void {
+    const font = this.getFontForType(fontType);
     const { width, height } = this.measureText(text, font);
 
     this.elements.push({
@@ -335,6 +411,7 @@ abstract class Renderer {
       style: font,
       page: this.currentPage,
       column: this.currentColumn,
+      ...(tokenVariant && { tokenVariant }),
     });
   }
 
@@ -356,18 +433,7 @@ abstract class Renderer {
    * Get the font configuration for a specific element type
    */
   protected getFontForType(type: string): FontConfiguration {
-    switch (type) {
-      case 'chord':
-        return this.getFontConfiguration('chord');
-      case 'lyrics':
-        return this.getFontConfiguration('text');
-      case 'sectionLabel':
-        return this.getFontConfiguration('sectionLabel');
-      case 'comment':
-        return this.getFontConfiguration('comment');
-      default:
-        return this.getFontConfiguration('text');
-    }
+    return this.getFontConfiguration(FONT_SECTIONS_BY_TYPE[type] || 'text');
   }
 
   /**
@@ -464,10 +530,16 @@ abstract class Renderer {
    */
   protected abstract measureText(text: string, font: FontConfiguration): { width: number; height: number };
 
-  /**
-   * Calculate chord baseline position
-   */
-  protected abstract calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number;
+  protected calculateChordBaseline(
+    yOffset: number,
+    items: MeasuredItem[],
+    chordText: string,
+    chordBaselineHeight?: number,
+  ): number {
+    const chordFont = this.getFontConfiguration('chord');
+    const height = chordBaselineHeight ?? this.measureText(chordText, chordFont).height;
+    return yOffset + this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items) - height;
+  }
 
   /**
    * Finalize the rendering process
@@ -564,14 +636,34 @@ abstract class Renderer {
    * Get the header height
    */
   protected getHeaderHeight(): number {
-    return this.getHeaderConfig()?.height ?? 0;
+    return this.getHeaderHeightForPage(this.currentPage, this.getTotalPagesForLayout());
   }
 
   /**
    * Get the footer height
    */
   protected getFooterHeight(): number {
-    return this.getFooterConfig()?.height ?? 0;
+    return this.getFooterHeightForPage(this.currentPage, this.getTotalPagesForLayout());
+  }
+
+  /**
+   * Get the header height for a page. Concrete renderers may resolve auto heights.
+   */
+  protected getHeaderHeightForPage(_page: number, _totalPages: number): number {
+    const height = this.getHeaderConfig()?.height ?? 0;
+    return typeof height === 'number' ? height : 0;
+  }
+
+  /**
+   * Get the footer height for a page. Concrete renderers may resolve auto heights.
+   */
+  protected getFooterHeightForPage(_page: number, _totalPages: number): number {
+    const height = this.getFooterConfig()?.height ?? 0;
+    return typeof height === 'number' ? height : 0;
+  }
+
+  private getTotalPagesForLayout(): number {
+    return this.totalPagesHint ?? Number.MAX_SAFE_INTEGER;
   }
 
   /**

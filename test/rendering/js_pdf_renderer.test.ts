@@ -284,6 +284,26 @@ describe('JsPdfRenderer', () => {
     expect(renderer.getFontConfiguration('text')).toEqual(config.fonts.text);
   });
 
+  it('resolves token fonts from the configured chord font', () => {
+    const { renderer } = createRenderer({
+      fonts: {
+        chord: {
+          name: 'Custom', size: 17, weight: 900, color: 'red',
+        },
+      } as any,
+    });
+
+    expect(renderer.getFontConfiguration('rhythmSymbol')).toMatchObject({
+      name: 'Custom', size: 17, weight: 500, color: 'red',
+    });
+    expect(renderer.getFontConfiguration('barline')).toMatchObject({
+      name: 'Custom', size: 17, weight: 900, color: 'red',
+    });
+    expect(renderer.getFontConfiguration('instruction')).toMatchObject({
+      name: 'Custom', size: 17, weight: 900, color: 'red',
+    });
+  });
+
   describe('metadata and configuration', () => {
     it('provides document metadata after render', () => {
       const {
@@ -515,6 +535,166 @@ describe('JsPdfRenderer', () => {
       expect(footerItems).toHaveLength(3);
     });
 
+    it('evaluates header and footer conditions with per-page metadata', () => {
+      const baseLayout = createBaseConfig().layout;
+      const conditionRule = { page: { first: true } };
+      const overrides: Partial<PDFFormatterConfiguration> = {
+        layout: {
+          ...baseLayout,
+          footer: {
+            ...baseLayout.footer,
+            height: 20,
+            content: [
+              {
+                type: 'text',
+                value: 'First page only',
+                style: {
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: '#000',
+                },
+                position: { x: 'left', y: 5 },
+                condition: conditionRule,
+              },
+            ],
+          },
+        } as any,
+      };
+
+      const { renderer, doc } = createRenderer(overrides);
+      const docWrapper = renderer.getDoc();
+      docWrapper.totalPages = 3;
+      docWrapper.currentPage = 3;
+
+      conditionEvaluator = (rule, metadata) => {
+        expect(rule).toBe(conditionRule);
+        return metadata.page === 1;
+      };
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const stubDoc = getStubDoc(doc);
+      const textItems = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
+
+      expect(conditionCalls.map((call) => call.metadata.page)).toEqual([1, 2, 3]);
+      expect(conditionCalls.map((call) => call.metadata.pages)).toEqual([3, 3, 3]);
+      expect(textItems.filter((item) => item.text === 'First page only')).toHaveLength(1);
+    });
+
+    it('uses page-specific auto header height for content start', () => {
+      const baseLayout = createBaseConfig().layout;
+      const overrides: Partial<PDFFormatterConfiguration> = {
+        layout: {
+          ...baseLayout,
+          header: {
+            ...baseLayout.header,
+            height: 'auto',
+            content: [
+              {
+                type: 'text',
+                value: 'Large first page title',
+                style: {
+                  name: 'NimbusSansL-Bol', style: 'bold', size: 20, color: '#000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 60,
+                },
+                condition: { page: { first: true } },
+              },
+              {
+                type: 'text',
+                value: 'Small running title',
+                style: {
+                  name: 'NimbusSansL-Reg', style: 'normal', size: 10, color: '#000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 20,
+                },
+                condition: { page: { greater_than: 1 } },
+              },
+            ],
+          },
+        } as any,
+      };
+
+      const { renderer, config } = createRenderer(overrides);
+      conditionEvaluator = (rule, metadata) => {
+        if (rule.page?.first) return metadata.page === 1;
+        if (rule.page?.greater_than) return metadata.page > rule.page.greater_than;
+        return true;
+      };
+
+      (renderer as any).currentPage = 1;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 60);
+
+      (renderer as any).currentPage = 2;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 20);
+    });
+
+    it('measures auto section height from visible content only', () => {
+      const {
+        renderer, config, song,
+      } = createRenderer();
+      const visibleRule = { page: { equals: 2 } };
+      const hiddenRule = { page: { equals: 1 } };
+      const layoutRenderer = new LayoutSectionRenderer(
+        {
+          pageSize: renderer.getDoc().pageSize,
+          currentPage: 2,
+          totalPages: 3,
+          text: () => {},
+          getTextWidth: (text) => renderer.getDoc().getTextWidth(text),
+          splitTextToSize: (text, maxWidth) => renderer.getDoc().splitTextToSize(text, maxWidth),
+          setFontStyle: () => {},
+          addImage: () => {},
+          line: () => {},
+          setLineStyle: () => {},
+          resetDash: () => {},
+        },
+        {
+          metadata: song.metadata,
+          margins: config.layout.global.margins,
+          extraMetadata: { page: '2', pages: '3' },
+        },
+      );
+      conditionEvaluator = (rule, metadata) => metadata.page === rule.page.equals;
+
+      const height = layoutRenderer.measureLayoutHeight({
+        height: 'auto',
+        content: [
+          {
+            type: 'text',
+            value: 'Hidden',
+            style: config.fonts.title,
+            position: { x: 'left', y: 0, height: 80 },
+            condition: hiddenRule,
+          },
+          {
+            type: 'line',
+            style: {
+              color: '#000000',
+              width: 1,
+            },
+            position: {
+              x: 0,
+              y: 36,
+              width: 'auto',
+              height: 0,
+            },
+            condition: visibleRule,
+          },
+          {
+            type: 'image',
+            src: 'badge.png',
+            compression: 'NONE' as any,
+            size: { width: 10, height: 24 },
+            position: { x: 'left', y: 20 },
+            condition: visibleRule,
+          },
+        ],
+      });
+
+      expect(height).toBe(44);
+    });
+
     it('evaluates layout content conditions before rendering', () => {
       const conditionRule = { capoKey: { equals: 'Db' } };
       const baseLayout = createBaseConfig().layout;
@@ -705,6 +885,56 @@ describe('JsPdfRenderer', () => {
   });
 
   describe('finalization and drawing', () => {
+    it('draws configured chord extensions as positioned text runs', () => {
+      const { renderer, doc, config } = createRenderer({
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
+      });
+      const stubDoc = getStubDoc(doc);
+
+      (renderer as any).drawElement({
+        x: 40,
+        y: 100,
+        width: 30,
+        height: 10,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style: config.fonts.chord,
+        page: 1,
+        column: 1,
+      });
+
+      const textRuns = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
+      expect(textRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+      expect(textRuns.map(({ fontSize }) => fontSize)).toEqual([10, 10, 7, 10]);
+      expect(textRuns[2].y).toBeLessThan(textRuns[0].y);
+      expect(textRuns[3].x).toBeGreaterThan(textRuns[2].x);
+    });
+
+    it('draws one baseline underline across shaped chord runs', () => {
+      const { renderer, doc, config } = createRenderer({
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
+        fonts: { chord: { underline: true } },
+      } as any);
+      const stubDoc = getStubDoc(doc);
+
+      (renderer as any).drawElement({
+        x: 40,
+        y: 100,
+        width: 30,
+        height: 10,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style: config.fonts.chord,
+        page: 1,
+        column: 1,
+      });
+
+      const underlineLines = stubDoc.renderedItems.filter((item) => item.type === 'line') as any[];
+      expect(underlineLines).toHaveLength(1);
+      expect(underlineLines[0]).toMatchObject({ x1: 40, y1: 103, y2: 103 });
+      expect(underlineLines[0].x2).toBeGreaterThan(40);
+    });
+
     it('adds pages as needed and draws elements during finalizeRendering', () => {
       const { renderer, doc, config } = createRenderer();
       const docWrapper = renderer.getDoc();

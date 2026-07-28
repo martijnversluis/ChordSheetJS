@@ -4,6 +4,15 @@ import { PositionedElement } from '../renderer';
 declare type HTMLElement = any;
 declare type CSSStyleDeclaration = any;
 
+const CHORD_LINE_ELEMENT_TYPES = new Set([
+  'chord', 'rhythm-symbol', 'barline', 'instruction', 'no-chord', 'annotation',
+]);
+
+const CUSTOM_CLASS_KEYS: Record<string, string> = {
+  'rhythm-symbol': 'rhythmSymbol',
+  'no-chord': 'noChord',
+};
+
 /**
  * Configuration for HTML element styling
  */
@@ -75,9 +84,9 @@ export class HtmlElementStyler {
    * Gets type-specific styles for different element types
    */
   getTypeSpecificStyles(element: PositionedElement): Partial<CSSStyleDeclaration> {
+    if (CHORD_LINE_ELEMENT_TYPES.has(element.type)) return this.chordStyles(element);
+
     switch (element.type) {
-      case 'chord':
-        return this.chordStyles(element);
       case 'sectionLabel':
         return { fontWeight: element.style?.weight || 'bold' };
       case 'comment':
@@ -95,14 +104,7 @@ export class HtmlElementStyler {
    */
   chordStyles(element: PositionedElement): Partial<CSSStyleDeclaration> {
     const { style } = element;
-    const contentIsRhythm = element.content === '|' || element.content === '/';
-    const chordStyles: Partial<CSSStyleDeclaration> = { color: style?.color || '#0066cc' };
-
-    if (contentIsRhythm && style?.weight && style.weight > 500) {
-      chordStyles.fontWeight = '500';
-    }
-
-    return chordStyles;
+    return { color: style?.color || '#0066cc' };
   }
 
   /**
@@ -146,17 +148,21 @@ export class HtmlElementStyler {
    * Gets the custom CSS class for an element type if configured
    */
   getCustomClass(elementType: string): string | undefined {
-    return this.config.cssClasses?.[elementType];
+    return this.config.cssClasses?.[CUSTOM_CLASS_KEYS[elementType] || elementType];
   }
 
   private getNormalizedFontStyles(style: FontConfiguration): Partial<CSSStyleDeclaration> {
-    const fontWeight = style.weight ?? (style.style === 'bold' ? 'bold' : undefined);
-    const fontStyle = style.style && style.style !== 'bold' ? style.style : undefined;
+    const bold = style.style.includes('bold');
+    const italic = style.style.includes('italic');
+    const fontWeight = style.weight ?? (bold ? 'bold' : 'normal');
+    let fontStyle = style.style || 'normal';
+    if (bold) fontStyle = 'normal';
+    if (italic) fontStyle = 'italic';
     const color = this.normalizeColor(style.color);
 
     return {
-      ...(fontWeight && { fontWeight }),
-      ...(fontStyle && { fontStyle }),
+      fontWeight,
+      fontStyle,
       ...(color && { color }),
     };
   }
