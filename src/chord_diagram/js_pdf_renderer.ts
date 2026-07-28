@@ -6,7 +6,6 @@ import DocWrapper from '../formatter/pdf_formatter/doc_wrapper';
 import {
   ChordDiagramFontConfigurations,
   ChordRenderingConfig,
-  ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
 } from '../formatter/configuration';
@@ -21,7 +20,6 @@ interface JsPDFDiagramRendererOptions {
   width: number;
   fonts: ChordDiagramFontConfigurations;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   useUnicodeModifiers?: boolean;
 }
@@ -46,8 +44,6 @@ class JsPDFRenderer implements Renderer {
 
   chordRendering?: ChordRenderingConfig;
 
-  chordSuperscript?: ChordSuperscriptConfig;
-
   unicodeFallback?: UnicodeFallbackConfig;
 
   useUnicodeModifiers: boolean;
@@ -61,7 +57,6 @@ class JsPDFRenderer implements Renderer {
     this.height = defaultHeight * this.#scale;
     this.fonts = options.fonts;
     this.chordRendering = options.chordRendering;
-    this.chordSuperscript = options.chordSuperscript;
     this.unicodeFallback = options.unicodeFallback;
     this.useUnicodeModifiers = options.useUnicodeModifiers ?? false;
   }
@@ -130,7 +125,6 @@ class JsPDFRenderer implements Renderer {
     return buildChordRuns(text, {
       chordFont: font,
       chordRendering: this.chordRendering,
-      chordSuperscript: this.chordSuperscript,
       glyphChecker: { hasGlyph: (codePoint, runFont) => this.doc.hasGlyph(codePoint, runFont) },
       unicodeFallback: this.unicodeFallback,
       useUnicodeModifiers: this.useUnicodeModifiers,
