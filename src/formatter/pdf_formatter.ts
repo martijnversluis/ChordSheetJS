@@ -115,7 +115,6 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       normalizeChords: this.configuration.normalizeChords,
       normalizeChordSuffix: this.configuration.normalizeChordSuffix,
       chordRendering: this.configuration.chordRendering,
-      chordSuperscript: this.configuration.chordSuperscript,
       unicodeFallback: this.configuration.unicodeFallback,
       glyphChecker: {
         hasGlyph: (codePoint, font) => this.renderer!.getDoc().hasGlyph(codePoint, font),

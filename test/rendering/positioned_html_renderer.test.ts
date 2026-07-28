@@ -593,7 +593,7 @@ describe('PositionedHtmlRenderer', () => {
       expect(baseline).toBe(100 + 16 - chordHeight);
     });
 
-    it('shifts chord baselines down to reserve superscript ascent', () => {
+    it('shifts chord baselines down to reserve raised-part ascent', () => {
       const { renderer } = createRenderer();
       const pair = new ChordLyricsPair('Cmaj7', 'Lyric');
       const items = [{
@@ -610,9 +610,9 @@ describe('PositionedHtmlRenderer', () => {
       expect(offsets.lyricsYOffset).toBe(100 + 20 + (renderer as any).getChordLyricSpacing());
     });
 
-    it('preserves legacy chord superscript spans', () => {
+    it('renders configured raised extension spans', () => {
       const { renderer, doc } = createRenderer({
-        chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
       });
       const style = renderer.getFontConfiguration('chord');
 
@@ -663,6 +663,30 @@ describe('PositionedHtmlRenderer', () => {
       expect(styledBaseline).toBe(100);
       expect(plainBaseline).toBe(100);
       expect(offsets.lyricsYOffset).toBe(100 + 19.2 + (renderer as any).getChordLyricSpacing());
+    });
+
+    it('aligns adjacent roots when an unshifted chord part is larger', () => {
+      const { renderer } = createRenderer();
+      const items = [
+        {
+          item: new ChordLyricsPair('Cm', 'Lyric'),
+          chordAscent: 14.4,
+          chordBaselineHeight: 14.4,
+          chordHeight: 28.8,
+        },
+        {
+          item: new ChordLyricsPair('C', 'Word'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 14.4,
+        },
+      ];
+
+      const styledBaseline = (renderer as any).calculateChordBaseline(100, items, 'Cm', 14.4);
+      const plainBaseline = (renderer as any).calculateChordBaseline(100, items, 'C', 14.4);
+
+      expect(styledBaseline).toBe(114.4);
+      expect(plainBaseline).toBe(114.4);
     });
 
     it('renders independently styled quality and extension spans', () => {

@@ -8,7 +8,11 @@ under the SIL Open Font License 1.1.
 
 ```sh
 yarn fonts:build
+yarn fonts:check
 ```
+
+`fonts:check` rebuilds into the committed module, compares it byte-for-byte, and
+restores the original file. It is part of the normal unibuild lint checks.
 
 The wrapper uses `uv` directly when available or installs/runs pinned `uv 0.11.32`
 through `mise`. The Python script pins FontTools 4.60.1 through PEP 723 metadata.
@@ -36,8 +40,8 @@ character during PDF text extraction.
 
 `FLAT_X_SCALE` and `FLAT_Y_SCALE` in `build_symbol_fonts.py` control the flat
 outline and metrics. The initial design widens it by 20% and makes it 15% taller.
-`SHARP_Y_SHIFT` raises the sharp by 100 font units so its lower edge sits closer
-to the chord-letter baseline without changing its shape or advance width.
+`SHARP_BASELINE` raises each sharp outline so its lower edge rests exactly on the
+chord-letter baseline without changing its shape or advance width.
 The major triangle is constructed by `triangle_glyph`; Regular and Bold use
 different inner contours to produce different stroke weights.
 
