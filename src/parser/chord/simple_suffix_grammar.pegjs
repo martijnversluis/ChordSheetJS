@@ -7,5 +7,5 @@ Quality
   = "m" !"a"i { return "m"; } / "dim"i / "aug"i / "sus4"i / "sus2"i / "sus"i / ""
 
 Extensions
-  = "(" content:$([a-zA-Z0-9#\+\-o♭♯Δ]+) ")" { return "(" + content + ")"; }
-  / $([a-zA-Z0-9#\+\-o♭♯Δ]+)
+  = "(" content:$([a-zA-Z0-9#\+\-o♭♯Δ∆△°ø⌀]+) ")" { return "(" + content + ")"; }
+  / $([a-zA-Z0-9#\+\-o♭♯Δ∆△°ø⌀]+)

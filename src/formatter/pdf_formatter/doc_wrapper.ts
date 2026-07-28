@@ -11,9 +11,9 @@ import {
 } from './fonts/NimbusSansLFonts.base64';
 
 import {
-  NotoSansSymbolsBold,
-  NotoSansSymbolsRegular,
-} from './fonts/NotoSansSymbolsFonts.base64';
+  ChordSheetSymbolsBold,
+  ChordSheetSymbolsRegular,
+} from './fonts/ChordSheetSymbolsFonts.base64';
 
 const defaultOptions: jsPDFOptions = {
   orientation: 'p',
@@ -281,17 +281,17 @@ class DocWrapper {
     this.doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
     this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', 'NimbusSansL-BolIta', 'bolditalic');
 
-    this.addNotoSansSymbolsFonts();
+    this.addChordSheetSymbolsFonts();
   }
 
-  private addNotoSansSymbolsFonts() {
-    this.doc.addFileToVFS('NotoSansSymbols-Regular.ttf', NotoSansSymbolsRegular);
-    this.doc.addFont('NotoSansSymbols-Regular.ttf', 'NotoSansSymbols', 'normal');
-    this.doc.addFont('NotoSansSymbols-Regular.ttf', 'NotoSansSymbols', 'italic');
+  private addChordSheetSymbolsFonts() {
+    this.doc.addFileToVFS('ChordSheetSymbols-Regular.ttf', ChordSheetSymbolsRegular);
+    this.doc.addFont('ChordSheetSymbols-Regular.ttf', 'ChordSheetSymbols', 'normal');
+    this.doc.addFont('ChordSheetSymbols-Regular.ttf', 'ChordSheetSymbols', 'italic');
 
-    this.doc.addFileToVFS('NotoSansSymbols-Bold.ttf', NotoSansSymbolsBold);
-    this.doc.addFont('NotoSansSymbols-Bold.ttf', 'NotoSansSymbols-Bold', 'bold');
-    this.doc.addFont('NotoSansSymbols-Bold.ttf', 'NotoSansSymbols-Bold', 'bolditalic');
+    this.doc.addFileToVFS('ChordSheetSymbols-Bold.ttf', ChordSheetSymbolsBold);
+    this.doc.addFont('ChordSheetSymbols-Bold.ttf', 'ChordSheetSymbols', 'bold');
+    this.doc.addFont('ChordSheetSymbols-Bold.ttf', 'ChordSheetSymbols', 'bolditalic');
   }
 }
 
