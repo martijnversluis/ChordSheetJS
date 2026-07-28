@@ -44,4 +44,31 @@ describe('Unicode chord-quality symbols', () => {
 
     expect(song.getChords()).toEqual(['CΔ7', 'C°7', 'Cø7']);
   });
+
+  it.each([
+    ['Cm7', 'm', '7'],
+    ['Cmin7', 'min', '7'],
+    ['CMIN7', 'MIN', '7'],
+    ['CMi7', 'Mi', '7'],
+    ['Cmadd2', 'm', 'add2'],
+    ['C-7', '-', '7'],
+    ['C-5', null, '-5'],
+    ['Cmaj7', 'maj', '7'],
+    ['Cma7', 'ma', '7'],
+    ['CM7', 'M', '7'],
+    ['CΔ7', 'Δ', '7'],
+    ['C∆7', '∆', '7'],
+    ['C△7', '△', '7'],
+    ['Cdim7', 'dim', '7'],
+    ['C°7', '°', '7'],
+    ['Cø7', 'ø', '7'],
+    ['C⌀7', '⌀', '7'],
+    ['Caug7', 'aug', '7'],
+    ['Csus4', 'sus4', null],
+  ])('classifies the quality and extensions in %s', (input, quality, extensions) => {
+    const chord = Chord.parseOrFail(input);
+
+    expect(chord.quality).toBe(quality);
+    expect(chord.extensions).toBe(extensions);
+  });
 });

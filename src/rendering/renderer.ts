@@ -81,7 +81,6 @@ abstract class Renderer {
     this.startTime = performance.now();
   }
 
-  //
   // PUBLIC API - Methods that formatters will call
   //
 
@@ -342,27 +341,32 @@ abstract class Renderer {
     return { chordsYOffset, lyricsYOffset };
   }
 
-  /**
-   * Get the maximum chord height for a line
-   */
-  protected getMaxChordHeight(items: MeasuredItem[]): number {
-    return items.reduce((maxHeight, { chordHeight }) => Math.max(maxHeight, chordHeight || 0), 0);
+  protected getMaxChordBaselineHeight(items: MeasuredItem[]): number {
+    return items.reduce((max, item) => Math.max(max, item.chordBaselineHeight ?? item.chordHeight ?? 0), 0);
   }
 
-  protected getMaxChordBaselineHeight(items: MeasuredItem[]): number {
-    return items.reduce((maxHeight, { chordBaselineHeight, chordHeight }) => (
-      Math.max(maxHeight, chordBaselineHeight ?? chordHeight ?? 0)
-    ), 0);
+  protected getMaxChordHeight(items: MeasuredItem[]): number {
+    return items.reduce((max, item) => Math.max(max, item.chordHeight || 0), 0);
   }
 
   protected getMaxChordAscent(items: MeasuredItem[]): number {
-    return items.reduce((maxAscent, { chordBaselineHeight, chordHeight }) => (
-      Math.max(maxAscent, (chordHeight ?? 0) - (chordBaselineHeight ?? chordHeight ?? 0))
+    return items.reduce((maxAscent, { chordAscent, chordBaselineHeight, chordHeight }) => (
+      Math.max(maxAscent, chordAscent ?? (chordHeight ?? 0) - (chordBaselineHeight ?? chordHeight ?? 0))
     ), 0);
   }
 
+  protected getMaxChordDescent(items: MeasuredItem[]): number {
+    return items.reduce((maxDescent, {
+      chordAscent, chordBaselineHeight, chordHeight,
+    }) => {
+      const baseline = chordBaselineHeight ?? chordHeight ?? 0;
+      const ascent = chordAscent ?? (chordHeight ?? 0) - baseline;
+      return Math.max(maxDescent, (chordHeight ?? 0) - baseline - ascent);
+    }, 0);
+  }
+
   protected getMaxChordContentHeight(items: MeasuredItem[]): number {
-    return this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items);
+    return this.getMaxChordAscent(items) + this.getMaxChordBaselineHeight(items) + this.getMaxChordDescent(items);
   }
 
   /**

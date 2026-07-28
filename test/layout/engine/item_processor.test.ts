@@ -176,6 +176,45 @@ describe('ItemProcessor', () => {
       expect(measured.chordHeight).toBeCloseTo(19.68);
     });
 
+    it('measures quality and extension styles with their resolved fonts', () => {
+      const { processor, measurer } = createProcessor({
+        config: {
+          chordRendering: {
+            quality: { font: { style: 'normal' }, fontSizeRatio: 0.8 },
+            extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+          },
+        },
+      });
+      const measureWidth = jest.spyOn(measurer, 'measureTextWidth');
+      const line = createLine([createChordLyricsPair('Cmaj7', 'Hello')]);
+
+      processor.measureLineItems(line);
+
+      const qualityFont = measureWidth.mock.calls.find(([text]) => text === 'maj')?.[1];
+      const extensionFont = measureWidth.mock.calls.find(([text]) => text === '7')?.[1];
+      expect(qualityFont).toMatchObject({ style: 'normal' });
+      expect(qualityFont?.size).toBeCloseTo(9.6);
+      expect(extensionFont?.size).toBeCloseTo(8.4);
+    });
+
+    it('keeps the root baseline stable when a chord part is lowered', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { extensions: { baselineShiftRatio: -0.4 } },
+        },
+      });
+      const line = createLine([
+        createChordLyricsPair('Cm7', ''),
+        createChordLyricsPair('C', ''),
+      ]);
+      const [styled, plain] = processor.measureLineItems(line);
+
+      expect(styled.chordAscent).toBe(0);
+      expect(styled.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(plain.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(styled.chordHeight).toBeCloseTo(19.2);
+    });
+
     it('does not superscript semantic non-chord tokens', () => {
       const { processor } = createProcessor({
         config: {

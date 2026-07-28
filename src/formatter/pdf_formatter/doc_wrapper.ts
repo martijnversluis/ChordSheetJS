@@ -15,6 +15,18 @@ import {
   ChordSheetSymbolsRegular,
 } from './fonts/ChordSheetSymbolsFonts.base64';
 
+const STYLE_WEIGHT_FONT_FAMILIES = new Set([
+  'chordsheetsymbols',
+  'courier',
+  'helvetica',
+  'nimbussansl',
+  'nimbussansl-bol',
+  'nimbussansl-bolita',
+  'nimbussansl-reg',
+  'nimbussansl-regita',
+  'times',
+]);
+
 const defaultOptions: jsPDFOptions = {
   orientation: 'p',
   unit: 'pt',
@@ -94,7 +106,8 @@ class DocWrapper {
   }
 
   setFontStyle(styleConfig: FontConfiguration) {
-    this.doc.setFont(styleConfig.name, styleConfig.style, styleConfig.weight);
+    const useStyleWeight = STYLE_WEIGHT_FONT_FAMILIES.has(styleConfig.name.toLowerCase());
+    this.doc.setFont(styleConfig.name, styleConfig.style, useStyleWeight ? undefined : styleConfig.weight);
     this.doc.setFontSize(styleConfig.size);
     this.setTextColor(styleConfig.color);
     this.fontConfiguration = styleConfig;
@@ -269,19 +282,29 @@ class DocWrapper {
   }
 
   private addFonts() {
-    this.doc.addFileToVFS('NimbusSansL-Reg.ttf', NimbusSansLRegNormal);
-    this.doc.addFont('NimbusSansL-Reg.ttf', 'NimbusSansL-Reg', 'normal');
-
-    this.doc.addFileToVFS('NimbusSansL-Bol.ttf', NimbusSansLBolBold);
-    this.doc.addFont('NimbusSansL-Bol.ttf', 'NimbusSansL-Bol', 'bold');
-
-    this.doc.addFileToVFS('NimbusSansL-RegIta-italic.ttf', NimbusSansLRegItaItalic);
-    this.doc.addFont('NimbusSansL-RegIta-italic.ttf', 'NimbusSansL-RegIta', 'italic');
-
-    this.doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
-    this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', 'NimbusSansL-BolIta', 'bolditalic');
-
+    this.addNimbusFonts();
     this.addChordSheetSymbolsFonts();
+  }
+
+  private addNimbusFonts() {
+    this.doc.addFileToVFS('NimbusSansL-Reg.ttf', NimbusSansLRegNormal);
+    this.doc.addFileToVFS('NimbusSansL-Bol.ttf', NimbusSansLBolBold);
+    this.doc.addFileToVFS('NimbusSansL-RegIta-italic.ttf', NimbusSansLRegItaItalic);
+    this.doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
+    [
+      'NimbusSansL',
+      'NimbusSansL-Reg',
+      'NimbusSansL-Bol',
+      'NimbusSansL-RegIta',
+      'NimbusSansL-BolIta',
+    ].forEach((family) => this.addNimbusFamily(family));
+  }
+
+  private addNimbusFamily(family: string) {
+    this.doc.addFont('NimbusSansL-Reg.ttf', family, 'normal');
+    this.doc.addFont('NimbusSansL-Bol.ttf', family, 'bold');
+    this.doc.addFont('NimbusSansL-RegIta-italic.ttf', family, 'italic');
+    this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', family, 'bolditalic');
   }
 
   private addChordSheetSymbolsFonts() {

@@ -1,27 +1,40 @@
 import Chord from '../chord';
 
 import {
+  ChordPartStyle,
+  ChordRenderingConfig,
   ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
-  defaultChordSuperscriptConfig,
 } from '../formatter/configuration';
 
+export type ChordTextPart = 'marker' | 'root' | 'quality' | 'extensions' | 'bass';
+
 export interface ChordTextRun {
+  part: ChordTextPart;
   text: string;
   font: FontConfiguration;
   yOffset: number;
-  superscript: boolean;
 }
 
 export interface ChordRunMetrics {
   width: number;
+  ascentHeight: number;
   baselineHeight: number;
   boxHeight: number;
 }
 
 export interface GlyphChecker {
   hasGlyph(codePoint: number, font: FontConfiguration): boolean;
+}
+
+export interface ChordRunOptions {
+  useUnicodeModifiers: boolean;
+  chordFont: FontConfiguration;
+  chordRendering?: ChordRenderingConfig;
+  chordSuperscript?: ChordSuperscriptConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
+  glyphChecker?: GlyphChecker;
 }
 
 const warnedMissingGlyphs = new Set<string>();
@@ -32,52 +45,35 @@ function displaySuffixPart(text: string, useUnicodeModifier: boolean): string {
   return text.replace(/#(?=\d)/g, '\u266f').replace(/b(?=\d)/g, '\u266d');
 }
 
-function buildBaselineParts(chord: Chord, useUnicodeModifier: boolean): { before: string; after: string } {
-  const suffix = chord.suffix || '';
-  const showMinor = suffix[0] !== 'm';
-  const opening = chord.optional ? '(' : '';
-  const closing = chord.optional ? ')' : '';
-  const root = chord.root?.toString({ showMinor, useUnicodeModifier }) || '';
-  const quality = displaySuffixPart(chord.quality || '', useUnicodeModifier);
-  const bass = chord.bass ? `/${chord.bass.toString({ useUnicodeModifier })}` : '';
-
+function legacyExtensionStyle(config: ChordSuperscriptConfig | undefined): ChordPartStyle {
+  if (!config?.enabled) return {};
   return {
-    before: `${opening}${root}${quality}`,
-    after: `${bass}${closing}`,
+    fontSizeRatio: config.fontSizeRatio,
+    baselineShiftRatio: config.riseRatio,
   };
 }
 
-function createRun(
-  text: string,
-  font: FontConfiguration,
-  yOffset = 0,
-  superscript = false,
-): ChordTextRun {
+function mergePartStyles(base: ChordPartStyle, override: ChordPartStyle | undefined): ChordPartStyle {
+  if (!override) return base;
   return {
-    text, font, yOffset, superscript,
+    ...base,
+    ...override,
+    font: base.font || override.font ? { ...base.font, ...override.font } : undefined,
   };
 }
 
-function buildLogicalRuns(
-  chord: Chord,
-  useUnicodeModifier: boolean,
-  superscript: ChordSuperscriptConfig,
-  chordFont: FontConfiguration,
-): ChordTextRun[] {
-  const { before, after } = buildBaselineParts(chord, useUnicodeModifier);
-  const runs: ChordTextRun[] = [];
-  if (before) runs.push(createRun(before, chordFont));
+export function resolveChordRenderingConfig(
+  config: ChordRenderingConfig | undefined,
+  superscript: ChordSuperscriptConfig | undefined,
+): ChordRenderingConfig {
+  return {
+    quality: config?.quality,
+    extensions: mergePartStyles(legacyExtensionStyle(superscript), config?.extensions),
+  };
+}
 
-  if (chord.extensions) {
-    const extension = displaySuffixPart(chord.extensions, useUnicodeModifier);
-    const font = superscript.enabled ?
-      { ...chordFont, size: chordFont.size * superscript.fontSizeRatio } : chordFont;
-    const rise = superscript.enabled ? -chordFont.size * superscript.riseRatio : 0;
-    runs.push(createRun(extension, font, rise, superscript.enabled));
-  }
-
-  if (after) runs.push(createRun(after, chordFont));
-  return runs;
+function hasPartStyle(style: ChordPartStyle | undefined): boolean {
+  return style?.fontSizeRatio !== undefined || style?.baselineShiftRatio !== undefined || !!style?.font;
 }
 
 function isBoldWeight(weight: FontConfiguration['weight']): boolean {
@@ -86,6 +82,60 @@ function isBoldWeight(weight: FontConfiguration['weight']): boolean {
   const numericWeight = Number(weight);
   if (!Number.isNaN(numericWeight)) return numericWeight >= 600;
   return ['bold', 'bolder', 'semibold', 'semi-bold', 'demibold', 'demi-bold'].includes(weight.toLowerCase());
+}
+
+function styleForWeight(style: string, weight: FontConfiguration['weight']): string {
+  const italic = style.includes('italic');
+  const bold = isBoldWeight(weight);
+  if (bold && italic) return 'bolditalic';
+  if (bold) return 'bold';
+  if (italic) return 'italic';
+  return 'normal';
+}
+
+function resolvePartFont(chordFont: FontConfiguration, style: ChordPartStyle | undefined): FontConfiguration {
+  const font = { ...chordFont, ...style?.font };
+  if (style?.font?.weight !== undefined && style.font.style === undefined) {
+    font.style = styleForWeight(chordFont.style, style.font.weight);
+  }
+  return { ...font, size: chordFont.size * (style?.fontSizeRatio ?? 1) };
+}
+
+function createRun(
+  part: ChordTextPart,
+  text: string,
+  chordFont: FontConfiguration,
+  style?: ChordPartStyle,
+): ChordTextRun {
+  const baselineShiftRatio = style?.baselineShiftRatio ?? 0;
+  return {
+    part,
+    text,
+    font: resolvePartFont(chordFont, style),
+    yOffset: baselineShiftRatio === 0 ? 0 : -chordFont.size * baselineShiftRatio,
+  };
+}
+
+function buildLogicalRuns(
+  chord: Chord,
+  useUnicodeModifier: boolean,
+  chordFont: FontConfiguration,
+  rendering: ChordRenderingConfig,
+): ChordTextRun[] {
+  const suffix = chord.suffix || '';
+  const showMinor = suffix[0] !== 'm';
+  const root = chord.root?.toString({ showMinor, useUnicodeModifier }) || '';
+  const quality = displaySuffixPart(chord.quality || '', useUnicodeModifier);
+  const extensions = displaySuffixPart(chord.extensions || '', useUnicodeModifier);
+  const bass = chord.bass ? `/${chord.bass.toString({ useUnicodeModifier })}` : '';
+  return [
+    createRun('marker', chord.optional ? '(' : '', chordFont),
+    createRun('root', root, chordFont),
+    createRun('quality', quality, chordFont, rendering.quality),
+    createRun('extensions', extensions, chordFont, rendering.extensions),
+    createRun('bass', bass, chordFont),
+    createRun('marker', chord.optional ? ')' : '', chordFont),
+  ].filter(({ text }) => !!text);
 }
 
 function fallbackStyle(font: FontConfiguration): 'normal' | 'bold' | 'italic' | 'bolditalic' {
@@ -132,12 +182,9 @@ function selectFont(
 }
 
 function sameRunStyle(left: ChordTextRun, right: ChordTextRun): boolean {
-  return left.font.name === right.font.name &&
-    left.font.style === right.font.style &&
-    left.font.weight === right.font.weight &&
-    left.font.size === right.font.size &&
-    left.yOffset === right.yOffset &&
-    left.superscript === right.superscript;
+  return left.part === right.part && left.font.name === right.font.name &&
+    left.font.style === right.font.style && left.font.weight === right.font.weight &&
+    left.font.size === right.font.size && left.yOffset === right.yOffset;
 }
 
 function appendCharacter(runs: ChordTextRun[], run: ChordTextRun, char: string, font: FontConfiguration): void {
@@ -166,29 +213,23 @@ function applyUnicodeFallback(
 }
 
 function differsFromPlainFont(runs: ChordTextRun[], chordFont: FontConfiguration): boolean {
-  return runs.some((run) => run.superscript || run.yOffset !== 0 ||
-    run.font.name !== chordFont.name || run.font.style !== chordFont.style ||
-    run.font.weight !== chordFont.weight || run.font.size !== chordFont.size);
+  return runs.some((run) => {
+    const fontKeys = Object.keys(run.font) as (keyof FontConfiguration)[];
+    return run.yOffset !== 0 || fontKeys.some((key) => run.font[key] !== chordFont[key]);
+  });
 }
 
-export function buildChordRuns(
-  chordString: string,
-  useUnicodeModifier: boolean,
-  superscript: ChordSuperscriptConfig | undefined,
-  chordFont: FontConfiguration,
-  unicodeFallback?: UnicodeFallbackConfig,
-  glyphChecker?: GlyphChecker,
-): ChordTextRun[] | null {
+export function buildChordRuns(chordString: string, options: ChordRunOptions): ChordTextRun[] | null {
+  const rendering = resolveChordRenderingConfig(options.chordRendering, options.chordSuperscript);
+  const canStyle = hasPartStyle(rendering.quality) || hasPartStyle(rendering.extensions);
+  const canFallback = !!options.unicodeFallback?.enabled && !!options.glyphChecker;
+  if (!canStyle && !canFallback) return null;
+
   const chord = Chord.parse(chordString);
   if (!chord) return null;
-  const resolvedSuperscript = superscript ?? defaultChordSuperscriptConfig;
-  const canSuperscript = resolvedSuperscript.enabled && !!chord.extensions;
-  const canFallback = !!unicodeFallback?.enabled && !!glyphChecker;
-  if (!canSuperscript && !canFallback) return null;
-
-  const logicalRuns = buildLogicalRuns(chord, useUnicodeModifier, resolvedSuperscript, chordFont);
-  const runs = applyUnicodeFallback(logicalRuns, unicodeFallback, glyphChecker);
-  return differsFromPlainFont(runs, chordFont) ? runs : null;
+  const logicalRuns = buildLogicalRuns(chord, options.useUnicodeModifiers, options.chordFont, rendering);
+  const runs = applyUnicodeFallback(logicalRuns, options.unicodeFallback, options.glyphChecker);
+  return differsFromPlainFont(runs, options.chordFont) ? runs : null;
 }
 
 export function getChordRunsMetrics(
@@ -197,18 +238,21 @@ export function getChordRunsMetrics(
 ): ChordRunMetrics {
   const dimensions = runs.map((run) => ({ run, ...measureTextDimensions(run.text, run.font) }));
   const width = dimensions.reduce((sum, dimension) => sum + dimension.width, 0);
-  const baselineHeight = Math.max(
-    ...dimensions.filter(({ run }) => !run.superscript).map(({ height }) => height),
+  const unshiftedHeight = Math.max(
+    ...dimensions.filter(({ run }) => run.yOffset === 0).map(({ height }) => height),
     0,
   );
-  const superscriptHeight = Math.max(
-    ...dimensions.filter(({ run }) => run.superscript).map(({ height, run }) => height + Math.abs(run.yOffset)),
+  const raisedHeight = Math.max(
+    ...dimensions.map(({ height, run }) => height + Math.max(-run.yOffset, 0)),
     0,
   );
+  const loweredExtent = Math.max(...dimensions.map(({ run }) => Math.max(run.yOffset, 0)), 0);
+  const ascentHeight = Math.max(raisedHeight - unshiftedHeight, 0);
 
   return {
     width,
-    baselineHeight,
-    boxHeight: Math.max(baselineHeight, superscriptHeight),
+    ascentHeight,
+    baselineHeight: unshiftedHeight,
+    boxHeight: unshiftedHeight + ascentHeight + loweredExtent,
   };
 }

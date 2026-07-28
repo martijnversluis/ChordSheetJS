@@ -191,8 +191,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'ma9(#11)',
-            quality: null,
-            extensions: 'ma9(#11)',
+            quality: 'ma',
+            extensions: '9(#11)',
           });
         });
 
@@ -210,8 +210,8 @@ describe('Chord', () => {
             },
             bass: null,
             suffix: 'maj9b11',
-            quality: null,
-            extensions: 'maj9b11',
+            quality: 'maj',
+            extensions: '9b11',
           });
         });
 
@@ -363,8 +363,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: 'ma9(#11)',
-            quality: null,
-            extensions: 'ma9(#11)',
+            quality: 'ma',
+            extensions: '9(#11)',
           });
         });
 
@@ -389,8 +389,8 @@ describe('Chord', () => {
               originalKeyString: 'Do',
             },
             suffix: 'maj9b11',
-            quality: null,
-            extensions: 'maj9b11',
+            quality: 'maj',
+            extensions: '9b11',
           });
         });
       });
