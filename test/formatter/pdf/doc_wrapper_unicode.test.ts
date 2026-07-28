@@ -40,12 +40,17 @@ describe('DocWrapper Unicode glyph support', () => {
     expect(doc.doc.getFont()).toMatchObject({ fontName: name, fontStyle: style, postScriptName });
   });
 
-  it('uses the intentionally widened flat metrics', () => {
+  it.each(['normal', 'bold'])('uses the intentionally enlarged flat metrics in the %s face', (style) => {
     const doc = DocWrapper.setup(JsPDF as any);
-    const flatWidth = doc.getTextWidth('♭', fallbackFont);
-    const naturalWidth = doc.getTextWidth('♮', fallbackFont);
+    const font = { ...fallbackFont, style };
+    const flatWidth = doc.getTextWidth('♭', font);
+    const naturalWidth = doc.getTextWidth('♮', font);
+    doc.doc.setFont('ChordSheetSymbols', style);
+    const { metadata } = doc.doc.getFont();
+    const flatGlyphId = metadata.cmap.unicode.codeMap['♭'.codePointAt(0)!];
 
     expect(flatWidth).toBeGreaterThan(naturalWidth);
+    expect(metadata.hmtx.metrics[flatGlyphId].advance).toBe(479);
   });
 
   it.each(['normal', 'bold'])('keeps the raised sharp on the baseline in the %s face', (style) => {
