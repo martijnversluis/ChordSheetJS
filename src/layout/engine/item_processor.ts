@@ -1,3 +1,4 @@
+import Chord from '../../chord';
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import { FontConfiguration } from '../../formatter/configuration';
 import Line from '../../chord_sheet/line';
@@ -145,7 +146,9 @@ export class ItemProcessor {
     const { chords, lyrics } = this.getAdjustedChordsAndLyrics(splitItem, lyricsOnly);
     if (lyricsOnly && lyrics === '') return { item: null, width: 0 };
 
-    const renderedChords = isChordTokenKind(splitItem.tokenKind) ? this.renderChordText(chords, line) : chords;
+    const shouldRenderChord = !!chords && isChordTokenKind(splitItem.tokenKind);
+    const chord = shouldRenderChord ? splitItem.chord ?? chords : chords;
+    const renderedChords = shouldRenderChord ? this.renderChordText(chord, line) : chords;
     const chordFont = this.config.fonts[splitItem.styleRole] || this.config.fonts.chord;
     const measurements = this.calculateMeasurements(
       renderedChords,
@@ -170,7 +173,7 @@ export class ItemProcessor {
         chords,
         lyrics,
         splitItem.annotation,
-        null,
+        chords ? splitItem.chord : null,
         splitItem.isRhythmSymbol,
         splitItem.classification,
       ),
@@ -192,7 +195,7 @@ export class ItemProcessor {
     return { chords: splitItem.chords || '', lyrics: splitItem.lyrics || '' };
   }
 
-  private renderChordText(chords: string, line: Line): string {
+  private renderChordText(chords: Chord | string, line: Line): string {
     return renderChord(chords, line, this.song, {
       renderKey: null,
       useUnicodeModifier: this.config.useUnicodeModifiers,
@@ -381,16 +384,16 @@ export class ItemProcessor {
     chords: string,
     isRhythmSymbol: boolean,
   ): MeasuredItem {
-    const annotation = originalItem.item instanceof ChordLyricsPair ? originalItem.item.annotation : null;
+    const pair = originalItem.item as ChordLyricsPair;
 
     return {
       item: new ChordLyricsPair(
         chords,
         lyrics,
-        annotation,
-        null,
+        pair.annotation,
+        pair.chord,
         isRhythmSymbol,
-        originalItem.item instanceof ChordLyricsPair ? originalItem.item.classification : undefined,
+        pair.classification,
       ),
       width: this.measurer.measureTextWidth(lyrics, this.config.fonts.lyrics),
       chordHeight: originalItem.chordHeight,
@@ -423,8 +426,9 @@ export class ItemProcessor {
     }
 
     const lyricFragments = lyrics.split(/,\s*/);
-    const items: (ChordLyricsPair | SoftLineBreak)[] = [];
+    if (lyricFragments.length === 1) return [pair];
 
+    const items: (ChordLyricsPair | SoftLineBreak)[] = [];
     lyricFragments.forEach((fragment, index) => {
       if (index > 0 && index !== 0) {
         items.push(new SoftLineBreak(' '));
@@ -435,12 +439,18 @@ export class ItemProcessor {
         }
       }
 
-      if (index === 0 && lyricFragments.length === 1) {
-        items.push(pair.set({ lyrics: fragment }));
-      } else if (index === 0 && lyricFragments.length > 1) {
+      if (index === 0) {
         let commaAdjustedFragment = fragment;
         commaAdjustedFragment += ',';
-        items.push(pair.set({ lyrics: commaAdjustedFragment }));
+        items.push(new ChordLyricsPair(
+          pair.chords,
+          commaAdjustedFragment,
+          pair.annotation,
+          pair.chord,
+          pair.isRhythmSymbol,
+          pair.tokenKind,
+          pair.tokenVariant,
+        ));
       }
     });
 
