@@ -8,6 +8,13 @@ import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
+  it('uses only canonical chord rendering in its default configuration', () => {
+    const formatter = new PdfFormatter();
+
+    expect(formatter.configuration.chordRendering).toEqual({});
+    expect(formatter.configuration.chordSuperscript).toBeUndefined();
+  });
+
   it('preserves legacy chord superscript rendering end to end', () => {
     const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
     const formatter = new PdfFormatter({
