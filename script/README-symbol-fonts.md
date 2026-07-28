@@ -36,6 +36,8 @@ character during PDF text extraction.
 
 `FLAT_X_SCALE` and `FLAT_Y_SCALE` in `build_symbol_fonts.py` control the flat
 outline and metrics. The initial design widens it by 20% and makes it 15% taller.
+`SHARP_Y_SHIFT` raises the sharp by 100 font units so its lower edge sits closer
+to the chord-letter baseline without changing its shape or advance width.
 The major triangle is constructed by `triangle_glyph`; Regular and Bold use
 different inner contours to produce different stroke weights.
 
