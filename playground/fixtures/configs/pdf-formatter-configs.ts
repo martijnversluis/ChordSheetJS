@@ -986,13 +986,18 @@ export const pdfFormatterConfigs = [
     },
   },
   {
-    name: 'Superscript Demo',
+    name: 'Chord Parts Demo',
     content: {
       useUnicodeModifiers: true,
-      chordSuperscript: {
-        enabled: true,
-        fontSizeRatio: 0.7,
-        riseRatio: 0.35,
+      chordRendering: {
+        quality: {
+          fontSizeRatio: 0.84,
+          font: { weight: 500 },
+        },
+        extensions: {
+          fontSizeRatio: 0.7,
+          baselineShiftRatio: 0.35,
+        },
       },
     },
   },

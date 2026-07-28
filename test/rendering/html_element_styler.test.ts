@@ -25,4 +25,20 @@ describe('HtmlElementStyler', () => {
       expect(styler.chordStyles(chordElement(content)).fontWeight).toBeUndefined();
     },
   );
+
+  it.each([
+    ['normal', 'normal', 'normal'],
+    ['bold', 'bold', 'normal'],
+    ['italic', 'normal', 'italic'],
+    ['bolditalic', 'bold', 'italic'],
+  ])('maps the %s font face to explicit CSS weight and style', (style, weight, fontStyle) => {
+    const styler = new HtmlElementStyler({});
+    const element = { style: {} };
+
+    styler.applyFontStyle(element, {
+      color: 'black', name: 'Test', size: 12, style,
+    });
+
+    expect(element.style).toMatchObject({ fontWeight: weight, fontStyle });
+  });
 });

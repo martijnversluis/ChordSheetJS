@@ -3,6 +3,7 @@ import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
 import {
+  ChordRenderingConfig,
   ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
@@ -29,6 +30,7 @@ export interface MeasuredItem {
   item: ChordLyricsPair | Tag | SoftLineBreak | null;
   width: number;
   chordHeight?: number;
+  chordAscent?: number;
   chordBaselineHeight?: number;
   adjustedChord?: string;
   chordLyricWidthDifference?: number;
@@ -83,6 +85,7 @@ export interface LayoutConfig {
   useUnicodeModifiers: boolean;
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
+  chordRendering?: ChordRenderingConfig;
   chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   glyphChecker?: {

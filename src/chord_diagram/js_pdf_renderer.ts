@@ -5,10 +5,10 @@ import {
 import DocWrapper from '../formatter/pdf_formatter/doc_wrapper';
 import {
   ChordDiagramFontConfigurations,
+  ChordRenderingConfig,
   ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
-  defaultChordSuperscriptConfig,
 } from '../formatter/configuration';
 import { ChordTextRun, buildChordRuns } from '../rendering/chord_shaper';
 
@@ -20,6 +20,7 @@ interface JsPDFDiagramRendererOptions {
   y: number;
   width: number;
   fonts: ChordDiagramFontConfigurations;
+  chordRendering?: ChordRenderingConfig;
   chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   useUnicodeModifiers?: boolean;
@@ -43,7 +44,9 @@ class JsPDFRenderer implements Renderer {
 
   fonts: ChordDiagramFontConfigurations;
 
-  chordSuperscript: ChordSuperscriptConfig;
+  chordRendering?: ChordRenderingConfig;
+
+  chordSuperscript?: ChordSuperscriptConfig;
 
   unicodeFallback?: UnicodeFallbackConfig;
 
@@ -57,7 +60,8 @@ class JsPDFRenderer implements Renderer {
     this.width = options.width;
     this.height = defaultHeight * this.#scale;
     this.fonts = options.fonts;
-    this.chordSuperscript = options.chordSuperscript ?? defaultChordSuperscriptConfig;
+    this.chordRendering = options.chordRendering;
+    this.chordSuperscript = options.chordSuperscript;
     this.unicodeFallback = options.unicodeFallback;
     this.useUnicodeModifiers = options.useUnicodeModifiers ?? false;
   }
@@ -123,14 +127,14 @@ class JsPDFRenderer implements Renderer {
   }
 
   private getChordRuns(text: string, font: FontConfiguration): ChordTextRun[] | null {
-    return buildChordRuns(
-      text,
-      this.useUnicodeModifiers,
-      this.chordSuperscript,
-      font,
-      this.unicodeFallback,
-      { hasGlyph: (codePoint, runFont) => this.doc.hasGlyph(codePoint, runFont) },
-    );
+    return buildChordRuns(text, {
+      chordFont: font,
+      chordRendering: this.chordRendering,
+      chordSuperscript: this.chordSuperscript,
+      glyphChecker: { hasGlyph: (codePoint, runFont) => this.doc.hasGlyph(codePoint, runFont) },
+      unicodeFallback: this.unicodeFallback,
+      useUnicodeModifiers: this.useUnicodeModifiers,
+    });
   }
 
   private drawChordTitleRuns(runs: ChordTextRun[], x: number, y: number): void {
