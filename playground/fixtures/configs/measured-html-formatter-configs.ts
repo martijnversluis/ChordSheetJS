@@ -5,12 +5,11 @@ export const measuredHtmlConfigs = [
       useUnicodeModifiers: true,
       chordRendering: {
         quality: {
-          fontSizeRatio: 0.84,
-          font: { weight: 500 },
+          fontSizeRatio: 0.9,
         },
         extensions: {
-          fontSizeRatio: 0.7,
-          baselineShiftRatio: 0.35,
+          fontSizeRatio: 0.85,
+          baselineShiftRatio: 0.3,
         },
       },
       fonts: {
