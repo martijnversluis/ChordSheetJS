@@ -416,7 +416,6 @@ export const measurementSpecificDefaults = {
   measurer: 'canvas',
   chordRendering: defaultChordRenderingConfig,
   layout: defaultMeasurementBasedLayout,
-  chordSuperscript: defaultChordSuperscriptConfig,
   unicodeFallback: defaultUnicodeFallbackConfig,
 };
 
