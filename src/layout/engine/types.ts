@@ -4,7 +4,6 @@ import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
 import {
   ChordRenderingConfig,
-  ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
 } from '../../formatter/configuration';
@@ -86,7 +85,6 @@ export interface LayoutConfig {
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   glyphChecker?: {
     hasGlyph(codePoint: number, font: FontConfiguration): boolean;

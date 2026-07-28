@@ -36,7 +36,6 @@ export default function renderChordRuns(
   const runs = buildChordRuns(element.content, {
     chordFont: element.style,
     chordRendering: configuration.chordRendering,
-    chordSuperscript: configuration.chordSuperscript,
     useUnicodeModifiers,
   });
   if (!runs) return;
