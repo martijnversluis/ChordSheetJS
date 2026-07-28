@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
 import { KEY_BRAND, brandPrototype, hasBrand } from './chord_sheet/object_brand';
 import {

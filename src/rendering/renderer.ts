@@ -727,5 +727,4 @@ abstract class Renderer {
     return !!this.getSectionsConfig()?.base?.display?.lyricsOnly;
   }
 }
-
 export default Renderer;
