@@ -8,7 +8,6 @@ import ChordDiagram, { Barre, ChordDiagramRenderingConfig, StringMarker } from '
 import {
   ChordDiagramFontConfigurations,
   ChordRenderingConfig,
-  ChordSuperscriptConfig,
   UnicodeFallbackConfig,
 } from '../../formatter/configuration';
 
@@ -42,7 +41,6 @@ export interface ChordDiagramConfig {
   renderingConfig?: ChordDiagramRenderingConfig;
   fonts: ChordDiagramFontConfigurations;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   useUnicodeModifiers?: boolean;
   overrides?: {
@@ -199,13 +197,13 @@ export class ChordDiagramRenderer {
    */
   private drawChordDiagram(definition: ChordDefinition, width: number, spacing: number): void {
     const {
-      fonts, chordRendering, chordSuperscript, unicodeFallback, useUnicodeModifiers,
+      fonts, chordRendering, unicodeFallback, useUnicodeModifiers,
     } = this.config;
     const diagram = this.buildChordDiagram(definition);
     const x = this.context.getX();
     const y = this.context.getY();
     const renderer = new JsPDFDiagramRenderer(this.context.doc, {
-      x, y, width, fonts, chordRendering, chordSuperscript, unicodeFallback, useUnicodeModifiers,
+      x, y, width, fonts, chordRendering, unicodeFallback, useUnicodeModifiers,
     });
     diagram.render(renderer);
 

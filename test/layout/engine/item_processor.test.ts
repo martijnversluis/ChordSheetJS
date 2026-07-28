@@ -163,10 +163,10 @@ describe('ItemProcessor', () => {
       expect(chordHeight).toBeGreaterThanOrEqual(0);
     });
 
-    it('measures superscript chord extensions without moving the baseline', () => {
+    it('measures raised chord extensions without moving the baseline', () => {
       const { processor } = createProcessor({
         config: {
-          chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 },
+          chordRendering: { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } },
         },
       });
       const line = createLine([createChordLyricsPair('Cmaj7', 'Hello')]);
@@ -215,10 +215,28 @@ describe('ItemProcessor', () => {
       expect(styled.chordHeight).toBeCloseTo(19.2);
     });
 
-    it('does not superscript semantic non-chord tokens', () => {
+    it('keeps the root baseline stable when an unshifted chord part is larger', () => {
       const { processor } = createProcessor({
         config: {
-          chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 },
+          chordRendering: { quality: { fontSizeRatio: 2 } },
+        },
+      });
+      const line = createLine([
+        createChordLyricsPair('Cm', ''),
+        createChordLyricsPair('C', ''),
+      ]);
+      const [styled, plain] = processor.measureLineItems(line);
+
+      expect(styled.chordAscent).toBeCloseTo(14.4);
+      expect(styled.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(plain.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(styled.chordHeight).toBeCloseTo(28.8);
+    });
+
+    it('does not style semantic non-chord tokens as chords', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } },
         },
       });
       const instruction = new ChordLyricsPair('C7', '', null, null, false, 'instruction');
@@ -230,12 +248,12 @@ describe('ItemProcessor', () => {
     });
 
     it('uses the configured suffix normalization consistently for shaping', () => {
-      const superscript = { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.8 };
+      const chordRendering = { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } };
       const normalized = createProcessor({
-        config: { chordSuperscript: superscript, normalizeChords: true },
+        config: { chordRendering, normalizeChords: true },
       });
       const preserved = createProcessor({
-        config: { chordSuperscript: superscript, normalizeChords: true, normalizeChordSuffix: false },
+        config: { chordRendering, normalizeChords: true, normalizeChordSuffix: false },
       });
       const line = createLine([createChordLyricsPair('Csus2', '')]);
 

@@ -3,7 +3,6 @@ import {
   ChordRunOptions,
   buildChordRuns,
   getChordRunsMetrics,
-  resolveChordRenderingConfig,
 } from '../../src/rendering/chord_shaper';
 
 const chordFont: FontConfiguration = {
@@ -11,12 +10,6 @@ const chordFont: FontConfiguration = {
   style: 'bold',
   size: 20,
   color: '#000000',
-};
-
-const superscript = {
-  enabled: true,
-  fontSizeRatio: 0.7,
-  riseRatio: 0.35,
 };
 
 const unicodeFallback = {
@@ -67,21 +60,6 @@ describe('chord shaper', () => {
     expect(runs?.[2]).toMatchObject({ font: { size: 14 }, yOffset: -7 });
   });
 
-  it('translates the legacy superscript API and lets canonical fields override it', () => {
-    expect(resolveChordRenderingConfig(undefined, superscript).extensions).toEqual({
-      fontSizeRatio: 0.7,
-      baselineShiftRatio: 0.35,
-    });
-    expect(resolveChordRenderingConfig({
-      extensions: { baselineShiftRatio: 0, font: { weight: 500 } },
-    }, superscript).extensions).toEqual({
-      fontSizeRatio: 0.7,
-      baselineShiftRatio: 0,
-      font: { weight: 500 },
-    });
-    expect(resolveChordRenderingConfig(undefined, { ...superscript, enabled: false }).extensions).toEqual({});
-  });
-
   it('keeps slash basses and optional markers on the baseline', () => {
     const chordRendering = { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } };
     const slashRuns = shape('Cmaj7/E', { chordRendering });
@@ -97,7 +75,7 @@ describe('chord shaper', () => {
 
   it('accepts already-rendered Unicode accidentals', () => {
     const runs = shape('F♯7', {
-      chordSuperscript: superscript,
+      chordRendering: { extensions: { fontSizeRatio: 0.7 } },
       useUnicodeModifiers: true,
     });
 
@@ -182,9 +160,9 @@ describe('chord shaper', () => {
 
   it('falls back to plain rendering when unstyled, invalid, or without styled parts', () => {
     expect(shape('C7')).toBeNull();
-    expect(shape('not a chord', { chordSuperscript: superscript })).toBeNull();
+    expect(shape('not a chord', { chordRendering: { extensions: { fontSizeRatio: 0.7 } } })).toBeNull();
     expect(shape('Am', { chordRendering: { extensions: { fontSizeRatio: 0.7 } } })).toBeNull();
-    expect(shape('|', { chordSuperscript: superscript })).toBeNull();
+    expect(shape('|', { chordRendering: { extensions: { fontSizeRatio: 0.7 } } })).toBeNull();
   });
 
   it('measures independently sized and raised runs as one chord box', () => {
@@ -229,6 +207,17 @@ describe('chord shaper', () => {
 
     expect(metrics).toEqual({
       width: 54, ascentHeight: 1, baselineHeight: 20, boxHeight: 29,
+    });
+  });
+
+  it('keeps the root baseline height when an unshifted chord part is larger', () => {
+    const runs = shape('Cm', {
+      chordRendering: { quality: { fontSizeRatio: 2 } },
+    })!;
+    const metrics = getChordRunsMetrics(runs, (_text, font) => ({ width: font.size, height: font.size }));
+
+    expect(metrics).toEqual({
+      width: 60, ascentHeight: 20, baselineHeight: 20, boxHeight: 40,
     });
   });
 });

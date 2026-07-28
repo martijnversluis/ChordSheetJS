@@ -126,7 +126,6 @@ class JsPdfRenderer extends Renderer {
       fonts: chordDiagrams.fonts,
       overrides: chordDiagrams.overrides,
       chordRendering: this.configuration.chordRendering,
-      chordSuperscript: this.configuration.chordSuperscript,
       unicodeFallback: this.configuration.unicodeFallback,
       useUnicodeModifiers: this.configuration.useUnicodeModifiers,
     };
@@ -278,7 +277,6 @@ class JsPdfRenderer extends Renderer {
     const runs = element.style ? buildChordRuns(element.content, {
       chordFont: element.style,
       chordRendering: this.configuration.chordRendering,
-      chordSuperscript: this.configuration.chordSuperscript,
       glyphChecker: { hasGlyph: (codePoint, font) => this.doc.hasGlyph(codePoint, font) },
       unicodeFallback: this.configuration.unicodeFallback,
       useUnicodeModifiers: this.useUnicodeModifiers(),
@@ -292,15 +290,17 @@ class JsPdfRenderer extends Renderer {
 
     let { x } = element;
     runs.forEach((run) => {
-      this.doc.text(run.text, x, element.y + run.yOffset, run.font);
+      const font = run.font.underline ? { ...run.font, underline: false } : run.font;
+      this.doc.text(run.text, x, element.y + run.yOffset, font);
       x += this.doc.getTextWidth(run.text, run.font);
     });
+    this.drawUnderlineIfNeeded(element, x - element.x);
   }
 
-  private drawUnderlineIfNeeded(element: PositionedElement): void {
+  private drawUnderlineIfNeeded(element: PositionedElement, shapedWidth?: number): void {
     const isTitleSeparator = element.content?.trim() === '>';
     if (element.style?.underline && !isTitleSeparator) {
-      const { w: textWidth } = this.doc.getTextDimensions(element.content);
+      const textWidth = shapedWidth ?? this.doc.getTextDimensions(element.content).w;
       this.doc.setDrawColor(0);
       this.doc.setLineWidth(1.25);
       this.doc.line(element.x, element.y + 3, element.x + textWidth, element.y + 3);

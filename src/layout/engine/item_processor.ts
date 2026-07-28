@@ -208,10 +208,10 @@ export class ItemProcessor {
     nextItem: any,
     lyricsOnly: boolean,
     chordFont: FontConfiguration,
-    allowSuperscript: boolean,
+    allowChordRendering: boolean,
   ): ChordMeasurements {
     const lyricsFont = this.config.fonts.lyrics;
-    const chordMetrics = this.measureChordMetrics(renderedChords, chordFont, allowSuperscript);
+    const chordMetrics = this.measureChordMetrics(renderedChords, chordFont, allowChordRendering);
     const lyricsWidth = lyrics ? this.measurer.measureTextWidth(lyrics, lyricsFont) : 0;
     const adjustedChordWidth = this.getAdjustedChordWidth(
       chordMetrics.width,
@@ -250,7 +250,6 @@ export class ItemProcessor {
     const runs = buildChordRuns(chordText, {
       chordFont,
       chordRendering: this.config.chordRendering,
-      chordSuperscript: this.config.chordSuperscript,
       glyphChecker: this.config.glyphChecker,
       unicodeFallback: this.config.unicodeFallback,
       useUnicodeModifiers: this.config.useUnicodeModifiers,
