@@ -74,7 +74,7 @@ class ChordRenderer {
       chord,
       [
         (c: Chord) => c.transpose(this.effectiveTransposeDistance),
-        (c: Chord) => (this.accidental ? c.useAccidental(this.accidental) : c),
+        (c: Chord) => (this.accidental ? c.preferAccidental(this.accidental) : c),
         (c: Chord) => (
           this.normalizeChords ? c.normalize(this.effectiveKey, { normalizeSuffix: this.normalizeChordSuffix }) : c
         ),

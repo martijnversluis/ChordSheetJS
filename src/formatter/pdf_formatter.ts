@@ -35,11 +35,12 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
     song: Song,
     docConstructor: PdfConstructor = JsPDF,
   ): void {
-    this.song = song;
+    const preparedSong = this.prepareSong(song);
+    this.song = preparedSong;
 
     // Create the PDF renderer
     this.renderer = new JsPdfRenderer(
-      song,
+      preparedSong,
       docConstructor,
       this.configuration,
     );

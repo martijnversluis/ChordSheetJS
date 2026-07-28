@@ -39,7 +39,8 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
    * @param song - The song to format.
    */
   format(song: Song): void {
-    this.song = song;
+    const preparedSong = this.prepareSong(song);
+    this.song = preparedSong;
 
     // Clear the container
     while (this.container.firstChild) {
@@ -48,7 +49,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
 
     // Create the HTML renderer
     this.renderer = new PositionedHtmlRenderer(
-      song,
+      preparedSong,
       this.container,
       this.configuration,
     );

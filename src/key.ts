@@ -1,4 +1,16 @@
+/* eslint-disable max-lines */
+
 import ENHARMONIC_MAPPING from './normalize_mappings/enharmonic-normalize';
+import { KEY_BRAND, brandPrototype, hasBrand } from './chord_sheet/object_brand';
+import {
+  germanBLookupAccidental,
+  isGermanNote,
+  keyToPitchClass,
+  pitchClassToKey,
+  resolveNotation,
+  scaleDegreeBetween,
+  spellPitchForScaleDegree,
+} from './note_spelling';
 
 import {
   Accidental,
@@ -19,10 +31,7 @@ import {
   SYMBOL,
 } from './constants';
 
-import {
-  canonicalizeForEnharmonicLookup, deprecate, germanBLookupAccidental,
-  gradeToKey, isGermanNote, keyToGrade, resolveNotation,
-} from './utilities';
+import { deprecate } from './utilities';
 
 const regexes: Record<ChordType, RegExp> = {
   symbol: /^(?<key>((?<note>[A-Ha-h])(?<accidental>#|b)?))(?<minor>m)?$/,
@@ -41,6 +50,9 @@ interface KeyProperties {
   referenceKeyMode?: string | null;
   preferredAccidental?: Accidental | null;
   explicitAccidental?: boolean;
+  contextualSpelling?: boolean;
+  sequenceSpelling?: boolean;
+  transposedFromOriginal?: boolean;
   preferredNotation?: Notation | null;
 }
 
@@ -63,6 +75,9 @@ interface ConstructorOptions {
   originalKeyString?: string | null;
   preferredAccidental: Accidental | null;
   explicitAccidental?: boolean;
+  contextualSpelling?: boolean;
+  sequenceSpelling?: boolean;
+  transposedFromOriginal?: boolean;
   preferredNotation?: Notation | null;
 }
 
@@ -72,6 +87,10 @@ interface ConstructorOptions {
  * The only function considered public API is `Key.distance`
  */
 class Key implements KeyProperties {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, KEY_BRAND);
+  }
+
   grade: number | null;
 
   number: number | null = null;
@@ -120,6 +139,12 @@ class Key implements KeyProperties {
   preferredAccidental: Accidental | null;
 
   explicitAccidental = false;
+
+  contextualSpelling = false;
+
+  sequenceSpelling = false;
+
+  transposedFromOriginal = false;
 
   preferredNotation: Notation | null = null;
 
@@ -173,7 +198,7 @@ class Key implements KeyProperties {
     const notation = resolveNotation(keyString, preferredNotation);
     const lookupAccidental = germanBLookupAccidental(keyString, accidental, notation) ?? accidental;
     const grade = (keyType === SYMBOL || keyType === SOLFEGE) ?
-      keyToGrade(keyString, lookupAccidental || NO_ACCIDENTAL, keyType, isMinor) :
+      keyToPitchClass(keyString, lookupAccidental || NO_ACCIDENTAL, keyType, isMinor) :
       null;
 
     if (grade !== null) {
@@ -285,11 +310,13 @@ class Key implements KeyProperties {
     return this.wrapOrFail(oneKey).distanceTo(otherKey);
   }
 
+  // eslint-disable-next-line complexity
   constructor(
     {
       grade = null, number = null, minor, type, accidental, referenceKeyGrade = null,
       referenceKeyMode = null, originalKeyString = null, preferredAccidental = null,
-      explicitAccidental = false, preferredNotation = null,
+      explicitAccidental = false, contextualSpelling = false, sequenceSpelling = false,
+      transposedFromOriginal = false, preferredNotation = null,
     }: ConstructorOptions,
   ) {
     this.grade = grade;
@@ -302,6 +329,7 @@ class Key implements KeyProperties {
     this.referenceKeyMode = referenceKeyMode;
     this.originalKeyString = originalKeyString;
     this.explicitAccidental = explicitAccidental;
+    Object.assign(this, { contextualSpelling, sequenceSpelling, transposedFromOriginal });
     this.preferredNotation = preferredNotation;
   }
 
@@ -352,7 +380,7 @@ class Key implements KeyProperties {
 
   private calculateGradeFromNumber() {
     if (this.number === null) throw new Error('Cannot calculate grade, number is null');
-    this.grade = keyToGrade(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
+    this.grade = keyToPitchClass(this.number.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, this.isMinor());
     this.number = null;
   }
 
@@ -369,11 +397,14 @@ class Key implements KeyProperties {
   private convertToChordType(key: Key | string | null, type: ChordType, referenceKeyWasMinor: boolean): Key {
     const { accidental } = this;
     const keyObj = Key.wrapOrFail(key);
+    const scaleDegree = this.explicitAccidental ? null : this.currentScaleDegree;
     this.rebaseNumeralGradeForMajorReference(referenceKeyWasMinor);
     this.ensureGrade();
 
     const minorResult = this.handleMinorKeyConversion(keyObj, referenceKeyWasMinor);
-    if (minorResult) return minorResult;
+    if (minorResult) {
+      return scaleDegree ? minorResult.spellScaleDegree(keyObj, scaleDegree, type) : minorResult;
+    }
 
     const converted = this.set({
       referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
@@ -383,16 +414,78 @@ class Key implements KeyProperties {
       preferredAccidental: accidental || keyObj.accidental,
     });
 
-    const normalized = converted.normalizeEnharmonics(keyObj);
-    return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
+    return scaleDegree ? converted.spellScaleDegree(keyObj, scaleDegree, type) : converted.normalizeEnharmonics(keyObj);
+  }
+
+  respellForTransposition(source: Key, sourceContext: Key, targetContext: Key): Key {
+    if (!(this.isChordSymbol() || this.isChordSolfege())) return this.clone();
+
+    const { type } = this;
+    const sourceContextNote = sourceContext.set({ type, preferredNotation: null }).note;
+    const sourceNote = source.set({ type, preferredNotation: null }).note;
+    const degree = scaleDegreeBetween(sourceContextNote, sourceNote, type);
+    if (!degree) return this.clone();
+
+    const targetContextNote = targetContext.set({ type, preferredNotation: null }).note;
+    const spelling = spellPitchForScaleDegree({
+      context: targetContextNote,
+      degree,
+      pitchClass: this.effectiveGrade,
+      type,
+    });
+    if (!spelling) return this.clone();
+
+    return Key.parseOrFail(spelling).set({
+      contextualSpelling: true,
+      minor: this.minor,
+      preferredNotation: this.preferredNotation,
+      type,
+    });
+  }
+
+  respellAsScaleDegree(context: Key | string, scaleDegree: number): Key {
+    if (this.explicitAccidental) return this.clone();
+    return this.spellScaleDegree(Key.wrapOrFail(context), scaleDegree, this.type, true);
+  }
+
+  private spellScaleDegree(
+    context: Key,
+    scaleDegree: number,
+    type: ChordType,
+    sequenceSpelling = false,
+  ): Key {
+    const contextNote = context.set({ type, preferredNotation: null }).note;
+    const spelling = spellPitchForScaleDegree({
+      context: contextNote,
+      degree: scaleDegree,
+      pitchClass: this.effectiveGrade,
+      type,
+    });
+    if (!spelling) return this.normalizeEnharmonics(context);
+
+    return Key.parseOrFail(spelling).set({
+      contextualSpelling: true,
+      sequenceSpelling,
+      minor: this.minor,
+      preferredNotation: this.preferredNotation,
+      type,
+    });
+  }
+
+  private get currentScaleDegree(): number | null {
+    if (!(this.isNumeric() || this.isNumeral())) return null;
+
+    const current = this.toString({ showMinor: false }).replace('#', '').replace('b', '');
+    return Key.getNumberFromKey(current, this.type);
   }
 
   private rebaseNumeralGradeForMajorReference(referenceKeyWasMinor: boolean) {
-    if (referenceKeyWasMinor || !this.minor || !this.originalKeyString) return;
-    if (!(this.isNumeral() || this.isNumeric())) return;
+    if (referenceKeyWasMinor || !this.minor || !this.originalKeyString || this.transposedFromOriginal) return;
     const num = Key.getNumberFromKey(this.originalKeyString, this.type);
-    const grade = num ? keyToGrade(num.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, false) : null;
-    if (grade !== null) { this.grade = grade; this.number = null; }
+    const grade = num ? keyToPitchClass(num.toString(), this.accidental || NO_ACCIDENTAL, NUMERIC, false) : null;
+    if (grade === null) return;
+    this.grade = grade;
+    this.number = null;
   }
 
   private handleMinorKeyConversion(keyObj: Key, referenceKeyWasMinor: boolean): Key | null {
@@ -544,11 +637,11 @@ class Key implements KeyProperties {
       minor = this.referenceKeyMode === MINOR;
     }
 
-    const rendered = gradeToKey({
+    const rendered = pitchClassToKey({
       type: this.type,
       accidental: this.accidental,
       preferredAccidental: this.preferredAccidental,
-      grade: this.effectiveGrade,
+      pitchClass: this.effectiveGrade,
       minor,
     });
 
@@ -601,15 +694,19 @@ class Key implements KeyProperties {
   transpose(delta: number): Key {
     if (delta === 0) return this;
 
-    const originalAccidental = this.accidental;
-    let transposedKey = this.clone();
+    const { accidental: originalAccidental, sequenceSpelling } = this;
+    let transposedKey = this.set({ contextualSpelling: false, sequenceSpelling: false });
     const func = (delta < 0) ? 'transposeDown' : 'transposeUp';
 
     for (let i = 0, count = Math.abs(delta); i < count; i += 1) {
       transposedKey = transposedKey[func]();
     }
 
-    return transposedKey.useAccidental(originalAccidental);
+    return transposedKey.preferAccidental(originalAccidental).set({
+      contextualSpelling: sequenceSpelling,
+      sequenceSpelling,
+      transposedFromOriginal: true,
+    });
   }
 
   changeGrade(delta) {
@@ -627,9 +724,9 @@ class Key implements KeyProperties {
     let key: Key = normalizedKey.changeGrade(+1);
 
     if (this.accidental || !key.canBeSharp()) {
-      key = key.useAccidental(null);
+      key = key.preferAccidental(null);
     } else if (key.canBeSharp()) {
-      key = key.useAccidental(SHARP);
+      key = key.preferAccidental(SHARP);
     }
 
     key = key.set({ preferredAccidental: SHARP }).normalize();
@@ -641,9 +738,9 @@ class Key implements KeyProperties {
     let key: Key = normalizedKey.changeGrade(-1);
 
     if (this.accidental || !key.canBeFlat()) {
-      key = key.useAccidental(null);
+      key = key.preferAccidental(null);
     } else if (key.canBeFlat()) {
-      key = key.useAccidental(FLAT);
+      key = key.preferAccidental(FLAT);
     }
 
     return key.set({ preferredAccidental: FLAT });
@@ -668,8 +765,22 @@ class Key implements KeyProperties {
   }
 
   useAccidental(newAccidental: Accidental | null): Key {
+    return this.setAccidental(newAccidental, true);
+  }
+
+  preferAccidental(newAccidental: Accidental | null): Key {
+    if (this.contextualSpelling) return this.clone();
+    return this.setAccidental(newAccidental, false);
+  }
+
+  private setAccidental(newAccidental: Accidental | null, explicit: boolean): Key {
     this.ensureGrade();
-    return this.set({ accidental: newAccidental, explicitAccidental: newAccidental !== null });
+    return this.set({
+      accidental: newAccidental,
+      contextualSpelling: explicit ? false : this.contextualSpelling,
+      explicitAccidental: newAccidental !== null && (explicit || this.explicitAccidental),
+      sequenceSpelling: explicit ? false : this.sequenceSpelling,
+    });
   }
 
   /** @deprecated Use useAccidental instead */
@@ -679,6 +790,7 @@ class Key implements KeyProperties {
   }
 
   normalize(): Key {
+    if (this.contextualSpelling) return this.clone();
     this.ensureGrade();
 
     if (this.accidental === SHARP && !this.canBeSharp()) {
@@ -693,22 +805,26 @@ class Key implements KeyProperties {
   }
 
   normalizeEnharmonics(key: Key | string | null): Key {
-    if (key) {
-      // Preserve explicit accidental choices made via useAccidental()
-      if (this.explicitAccidental) return this.clone();
+    if (!key || this.explicitAccidental || this.contextualSpelling) return this.clone();
+    if (!(this.isChordSymbol() || this.isChordSolfege())) return this.clone();
 
-      const rootKeyString = canonicalizeForEnharmonicLookup(Key.wrapOrFail(key).toString({ showMinor: true }));
-      const enharmonics = ENHARMONIC_MAPPING[rootKeyString];
-      const thisKeyString = canonicalizeForEnharmonicLookup(this.toString({ showMinor: false }));
+    const context = Key.wrapOrFail(key);
+    const contextName = context.enharmonicContextName;
+    const spelling = contextName ? ENHARMONIC_MAPPING[contextName]?.[this.effectiveGrade] : null;
+    if (!spelling) return this.clone();
 
-      if (enharmonics && enharmonics[thisKeyString]) {
-        return Key
-          .parseOrFail(enharmonics[thisKeyString])
-          .set({ minor: this.minor, preferredNotation: this.preferredNotation });
-      }
-    }
+    return Key.parseOrFail(spelling).set({
+      contextualSpelling: true,
+      minor: this.minor,
+      preferredNotation: this.preferredNotation,
+      type: this.type,
+    });
+  }
 
-    return this.clone();
+  private get enharmonicContextName(): string | null {
+    if (!(this.isChordSymbol() || this.isChordSolfege())) return null;
+
+    return this.set({ type: SYMBOL, preferredNotation: null }).toString({ showMinor: true });
   }
 
   private set(attributes: KeyProperties, overwrite = true): Key {
@@ -723,10 +839,15 @@ class Key implements KeyProperties {
       originalKeyString: this.originalKeyString,
       preferredAccidental: this.preferredAccidental,
       explicitAccidental: this.explicitAccidental,
+      contextualSpelling: this.contextualSpelling,
+      sequenceSpelling: this.sequenceSpelling,
+      transposedFromOriginal: this.transposedFromOriginal,
       preferredNotation: this.preferredNotation,
       ...(overwrite ? attributes : {}),
     });
   }
 }
+
+brandPrototype(Key.prototype, KEY_BRAND);
 
 export default Key;

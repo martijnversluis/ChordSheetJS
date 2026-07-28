@@ -1,6 +1,7 @@
 import ChordParsingError from './chord_parsing_error';
 import Key from './key';
 import { parse } from './parser/chord/peg_parser';
+import { CHORD_BRAND, brandPrototype, hasBrand } from './chord_sheet/object_brand';
 import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 
 import {
@@ -49,6 +50,10 @@ export interface ChordConstructorOptions {
  * Represents a Chord, consisting of a root, suffix (quality) and bass
  */
 class Chord implements ChordProperties {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, CHORD_BRAND);
+  }
+
   bass: Key | null;
 
   root: Key | null;
@@ -127,14 +132,19 @@ class Chord implements ChordProperties {
 
     const { keyObj, referenceIsMinor } = this.prepareKeyForConversion(referenceKey);
 
+    const root = this.root?.toChordSymbol(keyObj, referenceIsMinor) || null;
+    const bass = this.normalizeConvertedBass(
+      this.bass?.toChordSymbol(keyObj, referenceIsMinor) || null,
+      root,
+    );
     const chordSymbolChord = new Chord({
       suffix: this.normalizedSuffix,
-      root: this.root?.toChordSymbol(keyObj, referenceIsMinor) || null,
-      bass: this.bass?.toChordSymbol(keyObj, referenceIsMinor) || null,
+      root,
+      bass,
       optional: this.optional,
     });
 
-    return this.finalizeConvertedChord(chordSymbolChord, keyObj);
+    return this.finalizeConvertedChord(chordSymbolChord);
   }
 
   /**
@@ -169,16 +179,21 @@ class Chord implements ChordProperties {
   toChordSolfege(referenceKey: Key | string | null = null): Chord {
     if (this.isChordSolfege()) return this.clone();
 
-    const { keyObj } = this.prepareKeyForConversion(referenceKey);
+    const { keyObj, referenceIsMinor } = this.prepareKeyForConversion(referenceKey);
 
+    const root = this.root?.toChordSolfege(keyObj, referenceIsMinor) || null;
+    const bass = this.normalizeConvertedBass(
+      this.bass?.toChordSolfege(keyObj, referenceIsMinor) || null,
+      root,
+    );
     const chordSolfegeChord = new Chord({
       suffix: this.normalizedSuffix,
-      root: this.root?.toChordSolfege(keyObj) || null,
-      bass: this.bass?.toChordSolfege(keyObj) || null,
+      root,
+      bass,
       optional: this.optional,
     });
 
-    return this.finalizeConvertedChord(chordSolfegeChord, referenceKey);
+    return this.finalizeConvertedChord(chordSolfegeChord);
   }
 
   /**
@@ -382,6 +397,10 @@ class Chord implements ChordProperties {
     return this.transform((key) => key.useAccidental(newAccidental));
   }
 
+  preferAccidental(newAccidental: Accidental): Chord {
+    return this.transform((key) => key.preferAccidental(newAccidental));
+  }
+
   /**
    * @deprecated Use useAccidental instead
    */
@@ -413,6 +432,16 @@ class Chord implements ChordProperties {
    */
   transpose(delta: number): Chord {
     return this.transform((key) => key.transpose(delta));
+  }
+
+  transposeInKey(delta: number, sourceKey: Key, targetKey: Key): Chord {
+    const transposed = this.transpose(delta);
+    let root = transposed.root?.normalize().normalizeEnharmonics(targetKey) || null;
+    if (root && targetKey.accidental) root = root.preferAccidental(targetKey.accidental);
+    const bass = transposed.bass && this.bass && this.root && root ?
+      transposed.bass.respellForTransposition(this.bass, this.root, root) :
+      transposed.bass;
+    return transposed.set({ root, bass });
   }
 
   constructor(options: ChordConstructorOptions) {
@@ -537,15 +566,22 @@ class Chord implements ChordProperties {
   ): { keyObj: Key | null; referenceIsMinor: boolean } {
     const wrappedKey = Key.wrap(referenceKey);
     const referenceIsMinor = wrappedKey?.isMinor() || false;
-    const keyObj = referenceIsMinor ? wrappedKey?.relativeMajor || null : wrappedKey;
+    const keyObj = referenceIsMinor ?
+      wrappedKey?.relativeMajor.normalize().normalizeEnharmonics(wrappedKey) || null :
+      wrappedKey;
     return { keyObj, referenceIsMinor };
   }
 
-  private finalizeConvertedChord(chord: Chord, normalizeKey: Key | string | null): Chord {
-    let result = chord;
-    if (this.root?.isMinor()) result = result.makeMinor();
-    return result.normalize(normalizeKey);
+  private normalizeConvertedBass(bass: Key | null, root: Key | null): Key | null {
+    if (!bass || !root || this.bass?.isNumeric() || this.bass?.isNumeral()) return bass;
+    return bass.normalize().normalizeEnharmonics(root);
+  }
+
+  private finalizeConvertedChord(chord: Chord): Chord {
+    return this.root?.isMinor() ? chord.makeMinor() : chord;
   }
 }
+
+brandPrototype(Chord.prototype, CHORD_BRAND);
 
 export default Chord;

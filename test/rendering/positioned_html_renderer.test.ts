@@ -1,3 +1,4 @@
+import Chord from '../../src/chord';
 import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 import Line from '../../src/chord_sheet/line';
 import PositionedHtmlRenderer from '../../src/rendering/html/positioned_html_renderer';
@@ -16,6 +17,7 @@ const ConditionMock = jest.fn();
 const ChordProParserMock = jest.fn();
 const TextFormatterMock = jest.fn();
 const getCaposMock = jest.fn();
+const mockRenderChord = jest.fn((chord) => chord.toString());
 
 jest.mock('../../src/rendering/html/html_doc_wrapper', () => ({
   __esModule: true,
@@ -25,7 +27,7 @@ jest.mock('../../src/rendering/html/html_doc_wrapper', () => ({
 }));
 
 jest.mock('../../src/template_helpers', () => ({
-  renderChord: (chords: string) => chords,
+  renderChord: (chord: Chord | string) => mockRenderChord(chord),
   isColumnBreak: (tag: any) => tag?.name === 'column_break' || tag?.type === 'column_break',
   isComment: (tag: any) => tag?.name === 'comment' || tag?.type === 'comment',
 }));
@@ -150,6 +152,7 @@ describe('PositionedHtmlRenderer', () => {
     ChordProParserMock.mockReset();
     TextFormatterMock.mockReset();
     getCaposMock.mockReset();
+    mockRenderChord.mockClear();
 
     parseMock = jest.fn();
     formatMock = jest.fn();
@@ -575,6 +578,26 @@ describe('PositionedHtmlRenderer', () => {
           content: 'N.C.', type: 'no-chord', weight: 700, tokenVariant: 'marker',
         },
       ]);
+    });
+
+    it('passes the contextual chord object through positioned rendering', () => {
+      const { renderer } = createRenderer();
+      renderer.initialize();
+      const source = Chord.parseOrFail('Ebdim7');
+      const chord = source.set({ root: source.root?.respellAsScaleDegree('Em', 7) });
+      const pair = new ChordLyricsPair('D#dim7', 'home', '', chord);
+      const line = new Line();
+      line.addItem(pair);
+
+      (renderer as any).renderLines([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: [{ item: pair, width: 50, chordHeight: 10 }],
+        line,
+      }]);
+
+      expect(mockRenderChord).toHaveBeenCalledWith(chord);
+      expect(chord.root?.contextualSpelling).toBe(true);
     });
 
     it('delegates measurements and calculates chord baseline', () => {
