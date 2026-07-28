@@ -16,18 +16,19 @@ const superscript = {
 
 const unicodeFallback = {
   enabled: true,
+  preferChordSymbols: true,
   warnOnMissingGlyph: true,
   fallbackFonts: {
-    normal: 'NotoSansSymbols',
-    bold: 'NotoSansSymbols-Bold',
-    italic: 'NotoSansSymbols',
-    bolditalic: 'NotoSansSymbols-Bold',
+    normal: 'ChordSheetSymbols',
+    bold: 'ChordSheetSymbols',
+    italic: 'ChordSheetSymbols',
+    bolditalic: 'ChordSheetSymbols',
   },
 };
 
 const missingUnicodeGlyphs = {
   hasGlyph: (codePoint: number, font: FontConfiguration) => (
-    codePoint < 128 || font.name.startsWith('NotoSansSymbols')
+    codePoint < 128 || font.name.startsWith('ChordSheetSymbols')
   ),
 };
 
@@ -74,11 +75,50 @@ describe('chord shaper', () => {
 
     const accidentalRuns = runs?.filter(({ text }) => text === '♯' || text === '♭');
     expect(accidentalRuns?.map(({ font }) => font.name)).toEqual([
-      'NotoSansSymbols-Bold',
-      'NotoSansSymbols-Bold',
-      'NotoSansSymbols-Bold',
+      'ChordSheetSymbols',
+      'ChordSheetSymbols',
+      'ChordSheetSymbols',
     ]);
     expect(accidentalRuns?.[1].superscript).toBe(true);
+  });
+
+  it.each(['Δ', '∆', '△', '°', 'ø', '⌀'])('falls back for the %s chord-quality symbol', (symbol) => {
+    const runs = buildChordRuns(
+      `C${symbol}7`,
+      true,
+      superscript,
+      chordFont,
+      unicodeFallback,
+      missingUnicodeGlyphs,
+    );
+
+    expect(runs?.find(({ text }) => text === symbol)?.font.name).toBe('ChordSheetSymbols');
+  });
+
+  it('prefers the chord-symbol font when the primary font also has a glyph', () => {
+    const runs = buildChordRuns(
+      'CΔ7',
+      true,
+      { ...superscript, enabled: false },
+      chordFont,
+      unicodeFallback,
+      { hasGlyph: () => true },
+    );
+
+    expect(runs?.find(({ text }) => text === 'Δ')?.font.name).toBe('ChordSheetSymbols');
+  });
+
+  it('keeps a supported primary glyph when chord-symbol preference is disabled', () => {
+    const runs = buildChordRuns(
+      'CΔ7',
+      true,
+      { ...superscript, enabled: false },
+      chordFont,
+      { ...unicodeFallback, preferChordSymbols: false },
+      { hasGlyph: () => true },
+    );
+
+    expect(runs).toBeNull();
   });
 
   it('can apply Unicode fallback without superscripting extensions', () => {
@@ -92,7 +132,7 @@ describe('chord shaper', () => {
     );
 
     expect(runs?.map(({ text }) => text)).toEqual(['F', '♯']);
-    expect(runs?.[1].font.name).toBe('NotoSansSymbols-Bold');
+    expect(runs?.[1].font.name).toBe('ChordSheetSymbols');
   });
 
   it.each(['bold', '600', '700'])('uses the bold fallback for string weight %s', (weight) => {
@@ -106,7 +146,7 @@ describe('chord shaper', () => {
     );
 
     expect(runs?.[1].font).toMatchObject({
-      name: 'NotoSansSymbols-Bold',
+      name: 'ChordSheetSymbols',
       style: 'bold',
     });
   });
