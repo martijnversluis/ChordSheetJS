@@ -26,8 +26,8 @@ COPYRIGHT = (
     "Copyright 2022 The Noto Project Authors; "
     "modifications copyright 2026 ChordSheetJS contributors"
 )
-FLAT_X_SCALE = 1.20
-FLAT_Y_SCALE = 1.15
+FLAT_X_SCALE = 1.38
+FLAT_Y_SCALE = 1.3225
 SHARP_BASELINE = 0
 UNICODES = (
     0x0020,
