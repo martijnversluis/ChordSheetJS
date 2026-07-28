@@ -27,8 +27,8 @@ class TextFormatter extends Formatter {
    * @returns {string} the chord sheet
    */
   format(song: Song, metadata?: Metadata): string {
-    this.song = song;
-    this.metadata = metadata || song.getMetadata(this.configuration);
+    this.song = this.prepareSong(song);
+    this.metadata = metadata || this.song.getMetadata(this.configuration);
 
     return [
       this.formatHeader(),

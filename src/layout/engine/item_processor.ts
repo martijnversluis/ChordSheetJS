@@ -1,3 +1,4 @@
+import Chord from '../../chord';
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import { FontConfiguration } from '../../formatter/configuration';
 import Line from '../../chord_sheet/line';
@@ -135,11 +136,12 @@ export class ItemProcessor {
     const { chords, lyrics } = this.getAdjustedChordsAndLyrics(splitItem, lyricsOnly);
     if (lyricsOnly && lyrics === '') return { item: null, width: 0 };
 
-    const renderedChords = this.renderChordText(chords, line);
+    const chord = lyricsOnly ? chords : splitItem.chord ?? chords;
+    const renderedChords = this.renderChordText(chord, line);
     const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly);
 
     return {
-      item: new ChordLyricsPair(chords, lyrics),
+      item: new ChordLyricsPair(chords, lyrics, '', splitItem.chord),
       width: measurements.totalWidth,
       chordHeight: measurements.chordHeight,
     };
@@ -155,7 +157,7 @@ export class ItemProcessor {
     return { chords: splitItem.chords || '', lyrics: splitItem.lyrics || '' };
   }
 
-  private renderChordText(chords: string, line: Line): string {
+  private renderChordText(chords: Chord | string, line: Line): string {
     return renderChord(chords, line, this.song, {
       renderKey: null,
       useUnicodeModifier: this.config.useUnicodeModifiers,
@@ -276,7 +278,7 @@ export class ItemProcessor {
     const secondLyrics = splitLines.slice(1).join(' ');
     return [
       {
-        item: new ChordLyricsPair(item.item.chords, firstLyrics),
+        item: this.copyPairWithLyrics(item.item, firstLyrics),
         width: this.measurer.measureTextWidth(firstLyrics, lyricsFont),
         chordHeight: item.chordHeight,
       },
@@ -286,6 +288,16 @@ export class ItemProcessor {
         chordHeight: 0,
       },
     ];
+  }
+
+  private copyPairWithLyrics(pair: ChordLyricsPair, lyrics: string): ChordLyricsPair {
+    return new ChordLyricsPair(
+      pair.chords,
+      lyrics,
+      pair.annotation,
+      pair.chord,
+      pair.isRhythmSymbol,
+    );
   }
 
   /**
@@ -311,8 +323,9 @@ export class ItemProcessor {
     }
 
     const lyricFragments = lyrics.split(/,\s*/);
-    const items: (ChordLyricsPair | SoftLineBreak)[] = [];
+    if (lyricFragments.length === 1) return [pair];
 
+    const items: (ChordLyricsPair | SoftLineBreak)[] = [];
     lyricFragments.forEach((fragment, index) => {
       if (index > 0 && index !== 0) {
         items.push(new SoftLineBreak(' '));
@@ -323,12 +336,10 @@ export class ItemProcessor {
         }
       }
 
-      if (index === 0 && lyricFragments.length === 1) {
-        items.push(new ChordLyricsPair(chords, fragment, annotation));
-      } else if (index === 0 && lyricFragments.length > 1) {
+      if (index === 0) {
         let commaAdjustedFragment = fragment;
         commaAdjustedFragment += ',';
-        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation));
+        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation, pair.chord));
       }
     });
 

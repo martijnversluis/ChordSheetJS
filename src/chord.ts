@@ -1,6 +1,7 @@
 import ChordParsingError from './chord_parsing_error';
 import Key from './key';
 import { parse } from './parser/chord/peg_parser';
+import { CHORD_BRAND, brandPrototype, hasBrand } from './chord_sheet/object_brand';
 import { deprecate, isMinor, normalizeChordSuffix } from './utilities';
 
 import {
@@ -45,6 +46,10 @@ export interface ChordConstructorOptions {
  * Represents a Chord, consisting of a root, suffix (quality) and bass
  */
 class Chord implements ChordProperties {
+  static [Symbol.hasInstance](instance: unknown): boolean {
+    return hasBrand(instance, CHORD_BRAND);
+  }
+
   bass: Key | null;
 
   root: Key | null;
@@ -566,5 +571,7 @@ class Chord implements ChordProperties {
     return this.root?.isMinor() ? chord.makeMinor() : chord;
   }
 }
+
+brandPrototype(Chord.prototype, CHORD_BRAND);
 
 export default Chord;

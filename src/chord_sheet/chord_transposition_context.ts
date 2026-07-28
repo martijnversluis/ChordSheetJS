@@ -1,7 +1,10 @@
 import Chord from '../chord';
 import ChordLyricsPair from './chord_lyrics_pair';
 import Key from '../key';
+import Literal from './chord_pro/literal';
 import type Song from './song';
+
+import { hasSequenceEnharmonicCandidate } from './sequence_enharmonic_normalizer';
 
 import { Accidental } from '../constants';
 
@@ -12,11 +15,16 @@ class ChordTranspositionContext {
 
   private trackInheritedBasses = false;
 
+  sequenceEnharmonics = false;
+
   static forSong(song: Song): ChordTranspositionContext {
     const context = new ChordTranspositionContext();
     song.foreachItem((item) => {
-      if (item instanceof ChordLyricsPair && /^\(?\//.test(item.chords.trim())) {
-        context.trackInheritedBasses = true;
+      if (item instanceof ChordLyricsPair) {
+        if (/^\(?\//.test(item.chords.trim())) context.trackInheritedBasses = true;
+        if (hasSequenceEnharmonicCandidate(item.chords)) context.sequenceEnharmonics = true;
+      } else if (item instanceof Literal && hasSequenceEnharmonicCandidate(item.string)) {
+        context.sequenceEnharmonics = true;
       }
     });
     return context;
