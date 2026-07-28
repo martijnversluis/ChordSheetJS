@@ -33,3 +33,15 @@ describe('Unicode accidentals', () => {
     expect(song.getChords()).toEqual(['F#7♭9/C#']);
   });
 });
+
+describe('Unicode chord-quality symbols', () => {
+  it.each(['CΔ7', 'C∆7', 'C△7', 'C°7', 'Cø7', 'C⌀7'])('preserves %s as chord content', (input) => {
+    expect(Chord.parseOrFail(input).toString()).toBe(input);
+  });
+
+  it('recognizes chord-quality symbols in ChordPro songs', () => {
+    const song = new ChordProParser().parse('[CΔ7]major [C°7]diminished [Cø7]half diminished');
+
+    expect(song.getChords()).toEqual(['CΔ7', 'C°7', 'Cø7']);
+  });
+});

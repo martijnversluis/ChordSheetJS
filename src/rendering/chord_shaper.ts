@@ -25,6 +25,7 @@ export interface GlyphChecker {
 }
 
 const warnedMissingGlyphs = new Set<string>();
+const CHORD_SYMBOL_CODE_POINTS = new Set([0x00B0, 0x00F8, 0x0394, 0x2206, 0x2300, 0x25B3, 0x266D, 0x266E, 0x266F]);
 
 function displaySuffixPart(text: string, useUnicodeModifier: boolean): string {
   if (!useUnicodeModifier) return text;
@@ -122,8 +123,10 @@ function selectFont(
   glyphChecker: GlyphChecker,
 ): FontConfiguration {
   const codePoint = char.codePointAt(0)!;
-  if (glyphChecker.hasGlyph(codePoint, font)) return font;
   const fallback = fallbackFont(font, config);
+  if (config.preferChordSymbols && CHORD_SYMBOL_CODE_POINTS.has(codePoint) &&
+    glyphChecker.hasGlyph(codePoint, fallback)) return fallback;
+  if (glyphChecker.hasGlyph(codePoint, font)) return font;
   if (!glyphChecker.hasGlyph(codePoint, fallback)) warnMissingGlyph(char, font, config);
   return fallback;
 }

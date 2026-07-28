@@ -2,20 +2,48 @@ import JsPDF from 'jspdf';
 
 import DocWrapper from '../../../src/formatter/pdf_formatter/doc_wrapper';
 import StubbedPdfDoc from '../../util/stubbed_pdf_doc';
+import {
+  ChordSheetSymbolsBold,
+  ChordSheetSymbolsRegular,
+} from '../../../src/formatter/pdf_formatter/fonts/ChordSheetSymbolsFonts.base64';
 
 const fallbackFont = {
-  name: 'NotoSansSymbols-Bold',
+  name: 'ChordSheetSymbols',
   style: 'bold',
   size: 9,
   color: 'black',
 };
 
 describe('DocWrapper Unicode glyph support', () => {
-  it('registers the bundled symbol font with sharp and flat glyphs', () => {
+  it.each(['normal', 'bold'])('registers all chord symbols for the %s face', (style) => {
     const doc = DocWrapper.setup(JsPDF as any);
+    const font = { ...fallbackFont, style };
 
-    expect(doc.hasGlyph('♯'.codePointAt(0)!, fallbackFont)).toBe(true);
-    expect(doc.hasGlyph('♭'.codePointAt(0)!, fallbackFont)).toBe(true);
+    [...'♭♮♯Δ∆△°ø⌀'].forEach((symbol) => {
+      expect(doc.hasGlyph(symbol.codePointAt(0)!, font)).toBe(true);
+    });
+  });
+
+  it('keeps both generated faces small', () => {
+    expect(Buffer.from(ChordSheetSymbolsRegular, 'base64').length).toBeLessThan(5_000);
+    expect(Buffer.from(ChordSheetSymbolsBold, 'base64').length).toBeLessThan(5_000);
+  });
+
+  it('uses the intentionally widened flat metrics', () => {
+    const doc = DocWrapper.setup(JsPDF as any);
+    const flatWidth = doc.getTextWidth('♭', fallbackFont);
+    const naturalWidth = doc.getTextWidth('♮', fallbackFont);
+
+    expect(flatWidth).toBeGreaterThan(naturalWidth);
+  });
+
+  it('uses distinct glyph IDs for each major-triangle code point', () => {
+    const doc = DocWrapper.setup(JsPDF as any);
+    doc.doc.setFont('ChordSheetSymbols', 'bold');
+    const { codeMap } = doc.doc.getFont().metadata.cmap.unicode;
+    const triangleGlyphs = [...'Δ∆△'].map((symbol) => codeMap[symbol.codePointAt(0)!]);
+
+    expect(new Set(triangleGlyphs).size).toBe(3);
   });
 
   it('falls back to ASCII-only knowledge when font metadata is unavailable', () => {

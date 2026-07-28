@@ -310,18 +310,20 @@ export interface UnicodeFallbackFonts {
 
 export interface UnicodeFallbackConfig {
   enabled: boolean;
+  preferChordSymbols?: boolean;
   warnOnMissingGlyph: boolean;
   fallbackFonts: UnicodeFallbackFonts;
 }
 
 export const defaultUnicodeFallbackConfig: UnicodeFallbackConfig = {
   enabled: true,
+  preferChordSymbols: true,
   warnOnMissingGlyph: true,
   fallbackFonts: {
-    normal: 'NotoSansSymbols',
-    bold: 'NotoSansSymbols-Bold',
-    italic: 'NotoSansSymbols',
-    bolditalic: 'NotoSansSymbols-Bold',
+    normal: 'ChordSheetSymbols',
+    bold: 'ChordSheetSymbols',
+    italic: 'ChordSheetSymbols',
+    bolditalic: 'ChordSheetSymbols',
   },
 };
 

@@ -8,6 +8,7 @@ export const chordproExamples = [
 {comment: Extensions, qualities, accidentals, and slash basses}
 [C]C [C7]C7 [Cmaj7]Cmaj7 [Am7]Am7 [F#dim7]F#dim7 [G13(b9)]G13(b9)
 [Cmaj7/E]Cmaj7/E [(Dm11)](Dm11) [Bbsus4]Bbsus4 [Ebma9]Ebma9 [F♯7♭9/C♯]F♯7♭9/C♯
+[CΔ7]CΔ7 [D°7]D°7 [Eø7]Eø7 [F∆7]F∆7 [G△7]G△7
 
 {comment: Semantic chord-line tokens stay unchanged}
 [|][Cmaj7][/][/][|][(2x)][N.C.]`,

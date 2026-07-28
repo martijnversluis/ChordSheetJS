@@ -215,21 +215,22 @@ describe('ItemProcessor', () => {
           useUnicodeModifiers: true,
           unicodeFallback: {
             enabled: true,
+            preferChordSymbols: true,
             warnOnMissingGlyph: false,
             fallbackFonts: {
-              normal: 'NotoSansSymbols',
-              bold: 'NotoSansSymbols-Bold',
-              italic: 'NotoSansSymbols',
-              bolditalic: 'NotoSansSymbols-Bold',
+              normal: 'ChordSheetSymbols',
+              bold: 'ChordSheetSymbols',
+              italic: 'ChordSheetSymbols',
+              bolditalic: 'ChordSheetSymbols',
             },
           },
           glyphChecker: {
-            hasGlyph: (codePoint, font) => codePoint < 128 || font.name.startsWith('NotoSansSymbols'),
+            hasGlyph: (codePoint, font) => codePoint < 128 || font.name.startsWith('ChordSheetSymbols'),
           },
         },
       });
       jest.spyOn(measurer, 'measureTextWidth').mockImplementation((text, font: any) => (
-        text.length * (font.name.startsWith('NotoSansSymbols') ? 5 : 8)
+        text.length * (font.name.startsWith('ChordSheetSymbols') ? 5 : 8)
       ));
 
       const metrics = processor.measureChordMetrics('F♯', baseFonts.chord);
