@@ -440,21 +440,23 @@ export class ItemProcessor {
       }
 
       if (index === 0) {
-        let commaAdjustedFragment = fragment;
-        commaAdjustedFragment += ',';
-        items.push(new ChordLyricsPair(
-          pair.chords,
-          commaAdjustedFragment,
-          pair.annotation,
-          pair.chord,
-          pair.isRhythmSymbol,
-          pair.tokenKind,
-          pair.tokenVariant,
-        ));
+        items.push(this.copyPairWithLyrics(pair, `${fragment},`));
       }
     });
 
     return items;
+  }
+
+  private copyPairWithLyrics(pair: ChordLyricsPair, lyrics: string): ChordLyricsPair {
+    return new ChordLyricsPair(
+      pair.chords,
+      lyrics,
+      pair.annotation,
+      pair.chord,
+      pair.isRhythmSymbol,
+      pair.tokenKind,
+      pair.tokenVariant,
+    );
   }
 
   /**
