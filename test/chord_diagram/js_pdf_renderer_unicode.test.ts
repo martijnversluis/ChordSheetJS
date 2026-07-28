@@ -31,6 +31,6 @@ describe('JsPDF chord diagram Unicode rendering', () => {
 
     expect(rendered.map(({ text }) => text)).toEqual(['F', '♯', '7', '♭', '9']);
     expect(rendered.filter(({ text }) => text === '♯' || text === '♭')
-      .every(({ fontName }) => fontName === 'NotoSansSymbols-Bold')).toBe(true);
+      .every(({ fontName }) => fontName === 'ChordSheetSymbols')).toBe(true);
   });
 });
