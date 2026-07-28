@@ -19,6 +19,7 @@ import {
 interface ChordMeasurements {
   totalWidth: number;
   chordHeight: number;
+  chordAscent: number;
   chordBaselineHeight: number;
   renderedChords: string;
 }
@@ -175,6 +176,7 @@ export class ItemProcessor {
       ),
       width: measurements.totalWidth,
       chordHeight: measurements.chordHeight,
+      chordAscent: measurements.chordAscent,
       chordBaselineHeight: measurements.chordBaselineHeight,
       adjustedChord: measurements.renderedChords,
     };
@@ -227,11 +229,12 @@ export class ItemProcessor {
     renderedChords: string,
     lyricsWidth: number,
     adjustedChordWidth: number,
-    chordMetrics: { boxHeight: number; baselineHeight: number },
+    chordMetrics: { boxHeight: number; ascentHeight: number; baselineHeight: number },
   ): ChordMeasurements {
     return {
       totalWidth: Math.max(adjustedChordWidth, lyricsWidth),
       chordHeight: chordMetrics.boxHeight,
+      chordAscent: chordMetrics.ascentHeight,
       chordBaselineHeight: chordMetrics.baselineHeight,
       renderedChords,
     };
@@ -240,28 +243,30 @@ export class ItemProcessor {
   measureChordMetrics(
     chordText: string,
     chordFont: FontConfiguration,
-    allowSuperscript = true,
-  ): { width: number; boxHeight: number; baselineHeight: number } {
+    allowChordRendering = true,
+  ): { width: number; boxHeight: number; ascentHeight: number; baselineHeight: number } {
     const { width, height } = this.measurePlainChord(chordText, chordFont);
-    const { chordSuperscript: superscript, unicodeFallback } = this.config;
-    const canFallback = unicodeFallback?.enabled && this.config.glyphChecker;
-    if (!allowSuperscript || (!superscript?.enabled && !canFallback)) {
-      return { width, boxHeight: height, baselineHeight: height };
-    }
-    const runs = buildChordRuns(
-      chordText,
-      this.config.useUnicodeModifiers,
-      superscript!,
+    if (!allowChordRendering) return this.plainChordRunMetrics(width, height);
+    const runs = buildChordRuns(chordText, {
       chordFont,
-      unicodeFallback,
-      this.config.glyphChecker,
-    );
-    if (!runs) return { width, boxHeight: height, baselineHeight: height };
+      chordRendering: this.config.chordRendering,
+      chordSuperscript: this.config.chordSuperscript,
+      glyphChecker: this.config.glyphChecker,
+      unicodeFallback: this.config.unicodeFallback,
+      useUnicodeModifiers: this.config.useUnicodeModifiers,
+    });
+    if (!runs) return this.plainChordRunMetrics(width, height);
 
     return getChordRunsMetrics(runs, (text, font) => ({
       width: this.measurer.measureTextWidth(text, font),
       height: this.measurer.measureTextHeight(text, font),
     }));
+  }
+
+  private plainChordRunMetrics(width: number, height: number) {
+    return {
+      width, boxHeight: height, ascentHeight: 0, baselineHeight: height,
+    };
   }
 
   private measurePlainChord(chordText: string, chordFont: FontConfiguration): { width: number; height: number } {
@@ -364,6 +369,7 @@ export class ItemProcessor {
         item: new ChordLyricsPair('', secondLyrics),
         width: this.measurer.measureTextWidth(secondLyrics, lyricsFont),
         chordHeight: 0,
+        chordAscent: 0,
         chordBaselineHeight: 0,
         adjustedChord: '',
       },
@@ -390,6 +396,7 @@ export class ItemProcessor {
       ),
       width: this.measurer.measureTextWidth(lyrics, this.config.fonts.lyrics),
       chordHeight: originalItem.chordHeight,
+      chordAscent: originalItem.chordAscent,
       chordBaselineHeight: originalItem.chordBaselineHeight,
       adjustedChord: originalItem.adjustedChord,
     };

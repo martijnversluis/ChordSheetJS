@@ -39,9 +39,13 @@ export class LayoutFactory {
   private getMaxChordContentHeight(items: MeasuredItem[]): number {
     const maxBaseline = Math.max(...items.map((item) => item.chordBaselineHeight ?? item.chordHeight ?? 0), 0);
     const maxAscent = Math.max(...items.map((item) => (
-      (item.chordHeight ?? 0) - (item.chordBaselineHeight ?? item.chordHeight ?? 0)
+      item.chordAscent ?? (item.chordHeight ?? 0) - (item.chordBaselineHeight ?? item.chordHeight ?? 0)
     )), 0);
-    return maxBaseline + maxAscent;
+    const maxDescent = Math.max(...items.map((item) => (
+      (item.chordHeight ?? 0) - (item.chordBaselineHeight ?? item.chordHeight ?? 0) -
+      (item.chordAscent ?? (item.chordHeight ?? 0) - (item.chordBaselineHeight ?? item.chordHeight ?? 0))
+    )), 0);
+    return maxBaseline + maxAscent + maxDescent;
   }
 
   private analyzeLineContent(items: MeasuredItem[]): LineContentFlags {

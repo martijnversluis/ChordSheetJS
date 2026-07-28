@@ -610,7 +610,7 @@ describe('PositionedHtmlRenderer', () => {
       expect(offsets.lyricsYOffset).toBe(100 + 20 + (renderer as any).getChordLyricSpacing());
     });
 
-    it('renders chord extensions as superscript spans', () => {
+    it('preserves legacy chord superscript spans', () => {
       const { renderer, doc } = createRenderer({
         chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
       });
@@ -630,12 +630,93 @@ describe('PositionedHtmlRenderer', () => {
 
       const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
       expect(htmlElement.className).toContain('chord');
-      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj7', '/E']);
-      expect(htmlElement.children[1].className).toContain('chord-extension');
-      expect(htmlElement.children[1].style).toMatchObject({
+      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj', '7', '/E']);
+      expect(htmlElement.children[2].className).toContain('chord-extension');
+      expect(htmlElement.children[2].style).toMatchObject({
         fontSize: `${style.size * 0.7}px`,
         position: 'relative',
         top: `${-style.size * 0.35}px`,
+      });
+    });
+
+    it('aligns adjacent roots while reserving space for a lowered chord part', () => {
+      const { renderer } = createRenderer();
+      const items = [
+        {
+          item: new ChordLyricsPair('Cm7', 'Lyric'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 19.2,
+        },
+        {
+          item: new ChordLyricsPair('C', 'Word'),
+          chordAscent: 0,
+          chordBaselineHeight: 14.4,
+          chordHeight: 14.4,
+        },
+      ];
+
+      const styledBaseline = (renderer as any).calculateChordBaseline(100, items, 'Cm7', 14.4);
+      const plainBaseline = (renderer as any).calculateChordBaseline(100, items, 'C', 14.4);
+      const offsets = (renderer as any).calculateChordLyricYOffsets(items, 100);
+
+      expect(styledBaseline).toBe(100);
+      expect(plainBaseline).toBe(100);
+      expect(offsets.lyricsYOffset).toBe(100 + 19.2 + (renderer as any).getChordLyricSpacing());
+    });
+
+    it('renders independently styled quality and extension spans', () => {
+      const { renderer, doc } = createRenderer({
+        chordRendering: {
+          quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+          extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+        },
+        normalizeChordSuffix: false,
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10,
+        y: 20,
+        width: 40,
+        height: 13,
+        content: 'Cmaj7',
+        type: 'chord',
+        style,
+        page: 1,
+        column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.children.map(({ textContent }) => textContent)).toEqual(['C', 'maj', '7']);
+      expect(htmlElement.children[1].className).toContain('chord-quality');
+      expect(htmlElement.children[1].style).toMatchObject({
+        fontSize: `${style.size * 0.84}px`,
+        fontStyle: 'normal',
+        fontWeight: 500,
+      });
+      expect(htmlElement.children[2].className).toContain('chord-extensions');
+      expect(htmlElement.children[2].style).toMatchObject({
+        fontSize: `${style.size * 0.7}px`,
+        position: 'relative',
+        top: `${-style.size * 0.35}px`,
+      });
+    });
+
+    it('resets inherited bold styling for a normal quality face', () => {
+      const { renderer, doc } = createRenderer({
+        chordRendering: { quality: { font: { style: 'normal' } } },
+      });
+      const style = renderer.getFontConfiguration('chord');
+
+      (renderer as any).drawTextElement({
+        x: 10, y: 20, width: 40, height: 13, content: 'Cm7', type: 'chord', style, page: 1, column: 1,
+      });
+
+      const htmlElement = doc.addElement.mock.calls[0][0] as MockElement;
+      expect(htmlElement.children[1].style).toMatchObject({
+        fontStyle: 'normal',
+        fontWeight: 'normal',
       });
     });
 

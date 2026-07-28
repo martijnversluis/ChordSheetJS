@@ -289,6 +289,7 @@ export interface ChordDiagramsConfig {
   fonts: ChordDiagramFontConfigurations;
 }
 
+/** @deprecated Use `chordRendering.extensions` for extension styling. */
 export interface ChordSuperscriptConfig {
   enabled: boolean;
   fontSizeRatio: number;
@@ -300,6 +301,24 @@ export const defaultChordSuperscriptConfig: ChordSuperscriptConfig = {
   fontSizeRatio: 0.7,
   riseRatio: 0.35,
 };
+
+export type ChordPartFontConfig = Partial<Pick<FontConfiguration, 'color' | 'name' | 'style' | 'weight'>>;
+
+export interface ChordPartStyle {
+  /** Font size relative to the configured chord font size. */
+  fontSizeRatio?: number;
+  /** Baseline shift relative to the chord font size. Positive values raise the part. */
+  baselineShiftRatio?: number;
+  /** Font properties to override for this chord part. */
+  font?: ChordPartFontConfig;
+}
+
+export interface ChordRenderingConfig {
+  quality?: ChordPartStyle;
+  extensions?: ChordPartStyle;
+}
+
+export const defaultChordRenderingConfig: ChordRenderingConfig = {};
 
 export interface UnicodeFallbackFonts {
   normal: string;
@@ -333,6 +352,7 @@ export interface MeasuredItem {
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
+  chordAscent?: number,
   chordBaselineHeight?: number,
   adjustedChord?: string,
 }
@@ -394,6 +414,7 @@ export const defaultMeasurementBasedLayout: MeasurementBasedLayoutConfig = {
 export const measurementSpecificDefaults = {
   fonts: defaultFontConfigurations,
   measurer: 'canvas',
+  chordRendering: defaultChordRenderingConfig,
   layout: defaultMeasurementBasedLayout,
   chordSuperscript: defaultChordSuperscriptConfig,
   unicodeFallback: defaultUnicodeFallbackConfig,
@@ -404,6 +425,7 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   fonts: FontConfigurations;
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
+  chordRendering?: ChordRenderingConfig;
   chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
 }
@@ -413,6 +435,7 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   fonts?: Partial<FontConfigurations>;
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
+  chordRendering?: ChordRenderingConfig;
   chordSuperscript?: Partial<ChordSuperscriptConfig>;
   unicodeFallback?: Partial<UnicodeFallbackConfig>;
 }
