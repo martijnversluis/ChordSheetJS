@@ -29,6 +29,17 @@ describe('DocWrapper Unicode glyph support', () => {
     expect(Buffer.from(ChordSheetSymbolsBold, 'base64').length).toBeLessThan(5_000);
   });
 
+  it.each([
+    ['NimbusSansL-Bol', 'normal', 'NimbusSansL-Reg.ttf'],
+    ['NimbusSansL-Reg', 'bold', 'NimbusSansL-Bol.ttf'],
+  ])('resolves a partial Nimbus face override for %s/%s', (name, style, postScriptName) => {
+    const doc = DocWrapper.setup(JsPDF as any);
+
+    doc.doc.setFont(name, style);
+
+    expect(doc.doc.getFont()).toMatchObject({ fontName: name, fontStyle: style, postScriptName });
+  });
+
   it('uses the intentionally widened flat metrics', () => {
     const doc = DocWrapper.setup(JsPDF as any);
     const flatWidth = doc.getTextWidth('♭', fallbackFont);

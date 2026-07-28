@@ -885,7 +885,7 @@ describe('JsPdfRenderer', () => {
   });
 
   describe('finalization and drawing', () => {
-    it('draws superscript chord extensions as positioned text runs', () => {
+    it('draws legacy superscript chord extensions as positioned text runs', () => {
       const { renderer, doc, config } = createRenderer({
         chordSuperscript: { enabled: true, fontSizeRatio: 0.7, riseRatio: 0.35 },
       });
@@ -904,10 +904,10 @@ describe('JsPdfRenderer', () => {
       });
 
       const textRuns = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
-      expect(textRuns.map(({ text }) => text)).toEqual(['C', 'maj7', '/E']);
-      expect(textRuns.map(({ fontSize }) => fontSize)).toEqual([10, 7, 10]);
-      expect(textRuns[1].y).toBeLessThan(textRuns[0].y);
-      expect(textRuns[2].x).toBeGreaterThan(textRuns[1].x);
+      expect(textRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+      expect(textRuns.map(({ fontSize }) => fontSize)).toEqual([10, 10, 7, 10]);
+      expect(textRuns[2].y).toBeLessThan(textRuns[0].y);
+      expect(textRuns[3].x).toBeGreaterThan(textRuns[2].x);
     });
 
     it('adds pages as needed and draws elements during finalizeRendering', () => {
