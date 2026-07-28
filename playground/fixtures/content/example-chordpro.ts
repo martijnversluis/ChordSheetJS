@@ -1,7 +1,7 @@
 export const chordproExamples = [
   {
-    name: 'Superscript Demo',
-    content: `{title: Chord Extension Superscript}
+    name: 'Chord Parts Demo',
+    content: `{title: Chord Part Rendering}
 {artist: ChordSheetJS}
 {key: C}
 
