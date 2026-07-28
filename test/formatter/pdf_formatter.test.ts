@@ -86,7 +86,18 @@ describe('PdfFormatter', () => {
     )) as any[];
 
     expect(accidentals.map(({ text }) => text)).toEqual(['♯', '♭', '♯']);
-    expect(accidentals.every(({ fontName }) => fontName === 'NotoSansSymbols-Bold')).toBe(true);
+    expect(accidentals.every(({ fontName }) => fontName === 'ChordSheetSymbols')).toBe(true);
+  });
+
+  it('deep-merges partial Unicode fallback configuration', () => {
+    const formatter = new PdfFormatter({
+      unicodeFallback: { warnOnMissingGlyph: false },
+    });
+
+    expect(formatter.configuration.unicodeFallback).toEqual({
+      ...defaultUnicodeFallbackConfig,
+      warnOnMissingGlyph: false,
+    });
   });
 
   it('correctly formats a basic song', () => {
