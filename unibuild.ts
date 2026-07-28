@@ -167,6 +167,11 @@ export default unibuild((u: Config) => {
     autofixCommand: 'yarn eslint . --fix',
   });
 
+  u.lint('symbolFonts', {
+    requires: [],
+    command: 'yarn fonts:check',
+  });
+
   u.test('jest', {
     requires: codeGeneratedAssets,
     command: 'yarn jest',

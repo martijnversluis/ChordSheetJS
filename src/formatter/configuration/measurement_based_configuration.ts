@@ -289,19 +289,6 @@ export interface ChordDiagramsConfig {
   fonts: ChordDiagramFontConfigurations;
 }
 
-/** @deprecated Use `chordRendering.extensions` for extension styling. */
-export interface ChordSuperscriptConfig {
-  enabled: boolean;
-  fontSizeRatio: number;
-  riseRatio: number;
-}
-
-export const defaultChordSuperscriptConfig: ChordSuperscriptConfig = {
-  enabled: false,
-  fontSizeRatio: 0.7,
-  riseRatio: 0.35,
-};
-
 export type ChordPartFontConfig = Partial<Pick<FontConfiguration, 'color' | 'name' | 'style' | 'weight'>>;
 
 export interface ChordPartStyle {
@@ -333,6 +320,10 @@ export interface UnicodeFallbackConfig {
   warnOnMissingGlyph: boolean;
   fallbackFonts: UnicodeFallbackFonts;
 }
+
+export type UnicodeFallbackConfigProperties = Omit<Partial<UnicodeFallbackConfig>, 'fallbackFonts'> & {
+  fallbackFonts?: Partial<UnicodeFallbackFonts>;
+};
 
 export const defaultUnicodeFallbackConfig: UnicodeFallbackConfig = {
   enabled: true,
@@ -425,7 +416,6 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
 }
 
@@ -435,6 +425,5 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: Partial<ChordSuperscriptConfig>;
-  unicodeFallback?: Partial<UnicodeFallbackConfig>;
+  unicodeFallback?: UnicodeFallbackConfigProperties;
 }
