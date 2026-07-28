@@ -30,6 +30,7 @@ describe('HtmlElementStyler', () => {
     ['normal', 'normal', 'normal'],
     ['bold', 'bold', 'normal'],
     ['italic', 'normal', 'italic'],
+    ['oblique', 'normal', 'oblique'],
     ['bolditalic', 'bold', 'italic'],
   ])('maps the %s font face to explicit CSS weight and style', (style, weight, fontStyle) => {
     const styler = new HtmlElementStyler({});

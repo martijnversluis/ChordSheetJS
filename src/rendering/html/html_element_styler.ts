@@ -155,7 +155,9 @@ export class HtmlElementStyler {
     const bold = style.style.includes('bold');
     const italic = style.style.includes('italic');
     const fontWeight = style.weight ?? (bold ? 'bold' : 'normal');
-    const fontStyle = italic ? 'italic' : 'normal';
+    let fontStyle = style.style || 'normal';
+    if (bold) fontStyle = 'normal';
+    if (italic) fontStyle = 'italic';
     const color = this.normalizeColor(style.color);
 
     return {

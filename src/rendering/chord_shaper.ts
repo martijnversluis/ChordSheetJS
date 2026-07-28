@@ -3,7 +3,6 @@ import Chord from '../chord';
 import {
   ChordPartStyle,
   ChordRenderingConfig,
-  ChordSuperscriptConfig,
   FontConfiguration,
   UnicodeFallbackConfig,
 } from '../formatter/configuration';
@@ -32,7 +31,6 @@ export interface ChordRunOptions {
   useUnicodeModifiers: boolean;
   chordFont: FontConfiguration;
   chordRendering?: ChordRenderingConfig;
-  chordSuperscript?: ChordSuperscriptConfig;
   unicodeFallback?: UnicodeFallbackConfig;
   glyphChecker?: GlyphChecker;
 }
@@ -43,33 +41,6 @@ const CHORD_SYMBOL_CODE_POINTS = new Set([0x00B0, 0x00F8, 0x0394, 0x2206, 0x2300
 function displaySuffixPart(text: string, useUnicodeModifier: boolean): string {
   if (!useUnicodeModifier) return text;
   return text.replace(/#(?=\d)/g, '\u266f').replace(/b(?=\d)/g, '\u266d');
-}
-
-function legacyExtensionStyle(config: ChordSuperscriptConfig | undefined): ChordPartStyle {
-  if (!config?.enabled) return {};
-  return {
-    fontSizeRatio: config.fontSizeRatio,
-    baselineShiftRatio: config.riseRatio,
-  };
-}
-
-function mergePartStyles(base: ChordPartStyle, override: ChordPartStyle | undefined): ChordPartStyle {
-  if (!override) return base;
-  return {
-    ...base,
-    ...override,
-    font: base.font || override.font ? { ...base.font, ...override.font } : undefined,
-  };
-}
-
-export function resolveChordRenderingConfig(
-  config: ChordRenderingConfig | undefined,
-  superscript: ChordSuperscriptConfig | undefined,
-): ChordRenderingConfig {
-  return {
-    quality: config?.quality,
-    extensions: mergePartStyles(legacyExtensionStyle(superscript), config?.extensions),
-  };
 }
 
 function hasPartStyle(style: ChordPartStyle | undefined): boolean {
@@ -220,7 +191,7 @@ function differsFromPlainFont(runs: ChordTextRun[], chordFont: FontConfiguration
 }
 
 export function buildChordRuns(chordString: string, options: ChordRunOptions): ChordTextRun[] | null {
-  const rendering = resolveChordRenderingConfig(options.chordRendering, options.chordSuperscript);
+  const rendering = options.chordRendering || {};
   const canStyle = hasPartStyle(rendering.quality) || hasPartStyle(rendering.extensions);
   const canFallback = !!options.unicodeFallback?.enabled && !!options.glyphChecker;
   if (!canStyle && !canFallback) return null;
@@ -238,21 +209,23 @@ export function getChordRunsMetrics(
 ): ChordRunMetrics {
   const dimensions = runs.map((run) => ({ run, ...measureTextDimensions(run.text, run.font) }));
   const width = dimensions.reduce((sum, dimension) => sum + dimension.width, 0);
-  const unshiftedHeight = Math.max(
-    ...dimensions.filter(({ run }) => run.yOffset === 0).map(({ height }) => height),
+  const baselineHeight = Math.max(
+    ...dimensions.filter(({ run }) => (
+      run.part === 'marker' || run.part === 'root' || run.part === 'bass'
+    )).map(({ height }) => height),
     0,
   );
-  const raisedHeight = Math.max(
-    ...dimensions.map(({ height, run }) => height + Math.max(-run.yOffset, 0)),
+  const heightAboveBaseline = Math.max(
+    ...dimensions.map(({ height, run }) => Math.max(height - run.yOffset, 0)),
     0,
   );
   const loweredExtent = Math.max(...dimensions.map(({ run }) => Math.max(run.yOffset, 0)), 0);
-  const ascentHeight = Math.max(raisedHeight - unshiftedHeight, 0);
+  const ascentHeight = Math.max(heightAboveBaseline - baselineHeight, 0);
 
   return {
     width,
     ascentHeight,
-    baselineHeight: unshiftedHeight,
-    boxHeight: unshiftedHeight + ascentHeight + loweredExtent,
+    baselineHeight,
+    boxHeight: baselineHeight + ascentHeight + loweredExtent,
   };
 }
