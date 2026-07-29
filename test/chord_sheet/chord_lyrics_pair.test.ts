@@ -1,4 +1,4 @@
-import { ChordLyricsPair } from '../../src';
+import { ChordLyricsPair, chordLineStyleRole } from '../../src';
 
 describe('ChordLyricsPair', () => {
   describe('#clone', () => {
@@ -16,6 +16,25 @@ describe('ChordLyricsPair', () => {
       const chordLyricsPair = new ChordLyricsPair();
 
       expect(chordLyricsPair.isRenderable()).toBe(true);
+    });
+  });
+
+  describe('#styleRole', () => {
+    it('styles a mute rhythm symbol like a no-chord marker without changing its token semantics', () => {
+      const pair = new ChordLyricsPair('x', '');
+
+      expect(pair.tokenKind).toBe('rhythm-symbol');
+      expect(pair.tokenVariant).toBe('mute');
+      expect(pair.styleRole).toBe('noChord');
+    });
+
+    it.each(['/', '-'])('keeps %s in the rhythm-symbol style role', (symbol) => {
+      expect(new ChordLyricsPair(symbol, '').styleRole).toBe('rhythmSymbol');
+    });
+
+    it('infers the mute variant for existing two-argument role resolution calls', () => {
+      expect(chordLineStyleRole('rhythm-symbol', 'x')).toBe('noChord');
+      expect(chordLineStyleRole('rhythm-symbol', 'x', null)).toBe('rhythmSymbol');
     });
   });
 
