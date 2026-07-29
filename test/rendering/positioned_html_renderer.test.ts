@@ -536,7 +536,7 @@ describe('PositionedHtmlRenderer', () => {
       });
       renderer.initialize();
 
-      const pairs = ['D2', '/', '|', ':||', '(6x)', 'N.C.']
+      const pairs = ['D2', '/', 'x', '|', ':||', '(6x)', 'N.C.']
         .map((chords) => new ChordLyricsPair(chords));
       const line = new Line();
       pairs.forEach((pair) => line.addItem(pair));
@@ -561,6 +561,9 @@ describe('PositionedHtmlRenderer', () => {
         },
         {
           content: '/', type: 'rhythm-symbol', weight: 500, tokenVariant: 'continuation',
+        },
+        {
+          content: 'x', type: 'rhythm-symbol', weight: 700, tokenVariant: 'mute',
         },
         {
           content: '|', type: 'barline', weight: 500, tokenVariant: 'single',
