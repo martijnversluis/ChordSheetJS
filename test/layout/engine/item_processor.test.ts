@@ -653,6 +653,21 @@ describe('ItemProcessor', () => {
       expect(result[0].chordHeight).toBe(9.6);
     });
 
+    it('measures mute rhythm symbols with the no-chord font role', () => {
+      const fonts = {
+        ...createTestConfig().fonts,
+        rhythmSymbol: { ...baseFonts.chord, size: 8 },
+        noChord: { ...baseFonts.chord, size: 16 },
+      };
+      const { processor } = createProcessor({ config: { fonts } });
+      const line = new Line();
+      line.addChordLyricsPair(new ChordLyricsPair('x', ''));
+
+      const result = processor.measureLineItems(line);
+
+      expect(result[0].chordHeight).toBe(19.2);
+    });
+
     it('returns pair when lyrics empty', () => {
       const { processor } = createProcessor();
       const pair = createChordLyricsPair('C', '');
