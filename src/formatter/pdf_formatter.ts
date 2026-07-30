@@ -126,6 +126,7 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       minY: this.renderer.getContentStartY(1, totalPages),
       getMinYForPage: (page, pages) => this.renderer!.getContentStartY(page, pages),
       columnWidth: dimensions.columnWidth,
+      columnCount: dimensions.effectiveColumnCount,
       columnSpacing: this.configuration.layout.sections.global.columnSpacing,
       minColumnWidth: this.configuration.layout.sections.global.minColumnWidth,
       maxColumnWidth: this.configuration.layout.sections.global.maxColumnWidth,
@@ -136,10 +137,6 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       decapo: this.configuration.decapo,
       repeatedSections: this.configuration.layout.sections?.base?.display?.repeatedSections,
     };
-
-    if (this.configuration.layout.sections.global.columnCount) {
-      layoutConfig.columnCount = this.configuration.layout.sections.global.columnCount;
-    }
 
     // Return the layout engine
     return new LayoutEngine(

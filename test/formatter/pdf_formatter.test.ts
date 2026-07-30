@@ -1,9 +1,10 @@
 import '../util/matchers';
-import { LayoutEngine } from '../../src/layout/engine';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
+
 import { exampleSongSymbol } from '../fixtures/song';
+import { LayoutConfig, LayoutEngine } from '../../src/layout/engine';
 import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
@@ -12,6 +13,43 @@ describe('PdfFormatter', () => {
     const formatter = new PdfFormatter();
 
     expect(formatter.configuration.chordRendering).toEqual({});
+  });
+
+  it('keeps responsive renderer and layout pagination in sync', () => {
+    const computeLayouts = LayoutEngine.prototype.computeParagraphLayouts;
+    let layoutConfig: LayoutConfig | undefined;
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts')
+      .mockImplementation(function captureConfig(this: LayoutEngine) {
+        layoutConfig = (this as any).config;
+        return computeLayouts.call(this);
+      });
+    const formatter = new PdfFormatter({
+      layout: {
+        chordDiagrams: { enabled: false },
+        sections: {
+          global: {
+            columnSpacing: 20,
+            minColumnWidth: 150,
+            maxColumnWidth: 200,
+          },
+        },
+      },
+    });
+    const song = createSongFromAst(Array.from({ length: 100 }, (_, index) => [
+      chordLyricsPair('C', `Line ${index + 1}`),
+    ]).flatMap((line) => [line, []]));
+
+    try {
+      formatter.format(song, StubbedPdfDoc);
+
+      const { renderer } = formatter as any;
+      expect(renderer.dimensions.effectiveColumnCount).toBe(3);
+      expect(layoutConfig?.columnCount).toBe(3);
+      expect(renderer.currentPage).toBeGreaterThan(1);
+      expect(renderer.totalPagesHint).toBe(renderer.currentPage);
+    } finally {
+      computeSpy.mockRestore();
+    }
   });
 
   it('renders independently styled chord qualities and extensions end to end', () => {
