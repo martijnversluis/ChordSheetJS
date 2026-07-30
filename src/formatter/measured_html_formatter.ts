@@ -129,7 +129,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
       minY: this.renderer.getContentStartY(1, totalPages),
       getMinYForPage: (page, pages) => this.renderer!.getContentStartY(page, pages),
       columnWidth: dimensions.columnWidth,
-      columnCount: this.configuration.layout.sections.global.columnCount,
+      columnCount: dimensions.effectiveColumnCount,
       columnSpacing: this.configuration.layout.sections.global.columnSpacing,
       minColumnWidth: this.configuration.layout.sections.global.minColumnWidth,
       maxColumnWidth: this.configuration.layout.sections.global.maxColumnWidth,
