@@ -61,6 +61,20 @@ describe('PdfFormatter across package entrypoints', () => {
     expect(renderedText(doc)).not.toContain('Ebdim7');
   });
 
+  it('preserves diatonic root function in PDF output', () => {
+    const Parser = loadIsolatedParser();
+    const Formatter = loadIsolatedFormatter();
+    const song = new Parser().parse('{key: Db}\n[Bbm]vi').changeKey('A');
+
+    const formatter = new Formatter();
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const text = renderedText(doc);
+
+    expect(text).toContain('F#m');
+    expect(text).not.toContain('Gbm');
+  });
+
   it('formats body content from a song parsed by a different module instance', () => {
     const Parser = loadIsolatedParser();
     const Formatter = loadIsolatedFormatter();
