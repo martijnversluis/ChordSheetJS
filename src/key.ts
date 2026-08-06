@@ -418,8 +418,21 @@ class Key implements KeyProperties {
     return scaleDegree ? converted.spellScaleDegree(keyObj, scaleDegree, type) : converted.normalizeEnharmonics(keyObj);
   }
 
+  isDiatonicInContext(context: Key): boolean {
+    if (!(this.isChordSymbol() || this.isChordSolfege())) return false;
+
+    const { type } = this;
+    const contextNote = context.set({ type, preferredNotation: null }).note;
+    const sourceNote = this.set({ type, preferredNotation: null }).note;
+    const degree = scaleDegreeBetween(contextNote, sourceNote, type);
+    if (!degree) return false;
+
+    const intervals = context.isMinor() ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11];
+    return this.effectiveGrade === Key.shiftGrade(context.effectiveGrade + intervals[degree - 1]);
+  }
+
   respellForTransposition(source: Key, sourceContext: Key, targetContext: Key): Key {
-    if (!(this.isChordSymbol() || this.isChordSolfege())) return this.clone();
+    if (this.explicitAccidental || !(this.isChordSymbol() || this.isChordSolfege())) return this.clone();
 
     const { type } = this;
     const sourceContextNote = sourceContext.set({ type, preferredNotation: null }).note;
@@ -695,7 +708,11 @@ class Key implements KeyProperties {
   transpose(delta: number): Key {
     if (delta === 0) return this;
 
-    const { accidental: originalAccidental, sequenceSpelling } = this;
+    const {
+      accidental: originalAccidental,
+      explicitAccidental,
+      sequenceSpelling,
+    } = this;
     let transposedKey = this.set({ contextualSpelling: false, sequenceSpelling: false });
     const func = (delta < 0) ? 'transposeDown' : 'transposeUp';
 
@@ -705,6 +722,7 @@ class Key implements KeyProperties {
 
     return transposedKey.preferAccidental(originalAccidental).set({
       contextualSpelling: sequenceSpelling,
+      explicitAccidental,
       sequenceSpelling,
       transposedFromOriginal: true,
     });
