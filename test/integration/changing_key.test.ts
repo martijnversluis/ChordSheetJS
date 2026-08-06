@@ -48,6 +48,39 @@ describe('changing the key of an existing song (symbol chords)', () => {
     expect(new ChordProFormatter().format(updatedSong)).toEqual(changedSheet);
   });
 
+  it('preserves diatonic root function when changing a flat source key to A', () => {
+    const source = '{key: Db}\n[Db]I [Ebm]ii [Fm]iii [Gb]IV [Ab]V [Bbm]vi [Cdim]vii';
+    const changedSong = new ChordProParser().parse(source).changeKey('A');
+    const output = new ChordProFormatter().format(changedSong);
+
+    expect(output).toContain('[A]I [Bm]ii [C#m]iii [D]IV [E]V [F#m]vi [G#dim]vii');
+  });
+
+  it('preserves root and rooted-bass degrees when changing Db to A', () => {
+    const source = '{key: Db}\n[Bbm/F]vi';
+    const changedSong = new ChordProParser().parse(source).changeKey('A');
+    const output = new ChordProFormatter().format(changedSong);
+
+    expect(output).toContain('[F#m/C#]vi');
+  });
+
+  it('keeps programmatically explicit flat spelling across a key change', () => {
+    const source = new ChordProParser().parse('{key: Db}\n[Bbm]vi').useAccidental('b');
+    const output = new ChordProFormatter().format(source.changeKey('A'));
+
+    expect(output).toContain('[Gbm]vi');
+  });
+
+  it('preserves ordinary-root spelling through repeated key changes', () => {
+    const source = new ChordProParser().parse('{key: Db}\n[Bbm]vi');
+    const formatter = new ChordProFormatter();
+
+    expect(formatter.format(source.changeKey('D').changeKey('A'))).toEqual(
+      formatter.format(source.changeKey('A')),
+    );
+    expect(formatter.format(source.changeKey('A'))).toContain('[F#m]vi');
+  });
+
   it('respects the accidental of the target key', () => {
     const chordProTestSong = '{key: E}\n\n[E]Let it be';
     const song = new ChordProParser().parse(chordProTestSong);
