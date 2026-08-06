@@ -2,7 +2,7 @@ import Chord from '../../src/chord';
 import ChordLyricsPair from '../../src/chord_sheet/chord_lyrics_pair';
 import { heredoc } from '../util/utilities';
 import {
-  ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser, TextFormatter,
+  ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser, HtmlDivFormatter, TextFormatter,
 } from '../../src';
 
 describe('changing the key of an existing song (symbol chords)', () => {
@@ -54,6 +54,15 @@ describe('changing the key of an existing song (symbol chords)', () => {
     const output = new ChordProFormatter().format(changedSong);
 
     expect(output).toContain('[A]I [Bm]ii [C#m]iii [D]IV [E]V [F#m]vi [G#dim]vii');
+  });
+
+  it('preserves diatonic root function in HTML output', () => {
+    const source = '{key: Db}\n[Bbm]vi';
+    const changedSong = new ChordProParser().parse(source).changeKey('A');
+    const output = new HtmlDivFormatter().format(changedSong);
+
+    expect(output).toContain('F#m');
+    expect(output).not.toContain('Gbm');
   });
 
   it('preserves root and rooted-bass degrees when changing Db to A', () => {
