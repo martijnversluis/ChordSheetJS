@@ -436,12 +436,19 @@ class Chord implements ChordProperties {
 
   transposeInKey(delta: number, sourceKey: Key, targetKey: Key): Chord {
     const transposed = this.transpose(delta);
-    let root = transposed.root?.normalize().normalizeEnharmonics(targetKey) || null;
-    if (root && targetKey.accidental) root = root.preferAccidental(targetKey.accidental);
+    const root = this.transposeRootInKey(transposed.root, sourceKey, targetKey);
     const bass = transposed.bass && this.bass && this.root && root ?
       transposed.bass.respellForTransposition(this.bass, this.root, root) :
       transposed.bass;
     return transposed.set({ root, bass });
+  }
+
+  private transposeRootInKey(transposedRoot: Key | null, sourceKey: Key, targetKey: Key): Key | null {
+    let root = transposedRoot && this.root?.isDiatonicInContext(sourceKey) ?
+      transposedRoot.respellForTransposition(this.root, sourceKey, targetKey) :
+      transposedRoot;
+    root = root?.normalize().normalizeEnharmonics(targetKey) || null;
+    return root && targetKey.accidental ? root.preferAccidental(targetKey.accidental) : root;
   }
 
   constructor(options: ChordConstructorOptions) {
