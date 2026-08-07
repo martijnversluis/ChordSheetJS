@@ -31,7 +31,7 @@ SingleChordsLine
     }
 
 ChordsLine
-  = items:(ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ &{
+  = items:(RepeatCountWithSpacing / ChordWithSpacing / NoChordWithSpacing / RhythmSymbolWithSpacing)+ &{
       if (items.some(item => item.type === 'chord' || item.type === 'noChord')) return true;
       if (items.length <= 1) return false;
       return !items.some((item, i) => i > 0 && item.column === items[i - 1].column + 1);
@@ -42,19 +42,42 @@ ChordsLine
       };
     }
 
-RhythmSymbolWithSpacing
-  = _S_ symbol:RhythmSymbol _S_ {
-      return symbol;
-    }
-
-RhythmSymbol
-  = symbol:("/" / "|" / "-" / "x") {
+RepeatCountWithSpacing
+  = _S_ symbol:$(RepeatCount) _S_ {
       return {
         type: "symbol",
         value: symbol,
         column: location().start.column
       };
     }
+
+RhythmSymbolWithSpacing
+  = _S_ symbol:RhythmSymbol _S_ {
+      return symbol;
+    }
+
+RhythmSymbol
+  = symbol:$(
+      ":|:"
+      / ":||"
+      / "|:"
+      / ":|"
+      / "||"
+      / "|."
+      / "/"
+      / "|"
+      / "-"
+      / "x"
+    ) {
+      return {
+        type: "symbol",
+        value: symbol,
+        column: location().start.column
+      };
+    }
+
+RepeatCount
+  = "(" [0-9]+ "x"i ")"
 
 LyricsLine
   = lyrics:Lyrics {

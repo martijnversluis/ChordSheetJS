@@ -15,10 +15,12 @@ import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
 
 import {
   FontConfiguration,
+  FontSection,
   LayoutContentItemWithText,
   LayoutItem,
   LineStyle,
   MeasuredHtmlFormatterConfiguration,
+  resolveFontConfiguration,
 } from '../../formatter/configuration';
 
 declare const document: any;
@@ -84,8 +86,8 @@ class PositionedHtmlRenderer extends Renderer {
   // PUBLIC API
   //
 
-  getFontConfiguration(objectType: string): FontConfiguration {
-    return this.configuration.fonts[objectType];
+  getFontConfiguration(objectType: FontSection): FontConfiguration {
+    return resolveFontConfiguration(this.configuration.fonts, objectType);
   }
 
   getDocumentMetadata(): Record<string, any> {
@@ -173,7 +175,7 @@ class PositionedHtmlRenderer extends Renderer {
   private createLayoutRenderer(page: number, totalPages: number): LayoutSectionRenderer {
     const backend = this.createLayoutBackend(page, totalPages);
     return new LayoutSectionRenderer(backend, {
-      metadata: this.song.metadata,
+      metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(page, totalPages),
     });
@@ -380,7 +382,7 @@ class PositionedHtmlRenderer extends Renderer {
 
     if (!this.isLyricsOnly() && chords) {
       const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
-      this.addTextElement(chords, currentX, chordBaseline, 'chord');
+      this.addChordLineToken(item, chords, currentX, chordBaseline);
       this.updatePosition(ctx.column, ctx.page);
     }
 
@@ -505,6 +507,26 @@ class PositionedHtmlRenderer extends Renderer {
     return this.doc.pageSize;
   }
 
+  protected override getHeaderHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getHeaderConfig(), page, totalPages);
+  }
+
+  protected override getFooterHeightForPage(page: number, totalPages: number): number {
+    return this.measureLayoutSectionHeight(this.getFooterConfig(), page, totalPages);
+  }
+
+  private measureLayoutSectionHeight(
+    layoutConfig: LayoutItem | undefined,
+    page: number,
+    totalPages: number,
+  ): number {
+    if (!layoutConfig) {
+      return 0;
+    }
+
+    return this.createLayoutRenderer(page, totalPages).measureLayoutHeight(layoutConfig);
+  }
+
   //
   // PRIVATE HELPERS
   //
@@ -596,6 +618,7 @@ class PositionedHtmlRenderer extends Renderer {
       element.content,
       [
         `${prefix}element ${prefix}${element.type}`,
+        element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
         this.styler.getCustomClass(element.type),
       ],
     );
@@ -607,6 +630,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawElement(element: PositionedElement): void {
     switch (element.type) {
       case 'chord':
+      case 'rhythm-symbol':
+      case 'barline':
+      case 'instruction':
+      case 'no-chord':
+      case 'annotation':
       case 'lyrics':
       case 'sectionLabel':
       case 'comment':
@@ -622,7 +650,11 @@ class PositionedHtmlRenderer extends Renderer {
   private drawTextElement(element: PositionedElement): void {
     const htmlElement = document.createElement('div');
     const { prefix } = this.styler;
-    htmlElement.className = `${prefix}element ${prefix}${element.type}`;
+    htmlElement.className = this.styler.createClassName(
+      `${prefix}element`,
+      `${prefix}${element.type}`,
+      element.tokenVariant ? `${prefix}${element.type}-${element.tokenVariant}` : undefined,
+    );
 
     const customClass = this.styler.getCustomClass(element.type);
     if (customClass) {

@@ -93,7 +93,7 @@ class Song extends MetadataAccessors {
   }
 
   filterParagraphs(paragraphs: Paragraph[], configuration: Configuration): Paragraph[] {
-    const context: FormattingContext = { configuration, metadata: this.metadata };
+    const context: FormattingContext = { configuration, metadata: this.getMetadata(configuration) };
 
     return paragraphs.filter((paragraph) => {
       const { selector, selectorIsNegated } = paragraph;
@@ -553,14 +553,10 @@ Or set the song key before changing key:
         return;
       }
 
-      const itemChords = (item as ChordLyricsPair).chords;
+      const parsedChord = item.chord;
 
-      if (itemChords && itemChords.length > 0) {
-        const parsedChord = Chord.parse(itemChords);
-
-        if (parsedChord) {
-          chords.add(parsedChord.toString());
-        }
+      if (parsedChord) {
+        chords.add(parsedChord.toString());
       }
     });
 
@@ -629,7 +625,7 @@ Or set the song key before changing key:
 
       const tag = item as Tag;
 
-      if (!tag.isMetaTag()) {
+      if (!tag.isMetaTag(configuration?.metadata.additionalMetadataDirectives ?? [])) {
         return;
       }
 

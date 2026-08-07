@@ -1,11 +1,51 @@
 import '../util/matchers';
-import { PDFConfigurationProperties } from '../../src/formatter/configuration';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
+
+import { PDFConfigurationProperties } from '../../src/formatter/configuration';
 import { exampleSongSymbol } from '../fixtures/song';
+import { LayoutConfig, LayoutEngine } from '../../src/layout/engine';
+import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
+  it('keeps responsive renderer and layout pagination in sync', () => {
+    const computeLayouts = LayoutEngine.prototype.computeParagraphLayouts;
+    let layoutConfig: LayoutConfig | undefined;
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts')
+      .mockImplementation(function captureConfig(this: LayoutEngine) {
+        layoutConfig = (this as any).config;
+        return computeLayouts.call(this);
+      });
+    const formatter = new PdfFormatter({
+      layout: {
+        chordDiagrams: { enabled: false },
+        sections: {
+          global: {
+            columnSpacing: 20,
+            minColumnWidth: 150,
+            maxColumnWidth: 200,
+          },
+        },
+      },
+    });
+    const song = createSongFromAst(Array.from({ length: 100 }, (_, index) => [
+      chordLyricsPair('C', `Line ${index + 1}`),
+    ]).flatMap((line) => [line, []]));
+
+    try {
+      formatter.format(song, StubbedPdfDoc);
+
+      const { renderer } = formatter as any;
+      expect(renderer.dimensions.effectiveColumnCount).toBe(3);
+      expect(layoutConfig?.columnCount).toBe(3);
+      expect(renderer.currentPage).toBeGreaterThan(1);
+      expect(renderer.totalPagesHint).toBe(renderer.currentPage);
+    } finally {
+      computeSpy.mockRestore();
+    }
+  });
+
   it('correctly formats a basic song', () => {
     const formatter = new PdfFormatter();
     formatter.format(exampleSongSymbol, StubbedPdfDoc);
@@ -153,6 +193,64 @@ describe('PdfFormatter', () => {
     expect(doc.renderedItems).toHaveLength(1);
 
     expect(doc).toHaveText('Page 1 of 1', 275, 750);
+  });
+
+  it('uses an extra layout pass only for auto-height sections with total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        footer: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'Last page footer',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'center', y: 28, height: 12 },
+              condition: { page: { last: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(2);
+
+    computeSpy.mockRestore();
+  });
+
+  it('keeps one layout pass for auto-height sections without total-page conditions', () => {
+    const computeSpy = jest.spyOn(LayoutEngine.prototype, 'computeParagraphLayouts');
+    const formatter = new PdfFormatter();
+    const song = new Song();
+
+    formatter.configure({
+      layout: {
+        header: {
+          height: 'auto',
+          content: [
+            {
+              type: 'text',
+              value: 'First page header',
+              style: {
+                name: 'NimbusSansL-Reg', style: 'normal', size: 12, color: 100,
+              },
+              position: { x: 'left', y: 0, height: 12 },
+              condition: { page: { first: true } },
+            },
+          ],
+        },
+      },
+    }).format(song, StubbedPdfDoc);
+
+    expect(computeSpy).toHaveBeenCalledTimes(1);
+
+    computeSpy.mockRestore();
   });
 
   it('renders conditional content when the condition matches', () => {

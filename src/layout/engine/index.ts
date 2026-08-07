@@ -6,6 +6,7 @@ export { LineBreaker } from './line_breaker';
 
 // Helpers and utilities
 export * from './layout_helpers';
+export { layoutNeedsTotalPageAwareAutoHeight } from './auto_section_height';
 
 // Types
 export {
