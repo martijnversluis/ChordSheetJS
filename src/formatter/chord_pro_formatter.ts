@@ -13,12 +13,12 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
 
-import { longTagName, shortTagName } from '../chord_sheet/tag';
+import { CHORD_STYLE } from '../chord_sheet/tags';
+import { getBaseDefaultConfig } from './configuration/default_config_manager';
 import {
   CHORDCOLOUR,
   CHORDFONT,
   CHORDSIZE,
-  CHORD_STYLE,
   END_OF_ABC,
   END_OF_BRIDGE,
   END_OF_CHORUS,
@@ -50,14 +50,13 @@ import {
   TRANSPOSE,
 } from '../chord_sheet/tags';
 import {
-  NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
-} from '../constants';
-import { BaseFormatterConfiguration } from './configuration/base_configuration';
-import {
   ChordProFormatterConfiguration,
   chordProSpecificDefaults,
 } from './configuration/chord_pro_configuration';
-import { getBaseDefaultConfig } from './configuration/default_config_manager';
+import {
+  NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
+} from '../constants';
+import { longTagName, shortTagName } from '../chord_sheet/tag';
 
 const NON_METADATA_HEADER_DIRECTIVES = [
   'chord',
