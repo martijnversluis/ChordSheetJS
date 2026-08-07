@@ -2,6 +2,7 @@ import Chord from '../chord';
 import ChordDefinition from '../chord_definition/chord_definition';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
 import ChordLyricsPair from './chord_lyrics_pair';
+import ChordTranspositionContext from './chord_transposition_context';
 import Configuration from '../formatter/configuration';
 import FormattingContext from '../formatter/formatting_context';
 import Item from './item';
@@ -16,11 +17,12 @@ import ParserWarning from '../parser/parser_warning';
 import SongBuilder from '../song_builder';
 import SongMapper from './song_mapper';
 import Tag from './tag';
+import normalizeSongSequenceEnharmonics from './sequence_enharmonic_normalizer';
 
-import { Accidental } from '../constants';
-import { TEXTBLOCK } from '../constants';
 import { testSelector } from '../helpers';
-import { ABC, LILYPOND, SVG } from '../constants';
+import {
+  ABC, Accidental, LILYPOND, SVG, TEXTBLOCK,
+} from '../constants';
 import { CAPO, KEY } from './tags';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
@@ -273,47 +275,42 @@ class Song extends MetadataAccessors {
     { accidental = null, normalizeChordSuffix = false }:
       { accidental?: Accidental | null, normalizeChordSuffix?: boolean } = {},
   ): Song {
+    let sourceKey: Key | null = null;
     let transposedKey: Key | null = null;
-
-    return this.mapItems((item) => {
+    const chordContext = ChordTranspositionContext.forSong(this);
+    const transposedSong = this.mapItems((item) => {
       if (item instanceof Tag && item.name === KEY) {
-        transposedKey = Key.wrapOrFail(item.value).transpose(delta).normalize();
-        if (accidental) transposedKey = transposedKey.useAccidental(accidental);
+        sourceKey = Key.wrapOrFail(item.value);
+        transposedKey = sourceKey.transpose(delta).normalize();
+        if (accidental) transposedKey = transposedKey.preferAccidental(accidental);
         return item.set({ value: transposedKey.toString() });
       }
       if (item instanceof ChordLyricsPair) {
-        return Song.transposeChordLyricsPair(item, delta, transposedKey, normalizeChordSuffix, accidental);
+        return chordContext.transpose(item, delta, sourceKey, transposedKey, normalizeChordSuffix, accidental);
       }
       if (item instanceof Literal && Song.isMusicalSection(item.parentLine)) {
-        return Song.transposeLiteral(item, delta, transposedKey, normalizeChordSuffix, accidental);
+        return Song.transposeLiteral(item, delta, sourceKey, transposedKey, normalizeChordSuffix, accidental);
       }
       return item;
     });
-  }
 
-  private static transposeChordLyricsPair(
-    item: ChordLyricsPair,
-    delta: number,
-    transposedKey: Key | null,
-    normalizeChordSuffix: boolean,
-    accidental: Accidental | null,
-  ): ChordLyricsPair {
-    let chord = item.transpose(delta, transposedKey, { normalizeChordSuffix });
-    if (accidental) chord = chord.useAccidental(accidental);
-    return chord;
+    return chordContext.sequenceEnharmonics ? transposedSong.normalizeChordSequences() : transposedSong;
   }
 
   private static transposeLiteral(
     item: Literal,
     delta: number,
+    sourceKey: Key | null,
     transposedKey: Key | null,
     normalizeChordSuffix: boolean,
     accidental: Accidental | null,
   ): Literal {
     return Song.mapChordsInLiteral(item, (chord) => {
-      let transposed = chord.transpose(delta);
+      let transposed = sourceKey && transposedKey ?
+        chord.transposeInKey(delta, sourceKey, transposedKey) :
+        chord.transpose(delta);
       if (transposedKey) transposed = transposed.normalize(transposedKey, { normalizeSuffix: normalizeChordSuffix });
-      if (accidental) transposed = transposed.useAccidental(accidental);
+      if (accidental) transposed = transposed.preferAccidental(accidental);
       return transposed;
     });
   }
@@ -401,7 +398,12 @@ class Song extends MetadataAccessors {
     key: Key | string | null = null,
     { normalizeSuffix = true }: { normalizeSuffix?: boolean; } = {},
   ): Song {
-    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }));
+    return this.changeChords((chord) => chord.normalize(key, { normalizeSuffix }))
+      .normalizeChordSequences(key);
+  }
+
+  normalizeChordSequences(key: Key | string | null = null): Song {
+    return normalizeSongSequenceEnharmonics(this, key);
   }
 
   mapChordLyricsPairs(func: (pair: ChordLyricsPair) => ChordLyricsPair): Song {

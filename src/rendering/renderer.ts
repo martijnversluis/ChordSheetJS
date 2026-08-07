@@ -1,3 +1,4 @@
+import Chord from '../chord';
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
@@ -253,7 +254,7 @@ abstract class Renderer {
     const { lyrics } = item;
 
     if (chords) {
-      chords = this.processChords(chords, line);
+      chords = this.processChords(item.chord ?? chords, line);
     }
 
     // Add chord element if not lyrics-only mode
@@ -372,7 +373,7 @@ abstract class Renderer {
   /**
    * Process chords for display (handle modifiers, normalization)
    */
-  protected processChords(chords: string, line: Line): string {
+  protected processChords(chords: Chord | string, line: Line): string {
     return renderChord(
       chords,
       line,
@@ -726,5 +727,4 @@ abstract class Renderer {
     return !!this.getSectionsConfig()?.base?.display?.lyricsOnly;
   }
 }
-
 export default Renderer;
