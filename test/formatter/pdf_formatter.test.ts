@@ -3,9 +3,9 @@ import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 
-import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
 import { exampleSongSymbol } from '../fixtures/song';
 import { LayoutConfig, LayoutEngine } from '../../src/layout/engine';
+import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
