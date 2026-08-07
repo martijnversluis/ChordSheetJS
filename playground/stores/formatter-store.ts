@@ -1,6 +1,6 @@
-import { Key } from '../../src';
-
 import { APP_EVENTS } from './init-store';
+import { Key } from '../../src';
+import { PdfFormatter } from '../../src/pdf';
 import { createStore } from './store';
 import { formatterConfigExamples } from '../fixtures';
 import { getMeasuredHtmlDefaultConfig } from '../../src/formatter/configuration/default_config_manager';
@@ -18,7 +18,6 @@ import {
   ChordProFormatter,
   ChordsOverWordsFormatter,
   HtmlDivFormatter,
-  PdfFormatter,
 } from '../../src/index';
 
 // Define the available formatter types
