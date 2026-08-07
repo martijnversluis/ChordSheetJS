@@ -12,8 +12,10 @@ const files =
 console.log(`Check ${files.length} files for trailing whitespace`);
 
 files.forEach((filename) => {
-  const contents = fs.readFileSync(filename, 'utf8');
-  const lines = contents.split(EOL);
+  const contents = fs.readFileSync(filename);
+  if (contents.includes(0)) return;
+
+  const lines = contents.toString('utf8').split(EOL);
 
   lines.forEach((line, index) => {
     if (line.endsWith(' ')) {
