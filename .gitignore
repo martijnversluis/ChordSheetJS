@@ -15,4 +15,5 @@ src/parser/chord/suffix_grammar.pegjs
 src/parser/chord_pro/sections_grammar.pegjs
 src/version.ts
 tmp
+worktrees
 CLAUDE.md

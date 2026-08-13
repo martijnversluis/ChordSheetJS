@@ -154,6 +154,8 @@ export default tseslint.config(
       'src/normalize_mappings/suffix-normalize-mapping.ts',
       'src/parser/*/peg_parser.ts',
       'tmp/**/*',
+      'worktrees/**/*',
+      '.claude/worktrees/**/*',
       './**/*.{css,html,md,json}',
       '**/.parcelrc',
     ],
