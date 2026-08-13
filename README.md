@@ -207,6 +207,65 @@ HtmlTableFormatter.cssObject();
 // }
 ```
 
+### Change chord notation (transcoding)
+
+ChordSheetJS can render the chords of a sheet in a different notation system than the one they were written in.
+This is controlled with the `{chord_style}` directive, in combination with the song `{key}`.
+
+Four notation styles are supported:
+
+| Style     | Description                          | Example (key of C)        |
+|:--------- |:------------------------------------ |:------------------------- |
+| `symbol`  | Letter notation (the default)        | `C`, `Dm`, `F`, `G`, `Am` |
+| `solfege` | Solfège / romance-language notation  | `Do`, `Rem`, `Fa`, `Sol`  |
+| `numeral` | Roman numeral / functional notation  | `I`, `ii`, `IV`, `V`, `vi`|
+| `number`  | Nashville number notation            | `1`, `2m`, `4`, `5`, `6m` |
+
+The `symbol` and `solfege` styles are absolute (they name an actual pitch), while `numeral` and `number` are relative
+to the key. Because of that, a song `{key}` is required to convert between an absolute and a relative style. Conversion
+works in every direction: the chords in the source sheet may be written in any of the four styles.
+
+```javascript
+const chordSheet = `
+{key: C}
+{chord_style: numeral}
+
+Let it [Am]be, let it [F]be, let it [C]be
+[C]Whisper words of [G]wisdom, let it [F]be`.substring(1);
+
+const song = new ChordSheetJS.ChordProParser().parse(chordSheet);
+new ChordSheetJS.TextFormatter().format(song);
+// Am -> vi, F -> IV, C -> I, G -> V
+```
+
+Using `{chord_style: number}` on the same sheet would render `Am` as `6m`, `F` as `4`, `C` as `1` and `G` as `5`.
+
+Because conversion is bidirectional, a sheet written in Roman numerals can be rendered as chord symbols by combining a
+concrete `{key}` with `{chord_style: symbol}`:
+
+```javascript
+const chordSheet = `
+{key: C}
+{chord_style: symbol}
+
+[I] [ii] [iii] [IV] [V] [vi] [vii]`.substring(1);
+
+const song = new ChordSheetJS.ChordProParser().parse(chordSheet);
+new ChordSheetJS.TextFormatter().format(song);
+// I -> C, ii -> Dm, iii -> Em, IV -> F, V -> G, vi -> Am, vii -> Bm
+```
+
+The `TextFormatter`, `HtmlTableFormatter`, `HtmlDivFormatter` and `ChordsOverWordsFormatter` apply `{chord_style}`
+automatically. The `ChordProFormatter` preserves the original chord notation by default (so a round-trip stays
+lossless); pass `applyChordStyle: true` to have it convert the chords as well:
+
+```javascript
+new ChordSheetJS.ChordProFormatter({ applyChordStyle: true }).format(song);
+```
+
+You can also convert a single chord programmatically, without a sheet, using the `Chord` methods
+(see [Parsing and modifying chords](#parsing-and-modifying-chords) below), e.g. `Chord.parse('2/4').toChordSymbol('E')`.
+
 ### Parsing and modifying chords
 
 ```javascript
@@ -344,6 +403,7 @@ use those to change the generated output.
 | tempo            | :heavy_check_mark: |
 | duration         | :heavy_check_mark: |
 | capo             | :heavy_check_mark: |
+| chord_style      | :heavy_check_mark: |
 | meta             | :heavy_check_mark: |
 
 ### Formatting directives
