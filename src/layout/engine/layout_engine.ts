@@ -55,15 +55,15 @@ export class LayoutEngine {
 
   private sectionCache: Map<string, Paragraph> = new Map<string, Paragraph>();
 
+  private readonly paragraphs: Paragraph[];
+
   constructor(
     private song: Song,
     private measurer: Measurer,
     private config: LayoutConfig,
   ) {
-    // Process repeated sections before layout computation
-    this.processRepeatedSections();
+    this.paragraphs = this.resolveParagraphs();
 
-    // Initialize component classes
     this.itemProcessor = new ItemProcessor(this.measurer, this.config, this.song);
     this.layoutFactory = new LayoutFactory(config);
     this.lineBreaker = new LineBreaker(this.itemProcessor, this.layoutFactory);
@@ -119,33 +119,39 @@ export class LayoutEngine {
     return tag.label || tag.value || null;
   }
 
-  /**
-   * Process repeated sections by modifying the song's bodyParagraphs array
-   * This is called in the constructor to preprocess the song before layout computation
-   */
-  private processRepeatedSections(): void {
+  private resolveParagraphs(): Paragraph[] {
+    const sourceParagraphs = this.getSourceParagraphs();
+
     if (!this.config.repeatedSections) {
-      return;
+      return sourceParagraphs;
     }
 
+    return this.processRepeatedSections(sourceParagraphs);
+  }
+
+  private getSourceParagraphs(): Paragraph[] {
+    return this.config.expandChorusDirective ? this.song.expandedBodyParagraphs : this.song.bodyParagraphs;
+  }
+
+  private processRepeatedSections(sourceParagraphs: Paragraph[]): Paragraph[] {
     this.sectionCache.clear();
 
     const processedParagraphs: Paragraph[] = [];
     const skipIndices = new Set<number>();
-    const { bodyParagraphs } = this.song.clone();
 
-    bodyParagraphs.forEach((paragraph, index) => {
+    sourceParagraphs.forEach((paragraph, index) => {
       this.processParagraph({
         paragraph,
         index,
         processedParagraphs,
         skipIndices,
-        bodyParagraphs,
+        bodyParagraphs: sourceParagraphs,
       });
     });
 
-    (this.song as any).renderParagraphs = processedParagraphs;
     this.sectionCache.clear();
+
+    return processedParagraphs;
   }
 
   private processParagraph(params: ProcessParagraphParams): void {
@@ -400,7 +406,7 @@ export class LayoutEngine {
       currentColumn: 1,
     };
 
-    this.song.renderParagraphs.forEach((paragraph) => {
+    this.paragraphs.forEach((paragraph) => {
       state = this.processParagraphLayout(paragraph, layouts, state);
     });
 

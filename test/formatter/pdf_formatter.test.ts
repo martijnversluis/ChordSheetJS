@@ -1,9 +1,16 @@
 import '../util/matchers';
+import ChordProParser from '../../src/parser/chord_pro_parser';
 import { PDFConfigurationProperties } from '../../src/formatter/configuration';
 import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 import { exampleSongSymbol } from '../fixtures/song';
+
+function countRenderedText(doc: StubbedPdfDoc, text: string): number {
+  return doc.renderedItems
+    .filter((item) => item.type === 'text' && (item as { text: string }).text.includes(text))
+    .length;
+}
 
 describe('PdfFormatter', () => {
   it('correctly formats a basic song', () => {
@@ -86,6 +93,44 @@ describe('PdfFormatter', () => {
     expect(doc).toHaveText('C/E', 263, 570);
     // Moved to next column
     expect(doc).toHaveText('Dm', 54, 640);
+  });
+
+  describe('expandChorusDirective', () => {
+    const chordSheet = [
+      '{start_of_chorus: Chorus}',
+      'Whisper words of wisdom',
+      '{end_of_chorus}',
+      '',
+      '{start_of_verse: Verse 1}',
+      'Let it be',
+      '{end_of_verse}',
+      '',
+      '{chorus}',
+    ].join('\n');
+
+    function renderChorusPdf({ expandChorusDirective }: { expandChorusDirective: boolean }): StubbedPdfDoc {
+      const song = new ChordProParser().parse(chordSheet);
+      const formatter = new PdfFormatter();
+      formatter
+        .configure({
+          layout: { sections: { base: { display: { repeatedSections: 'full' } } } },
+          expandChorusDirective,
+        })
+        .format(song, StubbedPdfDoc);
+      return formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    }
+
+    it('expands {chorus} directives when expandChorusDirective=true', () => {
+      const doc = renderChorusPdf({ expandChorusDirective: true });
+
+      expect(countRenderedText(doc, 'Whisper words of wisdom')).toEqual(2);
+    });
+
+    it('does not expand {chorus} directives when expandChorusDirective=false', () => {
+      const doc = renderChorusPdf({ expandChorusDirective: false });
+
+      expect(countRenderedText(doc, 'Whisper words of wisdom')).toEqual(1);
+    });
   });
 
   it('renders header content', () => {

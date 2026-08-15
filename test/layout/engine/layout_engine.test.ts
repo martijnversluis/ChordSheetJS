@@ -228,7 +228,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
 
       const engine = new LayoutEngine(song, measurer, config);
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
 
       expect(processedParagraphs.length).toBeLessThan(paragraphs.length);
     });
@@ -240,7 +240,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig();
 
       const engine = new LayoutEngine(song, measurer, config);
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
 
       expect(processedParagraphs.length).toEqual(paragraphs.length);
     });
@@ -457,7 +457,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
       const engine = new LayoutEngine(song, measurer, config);
 
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       expect(processedParagraphs.length).toBe(1);
     });
 
@@ -467,7 +467,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
       const engine = new LayoutEngine(song, measurer, config);
 
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       expect(processedParagraphs.length).toBe(2);
     });
 
@@ -511,7 +511,7 @@ describe('LayoutEngine', () => {
 
       // The original cached paragraph should not be modified
       // Check that the first paragraph in renderParagraphs (the original) still has its content
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       const originalParagraph = processedParagraphs[0];
       const originalFirstLine = originalParagraph.lines[0];
 

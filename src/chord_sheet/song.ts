@@ -71,10 +71,12 @@ class Song extends MetadataAccessors {
     return this._bodyParagraphs;
   }
 
+  /** @deprecated No longer used internally; use {@link bodyParagraphs} or {@link expandedBodyParagraphs}. */
   get renderParagraphs(): Paragraph[] {
     return this._renderParagraphs ?? this.bodyParagraphs;
   }
 
+  /** @deprecated No longer used internally. See {@link renderParagraphs}. */
   set renderParagraphs(paragraphs: Paragraph[]) { this._renderParagraphs = paragraphs; }
 
   selectRenderableItems(items: (Line | Paragraph)[]): (Line | Paragraph)[] {
