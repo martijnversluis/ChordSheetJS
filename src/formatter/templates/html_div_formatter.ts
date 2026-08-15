@@ -6,6 +6,7 @@ import { renderChord } from '../../helpers';
 import {
   each,
   evaluate,
+  expandMeta,
   fontStyleTag,
   imageTag,
   isChordLyricsPair,
@@ -41,8 +42,8 @@ export default (
   const pango = configuration.pangoRenderer || defaultPangoRenderer;
 
   return stripHTML(`
-  ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
-  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
+  ${ when(title, () => `<h1 class="${ c.title }">${ expandMeta(title, metadata, configuration) }</h1>`) }
+  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ expandMeta(subtitle, metadata, configuration) }</h2>`) }
 
   <div class="${ c.chordSheet }">
     ${ each(bodyParagraphs, (paragraph) => `
@@ -50,7 +51,7 @@ export default (
         ${ when(paragraph.isLiteral(), () => `
           ${ when(isPresent(paragraph.label), () => `
             <div class="${ c.row }">
-              <h3 class="${ c.label }">${ paragraph.label }</h3>
+              <h3 class="${ c.label }">${ expandMeta(paragraph.label, metadata, configuration) }</h3>
             </div>
           `) }
 
@@ -90,16 +91,17 @@ export default (
                       </div>
                     </div>
                   `).elseWhen(isTag(item), () => `
-                    ${ when(isComment(item), () => `
-                      <div class="${ c.comment }">${ pango.convert(item.value || '') }</div>
-                    `) }
+                    ${ when(isComment(item), () => {
+                      const comment = pango.convert(expandMeta(item.value, metadata, configuration));
+                      return `<div class="${ c.comment }">${ comment }</div>`;
+                    }) }
 
                     ${ when(isImage(item), () => `
                       <div class="${ c.image }">${ imageTag(item) }</div>
                     `) }
 
                     ${ when(item.hasRenderableLabel(), () => `
-                      <h3 class="${ c.label }">${ item.label }</h3>
+                      <h3 class="${ c.label }">${ expandMeta(item.label, metadata, configuration) }</h3>
                     `) }
                   `).elseWhen(isEvaluatable(item), () => `
                     <div class="${ c.column }">

@@ -10,6 +10,7 @@ import Paragraph from './chord_sheet/paragraph';
 import Tag from './chord_sheet/tag';
 import When from './template_helpers/when';
 import WhenCallback from './template_helpers/when_callback';
+import expandMetaExpressions from './chord_sheet/chord_pro/expand_meta_expressions';
 
 import { renderChord } from './helpers';
 import { INDETERMINATE, NONE } from './constants';
@@ -133,6 +134,18 @@ export function evaluate(item: Evaluatable, metadata: Metadata, configuration: C
   return item.evaluate(metadata, configuration.metadata.separator);
 }
 
+export function expandMeta(
+  value: string | null | undefined,
+  metadata: Metadata,
+  configuration: Configuration,
+): string {
+  if (!value) {
+    return value || '';
+  }
+
+  return expandMetaExpressions(value, metadata, configuration.metadata.separator);
+}
+
 export function fontStyleTag(font: Font): string {
   const cssString = font.toCssString();
 
@@ -167,6 +180,7 @@ export default {
   lineClasses,
   paragraphClasses,
   evaluate,
+  expandMeta,
   fontStyleTag,
   renderChord,
   hasChordContents,

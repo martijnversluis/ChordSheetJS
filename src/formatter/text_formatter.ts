@@ -9,7 +9,9 @@ import Tag from '../chord_sheet/tag';
 
 import { renderChord } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
-import { evaluate, hasTextContents, renderSection } from '../template_helpers';
+import {
+  evaluate, expandMeta, hasTextContents, renderSection,
+} from '../template_helpers';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 
 /**
@@ -84,7 +86,7 @@ class TextFormatter extends Formatter {
 
   formatTitle(title: string | null): string {
     if (title) {
-      return `${title.toUpperCase()}\n`;
+      return `${expandMeta(title, this.metadata, this.configuration).toUpperCase()}\n`;
     }
 
     return '';
@@ -92,7 +94,7 @@ class TextFormatter extends Formatter {
 
   formatSubTitle(subtitle: string | null): string {
     if (subtitle) {
-      return `${subtitle}\n`;
+      return `${expandMeta(subtitle, this.metadata, this.configuration)}\n`;
     }
 
     return '';
@@ -135,9 +137,9 @@ class TextFormatter extends Formatter {
     return chords;
   }
 
-  formatItemTop(item: Item, _metadata: Metadata, line: Line): string {
+  formatItemTop(item: Item, metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
-      return item.label;
+      return expandMeta(item.label, metadata, this.configuration);
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -169,7 +171,7 @@ class TextFormatter extends Formatter {
 
   formatItemBottom(item: Item, metadata: Metadata, line: Line): string {
     if (item instanceof Tag && item.isRenderable()) {
-      return item.label;
+      return expandMeta(item.label, metadata, this.configuration);
     }
 
     if (item instanceof ChordLyricsPair) {

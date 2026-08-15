@@ -53,6 +53,38 @@ describe('chordpro e2e', () => {
     expect(formatted).toEqual('');
   });
 
+  it('preserves meta expressions inside directive values when not evaluating', () => {
+    const chordSheet = heredoc`
+      {meta: software ChordSheetJS}
+      {meta: version 15.6.1}
+      {title: Bug in %{software} version %{version}}
+      {comment: Made with %{software}}`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordProFormatter({ evaluate: false }).format(song);
+
+    expect(formatted).toEqual(chordSheet);
+  });
+
+  it('expands meta expressions inside directive values when evaluating', () => {
+    const chordSheet = heredoc`
+      {meta: software ChordSheetJS}
+      {meta: version 15.6.1}
+      {title: Bug in %{software} version %{version}}
+      {comment: Made with %{software}}`;
+
+    const expectedEvaluation = heredoc`
+      {meta: software ChordSheetJS}
+      {meta: version 15.6.1}
+      {title: Bug in ChordSheetJS version 15.6.1}
+      {comment: Made with ChordSheetJS}`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordProFormatter({ evaluate: true }).format(song);
+
+    expect(formatted).toEqual(expectedEvaluation);
+  });
+
   it('correctly parses and formats meta expressions with errors', () => {
     const chordSheet = heredoc`
       {key: Numbers}

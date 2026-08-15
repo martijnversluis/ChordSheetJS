@@ -12,6 +12,7 @@ import SoftLineBreak from '../chord_sheet/soft_line_break';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
+import expandMetaExpressions from '../chord_sheet/chord_pro/expand_meta_expressions';
 
 import { CHORD_STYLE } from '../chord_sheet/tags';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
@@ -40,7 +41,7 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     const { lines } = song;
     const metadata = song.getMetadata(this.configuration);
     const { metadataLines, contentLines } = this.separateMetadataFromContent(lines);
-    const formattedMetadataLines = this.formatMetadataSection(metadataLines);
+    const formattedMetadataLines = this.formatMetadataSection(metadataLines, metadata);
     const formattedContentLines = this.formatContentSection(contentLines, metadata, song);
     return this.combineMetadataAndContent(formattedMetadataLines, formattedContentLines);
   }
@@ -70,14 +71,14 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     return { metadataLines, contentLines };
   }
 
-  private formatMetadataSection(metadataLines: Line[]): string[] {
+  private formatMetadataSection(metadataLines: Line[], metadata: Metadata): string[] {
     return metadataLines.map((line) => {
       const tag = line.items[0] as Tag;
 
       if (!tag.isStandardOrCustomMetaTag()) {
-        return `{meta: ${tag.originalName} ${tag.value}}`;
+        return `{meta: ${tag.originalName} ${this.formatTagValue(tag.value, metadata)}}`;
       }
-      return this.formatTag(tag);
+      return this.formatTag(tag, metadata);
     });
   }
 
@@ -98,7 +99,7 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     type handlerFunc = any;
 
     const handlers = new Map<constructor, handlerFunc>([
-      [Tag, (i: Item) => this.formatTag(i as Tag)],
+      [Tag, (i: Item) => this.formatTag(i as Tag, metadata)],
       [ChordLyricsPair, (i: Item) => this.formatChordLyricsPair(i as ChordLyricsPair, line, song)],
       [Comment, (i: Item) => this.formatComment(i as Comment)],
       [SoftLineBreak, (_i: Item) => '\\ '],
@@ -190,26 +191,34 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
     return '';
   }
 
-  formatTag(tag: Tag): string {
+  formatTag(tag: Tag, metadata: Metadata): string {
     if (tag.hasAttributes()) {
-      return `{${tag.originalName}: ${this.formatTagAttributes(tag)}}`;
+      return `{${tag.originalName}: ${this.formatTagAttributes(tag, metadata)}}`;
     }
 
     if (tag.hasValue()) {
-      return `{${tag.originalName}: ${tag.value}}`;
+      return `{${tag.originalName}: ${this.formatTagValue(tag.value, metadata)}}`;
     }
 
     return `{${tag.originalName}}`;
   }
 
-  formatTagAttributes(tag: Tag) {
+  formatTagValue(value: string, metadata: Metadata): string {
+    if (this.configuration.evaluate) {
+      return expandMetaExpressions(value, metadata, this.configuration.metadata.separator);
+    }
+
+    return value;
+  }
+
+  formatTagAttributes(tag: Tag, metadata: Metadata) {
     const keys = Object.keys(tag.attributes);
 
     if (keys.length === 0) {
       return '';
     }
 
-    return keys.map((key) => `${key}="${tag.attributes[key]}"`).join(' ');
+    return keys.map((key) => `${key}="${this.formatTagValue(tag.attributes[key], metadata)}"`).join(' ');
   }
 
   formatChordLyricsPair(chordLyricsPair: ChordLyricsPair, line: Line, song: Song): string {
