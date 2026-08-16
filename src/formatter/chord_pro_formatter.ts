@@ -12,7 +12,7 @@ import SoftLineBreak from '../chord_sheet/soft_line_break';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 import Ternary from '../chord_sheet/chord_pro/ternary';
-import expandMetaExpressions from '../chord_sheet/chord_pro/expand_meta_expressions';
+import parseMetaValue from '../chord_sheet/chord_pro/parse_meta_value';
 
 import { CHORD_STYLE } from '../chord_sheet/tags';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
@@ -204,11 +204,12 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
   }
 
   formatTagValue(value: string, metadata: Metadata): string {
-    if (this.configuration.evaluate) {
-      return expandMetaExpressions(value, metadata, this.configuration.metadata.separator);
+    if (!this.configuration.evaluate) {
+      return value;
     }
 
-    return value;
+    const expression = parseMetaValue(value);
+    return expression ? expression.evaluate(metadata, this.configuration.metadata.separator) : value;
   }
 
   formatTagAttributes(tag: Tag, metadata: Metadata) {

@@ -10,7 +10,7 @@ import Paragraph from './chord_sheet/paragraph';
 import Tag from './chord_sheet/tag';
 import When from './template_helpers/when';
 import WhenCallback from './template_helpers/when_callback';
-import expandMetaExpressions from './chord_sheet/chord_pro/expand_meta_expressions';
+import parseMetaValue from './chord_sheet/chord_pro/parse_meta_value';
 
 import { renderChord } from './helpers';
 import { INDETERMINATE, NONE } from './constants';
@@ -143,7 +143,13 @@ export function expandMeta(
     return value || '';
   }
 
-  return expandMetaExpressions(value, metadata, configuration.metadata.separator);
+  const expression = parseMetaValue(value);
+
+  if (!expression) {
+    return value;
+  }
+
+  return expression.evaluate(metadata, configuration.metadata.separator);
 }
 
 export function fontStyleTag(font: Font): string {

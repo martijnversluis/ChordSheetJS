@@ -62,9 +62,13 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     return key in this.metadata;
   }
 
-  add(key: string, value: string): void {
+  add(key: string, value: string, expression?: Composite | null): void {
     if (isReadonlyTag(key)) {
       return;
+    }
+
+    if (expression !== undefined) {
+      this.expressionCache.set(value, expression);
     }
 
     if (!(key in this.metadata)) {
@@ -127,6 +131,15 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
    * const metadata = new Metadata({ lyricist: 'Pete', author: ['John', 'Mary'] });
    * metadata.get('author.-1') // => 'Mary'
    * metadata.get('author.-2') // => 'John'
+   *
+   * Any `%{...}` meta expressions in the value are evaluated against this metadata before it is
+   * returned. To read the raw, unevaluated value (with the `%{...}` expressions still in place),
+   * access the underlying store directly: `metadata.metadata[prop]`.
+   *
+   * @example
+   * const metadata = new Metadata({ artist: 'The Beatles', title: 'By %{artist}' });
+   * metadata.get('title')      // => 'By The Beatles'
+   * metadata.metadata['title'] // => 'By %{artist}'
    *
    * @param prop the property name
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
