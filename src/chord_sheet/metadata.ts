@@ -62,9 +62,13 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     return key in this.metadata;
   }
 
-  add(key: string, value: string): void {
+  add(key: string, value: string, expression?: Composite | null): void {
     if (isReadonlyTag(key)) {
       return;
+    }
+
+    if (expression !== undefined) {
+      this.expressionCache.set(value, expression);
     }
 
     if (!(key in this.metadata)) {

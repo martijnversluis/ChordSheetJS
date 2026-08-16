@@ -633,7 +633,7 @@ Or set the song key before changing key:
         return;
       }
 
-      metadata.add(item.name, item.value);
+      metadata.add(item.name, item.value, item.expression);
     });
 
     return metadata;
