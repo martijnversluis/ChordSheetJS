@@ -5,18 +5,9 @@ import Metadata from '../metadata';
 import Ternary from './ternary';
 
 import { parse } from '../../parser/chord_pro/peg_parser';
+import { SerializedComposite, SerializedLiteral, SerializedTernary } from '../../serialized_types';
 
-type SerializedPart = string | SerializedTernary;
-
-interface SerializedTernary {
-  type: 'ternary';
-  variable?: string | null;
-  valueTest?: string | null;
-  trueExpression?: SerializedPart[];
-  falseExpression?: SerializedPart[];
-}
-
-function buildEvaluatable(part: SerializedPart): Evaluatable {
+function buildEvaluatable(part: SerializedLiteral | SerializedTernary): Evaluatable {
   if (typeof part === 'string') {
     return new Literal(part);
   }
@@ -46,10 +37,10 @@ export default function expandMetaExpressions(
     return value;
   }
 
-  let parts: SerializedPart[];
+  let parts: SerializedComposite;
 
   try {
-    parts = parse(value, { startRule: 'MetaValue' }) as SerializedPart[];
+    parts = parse(value, { startRule: 'MetaValue' }) as SerializedComposite;
   } catch {
     // If the value cannot be parsed as a meta value (for example a multiline value set
     // programmatically), leave it untouched rather than failing to render.
