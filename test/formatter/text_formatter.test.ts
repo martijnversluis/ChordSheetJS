@@ -325,6 +325,20 @@ Let it be, let it be, let it be, let it be`;
 
       expect(rendered).toContain('Made with ChordSheetJS');
     });
+
+    it('expands meta expressions inside a section label attribute', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {meta: version 15.6.1}
+
+        {start_of_verse: label="Verse %{version}"}
+        Line
+        {end_of_verse}
+      `);
+
+      const rendered = new TextFormatter().format(song);
+
+      expect(rendered).toContain('Verse 15.6.1');
+    });
   });
 
   describe('conditional sections', () => {

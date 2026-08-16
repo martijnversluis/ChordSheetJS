@@ -44,8 +44,8 @@ export default (
   const pango = configuration.pangoRenderer || defaultPangoRenderer;
 
   return stripHTML(`
-  ${ when(title, () => `<h1 class="${ c.title }">${ expandMeta(title, metadata, configuration) }</h1>`) }
-  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ expandMeta(subtitle, metadata, configuration) }</h2>`) }
+  ${ when(title, () => `<h1 class="${ c.title }">${ title }</h1>`) }
+  ${ when(subtitle, () => `<h2 class="${ c.subtitle }">${ subtitle }</h2>`) }
 
   ${ when(bodyLines.length > 0, () => `
     <div class="${ c.chordSheet }">

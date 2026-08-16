@@ -293,7 +293,8 @@ TagAttributeValue
     }
 
 TagAttributeValueChar
-  = [^"}]
+  = MetaExpressionSource
+  / [^"}]
   / Escape
     sequence: (
       "\\" { return { type: 'char', char: '\\'   }; }

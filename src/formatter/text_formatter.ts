@@ -86,7 +86,7 @@ class TextFormatter extends Formatter {
 
   formatTitle(title: string | null): string {
     if (title) {
-      return `${expandMeta(title, this.metadata, this.configuration).toUpperCase()}\n`;
+      return `${title.toUpperCase()}\n`;
     }
 
     return '';
@@ -94,7 +94,7 @@ class TextFormatter extends Formatter {
 
   formatSubTitle(subtitle: string | null): string {
     if (subtitle) {
-      return `${expandMeta(subtitle, this.metadata, this.configuration)}\n`;
+      return `${subtitle}\n`;
     }
 
     return '';
