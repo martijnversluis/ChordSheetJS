@@ -14,6 +14,12 @@ interface TagValuePart {
   node: SerializedComposite[number];
 }
 
+const RHYTHM_SYMBOLS = new Set(['/', '|', '-', 'x']);
+
+function chordProperties(chords: string): Pick<SerializedChordLyricsPair, 'chords' | 'isRhythmSymbol'> {
+  return RHYTHM_SYMBOLS.has(chords) ? { chords, isRhythmSymbol: true } : { chords };
+}
+
 // The Tag value getter trims surrounding whitespace, so the expression must do the same to stay
 // consistent. Leading whitespace is already stripped while parsing; this trims a trailing
 // whitespace-only literal.
@@ -27,6 +33,14 @@ function trimExpression(expression: SerializedComposite): SerializedComposite {
 
   const trimmed = last.trimEnd();
   return trimmed === '' ? expression.slice(0, lastIndex) : [...expression.slice(0, lastIndex), trimmed];
+}
+
+export function buildChordLyricsPair(chords: string, lyrics: string): SerializedChordLyricsPair {
+  return {
+    type: 'chordLyricsPair',
+    ...chordProperties(chords),
+    lyrics,
+  };
 }
 
 export function buildTagValue(parts: TagValuePart[]): { value: string, expression?: SerializedComposite } {
@@ -124,9 +138,9 @@ export function breakChordLyricsPairOnSoftLineBreak(
 
   if (chords !== '') {
     if (!first || first.type === 'softLineBreak') {
-      addedLeadingChord = { type: 'chordLyricsPair', chords, lyrics: '' };
+      addedLeadingChord = buildChordLyricsPair(chords, '');
     } else {
-      first = { ...first, chords };
+      first = { ...first, ...chordProperties(chords) };
     }
   }
 

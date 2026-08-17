@@ -224,12 +224,8 @@ class ChordSheetSerializer {
       lyrics,
       annotation,
       eagerChord,
-      isRhythmSymbol || this.isRhythmSymbol(chordString),
+      isRhythmSymbol || false,
     );
-  }
-
-  private isRhythmSymbol(chordString: string): boolean {
-    return chordString === '|' || chordString === '/';
   }
 
   parseTag(astComponent: SerializedTag): Tag {
