@@ -6,40 +6,13 @@ import { Accidental } from '../constants';
 import { deprecate } from '../utilities';
 import { CHORD_LYRICS_PAIR_BRAND, brandPrototype, hasBrand } from './object_brand';
 import {
+  ChordLineTokenClassification,
   ChordLineTokenKind,
   ChordLineTokenVariant,
   chordLineStyleRole,
-  classifyChordLineToken,
   isChordTokenKind,
-  isTokenVariantValid,
+  resolveChordLineTokenClassification,
 } from './chord_line_token';
-
-function resolveClassification(
-  chords: string,
-  annotation: string,
-  isRhythmSymbol: boolean,
-  tokenKind?: ChordLineTokenKind,
-  tokenVariant?: ChordLineTokenVariant,
-) {
-  const inferred = classifyChordLineToken(chords, annotation, isRhythmSymbol);
-  const kind = tokenKind ?? inferred.kind;
-  let variant = kind === inferred.kind ? inferred.variant : null;
-  if (tokenVariant !== undefined) variant = tokenVariant;
-
-  if (!isTokenVariantValid(kind, variant)) {
-    throw new Error(`Invalid ${kind} token variant: ${variant}`);
-  }
-
-  return { kind, variant };
-}
-
-function preservedClassification(
-  tokenContentChanged: boolean,
-  tokenKind: ChordLineTokenKind,
-  tokenVariant: ChordLineTokenVariant,
-): Partial<{ tokenKind: ChordLineTokenKind, tokenVariant: ChordLineTokenVariant }> {
-  return tokenContentChanged ? {} : { tokenKind, tokenVariant };
-}
 
 interface ChordLyricsPairChanges {
   chords?: string,
@@ -47,8 +20,7 @@ interface ChordLyricsPairChanges {
   annotation?: string,
   chordObj?: Chord | null,
   isRhythmSymbol?: boolean,
-  tokenKind?: ChordLineTokenKind,
-  tokenVariant?: ChordLineTokenVariant,
+  classification?: ChordLineTokenClassification,
 }
 
 /**
@@ -68,9 +40,15 @@ class ChordLyricsPair {
   /** @deprecated Use tokenKind instead. */
   isRhythmSymbol: boolean;
 
-  tokenKind: ChordLineTokenKind;
+  readonly classification: ChordLineTokenClassification;
 
-  tokenVariant: ChordLineTokenVariant;
+  get tokenKind(): ChordLineTokenKind {
+    return this.classification.kind;
+  }
+
+  get tokenVariant(): ChordLineTokenVariant {
+    return this.classification.variant;
+  }
 
   parentLine: Line | null = null;
 
@@ -90,15 +68,18 @@ class ChordLyricsPair {
     annotation: string | null = null,
     chordObj: Chord | null = null,
     isRhythmSymbol = false,
-    tokenKind?: ChordLineTokenKind,
-    tokenVariant?: ChordLineTokenVariant,
+    classification?: ChordLineTokenClassification,
   ) {
     this.chords = chords || '';
     this.lyrics = lyrics || '';
     this.annotation = annotation || '';
-    const classification = resolveClassification(this.chords, this.annotation, isRhythmSymbol, tokenKind, tokenVariant);
-    this.tokenKind = classification.kind;
-    this.tokenVariant = classification.variant;
+    const resolvedClassification = resolveChordLineTokenClassification(
+      this.chords,
+      this.annotation,
+      isRhythmSymbol,
+      classification,
+    );
+    this.classification = Object.freeze(resolvedClassification);
     this._chordObj = isChordTokenKind(this.tokenKind) ? chordObj : null;
     this.isRhythmSymbol = this.tokenKind === 'rhythm-symbol';
   }
@@ -139,8 +120,7 @@ class ChordLyricsPair {
       this.annotation,
       chordObj,
       this.isRhythmSymbol,
-      this.tokenKind,
-      this.tokenVariant,
+      this.classification,
     );
   }
 
@@ -150,19 +130,17 @@ class ChordLyricsPair {
 
   set(
     {
-      chords, lyrics, annotation, chordObj, isRhythmSymbol, tokenKind, tokenVariant,
+      chords, lyrics, annotation, chordObj, isRhythmSymbol, classification,
     }: ChordLyricsPairChanges,
   ): ChordLyricsPair {
     const tokenContentChanged = chords !== undefined || annotation !== undefined || isRhythmSymbol !== undefined;
-    const preserved = preservedClassification(tokenContentChanged, this.tokenKind, this.tokenVariant);
     return new ChordLyricsPair(
       chords ?? this.chords,
       lyrics ?? this.lyrics,
       annotation ?? this.annotation,
       chordObj ?? null,
       isRhythmSymbol ?? this.isRhythmSymbol,
-      tokenKind ?? preserved.tokenKind,
-      tokenVariant === undefined ? preserved.tokenVariant : tokenVariant,
+      classification ?? (tokenContentChanged ? undefined : this.classification),
     );
   }
 
