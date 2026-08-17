@@ -27,7 +27,7 @@ import {
 type EachCallback = (_item: any) => string;
 
 export { hasChordContents, isEvaluatable } from './utilities';
-export { renderChord } from './helpers';
+export { renderChord, renderChordLyricsPair } from './helpers';
 
 import { pangoToHtml, stripPangoMarkup } from './pango/pango_helpers';
 export { pangoToHtml, stripPangoMarkup };

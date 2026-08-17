@@ -6,7 +6,7 @@ import Metadata from '../chord_sheet/metadata';
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
-import { renderChord } from '../helpers';
+import { renderChordLyricsPair } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
 import { SoftLineBreak, Ternary } from '../index';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
@@ -219,8 +219,8 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   renderChord(item: ChordLyricsPair, line: Line) {
-    return renderChord(
-      item.chord ?? item.chords,
+    return renderChordLyricsPair(
+      item,
       line,
       this.song,
       {
