@@ -454,8 +454,7 @@ export class ItemProcessor {
       pair.annotation,
       pair.chord,
       pair.isRhythmSymbol,
-      pair.tokenKind,
-      pair.tokenVariant,
+      pair.classification,
     );
   }
 
