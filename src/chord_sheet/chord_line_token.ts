@@ -29,14 +29,6 @@ export type ChordLineStyleRole =
   | 'noChord'
   | 'annotation';
 
-export type ChordLineElementType =
-  | 'chord'
-  | 'rhythm-symbol'
-  | 'barline'
-  | 'instruction'
-  | 'no-chord'
-  | 'annotation';
-
 export interface ChordLineTokenClassification {
   kind: ChordLineTokenKind;
   variant: ChordLineTokenVariant;
@@ -108,18 +100,6 @@ export function isTokenVariantValid(kind: ChordLineTokenKind, variant: ChordLine
 
 export function isFlowSymbolKind(kind: ChordLineTokenKind): boolean {
   return kind === 'rhythm-symbol' || kind === 'barline' || kind === 'instruction';
-}
-
-export function chordLineElementType(kind: ChordLineTokenKind): ChordLineElementType {
-  switch (kind) {
-    case 'rhythm-symbol': return 'rhythm-symbol';
-    case 'barline': return 'barline';
-    case 'instruction': return 'instruction';
-    case 'no-chord': return 'no-chord';
-    case 'annotation': return 'annotation';
-    case 'chord':
-    default: return 'chord';
-  }
 }
 
 export function isRhythmSymbolValue(value: string): boolean {
