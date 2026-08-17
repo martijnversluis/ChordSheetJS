@@ -239,7 +239,10 @@ describe('ItemProcessor', () => {
           chordRendering: { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } },
         },
       });
-      const instruction = new ChordLyricsPair('C7', '', null, null, false, 'instruction');
+      const instruction = new ChordLyricsPair('C7', '', null, null, false, {
+        kind: 'instruction',
+        variant: null,
+      });
       const line = createLine([instruction]);
       const [measured] = processor.measureLineItems(line);
 
