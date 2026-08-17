@@ -6,20 +6,27 @@ export type ChordLineTokenKind =
   | 'no-chord'
   | 'annotation';
 
-export type ChordLineTokenVariant =
+type RhythmSymbolVariant =
   | 'continuation'
   | 'break'
   | 'mute'
+  | null;
+
+type BarlineVariant =
   | 'single'
   | 'double'
   | 'end'
   | 'repeat-start'
   | 'repeat-end'
   | 'repeat-end-start'
+  | null;
+
+export type ChordLineTokenVariant =
+  | RhythmSymbolVariant
+  | BarlineVariant
   | 'repeat-count'
   | 'marker'
-  | 'annotation'
-  | null;
+  | 'annotation';
 
 export type ChordLineStyleRole =
   | 'chord'
@@ -29,12 +36,15 @@ export type ChordLineStyleRole =
   | 'noChord'
   | 'annotation';
 
-export interface ChordLineTokenClassification {
-  kind: ChordLineTokenKind;
-  variant: ChordLineTokenVariant;
-}
+export type ChordLineTokenClassification =
+  | { readonly kind: 'chord'; readonly variant: null }
+  | { readonly kind: 'rhythm-symbol'; readonly variant: RhythmSymbolVariant }
+  | { readonly kind: 'barline'; readonly variant: BarlineVariant }
+  | { readonly kind: 'instruction'; readonly variant: 'repeat-count' | null }
+  | { readonly kind: 'no-chord'; readonly variant: 'marker' | null }
+  | { readonly kind: 'annotation'; readonly variant: 'annotation' | null };
 
-const BARLINE_VARIANTS: Record<string, ChordLineTokenVariant> = {
+const BARLINE_VARIANTS: Record<string, Exclude<BarlineVariant, null>> = {
   '|': 'single',
   '||': 'double',
   '|.': 'end',
@@ -44,7 +54,7 @@ const BARLINE_VARIANTS: Record<string, ChordLineTokenVariant> = {
   ':|:': 'repeat-end-start',
 };
 
-const RHYTHM_VARIANTS: Record<string, ChordLineTokenVariant> = {
+const RHYTHM_VARIANTS: Record<string, Exclude<RhythmSymbolVariant, null>> = {
   '/': 'continuation',
   '-': 'break',
   'x': 'mute',
@@ -94,8 +104,37 @@ export function isChordTokenKind(kind: ChordLineTokenKind): boolean {
   return kind === 'chord';
 }
 
-export function isTokenVariantValid(kind: ChordLineTokenKind, variant: ChordLineTokenVariant): boolean {
-  return VALID_VARIANTS[kind].includes(variant);
+export function isTokenVariantValid(kind: unknown, variant: unknown): boolean {
+  const validVariants = VALID_VARIANTS[kind as ChordLineTokenKind];
+  return !!validVariants && validVariants.includes(variant as ChordLineTokenVariant);
+}
+
+export function isChordLineTokenClassification(value: unknown): value is ChordLineTokenClassification {
+  if (!value || typeof value !== 'object') return false;
+
+  const candidate = value as { kind?: unknown, variant?: unknown };
+  return isTokenVariantValid(candidate.kind, candidate.variant);
+}
+
+export function resolveChordLineTokenClassification(
+  value: string,
+  annotation = '',
+  legacyRhythmSymbol = false,
+  classification?: unknown,
+): ChordLineTokenClassification {
+  const inferred = classifyChordLineToken(value, annotation, legacyRhythmSymbol);
+  if (!classification || typeof classification !== 'object') return inferred;
+
+  const candidate = classification as { kind?: unknown, variant?: unknown };
+  let variant: unknown = null;
+  if (Object.prototype.hasOwnProperty.call(candidate, 'variant')) {
+    variant = candidate.variant;
+  } else if (candidate.kind === inferred.kind) {
+    variant = inferred.variant;
+  }
+  const resolved = { kind: candidate.kind, variant };
+
+  return isChordLineTokenClassification(resolved) ? resolved : inferred;
 }
 
 export function isFlowSymbolKind(kind: ChordLineTokenKind): boolean {

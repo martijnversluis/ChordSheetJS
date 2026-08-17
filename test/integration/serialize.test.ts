@@ -39,7 +39,10 @@ describe('serializing a song', () => {
   });
 
   it('serializes explicit token classifications when they differ from inference', () => {
-    const pair = new ChordLyricsPair('C', '', '', null, false, 'instruction', 'repeat-count');
+    const pair = new ChordLyricsPair('C', '', '', null, false, {
+      kind: 'instruction',
+      variant: 'repeat-count',
+    });
 
     expect(new ChordSheetSerializer().serializeChordLyricsPair(pair)).toMatchObject({
       chords: 'C',
@@ -50,7 +53,10 @@ describe('serializing a song', () => {
 
   it('preserves an explicit null token variant', () => {
     const serializer = new ChordSheetSerializer();
-    const pair = new ChordLyricsPair('/', '', '', null, true, 'rhythm-symbol', null);
+    const pair = new ChordLyricsPair('/', '', '', null, true, {
+      kind: 'rhythm-symbol',
+      variant: null,
+    });
     const serializedPair = serializer.serializeChordLyricsPair(pair);
     const serializedSong: SerializedSong = {
       type: 'chordSheet',
@@ -61,5 +67,25 @@ describe('serializing a song', () => {
 
     expect(serializedPair.tokenVariant).toBeNull();
     expect(restored.tokenVariant).toBeNull();
+  });
+
+  it('infers classification when serialized token metadata is invalid', () => {
+    const serializedSong = {
+      type: 'chordSheet',
+      lines: [{
+        type: 'line',
+        items: [{
+          type: 'chordLyricsPair',
+          chords: '(6x)',
+          lyrics: '',
+          tokenKind: 'chord',
+          tokenVariant: 'repeat-count',
+        }],
+      }],
+    } as SerializedSong;
+
+    const restored = new ChordSheetSerializer().deserialize(serializedSong).lines[0].items[0] as ChordLyricsPair;
+
+    expect(restored.classification).toEqual({ kind: 'instruction', variant: 'repeat-count' });
   });
 });
