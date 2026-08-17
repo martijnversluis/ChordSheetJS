@@ -15,7 +15,11 @@ import Ternary from './chord_sheet/chord_pro/ternary';
 
 import { Notation } from './constants';
 import { warn } from './utilities';
-import { classifyChordLineToken, isChordTokenKind } from './chord_sheet/chord_line_token';
+import {
+  classifyChordLineToken,
+  isChordTokenKind,
+  resolveChordLineTokenClassification,
+} from './chord_sheet/chord_line_token';
 
 import {
   SerializedChordDefinition,
@@ -27,6 +31,14 @@ import {
   SerializedSong,
   SerializedTag, SerializedTernary,
 } from './serialized_types';
+
+function serializedTokenClassification(
+  tokenKind: SerializedChordLyricsPair['tokenKind'],
+  tokenVariant: SerializedChordLyricsPair['tokenVariant'],
+) {
+  if (tokenKind === undefined) return undefined;
+  return { kind: tokenKind, ...(tokenVariant !== undefined && { variant: tokenVariant }) };
+}
 
 const CHORD_LYRICS_PAIR = 'chordLyricsPair';
 const CHORD_SHEET = 'chordSheet';
@@ -221,9 +233,12 @@ class ChordSheetSerializer {
     } = astComponent;
 
     const chordString = chord ? new Chord(chord).toString() : chords;
-    const classification = tokenKind ?
-      { kind: tokenKind, variant: tokenVariant } :
-      classifyChordLineToken(chordString, annotation || '', isRhythmSymbol);
+    const classification = resolveChordLineTokenClassification(
+      chordString,
+      annotation || '',
+      isRhythmSymbol,
+      serializedTokenClassification(tokenKind, tokenVariant),
+    );
     const eagerChord = this.notation && chordString && isChordTokenKind(classification.kind) ?
       Chord.parse(chordString, { notation: this.notation }) :
       null;
@@ -234,8 +249,7 @@ class ChordSheetSerializer {
       annotation,
       eagerChord,
       classification.kind === 'rhythm-symbol',
-      classification.kind,
-      classification.variant,
+      classification,
     );
   }
 

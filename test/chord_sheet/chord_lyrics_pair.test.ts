@@ -1,4 +1,4 @@
-import { ChordLyricsPair } from '../../src';
+import { ChordLineTokenClassification, ChordLyricsPair } from '../../src';
 
 describe('ChordLyricsPair', () => {
   describe('#clone', () => {
@@ -75,21 +75,33 @@ describe('ChordLyricsPair', () => {
       expect(instruction.setLyrics('repeat').tokenKind).toBe('instruction');
     });
 
-    it('clears an inferred variant when overriding only the token kind', () => {
-      const pair = new ChordLyricsPair('/', '', '', null, false, 'instruction');
+    it('accepts an atomic classification override', () => {
+      const pair = new ChordLyricsPair('/', '', '', null, false, {
+        kind: 'instruction',
+        variant: null,
+      });
 
+      expect(pair.tokenKind).toBe('instruction');
       expect(pair.tokenVariant).toBeNull();
     });
 
     it('preserves an explicit null variant when updating a pair', () => {
       const rhythmSymbol = new ChordLyricsPair('/', '');
 
-      expect(rhythmSymbol.set({ tokenVariant: null }).tokenVariant).toBeNull();
+      expect(rhythmSymbol.set({
+        classification: { kind: 'rhythm-symbol', variant: null },
+      }).tokenVariant).toBeNull();
     });
 
-    it('rejects incompatible explicit token kinds and variants', () => {
-      expect(() => new ChordLyricsPair('C', '', '', null, false, 'chord', 'repeat-count'))
-        .toThrow('Invalid chord token variant: repeat-count');
+    it('infers classification when an invalid runtime override is supplied', () => {
+      const invalidClassification = {
+        kind: 'chord',
+        variant: 'repeat-count',
+      } as unknown as ChordLineTokenClassification;
+
+      const pair = new ChordLyricsPair('/', '', '', null, false, invalidClassification);
+
+      expect(pair.classification).toEqual({ kind: 'rhythm-symbol', variant: 'continuation' });
     });
   });
 });
