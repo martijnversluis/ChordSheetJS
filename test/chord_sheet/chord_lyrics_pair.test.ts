@@ -69,6 +69,14 @@ describe('ChordLyricsPair', () => {
       expect(instruction.set({ chords: 'D' }).tokenKind).toBe('chord');
     });
 
+    it('does not carry the derived rhythm flag when chord content changes', () => {
+      const rhythmSymbol = new ChordLyricsPair('/', '');
+      const chord = rhythmSymbol.set({ chords: 'D' });
+
+      expect(chord.classification).toEqual({ kind: 'chord', variant: null });
+      expect(chord.isRhythmSymbol).toBe(false);
+    });
+
     it('preserves token classification when only lyrics change', () => {
       const instruction = new ChordLyricsPair('(6x)', '');
 
