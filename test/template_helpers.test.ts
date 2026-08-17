@@ -1,9 +1,9 @@
 import Font from '../src/chord_sheet/font';
 import FontSize from '../src/chord_sheet/font_size';
 
+import { chordLineClasses, newlinesToBreaks, renderSection } from '../src/template_helpers';
 import { configure, defaultCssClasses } from '../src/formatter/configuration';
 import { createLine, createLiteral, createParagraph } from './util/utilities';
-import { newlinesToBreaks, renderSection } from '../src/template_helpers';
 
 import {
   ABC,
@@ -35,6 +35,17 @@ const {
 } = templateHelpers;
 
 describe('template_helpers', () => {
+  describe('chordLineClasses', () => {
+    it('uses the annotation class for an explicit annotation classification', () => {
+      const pair = new ChordLyricsPair('C7', '', '', null, false, {
+        kind: 'annotation',
+        variant: null,
+      });
+
+      expect(chordLineClasses(pair, defaultCssClasses)).toBe(defaultCssClasses.annotation);
+    });
+  });
+
   describe('isChordLyricsPair', () => {
     it('returns true when the item is a ChordLyricsPair', () => {
       expect(isChordLyricsPair(new ChordLyricsPair())).toBe(true);
