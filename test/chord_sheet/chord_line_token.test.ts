@@ -1,4 +1,6 @@
 import {
+  ChordLineTokenKind,
+  chordLineStyleRole,
   classifyChordLineToken,
   isTokenVariantValid,
   resolveChordLineTokenClassification,
@@ -18,6 +20,13 @@ describe('chord-line token classification', () => {
       expect(isTokenVariantValid(kind, null)).toBe(false);
       expect(resolveChordLineTokenClassification('C', '', false, { kind, variant: null }))
         .toEqual({ kind: 'chord', variant: null });
+    },
+  );
+
+  it.each(['constructor', '__proto__', 'toString'])(
+    'safely falls back for prototype-key style role %s',
+    (kind) => {
+      expect(chordLineStyleRole(kind as ChordLineTokenKind, 'C')).toBe('chord');
     },
   );
 });
