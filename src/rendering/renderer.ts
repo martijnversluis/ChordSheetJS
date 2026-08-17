@@ -1,7 +1,6 @@
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
-import { chordLineElementType } from '../chord_sheet/chord_line_token';
 import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import { LineLayout, MeasuredItem } from '../layout/engine';
 import { isColumnBreak, isComment, renderChord } from '../template_helpers';
@@ -274,7 +273,7 @@ abstract class Renderer {
       content,
       x,
       y,
-      chordLineElementType(item.tokenKind),
+      item.tokenKind,
       item.styleRole,
       item.tokenVariant || undefined,
     );
