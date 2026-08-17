@@ -60,14 +60,14 @@ const RHYTHM_VARIANTS = new Map<string, Exclude<RhythmSymbolVariant, null>>([
   ['x', 'mute'],
 ]);
 
-const STYLE_ROLES: Record<ChordLineTokenKind, ChordLineStyleRole> = {
-  'chord': 'chord',
-  'rhythm-symbol': 'rhythmSymbol',
-  'barline': 'barline',
-  'instruction': 'instruction',
-  'no-chord': 'noChord',
-  'annotation': 'annotation',
-};
+const STYLE_ROLES = new Map<ChordLineTokenKind, ChordLineStyleRole>([
+  ['chord', 'chord'],
+  ['rhythm-symbol', 'rhythmSymbol'],
+  ['barline', 'barline'],
+  ['instruction', 'instruction'],
+  ['no-chord', 'noChord'],
+  ['annotation', 'annotation'],
+]);
 
 const NO_CHORD = /^(?:N\.C\.?|N\/C|NC)$/i;
 const REPEAT_COUNT = /^\(\d+x\)$/i;
@@ -105,7 +105,7 @@ export function chordLineStyleRole(
   const resolvedVariant = variant === undefined ? classifyChordLineToken(value).variant : variant;
   if (kind === 'rhythm-symbol' && resolvedVariant === 'mute') return 'noChord';
   if (kind === 'barline' && value === '|') return 'rhythmSymbol';
-  return STYLE_ROLES[kind] || 'chord';
+  return STYLE_ROLES.get(kind) || 'chord';
 }
 
 export function isChordTokenKind(kind: ChordLineTokenKind): boolean {
