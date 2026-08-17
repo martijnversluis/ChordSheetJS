@@ -144,6 +144,23 @@ describe('chord shaper', () => {
     expect(runs?.[1].font.name).toBe('ChordSheetSymbols');
   });
 
+  it('uses the Node warning channel once for each missing glyph and font', () => {
+    const emitWarning = jest.spyOn(process, 'emitWarning').mockImplementation(() => {});
+    const options: Partial<ChordRunOptions> = {
+      chordFont: { ...chordFont, name: 'MissingGlyphWarningTest' },
+      glyphChecker: { hasGlyph: (codePoint) => codePoint < 128 },
+      unicodeFallback,
+      useUnicodeModifiers: true,
+    };
+
+    shape('F♯', options);
+    shape('F♯', options);
+
+    expect(emitWarning).toHaveBeenCalledTimes(1);
+    expect(emitWarning).toHaveBeenCalledWith('Missing glyph ♯ (U+266F) in configured fonts');
+    emitWarning.mockRestore();
+  });
+
   it.each(['bold', '600', '700'])('uses the bold fallback for string weight %s', (weight) => {
     const runs = shape('F♯', {
       chordFont: { ...chordFont, style: 'normal', weight },
