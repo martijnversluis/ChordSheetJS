@@ -134,12 +134,13 @@ class ChordLyricsPair {
     }: ChordLyricsPairChanges,
   ): ChordLyricsPair {
     const tokenContentChanged = chords !== undefined || annotation !== undefined || isRhythmSymbol !== undefined;
+    const nextIsRhythmSymbol = isRhythmSymbol ?? (chords === undefined ? this.isRhythmSymbol : false);
     return new ChordLyricsPair(
       chords ?? this.chords,
       lyrics ?? this.lyrics,
       annotation ?? this.annotation,
       chordObj ?? null,
-      isRhythmSymbol ?? this.isRhythmSymbol,
+      nextIsRhythmSymbol,
       classification ?? (tokenContentChanged ? undefined : this.classification),
     );
   }
