@@ -51,6 +51,7 @@ export function chordLineClasses(item: ChordLyricsPair, cssClasses: HtmlTemplate
     case 'barline': return tokenClasses(cssClasses.barline, item.tokenVariant);
     case 'instruction': return tokenClasses(cssClasses.instruction, item.tokenVariant);
     case 'no-chord': return tokenClasses(cssClasses.noChord, item.tokenVariant);
+    case 'annotation': return tokenClasses(cssClasses.annotation, item.tokenVariant);
     case 'chord':
     default: return cssClasses.chord;
   }
