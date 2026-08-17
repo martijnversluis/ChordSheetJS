@@ -1,4 +1,5 @@
 import Chord from '../chord';
+import { warn } from '../utilities';
 
 import {
   ChordPartStyle,
@@ -133,8 +134,7 @@ function warnMissingGlyph(char: string, font: FontConfiguration, config: Unicode
   const key = `${font.name}:${char}`;
   if (warnedMissingGlyphs.has(key)) return;
   warnedMissingGlyphs.add(key);
-  // eslint-disable-next-line no-console
-  console.warn(`Missing glyph ${char} (U+${char.codePointAt(0)?.toString(16).toUpperCase()}) in configured fonts`);
+  warn(`Missing glyph ${char} (U+${char.codePointAt(0)?.toString(16).toUpperCase()}) in configured fonts`);
 }
 
 function selectFont(
