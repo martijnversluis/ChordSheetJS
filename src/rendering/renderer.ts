@@ -1,6 +1,7 @@
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
 import Song from '../chord_sheet/song';
+import { isChordTokenKind } from '../chord_sheet/chord_line_token';
 import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import { LineLayout, MeasuredItem } from '../layout/engine';
 import { isColumnBreak, isComment, renderChord } from '../template_helpers';
@@ -252,7 +253,7 @@ abstract class Renderer {
     let { chords } = item;
     const { lyrics } = item;
 
-    if (chords) {
+    if (chords && isChordTokenKind(item.tokenKind)) {
       chords = this.processChords(chords, line);
     }
 

@@ -1,7 +1,7 @@
 import { HtmlTemplateArgs } from '../html_formatter';
 import { defaultPangoRenderer } from '../../pango/pango_helpers';
 import { isPresent } from '../../utilities';
-import { renderChord } from '../../helpers';
+import { renderChordLyricsPair } from '../../helpers';
 
 import {
   chordLineClasses,
@@ -71,8 +71,8 @@ export default (
                        const cls = chordLineClasses(item, c);
                        return `
                         <div class="${ cls }"${ fontStyleTag(line.chordFont) }>
-                          ${ renderChord(
-                            item.chord ?? item.chords,
+                          ${ renderChordLyricsPair(
+                            item,
                             line,
                             song,
                             {
