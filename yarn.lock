@@ -3549,6 +3549,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xmldom/xmldom@npm:^0.8.3":
+  version: 0.8.15
+  resolution: "@xmldom/xmldom@npm:0.8.15"
+  checksum: 10c0/59d09b85824b684fba5a0a224d5b43abea1a0d745e8d8b8136a7013e996eb6da122fdbb3deb32ed1621923a10e1937b1f7917cea43481d9d5b976e8c1ff836c1
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^4.0.0":
   version: 4.0.0
   resolution: "abbrev@npm:4.0.0"
@@ -4045,6 +4052,7 @@ __metadata:
     eslint: "npm:^10.0.1"
     eslint-config-airbnb: "npm:^19.0.4"
     eslint-plugin-jest: "npm:^29.15.0"
+    fonteditor-core: "npm:2.6.3"
     globals: "npm:^17.0.0"
     jest: "npm:^30.0.0"
     js-levenshtein: "npm:^1.1.6"
@@ -5078,6 +5086,15 @@ __metadata:
   version: 3.4.4
   resolution: "flatted@npm:3.4.4"
   checksum: 10c0/a3a52a88ea5a4c333e5a1f097dcd87a037fa31c236a77cf46222c2aa4036ef895ab9bc76138a66d9dc22bdb3652128f9598cd26e7439561bf19f67276e2bc37e
+  languageName: node
+  linkType: hard
+
+"fonteditor-core@npm:2.6.3":
+  version: 2.6.3
+  resolution: "fonteditor-core@npm:2.6.3"
+  dependencies:
+    "@xmldom/xmldom": "npm:^0.8.3"
+  checksum: 10c0/52b97347e88e0c3bae98ca7865d0e4747638611c0d17ee72a1f446f7aad10c5ad93be469077bf91ef7fb121098d6ad78e05f9028513dddeee4f8b351ee268057
   languageName: node
   linkType: hard
 
