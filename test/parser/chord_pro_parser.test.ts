@@ -19,14 +19,16 @@ import {
 } from '../../src';
 
 describe('ChordProParser', () => {
-  it('marks chord-only slash and bar tokens as rhythm symbols', () => {
-    const song = new ChordProParser().parse('[E][/][|][A/E]');
+  it('marks chord-only rhythm tokens as rhythm symbols', () => {
+    const song = new ChordProParser().parse('[E][/][|][-][x][A/E]');
     const pairs = song.lines[0].items as ChordLyricsPair[];
 
     expect(pairs.map((pair) => [pair.chords, pair.isRhythmSymbol])).toEqual([
       ['E', false],
       ['/', true],
       ['|', true],
+      ['-', true],
+      ['x', true],
       ['A/E', false],
     ]);
   });

@@ -62,6 +62,17 @@ describe('breakChordLyricsPairOnSoftLineBreak', () => {
     expect(items[0]).toEqual({ type: 'chordLyricsPair', chords: 'D/A', lyrics: '' });
   });
 
+  it.each(['/', '|', '-', 'x'])('marks %s as a rhythm symbol', (symbol) => {
+    const items = breakChordLyricsPairOnSoftLineBreak(symbol, '');
+
+    expect(items[0]).toEqual({
+      type: 'chordLyricsPair',
+      chords: symbol,
+      lyrics: '',
+      isRhythmSymbol: true,
+    });
+  });
+
   it('returns an empty array when there are no chords or lyrics', () => {
     const chords = '';
     const lyrics = '';
