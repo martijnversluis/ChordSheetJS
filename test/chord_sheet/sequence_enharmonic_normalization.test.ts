@@ -68,6 +68,12 @@ describe('sequence-aware enharmonic normalization', () => {
     expect(chordsIn(source.normalizeChords())).toEqual(['D#dim7', 'Em']);
   });
 
+  it('continues the leading-tone rule across semantic barline pairs', () => {
+    const source = new ChordProParser().parse('{key: F}\n[Dbdim7][|][Dm]');
+
+    expect(chordsIn(source.normalizeChords())).toEqual(['C#dim7', '|', 'Dm']);
+  });
+
   it('applies the same rule to chord tokens in grid sections', () => {
     const source = new ChordProParser().parse(
       '{key: F}\n{start_of_grid}\n|| Dbdim7 . | Dm . |\n{end_of_grid}',
