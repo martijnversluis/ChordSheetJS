@@ -5,6 +5,7 @@ import { Measurer } from '../measurement';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
+import { isChordTokenKind } from '../../chord_sheet/chord_line_token';
 import { LayoutConfig, MeasuredItem } from './types';
 
 import {
@@ -135,7 +136,7 @@ export class ItemProcessor {
     const { chords, lyrics } = this.getAdjustedChordsAndLyrics(splitItem, lyricsOnly);
     if (lyricsOnly && lyrics === '') return { item: null, width: 0 };
 
-    const renderedChords = this.renderChordText(chords, line);
+    const renderedChords = isChordTokenKind(splitItem.tokenKind) ? this.renderChordText(chords, line) : chords;
     const chordFont = this.config.fonts[splitItem.styleRole] || this.config.fonts.chord;
     const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly, chordFont);
 
