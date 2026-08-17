@@ -9,7 +9,7 @@ import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
 
 import { getTextDefaultConfig } from './configuration/default_config_manager';
-import { renderChord } from '../helpers';
+import { renderChordLyricsPair } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
 import {
   evaluate, expandMeta, hasTextContents, renderSection,
@@ -193,8 +193,8 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
   }
 
   private renderChords(chordLyricsPair: ChordLyricsPair, line: Line) {
-    const chords = renderChord(
-      chordLyricsPair.chord ?? chordLyricsPair.chords,
+    const chords = renderChordLyricsPair(
+      chordLyricsPair,
       line,
       this.song,
       {

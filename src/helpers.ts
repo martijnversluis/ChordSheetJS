@@ -1,4 +1,5 @@
 import type Chord from './chord';
+import type ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import ChordRenderer from './formatter/chord_renderer';
 import FormattingContext from './formatter/formatting_context';
 import Key from './key';
@@ -73,6 +74,16 @@ export function renderChord(
     transposeKey: line.transposeKey,
     useUnicodeModifier,
   }).render(chord);
+}
+
+export function renderChordLyricsPair(
+  pair: ChordLyricsPair,
+  line: Line,
+  song: Song,
+  options: RenderChordOptions = {},
+): string {
+  if (!isChordTokenKind(pair.tokenKind)) return pair.chords;
+  return renderChord(pair.chord ?? pair.chords, line, song, options);
 }
 
 /**
