@@ -44,33 +44,33 @@ export type ChordLineTokenClassification =
   | { readonly kind: 'no-chord'; readonly variant: 'marker' | null }
   | { readonly kind: 'annotation'; readonly variant: 'annotation' | null };
 
-const BARLINE_VARIANTS: Record<string, Exclude<BarlineVariant, null>> = {
-  '|': 'single',
-  '||': 'double',
-  '|.': 'end',
-  '|:': 'repeat-start',
-  ':|': 'repeat-end',
-  ':||': 'repeat-end',
-  ':|:': 'repeat-end-start',
-};
+const BARLINE_VARIANTS = new Map<string, Exclude<BarlineVariant, null>>([
+  ['|', 'single'],
+  ['||', 'double'],
+  ['|.', 'end'],
+  ['|:', 'repeat-start'],
+  [':|', 'repeat-end'],
+  [':||', 'repeat-end'],
+  [':|:', 'repeat-end-start'],
+]);
 
-const RHYTHM_VARIANTS: Record<string, Exclude<RhythmSymbolVariant, null>> = {
-  '/': 'continuation',
-  '-': 'break',
-  'x': 'mute',
-};
+const RHYTHM_VARIANTS = new Map<string, Exclude<RhythmSymbolVariant, null>>([
+  ['/', 'continuation'],
+  ['-', 'break'],
+  ['x', 'mute'],
+]);
 
 const NO_CHORD = /^(?:N\.C\.?|N\/C|NC)$/i;
 const REPEAT_COUNT = /^\(\d+x\)$/i;
 
-const VALID_VARIANTS: Record<ChordLineTokenKind, ChordLineTokenVariant[]> = {
-  'chord': [null],
-  'rhythm-symbol': ['continuation', 'break', 'mute', null],
-  'barline': ['single', 'double', 'end', 'repeat-start', 'repeat-end', 'repeat-end-start', null],
-  'instruction': ['repeat-count', null],
-  'no-chord': ['marker', null],
-  'annotation': ['annotation', null],
-};
+const VALID_VARIANTS = new Map<ChordLineTokenKind, ChordLineTokenVariant[]>([
+  ['chord', [null]],
+  ['rhythm-symbol', ['continuation', 'break', 'mute', null]],
+  ['barline', ['single', 'double', 'end', 'repeat-start', 'repeat-end', 'repeat-end-start', null]],
+  ['instruction', ['repeat-count', null]],
+  ['no-chord', ['marker', null]],
+  ['annotation', ['annotation', null]],
+]);
 
 export function classifyChordLineToken(
   value: string,
@@ -80,8 +80,10 @@ export function classifyChordLineToken(
   if (annotation) return { kind: 'annotation', variant: 'annotation' };
   if (NO_CHORD.test(value)) return { kind: 'no-chord', variant: 'marker' };
   if (REPEAT_COUNT.test(value)) return { kind: 'instruction', variant: 'repeat-count' };
-  if (BARLINE_VARIANTS[value]) return { kind: 'barline', variant: BARLINE_VARIANTS[value] };
-  if (RHYTHM_VARIANTS[value]) return { kind: 'rhythm-symbol', variant: RHYTHM_VARIANTS[value] };
+  const barlineVariant = BARLINE_VARIANTS.get(value);
+  if (barlineVariant) return { kind: 'barline', variant: barlineVariant };
+  const rhythmVariant = RHYTHM_VARIANTS.get(value);
+  if (rhythmVariant) return { kind: 'rhythm-symbol', variant: rhythmVariant };
   if (legacyRhythmSymbol) return { kind: 'rhythm-symbol', variant: null };
   return { kind: 'chord', variant: null };
 }
@@ -105,7 +107,7 @@ export function isChordTokenKind(kind: ChordLineTokenKind): boolean {
 }
 
 export function isTokenVariantValid(kind: unknown, variant: unknown): boolean {
-  const validVariants = VALID_VARIANTS[kind as ChordLineTokenKind];
+  const validVariants = VALID_VARIANTS.get(kind as ChordLineTokenKind);
   return !!validVariants && validVariants.includes(variant as ChordLineTokenVariant);
 }
 
