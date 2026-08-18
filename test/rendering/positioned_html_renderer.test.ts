@@ -577,6 +577,35 @@ describe('PositionedHtmlRenderer', () => {
       ]);
     });
 
+    it('does not process an explicitly classified non-chord token as a chord', () => {
+      const { renderer } = createRenderer();
+      renderer.initialize();
+      const processChords = jest.spyOn(renderer as any, 'processChords').mockReturnValue('E#');
+      const pair = new ChordLyricsPair(
+        'F',
+        '',
+        '',
+        null,
+        false,
+        { kind: 'instruction', variant: null },
+      );
+      const line = new Line();
+      line.addItem(pair);
+
+      (renderer as any).renderLineItems([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: [{ item: pair, width: 50, chordHeight: 10 }],
+        line,
+      }]);
+
+      const { elements } = renderer as any;
+      expect(elements).toEqual(expect.arrayContaining([
+        expect.objectContaining({ content: 'F', type: 'instruction' }),
+      ]));
+      expect(processChords).not.toHaveBeenCalled();
+    });
+
     it('delegates measurements and calculates chord baseline', () => {
       const { renderer, doc } = createRenderer();
       const font = renderer.getFontConfiguration('text');

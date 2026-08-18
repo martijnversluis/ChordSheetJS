@@ -7,6 +7,7 @@ import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
 import { getCapos } from '../../helpers';
+import { isChordTokenKind } from '../../chord_sheet/chord_line_token';
 import { isComment } from '../../template_helpers';
 import { LineLayout, MeasuredItem } from '../../layout/engine';
 
@@ -378,7 +379,7 @@ class PositionedHtmlRenderer extends Renderer {
   ): void {
     let { chords } = item;
     const { lyrics } = item;
-    if (chords) chords = this.processChords(chords, line);
+    if (chords && isChordTokenKind(item.tokenKind)) chords = this.processChords(chords, line);
 
     if (!this.isLyricsOnly() && chords) {
       const chordBaseline = this.calculateChordBaseline(chordsYOffset, items, chords);
