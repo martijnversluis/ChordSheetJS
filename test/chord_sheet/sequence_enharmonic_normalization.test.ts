@@ -84,6 +84,20 @@ describe('sequence-aware enharmonic normalization', () => {
     expect(formatted).toContain('|| C#dim7 . | Dm . |');
   });
 
+  it.each(['N.C.', 'NC', 'N/C'])(
+    'does not carry the sequence rule across the %s no-chord marker in a grid',
+    (marker) => {
+      const source = new ChordProParser().parse(
+        `{key: G}\n{start_of_grid}\n|| Ebdim7 ${marker} Em ||\n{end_of_grid}`,
+      );
+
+      const formatted = new ChordProFormatter({ normalizeChords: true }).format(source);
+
+      expect(formatted).toContain(`|| Ebdim7 ${marker} Em ||`);
+      expect(formatted).not.toContain('D#dim7');
+    },
+  );
+
   it('preserves grid leading-tone spelling while changing the progression from F to G', () => {
     const source = new ChordProParser().parse(
       '{key: F}\n{start_of_grid}\n|| C#dim7 . | Dm . |\n{end_of_grid}',
