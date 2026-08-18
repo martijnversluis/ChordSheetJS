@@ -5,7 +5,7 @@ import Key from '../key';
 import Literal from './chord_pro/literal';
 import type Song from './song';
 import Tag from './tag';
-import { isFlowSymbolKind } from './chord_line_token';
+import { classifyChordLineToken, isFlowSymbolKind } from './chord_line_token';
 
 import {
   ABC, LILYPOND, SVG, TEXTBLOCK,
@@ -115,6 +115,8 @@ class SongSequenceEnharmonicNormalizer {
       if (chord) {
         this.addChord(chord, context, { literal, tokenIndex });
         tokenIndex += 1;
+      } else if (classifyChordLineToken(token).kind === 'no-chord') {
+        this.segment += 1;
       }
       return _match;
     });
