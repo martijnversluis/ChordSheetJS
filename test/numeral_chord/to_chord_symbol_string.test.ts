@@ -12,7 +12,7 @@ const majorExamples = {
     'IV': 'Db',
     'bV': 'D',
     'V': 'Eb',
-    'bVI': 'E',
+    'bVI': 'Fb',
     'VI': 'F',
     'VII': 'G',
   },
@@ -45,7 +45,7 @@ const majorExamples = {
     'bIII': 'Db',
     'III': 'D',
     'IV': 'Eb',
-    'bV': 'E',
+    'bV': 'Fb',
     'V': 'F',
     'bVI': 'Gb',
     'VI': 'G',
@@ -104,21 +104,21 @@ const majorExamples = {
     'bII': 'D',
     'II': 'D#',
     'bIII': 'E',
-    'III': 'F',
+    'III': 'E#',
     'IV': 'F#',
     'bV': 'G',
     'V': 'G#',
     'bVI': 'A',
     'VI': 'A#',
     'bVII': 'B',
-    'VII': 'C',
+    'VII': 'B#',
   },
 
   'Db': {
     'I': 'Db',
     'bII': 'D',
     'II': 'Eb',
-    'bIII': 'E',
+    'bIII': 'Fb',
     'III': 'F',
     'III/#V': 'F/A',
     'IV': 'Gb',
@@ -126,7 +126,7 @@ const majorExamples = {
     'V': 'Ab',
     'bVI': 'A',
     'VI': 'Bb',
-    'bVII': 'B',
+    'bVII': 'Cb',
     'VII': 'C',
   },
 
@@ -147,14 +147,14 @@ const majorExamples = {
 
   'Eb': {
     'I': 'Eb',
-    'bII': 'E',
+    'bII': 'Fb',
     'II': 'F',
     'bIII': 'Gb',
     'III': 'G',
     'IV': 'Ab',
     'bV': 'A',
     'V': 'Bb',
-    'bVI': 'B',
+    'bVI': 'Cb',
     'VI': 'C',
     'bVII': 'Db',
     'VII': 'D',
@@ -182,7 +182,7 @@ const majorExamples = {
     'bIII': 'Ab',
     'III': 'A',
     'IV': 'Bb',
-    'bV': 'B',
+    'bV': 'Cb',
     'V': 'C',
     'bVI': 'Db',
     'VI': 'D',
@@ -202,7 +202,7 @@ const majorExamples = {
     'bVI': 'D',
     'VI': 'D#',
     'bVII': 'E',
-    'VII': 'F',
+    'VII': 'E#',
   },
 
   'Gb': {
@@ -238,15 +238,15 @@ const majorExamples = {
   'G#': {
     'I': 'G#',
     'bII': 'A',
-    'II': 'Bb',
+    'II': 'A#',
     'bIII': 'B',
-    'III': 'C',
+    'III': 'B#',
     'IV': 'C#',
     'bV': 'D',
-    'V': 'Eb',
+    'V': 'D#',
     'bVI': 'E',
-    'VI': 'F',
-    'bVII': 'Gb',
+    'VI': 'E#',
+    'bVII': 'F#',
     'VII': 'G',
   },
 };
@@ -257,12 +257,12 @@ const minorExamples = {
     'bii': 'Dbm',
     'ii': 'Dm',
     'iii': 'Ebm',
-    'biv': 'Em',
+    'biv': 'Fbm',
     'iv': 'Fm',
     'bv': 'Gbm',
-    'v': 'Abm',
+    'v': 'G#m',
     'vi': 'Am',
-    '#vi': 'Bbm',
+    '#vi': 'A#m',
     'bvii': 'Bbm',
     'vii': 'Bbm'
     ,
@@ -272,15 +272,15 @@ const minorExamples = {
     'i': 'Dbm',
     'bii': 'Dm',
     'ii': 'Ebm',
-    'iii': 'Em',
+    'iii': 'Fbm',
     'biv': 'Fm',
     'iv': 'Gbm',
     'bv': 'Gm',
     'v': 'Am',
     'vi': 'Bbm',
     '#vi': 'Bm',
-    'bvii': 'Bm',
-    'vii': 'Bm',
+    'bvii': 'Cbm',
+    'vii': 'Cbm',
 
   },
 
@@ -289,30 +289,30 @@ const minorExamples = {
     'bii': 'Ebm',
     'ii': 'Em',
     'iii': 'Fm',
-    'biv': 'F#m',
+    'biv': 'Gbm',
     'iv': 'Gm',
     'bv': 'Abm',
-    'v': 'Bbm',
+    'v': 'A#m',
     'vi': 'Bm',
-    '#vi': 'Cm',
+    '#vi': 'B#m',
     'bvii': 'Cm',
     'vii': 'Cm',
 
   },
 
   'Cm': {
-    'i': 'D#m',
-    'bii': 'Em',
+    'i': 'Ebm',
+    'bii': 'Fbm',
     'ii': 'Fm',
-    'iii': 'F#m',
+    'iii': 'Gbm',
     'biv': 'Gm',
-    'iv': 'G#m',
+    'iv': 'Abm',
     'bv': 'Am',
     'v': 'Bm',
     'vi': 'Cm',
     '#vi': 'C#m',
-    'bvii': 'C#m',
-    'vii': 'C#m'
+    'bvii': 'Dbm',
+    'vii': 'Dbm'
     ,
   },
 
@@ -321,10 +321,10 @@ const minorExamples = {
     'bii': 'Fm',
     'ii': 'F#m',
     'iii': 'Gm',
-    'biv': 'G#m',
+    'biv': 'Abm',
     'iv': 'Am',
     'bv': 'Bbm',
-    'v': 'Cm',
+    'v': 'B#m',
     'vi': 'C#m',
     '#vi': 'Dm',
     'bvii': 'Dm',
@@ -339,10 +339,10 @@ const minorExamples = {
     'iii': 'Abm',
     'biv': 'Am',
     'iv': 'Bbm',
-    'bv': 'Bm',
+    'bv': 'Cbm',
     'v': 'C#m',
     'vi': 'Dm',
-    '#vi': 'Ebm',
+    '#vi': 'D#m',
     'bvii': 'Ebm',
     'vii': 'Ebm'
     ,
@@ -358,7 +358,7 @@ const minorExamples = {
     'bv': 'Cm',
     'v': 'Dm',
     'vi': 'Ebm',
-    '#vi': 'Fbm',
+    '#vi': 'Em',
     'bvii': 'Fbm',
     'vii': 'Fbm'
     ,
@@ -369,30 +369,30 @@ const minorExamples = {
     'bii': 'Abm',
     'ii': 'Am',
     'iii': 'Bbm',
-    'biv': 'Bm',
+    'biv': 'Cbm',
     'iv': 'Cm',
     'bv': 'Dbm',
-    'v': 'Ebm',
+    'v': 'D#m',
     'vi': 'Em',
-    '#vi': 'Fm',
+    '#vi': 'E#m',
     'bvii': 'Fm',
     'vii': 'Fm',
 
   },
 
   'Fm': {
-    'i': 'G#m',
+    'i': 'Abm',
     'bii': 'Am',
     'ii': 'Bbm',
-    'iii': 'Bm',
+    'iii': 'Cbm',
     'biv': 'Cm',
-    'iv': 'C#m',
+    'iv': 'Dbm',
     'bv': 'Dm',
     'v': 'Em',
     'vi': 'Fm',
     '#vi': 'F#m',
-    'bvii': 'F#m',
-    'vii': 'F#m'
+    'bvii': 'Gbm',
+    'vii': 'Gbm'
     ,
   },
 
@@ -404,7 +404,7 @@ const minorExamples = {
     'biv': 'Dbm',
     'iv': 'Dm',
     'bv': 'Ebm',
-    'v': 'Fm',
+    'v': 'E#m',
     'vi': 'F#m',
     '#vi': 'Gm',
     'bvii': 'Gm',
@@ -413,18 +413,18 @@ const minorExamples = {
   },
 
   'Gm': {
-    'i': 'A#m',
-    'bii': 'Bm',
+    'i': 'Bbm',
+    'bii': 'Cbm',
     'ii': 'Cm',
-    'iii': 'C#m',
+    'iii': 'Dbm',
     'biv': 'Dm',
-    'iv': 'D#m',
-    'bv': 'Em',
+    'iv': 'Ebm',
+    'bv': 'Fbm',
     'v': 'F#m',
     'vi': 'Gm',
     '#vi': 'G#m',
-    'bvii': 'G#m',
-    'vii': 'G#m'
+    'bvii': 'Abm',
+    'vii': 'Abm'
     ,
   },
 
@@ -433,7 +433,7 @@ const minorExamples = {
     'bii': 'Cm',
     'ii': 'C#m',
     'iii': 'Dm',
-    'biv': 'D#m',
+    'biv': 'Ebm',
     'iv': 'Em',
     'bv': 'Fm',
     'v': 'Gm',
@@ -445,6 +445,15 @@ const minorExamples = {
 };
 
 describe('numeral chords', () => {
+  it.each([
+    ['bV', '#', 'F#'],
+    ['#IV', 'b', 'Gb'],
+  ])('keeps explicit %s converted to %s in C', (input, accidental, expected) => {
+    const chord = Chord.parseOrFail(input).useAccidental(accidental as '#' | 'b');
+
+    expect(chord.toChordSymbolString('C')).toEqual(expected);
+  });
+
   describe('toChordSymbol', () => {
     describe('major Keys', () => {
       Object.entries(majorExamples).forEach(([key, conversions]) => {
