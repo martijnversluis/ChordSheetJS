@@ -59,6 +59,25 @@ describe('Metadata', () => {
       expect(metadata.get('author.-2')).toEqual('John');
     });
 
+    it('evaluates meta expressions in a value', () => {
+      const metadata = new Metadata({ software: 'ChordSheetJS', version: '15.6.1' });
+      metadata.add('title', 'Bug in %{software} version %{version}');
+      expect(metadata.get('title')).toEqual('Bug in ChordSheetJS version 15.6.1');
+    });
+
+    it('keeps the raw value untouched while evaluating on read', () => {
+      const metadata = new Metadata({ artist: 'X' });
+      metadata.add('title', 'By %{artist}');
+      expect(metadata.get('title')).toEqual('By X');
+      expect(metadata.metadata.title).toEqual('By %{artist}');
+    });
+
+    it('does not loop on a self-referencing value', () => {
+      const metadata = new Metadata();
+      metadata.add('title', '%{title}');
+      expect(metadata.get('title')).toEqual('%{title}');
+    });
+
     describe('when a single value does not exist', () => {
       it('returns undefined', () => {
         const metadata = new Metadata({});

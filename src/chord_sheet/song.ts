@@ -612,7 +612,7 @@ Or set the song key before changing key:
 
   getMetadata(configuration?: Configuration): Metadata {
     const metadata = new Metadata();
-
+    metadata.separator = configuration?.metadata?.separator ?? metadata.separator;
     const providers = configuration ? configurationProviders(configuration) : staticProviders();
     providers.forEach((provider, key) => metadata.setProvider(key, provider));
 
@@ -623,23 +623,17 @@ Or set the song key before changing key:
     metadata.setProvider('key_from', () => metadata.getSingle('key'));
 
     this.foreachItem((item: Item) => {
-      if (!(item instanceof Tag)) {
+      if (!(item instanceof Tag) || !item.isMetaTag()) {
         return;
       }
 
-      const tag = item as Tag;
-
-      if (!tag.isMetaTag()) {
-        return;
-      }
-
-      const { selector, isNegated } = tag;
+      const { selector, isNegated } = item;
 
       if (selector && configuration && !testSelector({ selector, isNegated }, { metadata, configuration })) {
         return;
       }
 
-      metadata.add(item.name, item.value);
+      metadata.add(item.name, item.value, item.expression);
     });
 
     return metadata;

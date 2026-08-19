@@ -39,6 +39,7 @@ export type SerializedTag = SerializedTraceInfo & {
   type: 'tag',
   name: string,
   value: string,
+  expression?: SerializedComposite,
   chordDefinition?: SerializedChordDefinition,
   attributes?: Record<string, string>,
   selector?: string | null,

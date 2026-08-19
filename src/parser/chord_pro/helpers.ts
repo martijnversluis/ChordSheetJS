@@ -1,5 +1,6 @@
 import {
   SerializedChordLyricsPair,
+  SerializedComposite,
   SerializedItem,
   SerializedLine,
   SerializedSoftLineBreak,
@@ -7,6 +8,37 @@ import {
 } from '../../serialized_types';
 
 import { FileRange } from './peg_parser';
+
+interface TagValuePart {
+  source: string;
+  node: SerializedComposite[number];
+}
+
+// The Tag value getter trims surrounding whitespace, so the expression must do the same to stay
+// consistent. Leading whitespace is already stripped while parsing; this trims a trailing
+// whitespace-only literal.
+function trimExpression(expression: SerializedComposite): SerializedComposite {
+  const lastIndex = expression.length - 1;
+  const last = expression[lastIndex];
+
+  if (typeof last !== 'string') {
+    return expression;
+  }
+
+  const trimmed = last.trimEnd();
+  return trimmed === '' ? expression.slice(0, lastIndex) : [...expression.slice(0, lastIndex), trimmed];
+}
+
+export function buildTagValue(parts: TagValuePart[]): { value: string, expression?: SerializedComposite } {
+  const value = parts.map((part) => part.source).join('');
+  const hasMetaExpression = parts.some((part) => typeof part.node !== 'string');
+
+  if (!hasMetaExpression) {
+    return { value };
+  }
+
+  return { value, expression: trimExpression(parts.map((part) => part.node)) };
+}
 
 function splitSectionContent(content: string): string[] {
   return content
@@ -31,7 +63,7 @@ export function buildSection(startTag: SerializedTag, endTag: SerializedTag, con
 
 export function buildTag(
   name: string,
-  value: Partial<{ value: string | null, attributes: Record<string, string>}> | null,
+  value: Partial<{ value: string | null, expression: SerializedComposite, attributes: Record<string, string>}> | null,
   selector: { value: string | null, isNegated: boolean } | null,
   location: FileRange,
 ): SerializedTag {
@@ -40,6 +72,7 @@ export function buildTag(
     name,
     location: location.start,
     value: value?.value || '',
+    expression: value?.expression,
     attributes: value?.attributes || {},
     selector: selector?.value,
     isNegated: selector?.isNegated,

@@ -128,6 +128,19 @@ MetaVariableName
 MetaExpression
   = ($(Char+) / MetaTernary)+
 
+// Start rule used to expand `%{...}` meta expressions inside directive values at render time.
+// Unlike MetaExpression, the literal parts are lenient: they may contain any character that does
+// not start a new `%{...}` expression, so free text like titles is preserved verbatim.
+MetaValue
+  = parts:(MetaTernary / MetaValueLiteral)* {
+      return parts;
+    }
+
+MetaValueLiteral
+  = chars:$((!MetaTernary [^\r\n])+) {
+      return chars;
+    }
+
 LyricsChar
   = WordChar
   / "%" !"{" { return { type: 'char', char: '%'    }; }
@@ -199,7 +212,7 @@ TagColonWithValue
 
 TagSpaceWithValue
   = __ value:TagSimpleValue {
-      return { value: value };
+      return value;
     }
 
 TagValue
@@ -207,7 +220,7 @@ TagValue
       return { attributes: attributes };
     }
   / value:TagSimpleValue {
-      return { value: value };
+      return value;
     }
 
 TagAttributes
@@ -234,12 +247,33 @@ TagAttribute
 TagName
   = [a-zA-Z_]+
 
+// A directive value is parsed into an expression: a mix of literal text and `%{...}` meta
+// expressions (the same nodes used in the song body). A `%{...}` is treated as an atomic unit so
+// that the `}` closing the expression is not mistaken for the `}` closing the tag. When the
+// meta-aware parse would consume the tag's own closing brace (e.g. an unbalanced `%{` like
+// `{title: 50%{ off}`), the lookahead fails and parsing falls back to a plain literal value.
 TagSimpleValue
-  = _ chars:TagValueChar* {
-      return chars.map(c => c.char || c).join('');
+  = _ parts:TagValuePart* &(_ "}") {
+      return helpers.buildTagValue(parts);
+    }
+  / _ chars:TagValueCharLiteral* {
+      return { value: chars.map(c => c.char || c).join('') };
     }
 
-TagValueChar
+TagValuePart
+  = ternary:MetaTernary {
+      return { source: text(), node: ternary };
+    }
+  / literal:TagValueLiteralRun {
+      return { source: literal, node: literal };
+    }
+
+TagValueLiteralRun
+  = chars:(!MetaTernary TagValueCharLiteral)+ {
+      return chars.map(pair => pair[1].char || pair[1]).join('');
+    }
+
+TagValueCharLiteral
   = [^}\\\r\n]
   / Escape
     sequence:(
@@ -250,6 +284,16 @@ TagValueChar
       return sequence;
     }
 
+// Matches the raw source of a `%{...}` meta expression (including nested ones).
+MetaExpressionSource
+  = text:$("%{" MetaExpressionSourceBody* "}") {
+      return text;
+    }
+
+MetaExpressionSourceBody
+  = MetaExpressionSource
+  / [^{}]
+
 TagAttributeName
   = $([a-zA-Z-_]+)
 
@@ -259,7 +303,8 @@ TagAttributeValue
     }
 
 TagAttributeValueChar
-  = [^"}]
+  = MetaExpressionSource
+  / [^"}]
   / Escape
     sequence: (
       "\\" { return { type: 'char', char: '\\'   }; }
