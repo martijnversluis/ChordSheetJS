@@ -146,6 +146,14 @@ const ALIASES: Record<string, string> = {
   [TITLE_SHORT]: TITLE,
 };
 
+const SHORT_ALIASES = Object.entries(ALIASES).reduce<Record<string, string>>((acc, [shortName, longName]) => {
+  if (!(longName in acc)) {
+    acc[longName] = shortName;
+  }
+
+  return acc;
+}, {});
+
 const TAG_REGEX = /^([^:\s]+)(:?\s*(.+))?$/;
 const CUSTOM_META_TAG_NAME_REGEX = /^x_(.+)$/;
 
@@ -153,7 +161,7 @@ export function isReadonlyTag(tagName: string) {
   return READ_ONLY_TAGS.includes(tagName);
 }
 
-const translateTagNameAlias = (name: string) => {
+export const longTagName = (name: string) => {
   if (!name) {
     return name;
   }
@@ -166,6 +174,19 @@ const translateTagNameAlias = (name: string) => {
 
   return sanitizedName;
 };
+
+export const shortTagName = (name: string) => {
+  const longName = longTagName(name);
+  return SHORT_ALIASES[longName] || longName;
+};
+
+export function isStandaloneMetadataDirectiveName(
+  name: string,
+  additionalMetadataDirectives: string[] = [],
+): boolean {
+  const sanitizedName = name.trim();
+  return additionalMetadataDirectives.some((directiveName) => directiveName.trim() === sanitizedName);
+}
 
 /**
  * Represents a tag/directive. See https://www.chordpro.org/chordpro/chordpro-directives/
@@ -302,7 +323,7 @@ class Tag extends AstComponent {
   }
 
   set name(name) {
-    this._name = translateTagNameAlias(name);
+    this._name = longTagName(name);
     this._originalName = name;
   }
 
@@ -372,20 +393,23 @@ class Tag extends AstComponent {
   }
 
   /**
-   * Checks whether the tag is a standard meta tag, a custom meta directive (`{x_some_name}`)
-   * or a non-standard meta tag (`{meta: name value}`)
+   * Checks whether the tag is a standard meta tag, a custom meta directive (`{x_some_name}`),
+   * an additional configured metadata directive, or a non-standard meta tag (`{meta: name value}`)
    * @returns {boolean}
    */
-  isMetaTag(): boolean {
-    return this._isMetaTag || CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1;
+  isMetaTag(additionalMetadataDirectives: string[] = []): boolean {
+    return this._isMetaTag || CUSTOM_META_TAG_NAME_REGEX.test(this.name) || META_TAGS.indexOf(this.name) !== -1 ||
+      isStandaloneMetadataDirectiveName(this.name, additionalMetadataDirectives);
   }
 
   /**
-   * Checks whether this tag is a standard meta tag or a custom meta directive (`{x_some_name}`)
+   * Checks whether this tag is a standard meta tag, a custom meta directive (`{x_some_name}`),
+   * or an additional configured metadata directive.
    * @returns {boolean}
    */
-  isStandardOrCustomMetaTag(): boolean {
-    return META_TAGS.indexOf(this.name) !== -1 || CUSTOM_META_TAG_NAME_REGEX.test(this.name);
+  isStandardOrCustomMetaTag(additionalMetadataDirectives: string[] = []): boolean {
+    return META_TAGS.indexOf(this.name) !== -1 || CUSTOM_META_TAG_NAME_REGEX.test(this.name) ||
+      isStandaloneMetadataDirectiveName(this.name, additionalMetadataDirectives);
   }
 
   /**

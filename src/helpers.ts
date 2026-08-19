@@ -1,4 +1,5 @@
 import type Chord from './chord';
+import type ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import ChordRenderer from './formatter/chord_renderer';
 import FormattingContext from './formatter/formatting_context';
 import Key from './key';
@@ -8,6 +9,7 @@ import Song from './chord_sheet/song';
 import { NullableChordStyle } from './constants';
 import { CAPO, CHORD_STYLE } from './chord_sheet/tags';
 import { capos, majorKeys, minorKeys } from './key_config';
+import { classifyChordLineToken, isChordTokenKind } from './chord_sheet/chord_line_token';
 
 export function transposeDistance(transposeKey: string, songKey: string | Key): number {
   if (/^\d+$/.test(transposeKey)) {
@@ -54,6 +56,8 @@ export function renderChord(
   song: Song,
   options: RenderChordOptions = {},
 ): string {
+  if (typeof chord === 'string' && !isChordTokenKind(classifyChordLineToken(chord).kind)) return chord;
+
   const {
     renderKey, useUnicodeModifier, normalizeChords, normalizeChordSuffix, decapo,
   } = { ...renderChordDefaults, ...options };
@@ -70,6 +74,16 @@ export function renderChord(
     transposeKey: line.transposeKey,
     useUnicodeModifier,
   }).render(chord);
+}
+
+export function renderChordLyricsPair(
+  pair: ChordLyricsPair,
+  line: Line,
+  song: Song,
+  options: RenderChordOptions = {},
+): string {
+  if (!isChordTokenKind(pair.tokenKind)) return pair.chords;
+  return renderChord(pair.chord ?? pair.chords, line, song, options);
 }
 
 /**

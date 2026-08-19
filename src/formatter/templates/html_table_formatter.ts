@@ -1,9 +1,10 @@
 import { HtmlTemplateArgs } from '../html_formatter';
 import { defaultPangoRenderer } from '../../pango/pango_helpers';
-import { renderChord } from '../../helpers';
+import { renderChordLyricsPair } from '../../helpers';
 import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 
 import {
+  chordLineClasses,
   each,
   evaluate,
   fontStyleTag,
@@ -13,7 +14,6 @@ import {
   isComment,
   isImage,
   isLiteral,
-  isRhythmSymbol,
   isTag,
   lineClasses,
   lineHasContents, newlinesToBreaks,
@@ -77,11 +77,11 @@ export default (
                           ${ when(item.annotation).then(() => `
                             <td class="${ c.annotation }"${ fontStyleTag(line.chordFont) }>${ item.annotation }</td>
                           `).else(() => {
-                            const cls = isRhythmSymbol(item) ? c.rhythmSymbol : c.chord;
+                            const cls = chordLineClasses(item, c);
                             return `
                             <td class="${ cls }"${ fontStyleTag(line.chordFont) }>${
-                              renderChord(
-                                item.chord ?? item.chords,
+                              renderChordLyricsPair(
+                                item,
                                 line,
                                 song,
                                 {

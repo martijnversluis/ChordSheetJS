@@ -1612,8 +1612,8 @@ describe('HtmlDivFormatter', () => {
       const formatted = new HtmlDivFormatter().format(song);
 
       expect(formatted).toContain('<div class="chord">Am</div>');
-      expect(formatted).toContain('<div class="rhythm-symbol">/</div>');
-      expect(formatted).toContain('<div class="rhythm-symbol">|</div>');
+      expect(formatted).toContain('<div class="rhythm-symbol rhythm-symbol-continuation">/</div>');
+      expect(formatted).toContain('<div class="barline barline-single">|</div>');
       expect(formatted).not.toMatch(/<div class="chord">[/|]<\/div>/);
     });
 
@@ -1628,7 +1628,39 @@ describe('HtmlDivFormatter', () => {
 
       const formatted = new HtmlDivFormatter({ cssClasses: { rhythmSymbol: 'custom-rhythm' } }).format(song);
 
-      expect(formatted).toContain('<div class="custom-rhythm">/</div>');
+      expect(formatted).toContain('<div class="custom-rhythm custom-rhythm-continuation">/</div>');
+    });
+
+    it('uses semantic classes for non-chord tokens', () => {
+      const song = createSongFromAst([[
+        { type: 'chordLyricsPair', chords: ':||', lyrics: '' },
+        { type: 'chordLyricsPair', chords: '(6x)', lyrics: '' },
+        { type: 'chordLyricsPair', chords: 'N.C.', lyrics: '' },
+      ]]);
+
+      const formatted = new HtmlDivFormatter().format(song);
+
+      expect(formatted).toContain('<div class="barline barline-repeat-end">:||</div>');
+      expect(formatted).toContain('<div class="instruction instruction-repeat-count">(6x)</div>');
+      expect(formatted).toContain('<div class="no-chord no-chord-marker">N.C.</div>');
+      expect(formatted).not.toContain('<div class="chord">(6x)</div>');
+    });
+
+    it('allows customizing semantic token CSS classes', () => {
+      const song = createSongFromAst([[
+        { type: 'chordLyricsPair', chords: ':||', lyrics: '' },
+        { type: 'chordLyricsPair', chords: '(6x)', lyrics: '' },
+        { type: 'chordLyricsPair', chords: 'N.C.', lyrics: '' },
+      ]]);
+      const formatter = new HtmlDivFormatter({
+        cssClasses: { barline: 'repeat', instruction: 'cue', noChord: 'none' },
+      });
+
+      const formatted = formatter.format(song);
+
+      expect(formatted).toContain('<div class="repeat repeat-repeat-end">:||</div>');
+      expect(formatted).toContain('<div class="cue cue-repeat-count">(6x)</div>');
+      expect(formatted).toContain('<div class="none none-marker">N.C.</div>');
     });
   });
 
