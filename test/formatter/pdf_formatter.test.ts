@@ -3,9 +3,9 @@ import PdfFormatter from '../../src/formatter/pdf_formatter';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 
-import { PDFConfigurationProperties } from '../../src/formatter/configuration';
 import { exampleSongSymbol } from '../fixtures/song';
 import { LayoutConfig, LayoutEngine } from '../../src/layout/engine';
+import { PDFConfigurationProperties, defaultUnicodeFallbackConfig } from '../../src/formatter/configuration';
 import { chordLyricsPair, createSongFromAst } from '../util/utilities';
 
 describe('PdfFormatter', () => {
@@ -44,6 +44,90 @@ describe('PdfFormatter', () => {
     } finally {
       computeSpy.mockRestore();
     }
+  });
+
+  it('uses neutral chord rendering in its default configuration', () => {
+    const formatter = new PdfFormatter();
+
+    expect(formatter.configuration.chordRendering).toEqual({});
+  });
+
+  it('renders independently styled chord qualities and extensions end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('Cmaj7/E', 'word')]]);
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+        extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+      },
+      layout: { chordDiagrams: { enabled: false } },
+      normalizeChordSuffix: false,
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const chordRuns = doc.renderedItems.filter((item) => (
+      item.type === 'text' && ['C', 'maj', '7', '/E'].includes(item.text)
+    )) as any[];
+
+    expect(chordRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+    expect(chordRuns.map(({ fontSize }) => fontSize)).toEqual([9, 7.56, 6.3, 9]);
+    expect(chordRuns[1]).toMatchObject({ fontName: 'NimbusSansL-Bol', fontStyle: 'normal' });
+    expect(chordRuns[2].y).toBeLessThan(chordRuns[0].y);
+  });
+
+  it('uses bundled fallback fonts for Unicode accidentals end to end', () => {
+    const song = createSongFromAst([[chordLyricsPair('F#7b9/C#', 'word')]]);
+    const formatter = new PdfFormatter({
+      useUnicodeModifiers: true,
+      unicodeFallback: { ...defaultUnicodeFallbackConfig, warnOnMissingGlyph: false },
+      layout: { chordDiagrams: { enabled: false } },
+    });
+
+    formatter.format(song, StubbedPdfDoc);
+    const doc = formatter.getDocumentWrapper().doc as StubbedPdfDoc;
+    const accidentals = doc.renderedItems.filter((item) => (
+      item.type === 'text' && (item.text === '♯' || item.text === '♭')
+    )) as any[];
+
+    expect(accidentals.map(({ text }) => text)).toEqual(['♯', '♭', '♯']);
+    expect(accidentals.every(({ fontName }) => fontName === 'ChordSheetSymbols')).toBe(true);
+  });
+
+  it('deep-merges partial Unicode fallback configuration', () => {
+    const formatter = new PdfFormatter({
+      unicodeFallback: { warnOnMissingGlyph: false },
+    });
+
+    expect(formatter.configuration.unicodeFallback).toEqual({
+      ...defaultUnicodeFallbackConfig,
+      warnOnMissingGlyph: false,
+    });
+  });
+
+  it('deep-merges partial Unicode fallback font configuration', () => {
+    const formatter = new PdfFormatter({
+      unicodeFallback: { fallbackFonts: { bold: 'CustomBoldSymbols' } },
+    });
+
+    expect(formatter.configuration.unicodeFallback?.fallbackFonts).toEqual({
+      ...defaultUnicodeFallbackConfig.fallbackFonts,
+      bold: 'CustomBoldSymbols',
+    });
+  });
+
+  it('deep-merges independent quality and extension rendering styles', () => {
+    const formatter = new PdfFormatter({
+      chordRendering: {
+        quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      },
+    });
+
+    formatter.configure({ chordRendering: { extensions: { baselineShiftRatio: 0.35 } } });
+
+    expect(formatter.configuration.chordRendering).toEqual({
+      quality: { font: { weight: 500 }, fontSizeRatio: 0.84 },
+      extensions: { baselineShiftRatio: 0.35 },
+    });
   });
 
   it('correctly formats a basic song', () => {

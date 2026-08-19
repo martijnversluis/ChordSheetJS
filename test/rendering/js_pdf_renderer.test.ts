@@ -885,6 +885,56 @@ describe('JsPdfRenderer', () => {
   });
 
   describe('finalization and drawing', () => {
+    it('draws configured chord extensions as positioned text runs', () => {
+      const { renderer, doc, config } = createRenderer({
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
+      });
+      const stubDoc = getStubDoc(doc);
+
+      (renderer as any).drawElement({
+        x: 40,
+        y: 100,
+        width: 30,
+        height: 10,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style: config.fonts.chord,
+        page: 1,
+        column: 1,
+      });
+
+      const textRuns = stubDoc.renderedItems.filter((item) => item.type === 'text') as any[];
+      expect(textRuns.map(({ text }) => text)).toEqual(['C', 'maj', '7', '/E']);
+      expect(textRuns.map(({ fontSize }) => fontSize)).toEqual([10, 10, 7, 10]);
+      expect(textRuns[2].y).toBeLessThan(textRuns[0].y);
+      expect(textRuns[3].x).toBeGreaterThan(textRuns[2].x);
+    });
+
+    it('draws one baseline underline across shaped chord runs', () => {
+      const { renderer, doc, config } = createRenderer({
+        chordRendering: { extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 } },
+        fonts: { chord: { underline: true } },
+      } as any);
+      const stubDoc = getStubDoc(doc);
+
+      (renderer as any).drawElement({
+        x: 40,
+        y: 100,
+        width: 30,
+        height: 10,
+        content: 'Cmaj7/E',
+        type: 'chord',
+        style: config.fonts.chord,
+        page: 1,
+        column: 1,
+      });
+
+      const underlineLines = stubDoc.renderedItems.filter((item) => item.type === 'line') as any[];
+      expect(underlineLines).toHaveLength(1);
+      expect(underlineLines[0]).toMatchObject({ x1: 40, y1: 103, y2: 103 });
+      expect(underlineLines[0].x2).toBeGreaterThan(40);
+    });
+
     it('adds pages as needed and draws elements during finalizeRendering', () => {
       const { renderer, doc, config } = createRenderer();
       const docWrapper = renderer.getDoc();

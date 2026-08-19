@@ -4,6 +4,15 @@ export const pdfFormatterConfigs = [
   {
     name: 'Default Config (2 Col)',
     content: {
+      chordRendering: {
+        quality: {
+          fontSizeRatio: 0.9,
+        },
+        extensions: {
+          fontSizeRatio: 0.85,
+          baselineShiftRatio: 0.3,
+        },
+      },
       fonts: {
         title: {
           name: 'NimbusSansL-Bol',
@@ -981,6 +990,21 @@ export const pdfFormatterConfigs = [
         },
         chordDiagrams: {
           enabled: false,
+        },
+      },
+    },
+  },
+  {
+    name: 'Chord Parts Demo',
+    content: {
+      useUnicodeModifiers: true,
+      chordRendering: {
+        quality: {
+          fontSizeRatio: 0.9,
+        },
+        extensions: {
+          fontSizeRatio: 0.85,
+          baselineShiftRatio: 0.3,
         },
       },
     },

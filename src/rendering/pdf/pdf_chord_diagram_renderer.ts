@@ -5,7 +5,11 @@ import Song from '../../chord_sheet/song';
 import ChordDefinition, { isNonSoundingString, isOpenFret } from '../../chord_definition/chord_definition';
 import ChordDiagram, { Barre, ChordDiagramRenderingConfig, StringMarker } from '../../chord_diagram/chord_diagram';
 
-import { ChordDiagramFontConfigurations } from '../../formatter/configuration';
+import {
+  ChordDiagramFontConfigurations,
+  ChordRenderingConfig,
+  UnicodeFallbackConfig,
+} from '../../formatter/configuration';
 
 import {
   FingerNumber, Fret, FretNumber, StringNumber,
@@ -36,6 +40,9 @@ export interface ChordDiagramConfig {
   enabled: boolean;
   renderingConfig?: ChordDiagramRenderingConfig;
   fonts: ChordDiagramFontConfigurations;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
+  useUnicodeModifiers?: boolean;
   overrides?: {
     global?: Record<string, { hide?: boolean; definition?: string }>;
     byKey?: Record<string, Record<string, { hide?: boolean; definition?: string }>>;
@@ -189,12 +196,14 @@ export class ChordDiagramRenderer {
    * Draws a single chord diagram
    */
   private drawChordDiagram(definition: ChordDefinition, width: number, spacing: number): void {
-    const { fonts } = this.config;
+    const {
+      fonts, chordRendering, unicodeFallback, useUnicodeModifiers,
+    } = this.config;
     const diagram = this.buildChordDiagram(definition);
     const x = this.context.getX();
     const y = this.context.getY();
     const renderer = new JsPDFDiagramRenderer(this.context.doc, {
-      x, y, width, fonts,
+      x, y, width, fonts, chordRendering, unicodeFallback, useUnicodeModifiers,
     });
     diagram.render(renderer);
 

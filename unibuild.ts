@@ -130,9 +130,10 @@ export default unibuild((u: Config) => {
   });
 
   u.asset('pdfSources', {
-    input: jsBuild,
+    input: [jsBuild, 'src/formatter/pdf_formatter/fonts/ChordSheetSymbols.OFL.txt'],
     outfile: 'lib/pdf/index.js',
-    command: 'rm -rf pdf/.parcel-cache && cd pdf && parcel build',
+    command: 'rm -rf pdf/.parcel-cache lib/pdf && cd pdf && parcel build && ' +
+      'cp ../src/formatter/pdf_formatter/fonts/ChordSheetSymbols.OFL.txt ../lib/pdf/',
     releaseOnly: true,
   });
 
@@ -164,6 +165,11 @@ export default unibuild((u: Config) => {
     requires: codeGeneratedAssets,
     command: 'yarn eslint .',
     autofixCommand: 'yarn eslint . --fix',
+  });
+
+  u.lint('symbolFonts', {
+    requires: [],
+    command: 'yarn fonts:check',
   });
 
   u.test('jest', {
