@@ -455,14 +455,14 @@ __metadata:
   linkType: hard
 
 "@codemirror/commands@npm:^6.0.0":
-  version: 6.10.4
-  resolution: "@codemirror/commands@npm:6.10.4"
+  version: 6.11.0
+  resolution: "@codemirror/commands@npm:6.11.0"
   dependencies:
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/state": "npm:^6.7.0"
     "@codemirror/view": "npm:^6.27.0"
     "@lezer/common": "npm:^1.1.0"
-  checksum: 10c0/ae47b633afc68b6854111d9749d5f8dde16a13e5053ec72b4a0c5fe0cc553c490040b05c6d8e5d1670e1a2612cc6ef406b9e51578593d030c7f44a0ad46e6f94
+  checksum: 10c0/53754247b71529abddad867dc8195b557bea23642688fd2ef23c536bda3fdf0c5dcd02d447e754b5696d1f09aeb4c15affa146812ba8986d73b3d394b6b79e75
   languageName: node
   linkType: hard
 
