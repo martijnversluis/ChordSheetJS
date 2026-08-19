@@ -6,6 +6,7 @@ import { heredoc } from '../util/utilities';
 import {
   ABC,
   CHORUS,
+  ChordLyricsPair,
   ChordProParser,
   LILYPOND,
   NONE,
@@ -18,6 +19,20 @@ import {
 } from '../../src';
 
 describe('ChordProParser', () => {
+  it('marks chord-only rhythm tokens as rhythm symbols', () => {
+    const song = new ChordProParser().parse('[E][/][|][-][x][A/E]');
+    const pairs = song.lines[0].items as ChordLyricsPair[];
+
+    expect(pairs.map((pair) => [pair.chords, pair.isRhythmSymbol])).toEqual([
+      ['E', false],
+      ['/', true],
+      ['|', true],
+      ['-', true],
+      ['x', true],
+      ['A/E', false],
+    ]);
+  });
+
   it('parses a ChordPro chord sheet correctly', () => {
     const chordSheet = heredoc`
       {title: Let it be}

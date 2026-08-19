@@ -8,6 +8,20 @@ import {
 
 import { FileRange } from './peg_parser';
 
+const RHYTHM_SYMBOLS = new Set(['/', '|', '-', 'x']);
+
+function chordProperties(chords: string): Pick<SerializedChordLyricsPair, 'chords' | 'isRhythmSymbol'> {
+  return RHYTHM_SYMBOLS.has(chords) ? { chords, isRhythmSymbol: true } : { chords };
+}
+
+export function buildChordLyricsPair(chords: string, lyrics: string): SerializedChordLyricsPair {
+  return {
+    type: 'chordLyricsPair',
+    ...chordProperties(chords),
+    lyrics,
+  };
+}
+
 function splitSectionContent(content: string): string[] {
   return content
     .replace(/\n$/, '')
@@ -91,9 +105,9 @@ export function breakChordLyricsPairOnSoftLineBreak(
 
   if (chords !== '') {
     if (!first || first.type === 'softLineBreak') {
-      addedLeadingChord = { type: 'chordLyricsPair', chords, lyrics: '' };
+      addedLeadingChord = buildChordLyricsPair(chords, '');
     } else {
-      first = { ...first, chords };
+      first = { ...first, ...chordProperties(chords) };
     }
   }
 
