@@ -27,6 +27,9 @@ function peggyGenerate(grammar: string, release: boolean): string {
       output: 'source',
       format: 'commonjs',
       plugins: [tspegjs],
+      tspegjs: {
+        skipTypeComputation: true,
+      },
       trace: process.env.NODE_ENV === 'test' && !release,
     },
   );
