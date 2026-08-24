@@ -73,11 +73,15 @@ class Song extends MetadataAccessors {
 
   /** @deprecated No longer used internally; use {@link bodyParagraphs} or {@link expandedBodyParagraphs}. */
   get renderParagraphs(): Paragraph[] {
+    deprecate('renderParagraphs is deprecated, use bodyParagraphs or expandedBodyParagraphs instead');
     return this._renderParagraphs ?? this.bodyParagraphs;
   }
 
   /** @deprecated No longer used internally. See {@link renderParagraphs}. */
-  set renderParagraphs(paragraphs: Paragraph[]) { this._renderParagraphs = paragraphs; }
+  set renderParagraphs(paragraphs: Paragraph[]) {
+    deprecate('renderParagraphs is deprecated, use bodyParagraphs or expandedBodyParagraphs instead');
+    this._renderParagraphs = paragraphs;
+  }
 
   selectRenderableItems(items: (Line | Paragraph)[]): (Line | Paragraph)[] {
     const copy = [...items];
