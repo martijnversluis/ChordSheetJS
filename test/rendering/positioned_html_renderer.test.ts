@@ -80,6 +80,7 @@ interface DocStub {
   createPage: jest.Mock;
   eachPage: jest.Mock;
   addElement: jest.Mock;
+  setContentFrame: jest.Mock;
   getTextDimensions: jest.Mock;
   getTextWidth: jest.Mock;
   splitTextToSize: jest.Mock;
@@ -255,6 +256,7 @@ describe('PositionedHtmlRenderer', () => {
       addElement: jest.fn((element: MockElement, x: number, y: number) => {
         doc.addedElements.push({ element, x, y });
       }),
+      setContentFrame: jest.fn(),
       getTextDimensions: jest.fn((text: string, font: FontConfiguration) => ({
         w: text.length * (font.size || 1),
         h: font.size || 1,
@@ -279,6 +281,7 @@ describe('PositionedHtmlRenderer', () => {
             left: 50,
             right: 40,
           },
+          contentWidth: 'page',
         },
         sections: {
           global: {
@@ -336,6 +339,60 @@ describe('PositionedHtmlRenderer', () => {
       config,
       doc,
     };
+  }
+
+  function createAdaptiveRenderer(
+    contentWidth: 'page' | 'fit-columns' = 'fit-columns',
+    columnOverrides: Record<string, unknown> = {},
+  ): RendererSetup {
+    const setup = createRenderer({
+      pageSize: { width: 1_736, height: 764 },
+      layout: {
+        global: {
+          margins: {
+            top: 18, right: 32, bottom: 10, left: 48,
+          },
+          contentWidth,
+        },
+        sections: {
+          global: {
+            columnCount: undefined,
+            columnWidth: 0,
+            columnSpacing: 48,
+            minColumnWidth: 350,
+            maxColumnWidth: 400,
+            ...columnOverrides,
+          },
+        },
+      } as any,
+    });
+    setup.doc.pageSize = { width: 1_736, height: 764 };
+    setup.renderer.initialize();
+    return setup;
+  }
+
+  function positionedParagraph(page: number, column: number) {
+    return {
+      x: 48 + (column - 1) * 426,
+      y: page === 1 ? 120 : 52,
+      width: 260,
+      height: 120,
+      content: `Page ${page} column ${column}`,
+      type: 'lyrics',
+      page,
+      column,
+    };
+  }
+
+  function renderParagraphElements(renderer: PositionedHtmlRenderer, elements: any[]): void {
+    jest.spyOn(renderer as any, 'renderLineItems').mockImplementation(() => {
+      (renderer as any).elements.push(...elements);
+    });
+    (renderer as any).renderParagraphs([{
+      units: [[{} as any]],
+      addSpacing: false,
+      sectionType: 'verse',
+    }]);
   }
 
   describe('construction and configuration', () => {
@@ -485,6 +542,63 @@ describe('PositionedHtmlRenderer', () => {
       const paragraphSpacing = (renderer as any).getParagraphSpacing();
       expect((renderer as any).y).toBe(120 + paragraphSpacing);
       (renderer as any).y = originalY;
+    });
+
+    it('fits one song-wide content frame without changing paragraph coordinates', () => {
+      const { renderer, doc } = createAdaptiveRenderer();
+
+      renderer.setContentFrame(2);
+      renderParagraphElements(renderer, [
+        positionedParagraph(1, 1),
+        positionedParagraph(1, 2),
+        positionedParagraph(2, 1),
+      ]);
+
+      expect(doc.setContentFrame).toHaveBeenCalledWith({
+        left: 474,
+        sourceLeft: 48,
+        width: 804,
+      });
+      const paragraphs = doc.addElement.mock.calls.map(([element]) => element as MockElement);
+      expect(paragraphs.map(({ style }) => style.translate)).toEqual([
+        undefined, undefined, undefined,
+      ]);
+      expect(paragraphs.map(({ style }) => style.left)).toEqual([
+        '48px', '474px', '48px',
+      ]);
+    });
+
+    it('uses page width without creating a content frame', () => {
+      const { renderer, doc } = createAdaptiveRenderer('page');
+
+      renderer.setContentFrame(2);
+
+      expect(doc.setContentFrame).toHaveBeenCalledWith(null);
+    });
+
+    it('keeps page width when no body columns render', () => {
+      const { renderer, doc } = createAdaptiveRenderer('fit-columns');
+
+      renderer.setContentFrame(0);
+
+      expect(doc.setContentFrame).toHaveBeenCalledWith(null);
+    });
+
+    it.each([
+      ['explicit count', { columnCount: 4, minColumnWidth: undefined, maxColumnWidth: undefined }, 474, 804],
+      ['minimum width', { columnCount: undefined, minColumnWidth: 350, maxColumnWidth: undefined }, 474, 804],
+      ['maximum width', { columnCount: undefined, minColumnWidth: undefined, maxColumnWidth: 400 }, 332, 1_088],
+      ['width range', { columnCount: undefined, minColumnWidth: 350, maxColumnWidth: 400 }, 474, 804],
+    ])('uses renderer geometry for %s columns', (_name, columnOverrides, left, width) => {
+      const { renderer, doc } = createAdaptiveRenderer('fit-columns', columnOverrides);
+
+      renderer.setContentFrame(2);
+
+      expect(doc.setContentFrame).toHaveBeenCalledWith({
+        left,
+        sourceLeft: 48,
+        width,
+      });
     });
 
     it('renders chords, lyrics, comments, and handles column breaks', () => {
@@ -840,6 +954,63 @@ describe('PositionedHtmlRenderer', () => {
   });
 
   describe('layout content', () => {
+    it('uses the fitted column bounds for header and footer content', () => {
+      const { renderer, doc, config } = createAdaptiveRenderer();
+      renderer.setContentFrame(2);
+      config.layout.header = {
+        height: 40,
+        content: [{
+          type: 'text',
+          value: 'Title',
+          style: {
+            name: 'Arial', style: 'bold', size: 16, color: '#000000',
+          },
+          position: { x: 'left', y: 0 },
+        }],
+      };
+      config.layout.footer = {
+        height: 20,
+        content: [{
+          type: 'line',
+          style: { width: 1, color: '#000000' },
+          position: { x: 0, y: 0, width: 'auto' },
+        }],
+      };
+
+      (renderer as any).renderHeadersAndFooters();
+
+      const title = doc.addedElements.find(({ element }) => element.textContent === 'Title');
+      const line = doc.addedElements.find(({ element }) => element.className === 'test-line');
+      expect(title?.x).toBe(48);
+      expect(line?.x).toBe(48);
+      expect(line?.element.style.width).toBe('804px');
+    });
+
+    it('measures auto-height footer text within the fitted column width', () => {
+      const { renderer, doc, config } = createAdaptiveRenderer();
+      const style = {
+        name: 'Arial', style: 'normal', size: 10, color: '#000000',
+      } as const;
+      config.layout.footer = {
+        height: 'auto',
+        content: [{
+          type: 'text',
+          value: 'Footer content that can wrap',
+          style,
+          position: { x: 'left', y: 0 },
+        }],
+      };
+      renderer.setContentFrame(2);
+
+      (renderer as any).getFooterHeightForPage(1, 1);
+
+      expect(doc.splitTextToSize).toHaveBeenCalledWith(
+        'Footer content that can wrap',
+        804,
+        style,
+      );
+    });
+
     it('renders headers and footers with metadata-aware conditions', () => {
       const headerContent: LayoutContentItemWithText[] = [
         {

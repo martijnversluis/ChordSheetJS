@@ -4,6 +4,12 @@ import { FontConfiguration } from '../../formatter/configuration';
 declare const document: any;
 declare type HTMLElement = any;
 
+export interface HtmlContentFrame {
+  left: number;
+  sourceLeft: number;
+  width: number;
+}
+
 /**
  * HtmlWrapper is responsible for managing the DOM elements for the chord sheet
  */
@@ -11,6 +17,10 @@ class HtmlDocWrapper {
   container: HTMLElement;
 
   pages: HTMLElement[] = [];
+
+  contentFrames: HTMLElement[] = [];
+
+  private contentFrame: HtmlContentFrame | null = null;
 
   currentPage = 1;
 
@@ -46,6 +56,10 @@ class HtmlDocWrapper {
     this.container.appendChild(page);
     this.pages.push(page);
     this.totalPages = this.pages.length;
+
+    if (this.contentFrame) {
+      this.createContentFrame(page);
+    }
 
     return page;
   }
@@ -87,20 +101,60 @@ class HtmlDocWrapper {
     return this.pages[this.currentPage - 1];
   }
 
+  setContentFrame(frame: HtmlContentFrame | null): void {
+    this.contentFrame = frame;
+
+    if (!frame) {
+      this.contentFrames.forEach((contentFrame) => contentFrame.parentNode?.removeChild(contentFrame));
+      this.contentFrames = [];
+      return;
+    }
+
+    this.pages.forEach((page, index) => {
+      const contentFrame = this.contentFrames[index] || this.createContentFrame(page);
+      this.applyContentFrameStyles(contentFrame);
+    });
+  }
+
+  private createContentFrame(page: HTMLElement): HTMLElement {
+    const contentFrame = document.createElement('div');
+    contentFrame.className = 'chord-sheet-content';
+    this.applyContentFrameStyles(contentFrame);
+    page.appendChild(contentFrame);
+    this.contentFrames.push(contentFrame);
+    return contentFrame;
+  }
+
+  private applyContentFrameStyles(contentFrame: HTMLElement): void {
+    if (!this.contentFrame) {
+      return;
+    }
+
+    Object.assign(contentFrame.style, {
+      position: 'absolute',
+      left: `${this.contentFrame.left}px`,
+      top: '0',
+      width: `${this.contentFrame.width}px`,
+      height: '100%',
+    });
+  }
+
   /**
    * Adds an element to the current page at the specified position
    */
   addElement(element: HTMLElement, x: number, y: number): void {
-    const page = this.getCurrentPage();
+    const pageIndex = this.currentPage - 1;
+    const parent = this.contentFrame ? this.contentFrames[pageIndex] : this.getCurrentPage();
+    const relativeX = this.contentFrame ? x - this.contentFrame.sourceLeft : x;
 
     // Apply positioning styles in one operation
     Object.assign(element.style, {
       position: 'absolute',
-      left: `${x}px`,
+      left: `${relativeX}px`,
       top: `${y}px`,
     });
 
-    page.appendChild(element);
+    parent.appendChild(element);
   }
 
   /**

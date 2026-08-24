@@ -5,9 +5,21 @@ import {
   SectionsConfig,
 } from './measurement_based_configuration';
 
+export type ContentWidth = 'page' | 'fit-columns';
+
+export type MeasuredHtmlGlobalLayoutConfig = MeasurementBasedLayoutConfig['global'] & {
+  /**
+   * Sets the shared header, body, and footer width for Measured HTML.
+   * `fit-columns` centers one song-wide container sized to the highest column slot used.
+   * Documents without rendered body columns keep the page width.
+   */
+  contentWidth?: ContentWidth;
+};
+
 // MeasuredHtml layout configuration extends measurement-based layout
 export interface MeasuredHtmlLayoutConfig extends MeasurementBasedLayoutConfig {
   // MeasuredHtml requires these fields that are optional in the base config
+  global: MeasuredHtmlGlobalLayoutConfig;
   header: MeasurementBasedLayoutConfig['header'];
   footer: MeasurementBasedLayoutConfig['footer'];
   sections: SectionsConfig;
@@ -94,6 +106,7 @@ export const measuredHtmlSpecificDefaults: Partial<MeasuredHtmlFormatterConfigur
         left: 45,
         right: 45,
       },
+      contentWidth: 'page',
     },
     header: {
       height: 72,
