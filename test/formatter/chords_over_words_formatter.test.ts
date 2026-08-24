@@ -16,6 +16,66 @@ import {
 } from '../util/utilities';
 
 describe('ChordsOverWordsFormatter', () => {
+  it('expands chorus directives when expandChorusDirective=true', () => {
+    const chordSheet = heredoc`
+      {start_of_chorus: Chorus 1:}
+      [C]Whisper words of
+      {end_of_chorus}
+
+      {start_of_verse: Verse 1:}
+      Let it [Am]be
+      {end_of_verse}
+
+      {chorus: Repeat chorus 1:}`;
+
+    const expectedChordSheet = heredoc`
+      Chorus 1:
+      C
+      Whisper words of
+
+      Verse 1:
+             Am
+      Let it be
+
+      Repeat chorus 1:
+      C
+      Whisper words of`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordsOverWordsFormatter({ expandChorusDirective: true }).format(song);
+
+    expect(formatted).toEqual(expectedChordSheet);
+  });
+
+  it('does not expand chorus directives when expandChorusDirective=false', () => {
+    const chordSheet = heredoc`
+      {start_of_chorus: Chorus 1:}
+      [C]Whisper words of
+      {end_of_chorus}
+
+      {start_of_verse: Verse 1:}
+      Let it [Am]be
+      {end_of_verse}
+
+      {chorus: Repeat chorus 1:}`;
+
+    const expectedChordSheet = heredoc`
+      Chorus 1:
+      C
+      Whisper words of
+
+      Verse 1:
+             Am
+      Let it be
+
+      Repeat chorus 1:`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new ChordsOverWordsFormatter({ expandChorusDirective: false }).format(song);
+
+    expect(formatted).toEqual(expectedChordSheet);
+  });
+
   it('formats a symbol song to a text chord sheet correctly', () => {
     const formatter = new ChordsOverWordsFormatter();
 
