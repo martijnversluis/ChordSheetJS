@@ -10,6 +10,7 @@ import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
 import TitleSeparatorTag from './title_separator_tag';
+import { warn } from '../../utilities';
 import { LayoutConfig, LineLayout, ParagraphLayoutResult } from './types';
 import { calculateTotalHeight, isColumnBreakLayout } from './layout_helpers';
 import { isComment, isTag, lineHasContents } from '../../template_helpers';
@@ -130,7 +131,21 @@ export class LayoutEngine {
   }
 
   private getSourceParagraphs(): Paragraph[] {
-    return this.config.expandChorusDirective ? this.song.expandedBodyParagraphs : this.song.bodyParagraphs;
+    if (!this.config.expandChorusDirective) {
+      return this.song.bodyParagraphs;
+    }
+
+    this.warnAboutRepeatedSections();
+    return this.song.expandedBodyParagraphs;
+  }
+
+  private warnAboutRepeatedSections(): void {
+    if (this.config.repeatedSections && this.config.repeatedSections !== 'full') {
+      warn(
+        'expandChorusDirective runs before repeatedSections. The current repeated-section mode can hide part or ' +
+        'all of the recalled chorus. Use repeatedSections: "full" to show the full chorus.',
+      );
+    }
   }
 
   private processRepeatedSections(sourceParagraphs: Paragraph[]): Paragraph[] {

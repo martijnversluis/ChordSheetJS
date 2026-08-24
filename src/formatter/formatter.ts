@@ -21,7 +21,11 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * transposed from the song's original key (as indicated by the `{key}` directive) to the specified key.
    * Note that transposing will only work if the original song key is set.
    * @param {boolean} [configuration.expandChorusDirective=false] Whether or not to expand `{chorus}` directives
-   * by rendering the last defined chorus inline after the directive.
+   * by rendering the last defined chorus inline after the directive. Note that for the measurement-based
+   * formatters ({@link PdfFormatter}, {@link MeasuredHtmlFormatter}) `expandChorusDirective` runs before the
+   * `repeatedSections` display rule: an expanded chorus counts as a repeated section, so a collapsing
+   * `repeatedSections` mode (the PDF default is `title_only`) can hide part or all of the recalled chorus. Use
+   * `repeatedSections: "full"` to render the full chorus.
    * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp
    * symbols.
    * @param {boolean} [configuration.normalizeChords=true] Whether or not to automatically normalize chords

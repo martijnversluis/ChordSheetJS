@@ -4,6 +4,7 @@ import Paragraph from '../../../src/chord_sheet/paragraph';
 import Song from '../../../src/chord_sheet/song';
 import Tag from '../../../src/chord_sheet/tag';
 
+import * as utilities from '../../../src/utilities';
 import { LayoutEngine } from '../../../src/layout/engine/layout_engine';
 import { LayoutConfig, ParagraphLayoutResult } from '../../../src/layout/engine/types';
 import { Measurer, TextDimensions } from '../../../src/layout/measurement';
@@ -243,6 +244,48 @@ describe('LayoutEngine', () => {
       const processedParagraphs = (engine as any).paragraphs;
 
       expect(processedParagraphs.length).toEqual(paragraphs.length);
+    });
+
+    describe('warning about expandChorusDirective and repeatedSections', () => {
+      let warnSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        warnSpy = jest.spyOn(utilities, 'warn').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        warnSpy.mockRestore();
+      });
+
+      it('warns when expandChorusDirective is set with a collapsing repeatedSections mode', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'title_only' });
+
+        // eslint-disable-next-line no-new
+        new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('repeatedSections'));
+      });
+
+      it('does not warn when repeatedSections is "full"', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'full' });
+
+        // eslint-disable-next-line no-new
+        new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not warn when expandChorusDirective is not set', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ repeatedSections: 'title_only' });
+
+        // eslint-disable-next-line no-new
+        new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+      });
     });
   });
 
