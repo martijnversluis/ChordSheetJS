@@ -15,6 +15,18 @@ A development playground for visually testing ChordSheetJS formatters.
 
 A full rewrite of this playground is anticipated. The current implementation is functional for basic formatter testing, but expect significant changes in the future.
 
+## Run
+
+From the repository root:
+
+```bash
+yarn playground
+```
+
+Open `http://localhost:3300`. The initial Measured HTML example uses adaptive column widths with
+`layout.global.contentWidth: "fit-columns"`, so a wide browser centers one shared header, body,
+and footer container sized to the highest column slot used across the song.
+
 ## Purpose
 
 The playground allows you to:

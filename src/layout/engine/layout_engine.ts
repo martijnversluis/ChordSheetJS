@@ -36,6 +36,7 @@ interface LayoutSimulationState {
   currentY: number;
   currentColumn: number;
   currentPage: number;
+  maxUsedColumn: number;
 }
 
 interface LineTypeCounts {
@@ -60,6 +61,8 @@ export class LayoutEngine {
   private readonly paragraphs: Paragraph[];
 
   private computedPageCount = 1;
+
+  private computedMaxUsedColumn = 0;
 
   constructor(
     private song: Song,
@@ -423,6 +426,7 @@ export class LayoutEngine {
       currentY: this.getMinYForPage(1),
       currentColumn: 1,
       currentPage: 1,
+      maxUsedColumn: 0,
     };
 
     this.paragraphs.forEach((paragraph) => {
@@ -430,12 +434,17 @@ export class LayoutEngine {
     });
 
     this.computedPageCount = state.currentPage;
+    this.computedMaxUsedColumn = state.maxUsedColumn;
 
     return layouts;
   }
 
   public getComputedPageCount(): number {
     return this.computedPageCount;
+  }
+
+  public getComputedMaxUsedColumn(): number {
+    return this.computedMaxUsedColumn;
   }
 
   private processParagraphLayout(
@@ -510,28 +519,49 @@ export class LayoutEngine {
     layouts: LineLayout[][],
     state: LayoutSimulationState,
   ): LayoutSimulationState {
-    let { currentY, currentColumn, currentPage } = state;
-
+    let nextState = { ...state };
     layouts.forEach((lines) => {
-      if (isColumnBreakLayout(lines)) {
-        currentColumn += 1;
-        if (currentColumn > (this.config.columnCount || 1)) {
-          currentColumn = 1;
-          currentPage += 1;
-        }
-        currentY = this.getMinYForPage(currentPage);
-      } else {
-        const linesHeight = lines.reduce((sum, line) => sum + line.lineHeight, 0);
-        currentY += linesHeight;
-      }
+      nextState = this.advanceSimulationState(lines, nextState);
     });
-
-    currentY += this.config.paragraphSpacing;
-
     return {
-      currentY,
-      currentColumn,
+      ...nextState,
+      currentY: nextState.currentY + this.config.paragraphSpacing,
+    };
+  }
+
+  private advanceSimulationState(
+    lines: LineLayout[],
+    state: LayoutSimulationState,
+  ): LayoutSimulationState {
+    if (isColumnBreakLayout(lines)) {
+      return this.advanceSimulationColumn(state);
+    }
+
+    let nextState = { ...state };
+    lines.forEach((line) => {
+      if (nextState.currentY + line.lineHeight > this.getColumnBottomYForPage(nextState.currentPage)) {
+        nextState = this.advanceSimulationColumn(nextState);
+      }
+      nextState = {
+        ...nextState,
+        currentY: nextState.currentY + line.lineHeight,
+        maxUsedColumn: line.items.length > 0 && line.type !== 'Empty' ?
+          Math.max(nextState.maxUsedColumn, nextState.currentColumn) :
+          nextState.maxUsedColumn,
+      };
+    });
+    return nextState;
+  }
+
+  private advanceSimulationColumn(state: LayoutSimulationState): LayoutSimulationState {
+    const nextColumn = state.currentColumn + 1;
+    const startsNewPage = nextColumn > (this.config.columnCount || 1);
+    const currentPage = startsNewPage ? state.currentPage + 1 : state.currentPage;
+    return {
+      ...state,
+      currentColumn: startsNewPage ? 1 : nextColumn,
       currentPage,
+      currentY: this.getMinYForPage(currentPage),
     };
   }
 

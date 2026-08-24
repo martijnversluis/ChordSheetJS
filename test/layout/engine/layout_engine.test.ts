@@ -1,3 +1,4 @@
+import ChordProParser from '../../../src/parser/chord_pro_parser';
 import Item from '../../../src/chord_sheet/item';
 import Line from '../../../src/chord_sheet/line';
 import Paragraph from '../../../src/chord_sheet/paragraph';
@@ -358,7 +359,7 @@ describe('LayoutEngine', () => {
       });
     });
 
-    it('returns empty array for song with no paragraphs', () => {
+    it('returns empty array and no used columns for song with no paragraphs', () => {
       const song = new Song(defaultMetadata);
       const config = createTestConfig();
       const engine = new LayoutEngine(song, measurer, config);
@@ -366,6 +367,60 @@ describe('LayoutEngine', () => {
       const result = engine.computeParagraphLayouts();
 
       expect(result).toEqual([]);
+      expect(engine.getComputedMaxUsedColumn()).toBe(0);
+    });
+
+    it('tracks the highest column containing content across the document', () => {
+      const song = createTestSong([createTallParagraph(20)]);
+      const config = createTestConfig({ columnBottomY: 120, columnCount: 2 });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      engine.computeParagraphLayouts();
+
+      expect(engine.getComputedMaxUsedColumn()).toBe(2);
+    });
+
+    it('tracks line overflow that the paragraph splitter leaves at column start', () => {
+      const song = createTestSong([createSimpleParagraph(3)]);
+      const config = createTestConfig({
+        minY: 50,
+        columnBottomY: 70,
+        columnCount: 2,
+      });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      engine.computeParagraphLayouts();
+
+      expect(engine.getComputedPageCount()).toBe(2);
+      expect(engine.getComputedMaxUsedColumn()).toBe(2);
+    });
+
+    it('advances the simulated page when line overflow exceeds one column', () => {
+      const song = createTestSong([createSimpleParagraph(3)]);
+      const config = createTestConfig({
+        minY: 50,
+        columnBottomY: 70,
+        columnCount: 1,
+      });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      engine.computeParagraphLayouts();
+
+      expect(engine.getComputedPageCount()).toBeGreaterThan(1);
+      expect(engine.getComputedMaxUsedColumn()).toBe(1);
+    });
+
+    it('ignores a trailing column break without later content', () => {
+      const song = new ChordProParser().parse([
+        '[C]First slot',
+        '{column_break}',
+      ].join('\n'));
+      const config = createTestConfig({ columnCount: 4 });
+      const engine = new LayoutEngine(song, measurer, config);
+
+      engine.computeParagraphLayouts();
+
+      expect(engine.getComputedMaxUsedColumn()).toBe(1);
     });
 
     it('handles single paragraph', () => {
