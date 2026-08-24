@@ -261,8 +261,7 @@ describe('LayoutEngine', () => {
         const song = createTestSong();
         const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'title_only' });
 
-        // eslint-disable-next-line no-new
-        new LayoutEngine(song, measurer, config);
+        const _engine = new LayoutEngine(song, measurer, config);
 
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('repeatedSections'));
       });
@@ -271,8 +270,7 @@ describe('LayoutEngine', () => {
         const song = createTestSong();
         const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'full' });
 
-        // eslint-disable-next-line no-new
-        new LayoutEngine(song, measurer, config);
+        const _engine = new LayoutEngine(song, measurer, config);
 
         expect(warnSpy).not.toHaveBeenCalled();
       });
@@ -281,8 +279,7 @@ describe('LayoutEngine', () => {
         const song = createTestSong();
         const config = createTestConfig({ repeatedSections: 'title_only' });
 
-        // eslint-disable-next-line no-new
-        new LayoutEngine(song, measurer, config);
+        const _engine = new LayoutEngine(song, measurer, config);
 
         expect(warnSpy).not.toHaveBeenCalled();
       });
