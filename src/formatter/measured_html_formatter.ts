@@ -70,25 +70,37 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
     return {
       layouts,
       totalPages: layoutEngine.getComputedPageCount(),
+      maxUsedColumn: layoutEngine.getComputedMaxUsedColumn(),
     };
   }
 
   private computePageAwareParagraphLayouts() {
     let result = this.computeParagraphLayouts();
+    this.renderer!.setContentFrame(result.maxUsedColumn);
 
-    if (!layoutNeedsTotalPageAwareAutoHeight(this.configuration.layout)) {
+    if (!this.needsPageAwareLayoutPass()) {
       return result;
     }
 
     for (let i = 0; i < 3; i += 1) {
       const nextResult = this.computeParagraphLayouts(result.totalPages);
-      if (nextResult.totalPages === result.totalPages) {
-        return nextResult;
-      }
+      const stable = nextResult.totalPages === result.totalPages &&
+        nextResult.maxUsedColumn === result.maxUsedColumn;
       result = nextResult;
+      this.renderer!.setContentFrame(result.maxUsedColumn);
+      if (stable) {
+        return result;
+      }
     }
 
     return result;
+  }
+
+  private needsPageAwareLayoutPass(): boolean {
+    const { layout } = this.configuration;
+    const hasAutoHeightSection = layout.header?.height === 'auto' || layout.footer?.height === 'auto';
+    return layoutNeedsTotalPageAwareAutoHeight(layout) ||
+      (layout.global.contentWidth === 'fit-columns' && hasAutoHeightSection);
   }
 
   /**

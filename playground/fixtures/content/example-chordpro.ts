@@ -1,5 +1,47 @@
 export const chordproExamples = [
   {
+    name: 'Fit Content to Columns',
+    content: `{title: Fit Content to Columns}
+{artist: ChordSheetJS Playground}
+{key: C}
+
+{comment: Verse 1}
+[C]Grace has found me
+[F]Love surrounds me
+[G]Hope is rising
+[C]You are with me
+
+{comment: Chorus 1}
+[F]We are singing
+[C]You are faithful
+[G]Now and always
+[C]You are good
+
+{comment: Verse 2}
+[C]Morning mercy
+[F]Every promise
+[G]Never failing
+[C]You are with me
+
+{comment: Chorus 2}
+[F]We are singing
+[C]You are faithful
+[G]Now and always
+[C]You are good
+
+{comment: Bridge}
+[Am]Through the waiting
+[F]Through the wonder
+[C]You are present
+[G]You are near
+
+{comment: Final Chorus}
+[F]We are singing
+[C]You are faithful
+[G]Now and always
+[C]You are good`,
+  },
+  {
     name: 'Chord Parts Demo',
     content: `{title: Chord Part Rendering}
 {artist: ChordSheetJS}
