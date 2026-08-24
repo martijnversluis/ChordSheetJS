@@ -628,19 +628,17 @@ Or set the song key before changing key:
         return;
       }
 
-      const tag = item as Tag;
-
-      if (!tag.isMetaTag(configuration?.metadata.additionalMetadataDirectives ?? [])) {
+      if (!item.isMetaTag(configuration?.metadata.additionalMetadataDirectives ?? [])) {
         return;
       }
 
-      const { selector, isNegated } = tag;
+      const { selector, isNegated } = item;
 
       if (selector && configuration && !testSelector({ selector, isNegated }, { metadata, configuration })) {
         return;
       }
 
-      metadata.add(tag.name, tag.value, tag.expression);
+      metadata.add(item.name, item.value, item.expression);
     });
 
     return metadata;
