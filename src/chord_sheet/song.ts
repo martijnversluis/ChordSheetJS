@@ -17,10 +17,9 @@ import SongBuilder from '../song_builder';
 import SongMapper from './song_mapper';
 import Tag from './tag';
 
-import { Accidental } from '../constants';
-import { TEXTBLOCK } from '../constants';
 import { testSelector } from '../helpers';
 import { ABC, LILYPOND, SVG } from '../constants';
+import { Accidental, TEXTBLOCK } from '../constants';
 import { CAPO, KEY } from './tags';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
