@@ -1,9 +1,13 @@
+import Composite from './chord_pro/composite';
 import Key from '../key';
 import MetadataAccessors from './metadata_accessors';
 import { isReadonlyTag } from './tag';
+import parseMetaValue from './chord_pro/parse_meta_value';
 import { CAPO, KEY, _KEY } from './tags';
 
 type MetadataProvider = () => string | null;
+
+export const DEFAULT_METADATA_SEPARATOR = ',';
 
 function appendValue(array: string[], value: string): void {
   if (!array.includes(value)) {
@@ -23,6 +27,16 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
   metadata: Record<string, string | string[]> = {};
 
   providers = new Map<string, MetadataProvider>();
+
+  /**
+   * The separator used to join multi-value metadata when evaluating `%{...}` meta expressions
+   * inside metadata values (like a `{title}` that references `%{artist}`).
+   */
+  separator: string = DEFAULT_METADATA_SEPARATOR;
+
+  private expressionCache = new Map<string, Composite | null>();
+
+  private evaluating = new Set<string>();
 
   constructor(metadata: Record<string, string | string[]> | Metadata = {}) {
     super();
@@ -48,9 +62,13 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     return key in this.metadata;
   }
 
-  add(key: string, value: string): void {
+  add(key: string, value: string, expression?: Composite | null): void {
     if (isReadonlyTag(key)) {
       return;
+    }
+
+    if (expression !== undefined) {
+      this.expressionCache.set(value, expression);
     }
 
     if (!(key in this.metadata)) {
@@ -114,6 +132,15 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
    * metadata.get('author.-1') // => 'Mary'
    * metadata.get('author.-2') // => 'John'
    *
+   * Any `%{...}` meta expressions in the value are evaluated against this metadata before it is
+   * returned. To read the raw, unevaluated value (with the `%{...}` expressions still in place),
+   * access the underlying store directly: `metadata.metadata[prop]`.
+   *
+   * @example
+   * const metadata = new Metadata({ artist: 'The Beatles', title: 'By %{artist}' });
+   * metadata.get('title')      // => 'By The Beatles'
+   * metadata.metadata['title'] // => 'By %{artist}'
+   *
    * @param prop the property name
    * @returns {Array<String>|String} the metadata value(s). If there is only one value, it will return a String,
    * else it returns an array of strings.
@@ -124,7 +151,7 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     }
 
     if (prop in this.metadata) {
-      return this.metadata[prop];
+      return this.evaluateValue(prop, this.metadata[prop]);
     }
 
     const provider = this.providers.get(prop);
@@ -134,6 +161,39 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
     }
 
     return this.getArrayItem(prop);
+  }
+
+  /**
+   * Evaluates any `%{...}` meta expressions inside a metadata value. Only scalar string values are
+   * evaluated; array values and values without meta expressions are returned unchanged. A guard
+   * prevents infinite recursion when a value references itself.
+   */
+  private evaluateValue(prop: string, value: string | string[]): string | string[] {
+    if (typeof value !== 'string' || this.evaluating.has(prop)) {
+      return value;
+    }
+
+    const expression = this.parseValue(value);
+
+    if (!expression) {
+      return value;
+    }
+
+    this.evaluating.add(prop);
+
+    try {
+      return expression.evaluate(this, this.separator);
+    } finally {
+      this.evaluating.delete(prop);
+    }
+  }
+
+  private parseValue(value: string): Composite | null {
+    if (!this.expressionCache.has(value)) {
+      this.expressionCache.set(value, parseMetaValue(value));
+    }
+
+    return this.expressionCache.get(value) ?? null;
   }
 
   /**
@@ -233,6 +293,7 @@ class Metadata extends MetadataAccessors implements Iterable<[string, string | s
   clone(): Metadata {
     const cloned = new Metadata(this.metadata);
     this.providers.forEach((provider, key) => cloned.setProvider(key, provider));
+    cloned.separator = this.separator;
     return cloned;
   }
 

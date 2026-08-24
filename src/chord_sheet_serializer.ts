@@ -3,6 +3,7 @@ import Chord from './chord';
 import ChordDefinition from './chord_definition/chord_definition';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
 import Comment from './chord_sheet/comment';
+import Composite from './chord_sheet/chord_pro/composite';
 import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
@@ -241,6 +242,9 @@ class ChordSheetSerializer {
     tag.selector = selector || null;
     tag.isNegated = isNegated || false;
 
+    const expression = this.buildTagExpression(astComponent);
+    if (expression) tag.expression = expression;
+
     if (chordDefinition) {
       tag.chordDefinition = new ChordDefinition(
         chordDefinition.name,
@@ -251,6 +255,16 @@ class ChordSheetSerializer {
     }
 
     return tag;
+  }
+
+  // `{meta: name value}` tags re-split their value into a name/value pair, so the expression that was
+  // parsed for the combined string no longer matches; returning undefined lets the tag derive it lazily.
+  private buildTagExpression(astComponent: SerializedTag): Composite | undefined {
+    if (!astComponent.expression || astComponent.name === 'meta') {
+      return undefined;
+    }
+
+    return new Composite(this.parseExpression(astComponent.expression) as Evaluatable[]);
   }
 
   parseComment(astComponent: SerializedComment): Comment {

@@ -299,6 +299,48 @@ Let it be, let it be, let it be, let it be`;
     });
   });
 
+  describe('meta expressions in directive values', () => {
+    it('expands meta expressions inside a title directive', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {meta: software ChordSheetJS}
+        {meta: version 15.6.1}
+        {title: Bug in %{software} version %{version}}
+
+        Body
+      `);
+
+      const rendered = new TextFormatter().format(song);
+
+      expect(rendered).toContain('BUG IN CHORDSHEETJS VERSION 15.6.1');
+    });
+
+    it('expands meta expressions inside a comment directive', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {meta: software ChordSheetJS}
+
+        {comment: Made with %{software}}
+      `);
+
+      const rendered = new TextFormatter().format(song);
+
+      expect(rendered).toContain('Made with ChordSheetJS');
+    });
+
+    it('expands meta expressions inside a section label attribute', () => {
+      const song = new ChordProParser().parse(heredoc`
+        {meta: version 15.6.1}
+
+        {start_of_verse: label="Verse %{version}"}
+        Line
+        {end_of_verse}
+      `);
+
+      const rendered = new TextFormatter().format(song);
+
+      expect(rendered).toContain('Verse 15.6.1');
+    });
+  });
+
   describe('conditional sections', () => {
     it('excludes sections with a non-matching selector', () => {
       const song = new ChordProParser().parse(heredoc`

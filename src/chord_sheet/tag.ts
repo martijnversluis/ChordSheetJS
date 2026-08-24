@@ -1,7 +1,9 @@
 import AstComponent from './ast_component';
 import ChordDefinition from '../chord_definition/chord_definition';
+import Composite from './chord_pro/composite';
 import TagInterpreter from './tag_interpreter';
 import TraceInfo from './trace_info';
+import parseMetaValue from './chord_pro/parse_meta_value';
 
 import {
   ALBUM,
@@ -183,6 +185,8 @@ class Tag extends AstComponent {
 
   _value = '';
 
+  _expression: Composite | null | undefined = undefined;
+
   chordDefinition?: ChordDefinition;
 
   selector: string | null = null;
@@ -326,6 +330,7 @@ class Tag extends AstComponent {
 
   set value(value) {
     this._value = value || '';
+    this._expression = undefined;
   }
 
   /**
@@ -335,6 +340,24 @@ class Tag extends AstComponent {
    */
   get value(): string {
     return `${this._value}`.trim();
+  }
+
+  set expression(expression: Composite | null) {
+    this._expression = expression;
+  }
+
+  /**
+   * The value parsed as an expression, so that any `%{...}` meta expressions it contains can be
+   * evaluated. Set by the parser; derived lazily for tags built by other means. `null` when the
+   * value contains no meta expressions.
+   * @type {Composite | null}
+   */
+  get expression(): Composite | null {
+    if (this._expression === undefined) {
+      this._expression = parseMetaValue(this.value);
+    }
+
+    return this._expression;
   }
 
   /**

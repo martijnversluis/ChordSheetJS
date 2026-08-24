@@ -20,7 +20,7 @@ interface BuildOptions {
   release: boolean;
 }
 
-function peggyGenerate(grammar: string, release: boolean): string {
+function peggyGenerate(grammar: string, release: boolean, allowedStartRules?: string[]): string {
   return peggy.generate(
     grammar,
     {
@@ -31,6 +31,7 @@ function peggyGenerate(grammar: string, release: boolean): string {
         skipTypeComputation: true,
       },
       trace: process.env.NODE_ENV === 'test' && !release,
+      ...(allowedStartRules ? { allowedStartRules } : {}),
     },
   );
 }
@@ -78,7 +79,7 @@ export default unibuild((u: Config) => {
     ],
     outfile: 'src/parser/chord_pro/peg_parser.ts',
     build: ({ release }: BuildOptions, ...grammars: string[]) => {
-      const parserSource = peggyGenerate(grammars.join('\n\n'), release);
+      const parserSource = peggyGenerate(grammars.join('\n\n'), release, ['ChordSheet', 'MetaValue']);
       return `import * as helpers from './helpers';\n\n${parserSource}`;
     },
   });

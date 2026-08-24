@@ -80,6 +80,29 @@ describe('ChordProParser', () => {
     expect(song.lines[0].items[0]).toBeTag('comment', 'Some {comment}');
   });
 
+  it('keeps meta expressions inside a directive value intact', () => {
+    const chordSheet = '{title: Bug in %{software} version %{version}}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeTag('title', 'Bug in %{software} version %{version}');
+  });
+
+  it('parses meta expressions in a directive value into an expression', () => {
+    const chordSheet = '{title: Bug in %{software} version %{version}}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.expression).not.toBeNull();
+    expect(tag.expression?.expressions).toHaveLength(4);
+  });
+
+  it('falls back to a literal value for an unbalanced meta expression', () => {
+    const chordSheet = '{title: 50%{ off}';
+    const song = new ChordProParser().parse(chordSheet);
+
+    expect(song.lines[0].items[0]).toBeTag('title', '50%{ off');
+  });
+
   it('correctly parses multiple whitespace characters', () => {
     const chordSheet = '[C]Let it be         ';
     const song = new ChordProParser().parse(chordSheet);

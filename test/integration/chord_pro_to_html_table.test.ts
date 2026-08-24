@@ -57,6 +57,20 @@ describe('chordpro to HTML with TABLEs', () => {
     expect(formatted).toEqual(expectedChordSheet);
   });
 
+  it('expands meta expressions inside directive values', () => {
+    const chordSheet = heredoc`
+      {meta: software ChordSheetJS}
+      {meta: version 15.6.1}
+      {title: Bug in %{software} version %{version}}
+      {comment: Made with %{software}}`;
+
+    const song = new ChordProParser().parse(chordSheet);
+    const formatted = new HtmlTableFormatter().format(song);
+
+    expect(formatted).toContain('<h1 class="title">Bug in ChordSheetJS version 15.6.1</h1>');
+    expect(formatted).toContain('Made with ChordSheetJS');
+  });
+
   it('does not fail on empty chord sheet', () => {
     const song = new ChordProParser().parse('');
     const formatted = new HtmlTableFormatter().format(song);

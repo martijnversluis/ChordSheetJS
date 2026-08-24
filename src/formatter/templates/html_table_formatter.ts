@@ -6,6 +6,7 @@ import { hasChordContents, isEvaluatable, isPresent } from '../../utilities';
 import {
   each,
   evaluate,
+  expandMeta,
   fontStyleTag,
   hasTextContents,
   imageTag,
@@ -55,7 +56,7 @@ export default (
               <table class="${ c.row }">
                 <tr>
                   <td class="${ c.labelWrapper }">
-                    <h3 class="${ c.label }">${ paragraph.label }</h3>
+                    <h3 class="${ c.label }">${ expandMeta(paragraph.label, metadata, configuration) }</h3>
                   </td>
                 </tr>
               </table>
@@ -109,7 +110,7 @@ export default (
                         `).elseWhen(isTag(item), () => `
                           ${ when(isComment(item), () => `
                             <td class="${ c.comment }"${ fontStyleTag(line.textFont) }>
-                              ${ pango.convert(item.value || '') }
+                              ${ pango.convert(expandMeta(item.value, metadata, configuration)) }
                             </td>
                           `) }
 
@@ -117,11 +118,14 @@ export default (
                             <td class="${ c.image }">${ imageTag(item) }</td>
                           `) }
 
-                          ${ when(item.hasRenderableLabel(), () => `
+                          ${ when(item.hasRenderableLabel(), () => {
+                            const label = expandMeta(item.label, metadata, configuration);
+                            return `
                             <td class="${ c.labelWrapper }">
-                              <h3 class="${ c.label }"${ fontStyleTag(line.textFont) }>${ item.label }</h3>
+                              <h3 class="${ c.label }"${ fontStyleTag(line.textFont) }>${ label }</h3>
                             </td>
-                          `) }
+                          `;
+                          }) }
                         `).elseWhen(isLiteral(item), () => `
                           <td class="${ c.literal }">${ item.string }</td>
                         `).elseWhen(isEvaluatable(item), () => `
