@@ -85,6 +85,7 @@ export interface LayoutConfig {
   displayLyricsOnly?: boolean;
   decapo: boolean;
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';
+  expandChorusDirective?: boolean;
 }
 
 export interface ParagraphLayoutResult {

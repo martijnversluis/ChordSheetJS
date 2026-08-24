@@ -4,6 +4,7 @@ import Paragraph from '../../../src/chord_sheet/paragraph';
 import Song from '../../../src/chord_sheet/song';
 import Tag from '../../../src/chord_sheet/tag';
 
+import * as utilities from '../../../src/utilities';
 import { LayoutEngine } from '../../../src/layout/engine/layout_engine';
 import { LayoutConfig, ParagraphLayoutResult } from '../../../src/layout/engine/types';
 import { Measurer, TextDimensions } from '../../../src/layout/measurement';
@@ -228,7 +229,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
 
       const engine = new LayoutEngine(song, measurer, config);
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
 
       expect(processedParagraphs.length).toBeLessThan(paragraphs.length);
     });
@@ -240,9 +241,48 @@ describe('LayoutEngine', () => {
       const config = createTestConfig();
 
       const engine = new LayoutEngine(song, measurer, config);
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
 
       expect(processedParagraphs.length).toEqual(paragraphs.length);
+    });
+
+    describe('warning about expandChorusDirective and repeatedSections', () => {
+      let warnSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        warnSpy = jest.spyOn(utilities, 'warn').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        warnSpy.mockRestore();
+      });
+
+      it('warns when expandChorusDirective is set with a collapsing repeatedSections mode', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'title_only' });
+
+        const _engine = new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('repeatedSections'));
+      });
+
+      it('does not warn when repeatedSections is "full"', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ expandChorusDirective: true, repeatedSections: 'full' });
+
+        const _engine = new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+      });
+
+      it('does not warn when expandChorusDirective is not set', () => {
+        const song = createTestSong();
+        const config = createTestConfig({ repeatedSections: 'title_only' });
+
+        const _engine = new LayoutEngine(song, measurer, config);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -457,7 +497,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
       const engine = new LayoutEngine(song, measurer, config);
 
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       expect(processedParagraphs.length).toBe(1);
     });
 
@@ -467,7 +507,7 @@ describe('LayoutEngine', () => {
       const config = createTestConfig({ repeatedSections: 'hide' });
       const engine = new LayoutEngine(song, measurer, config);
 
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       expect(processedParagraphs.length).toBe(2);
     });
 
@@ -511,7 +551,7 @@ describe('LayoutEngine', () => {
 
       // The original cached paragraph should not be modified
       // Check that the first paragraph in renderParagraphs (the original) still has its content
-      const processedParagraphs = (engine as any).song.renderParagraphs;
+      const processedParagraphs = (engine as any).paragraphs;
       const originalParagraph = processedParagraphs[0];
       const originalFirstLine = originalParagraph.lines[0];
 

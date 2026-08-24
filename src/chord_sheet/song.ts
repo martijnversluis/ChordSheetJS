@@ -17,10 +17,9 @@ import SongBuilder from '../song_builder';
 import SongMapper from './song_mapper';
 import Tag from './tag';
 
-import { Accidental } from '../constants';
-import { TEXTBLOCK } from '../constants';
 import { testSelector } from '../helpers';
 import { ABC, LILYPOND, SVG } from '../constants';
+import { Accidental, TEXTBLOCK } from '../constants';
 import { CAPO, KEY } from './tags';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
@@ -71,11 +70,17 @@ class Song extends MetadataAccessors {
     return this._bodyParagraphs;
   }
 
+  /** @deprecated No longer used internally; use {@link bodyParagraphs} or {@link expandedBodyParagraphs}. */
   get renderParagraphs(): Paragraph[] {
+    deprecate('renderParagraphs is deprecated, use bodyParagraphs or expandedBodyParagraphs instead');
     return this._renderParagraphs ?? this.bodyParagraphs;
   }
 
-  set renderParagraphs(paragraphs: Paragraph[]) { this._renderParagraphs = paragraphs; }
+  /** @deprecated No longer used internally. See {@link renderParagraphs}. */
+  set renderParagraphs(paragraphs: Paragraph[]) {
+    deprecate('renderParagraphs is deprecated, use bodyParagraphs or expandedBodyParagraphs instead');
+    this._renderParagraphs = paragraphs;
+  }
 
   selectRenderableItems(items: (Line | Paragraph)[]): (Line | Paragraph)[] {
     const copy = [...items];
