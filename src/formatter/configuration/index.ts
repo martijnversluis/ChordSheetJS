@@ -75,8 +75,10 @@ import {
 import { resolveFontConfiguration } from './font_resolver';
 
 import {
+  ContentWidth,
   MeasuredHtmlConfigurationProperties,
   MeasuredHtmlFormatterConfiguration,
+  MeasuredHtmlGlobalLayoutConfig,
   MeasuredHtmlLayoutConfig,
   measuredHtmlSpecificDefaults,
 } from './measured_html_configuration';
@@ -179,6 +181,8 @@ export {
   MeasurementBasedFormatterConfiguration,
 
   MeasuredHtmlLayoutConfig,
+  MeasuredHtmlGlobalLayoutConfig,
+  ContentWidth,
   MeasuredHtmlFormatterConfiguration,
   MeasuredHtmlConfigurationProperties,
   measuredHtmlSpecificDefaults,

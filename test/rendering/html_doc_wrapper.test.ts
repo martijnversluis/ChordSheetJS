@@ -173,6 +173,38 @@ describe('HtmlDocWrapper', () => {
     expect(element.style.top).toBe('60px');
   });
 
+  it('uses the same fitted content frame and local coordinates on every page', () => {
+    const wrapper = createWrapper();
+    wrapper.setContentFrame({ left: 125, sourceLeft: 45, width: 250 });
+
+    const first = new MockElement('span');
+    wrapper.addElement(first as unknown as any, 45, 60);
+    wrapper.newPage();
+    const second = new MockElement('span');
+    wrapper.addElement(second as unknown as any, 45, 80);
+
+    expect(wrapper.contentFrames).toHaveLength(2);
+    wrapper.contentFrames.forEach((frame) => {
+      expect(frame.className).toBe('chord-sheet-content');
+      expect(frame.style.left).toBe('125px');
+      expect(frame.style.width).toBe('250px');
+    });
+    expect(first.parentNode).toBe(wrapper.contentFrames[0]);
+    expect(second.parentNode).toBe(wrapper.contentFrames[1]);
+    expect(first.style.left).toBe('0px');
+    expect(second.style.left).toBe('0px');
+  });
+
+  it('removes fitted content frames when page width is restored', () => {
+    const wrapper = createWrapper();
+    wrapper.setContentFrame({ left: 125, sourceLeft: 45, width: 250 });
+
+    wrapper.setContentFrame(null);
+
+    expect(wrapper.contentFrames).toHaveLength(0);
+    expect(wrapper.getCurrentPage().children).toHaveLength(0);
+  });
+
   it('delegates text measurement to the DOM measurer', () => {
     const wrapper = createWrapper();
     const dimensions = wrapper.getTextDimensions('hello', fontConfig);
