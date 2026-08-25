@@ -372,7 +372,9 @@ class Key implements KeyProperties {
     if (minorResult) return minorResult;
 
     const converted = this.set({
-      referenceKeyGrade: Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
+      referenceKeyGrade: (this.isChordSymbol() || this.isChordSolfege()) ?
+        this.effectiveGrade :
+        Key.shiftGrade(this.effectiveGrade + keyObj.effectiveGrade),
       grade: 0,
       type,
       accidental: null,
