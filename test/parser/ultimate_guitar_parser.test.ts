@@ -256,6 +256,18 @@ describe('UltimateGuitarParser', () => {
     expect(result).toEqual(expected);
   });
 
+  it('does not misdetect a lyrics line as a chord line when it has extra spacing', () => {
+    const chordSheet = heredoc`
+      Eb   Eb/D  Eb/C   Eb/Bb  F/A        Bb
+      And  the   great  est    miracle of all
+    `;
+
+    const song = new UltimateGuitarParser().parse(chordSheet);
+    const result = new ChordProFormatter().format(song).trimEnd();
+
+    expect(result).toEqual('[Eb]And  [Eb/D]the   [Eb/C]great  [Eb/Bb]est    [F/A]miracle of [Bb]all');
+  });
+
   it('support CR line endings', () => {
     const chordSheet = '       Am         C/G\rLet it be, let it be,\r       F          C\rlet it be, let it be';
 
