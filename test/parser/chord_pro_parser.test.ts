@@ -164,6 +164,15 @@ describe('ChordProParser', () => {
     expect(tag.attributes).toEqual({ label: 'Verse 1' });
   });
 
+  it('parses directives with attributes without a colon', () => {
+    const chordSheet = '{start_of_verse label="Verse 1"}';
+    const song = new ChordProParser().parse(chordSheet);
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.name).toEqual('start_of_verse');
+    expect(tag.attributes).toEqual({ label: 'Verse 1' });
+  });
+
   it('parses meta directives', () => {
     const chordSheetWithCustomMetaData = `
       {meta: one_directive Foo}
