@@ -160,8 +160,7 @@ describe('ChordProParser', () => {
     const song = new ChordProParser().parse(chordSheet);
     const tag = song.lines[0].items[0] as Tag;
 
-    expect(tag.name).toEqual('start_of_verse');
-    expect(tag.attributes).toEqual({ label: 'Verse 1' });
+    expect(tag).toMatchObject({ name: 'start_of_verse', attributes: { label: 'Verse 1' } });
   });
 
   it('parses directives with attributes without a colon', () => {
@@ -169,8 +168,7 @@ describe('ChordProParser', () => {
     const song = new ChordProParser().parse(chordSheet);
     const tag = song.lines[0].items[0] as Tag;
 
-    expect(tag.name).toEqual('start_of_verse');
-    expect(tag.attributes).toEqual({ label: 'Verse 1' });
+    expect(tag).toMatchObject({ name: 'start_of_verse', attributes: { label: 'Verse 1' } });
   });
 
   it('parses meta directives', () => {
