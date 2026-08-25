@@ -211,8 +211,8 @@ TagColonWithValue
     }
 
 TagSpaceWithValue
-  = __ value:TagSimpleValue {
-      return value;
+  = &__ tagValue:TagValue {
+      return tagValue;
     }
 
 TagValue
