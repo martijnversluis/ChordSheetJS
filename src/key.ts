@@ -416,7 +416,10 @@ class Key implements KeyProperties {
       preferredAccidental: accidental || keyObj.accidental,
     });
 
-    return scaleDegree ? converted.spellScaleDegree(keyObj, scaleDegree, type) : converted.normalizeEnharmonics(keyObj);
+    if (scaleDegree) return converted.spellScaleDegree(keyObj, scaleDegree, type);
+
+    const normalized = converted.normalizeEnharmonics(keyObj);
+    return accidental ? normalized.set({ preferredAccidental: accidental, accidental: null }) : normalized;
   }
 
   isDiatonicInContext(context: Key): boolean {
