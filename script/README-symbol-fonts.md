@@ -7,7 +7,7 @@ under the SIL Open Font License 1.1.
 ## Build
 
 ```sh
-yarn fonts:build
+yarn unibuild build symbolFonts --force
 yarn fonts:check
 ```
 

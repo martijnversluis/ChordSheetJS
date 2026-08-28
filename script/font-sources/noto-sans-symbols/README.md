@@ -13,5 +13,5 @@ NotoSansSymbols-Regular.ttf  aedeec1cd0514930aeeafc4a88a6deff83cda1e6b58086f0b9b
 NotoSansSymbols-Bold.ttf     5682f6c88d6199623edf026f67a8722697e8c5f409e5249477594e409d657eb0
 ```
 
-Run `yarn fonts:build` after changing the generator or replacing these source faces.
+Run `yarn unibuild build symbolFonts --force` after changing the generator or replacing these source faces.
 The generated derivative is renamed to ChordSheet Symbols and remains under the OFL.
