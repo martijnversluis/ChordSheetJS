@@ -116,6 +116,18 @@ export default unibuild((u: Config) => {
     build: () => `export default '${version}';${os.EOL}`,
   });
 
+  const symbolFonts = u.asset('symbolFonts', {
+    input: [
+      'script/build_symbol_fonts.ts',
+      'script/font-sources/noto-sans-symbols/NotoSansSymbols-Regular.ttf',
+      'script/font-sources/noto-sans-symbols/NotoSansSymbols-Bold.ttf',
+      'package.json',
+      'yarn.lock',
+    ],
+    outfile: 'src/formatter/pdf_formatter/fonts/ChordSheetSymbolsFonts.base64.ts',
+    command: 'yarn tsx script/build_symbol_fonts.ts',
+  });
+
   const codeGeneratedAssets: Asset[] = [
     suffixNormalizeMapping,
     scales,
@@ -124,6 +136,7 @@ export default unibuild((u: Config) => {
     chordsOverWordsParser,
     chordDefinitionParser,
     versionFile,
+    symbolFonts,
   ];
 
   const jsBuild = u.asset('sources', {

@@ -9,7 +9,7 @@ const expected = buildSymbolFonts().module;
 const actual = readFileSync(GENERATED, 'utf8');
 
 if (actual !== expected) {
-  console.error('ChordSheet Symbols output is stale. Run: yarn fonts:build');
+  console.error('ChordSheet Symbols output is stale. Run: yarn unibuild build symbolFonts --force');
   process.exit(1);
 }
 
