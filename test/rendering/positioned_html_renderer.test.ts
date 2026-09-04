@@ -358,6 +358,26 @@ describe('PositionedHtmlRenderer', () => {
       expect(renderer.getFontConfiguration('text')).toEqual(config.fonts.text);
     });
 
+    it('resolves token fonts from the configured chord font', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 900, color: 'red',
+          },
+        } as any,
+      });
+
+      expect(renderer.getFontConfiguration('rhythmSymbol')).toMatchObject({
+        name: 'Custom', size: 17, weight: 500, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('barline')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+      expect(renderer.getFontConfiguration('instruction')).toMatchObject({
+        name: 'Custom', size: 17, weight: 900, color: 'red',
+      });
+    });
+
     it('provides document metadata including dimensions and page info', () => {
       const { renderer, doc } = createRenderer();
       (renderer as any).renderTime = 3.5;
@@ -502,6 +522,90 @@ describe('PositionedHtmlRenderer', () => {
       expect(currentPage).toBe(1);
     });
 
+    it('renders chord-line tokens with semantic types and font roles', () => {
+      const { renderer } = createRenderer({
+        fonts: {
+          chord: {
+            name: 'Custom', size: 17, weight: 700, color: 'red',
+          },
+          rhythmSymbol: { inherit: 'chord', weight: 500 },
+          barline: { inherit: 'chord' },
+          instruction: { inherit: 'chord' },
+          noChord: { inherit: 'chord' },
+        } as any,
+      });
+      renderer.initialize();
+
+      const pairs = ['D2', '/', '|', ':||', '(6x)', 'N.C.']
+        .map((chords) => new ChordLyricsPair(chords));
+      const line = new Line();
+      pairs.forEach((pair) => line.addItem(pair));
+
+      (renderer as any).renderLines([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: pairs.map((item) => ({ item, width: 50, chordHeight: 17 })),
+        line,
+      }]);
+
+      const tokens = (renderer as any).elements.map((element: any) => ({
+        content: element.content,
+        type: element.type,
+        weight: element.style.weight,
+        tokenVariant: element.tokenVariant,
+      }));
+
+      expect(tokens).toEqual([
+        {
+          content: 'D2', type: 'chord', weight: 700, tokenVariant: undefined,
+        },
+        {
+          content: '/', type: 'rhythm-symbol', weight: 500, tokenVariant: 'continuation',
+        },
+        {
+          content: '|', type: 'barline', weight: 500, tokenVariant: 'single',
+        },
+        {
+          content: ':||', type: 'barline', weight: 700, tokenVariant: 'repeat-end',
+        },
+        {
+          content: '(6x)', type: 'instruction', weight: 700, tokenVariant: 'repeat-count',
+        },
+        {
+          content: 'N.C.', type: 'no-chord', weight: 700, tokenVariant: 'marker',
+        },
+      ]);
+    });
+
+    it('does not process an explicitly classified non-chord token as a chord', () => {
+      const { renderer } = createRenderer();
+      renderer.initialize();
+      const processChords = jest.spyOn(renderer as any, 'processChords').mockReturnValue('E#');
+      const pair = new ChordLyricsPair(
+        'F',
+        '',
+        '',
+        null,
+        false,
+        { kind: 'instruction', variant: null },
+      );
+      const line = new Line();
+      line.addItem(pair);
+
+      (renderer as any).renderLineItems([{
+        type: 'ChordLyricsPair',
+        lineHeight: 20,
+        items: [{ item: pair, width: 50, chordHeight: 10 }],
+        line,
+      }]);
+
+      const { elements } = renderer as any;
+      expect(elements).toEqual(expect.arrayContaining([
+        expect.objectContaining({ content: 'F', type: 'instruction' }),
+      ]));
+      expect(processChords).not.toHaveBeenCalled();
+    });
+
     it('delegates measurements and calculates chord baseline', () => {
       const { renderer, doc } = createRenderer();
       const font = renderer.getFontConfiguration('text');
@@ -617,6 +721,56 @@ describe('PositionedHtmlRenderer', () => {
       expect(conditionCalls[0].metadata.pages).toBe(doc.totalPages);
       expect(conditionCalls[0].metadata.capoKey).toBeDefined();
       expect(song.metadata.getSingle('key')).toBe('C');
+    });
+
+    it('uses page-specific auto header height for content start', () => {
+      const firstPageRule = { page: { first: true } };
+      const laterPageRule = { page: { greater_than: 1 } };
+      const { renderer, config } = createRenderer({
+        layout: {
+          header: {
+            height: 'auto',
+            content: [
+              {
+                type: 'text',
+                value: 'Large first page title',
+                style: {
+                  name: 'Arial', style: 'bold', size: 20, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 64,
+                },
+                condition: firstPageRule,
+              },
+              {
+                type: 'text',
+                value: 'Small running title',
+                style: {
+                  name: 'Arial', style: 'normal', size: 10, color: '#000000',
+                },
+                position: {
+                  x: 'left', y: 0, height: 18,
+                },
+                condition: laterPageRule,
+              },
+            ],
+          },
+        } as any,
+      });
+
+      ConditionMock.mockImplementation((rule: any, metadata: Record<string, any>) => ({
+        evaluate: () => {
+          if (rule === firstPageRule) return metadata.page === 1;
+          if (rule === laterPageRule) return metadata.page > 1;
+          return true;
+        },
+      }));
+
+      (renderer as any).currentPage = 1;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 64);
+
+      (renderer as any).currentPage = 2;
+      expect((renderer as any).getMinY()).toBe(config.layout.global.margins.top + 18);
     });
 
     it('applies layout font styles to rendered header text', () => {
