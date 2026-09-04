@@ -61,10 +61,16 @@ export interface LayoutRenderingBackend {
 /**
  * Context for rendering layout sections (headers/footers)
  */
+export interface HorizontalBounds {
+  left: number;
+  right: number;
+}
+
 export interface LayoutRenderingContext {
   metadata: Metadata;
   margins: Margins;
   extraMetadata: Record<string, string | string[]>;
+  horizontalBounds?: HorizontalBounds;
 }
 
 /**
@@ -308,7 +314,8 @@ export class LayoutSectionRenderer {
     const { style, position } = lineItem;
     this.backend.setLineStyle(style);
 
-    const x = this.context.margins.left + (position.x || 0);
+    const { left } = this.getHorizontalBounds();
+    const x = left + (position.x || 0);
     const y = sectionY + position.y;
     const lineWidth = position.width === 'auto' ? this.getAvailableWidth() : position.width;
 
@@ -332,17 +339,18 @@ export class LayoutSectionRenderer {
    * Calculates the X position based on alignment
    */
   calculateX(alignment: Alignment | number, width = 0, offsetX = 0): number {
+    const { left, right } = this.getHorizontalBounds();
     switch (alignment) {
       case 'center':
-        return this.backend.pageSize.width / 2 - width / 2 + offsetX;
+        return left + (right - left) / 2 - width / 2 + offsetX;
       case 'right':
-        return this.backend.pageSize.width - this.context.margins.right - width + offsetX;
+        return right - width + offsetX;
       case 'left':
       default:
         if (typeof alignment === 'number') {
-          return this.context.margins.left + alignment + offsetX;
+          return left + alignment + offsetX;
         }
-        return this.context.margins.left + offsetX;
+        return left + offsetX;
     }
   }
 
@@ -350,7 +358,15 @@ export class LayoutSectionRenderer {
    * Gets the available width for content
    */
   private getAvailableWidth(): number {
-    return this.backend.pageSize.width - this.context.margins.left - this.context.margins.right;
+    const { left, right } = this.getHorizontalBounds();
+    return right - left;
+  }
+
+  private getHorizontalBounds(): HorizontalBounds {
+    return this.context.horizontalBounds || {
+      left: this.context.margins.left,
+      right: this.backend.pageSize.width - this.context.margins.right,
+    };
   }
 }
 
