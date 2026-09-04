@@ -2,6 +2,16 @@ export const measuredHtmlConfigs = [
   {
     name: 'Html Config',
     content: {
+      useUnicodeModifiers: true,
+      chordRendering: {
+        quality: {
+          fontSizeRatio: 0.9,
+        },
+        extensions: {
+          fontSizeRatio: 0.85,
+          baselineShiftRatio: 0.3,
+        },
+      },
       fonts: {
         title: {
           name: 'Arial',

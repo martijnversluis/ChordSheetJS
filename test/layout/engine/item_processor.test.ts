@@ -163,6 +163,141 @@ describe('ItemProcessor', () => {
       expect(chordHeight).toBeGreaterThanOrEqual(0);
     });
 
+    it('measures raised chord extensions without moving the baseline', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } },
+        },
+      });
+      const line = createLine([createChordLyricsPair('Cmaj7', 'Hello')]);
+      const [measured] = processor.measureLineItems(line);
+
+      expect(measured.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(measured.chordHeight).toBeCloseTo(19.68);
+    });
+
+    it('measures quality and extension styles with their resolved fonts', () => {
+      const { processor, measurer } = createProcessor({
+        config: {
+          chordRendering: {
+            quality: { font: { style: 'normal' }, fontSizeRatio: 0.8 },
+            extensions: { baselineShiftRatio: 0.35, fontSizeRatio: 0.7 },
+          },
+        },
+      });
+      const measureWidth = jest.spyOn(measurer, 'measureTextWidth');
+      const line = createLine([createChordLyricsPair('Cmaj7', 'Hello')]);
+
+      processor.measureLineItems(line);
+
+      const qualityFont = measureWidth.mock.calls.find(([text]) => text === 'maj')?.[1];
+      const extensionFont = measureWidth.mock.calls.find(([text]) => text === '7')?.[1];
+      expect(qualityFont).toMatchObject({ style: 'normal' });
+      expect(qualityFont?.size).toBeCloseTo(9.6);
+      expect(extensionFont?.size).toBeCloseTo(8.4);
+    });
+
+    it('keeps the root baseline stable when a chord part is lowered', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { extensions: { baselineShiftRatio: -0.4 } },
+        },
+      });
+      const line = createLine([
+        createChordLyricsPair('Cm7', ''),
+        createChordLyricsPair('C', ''),
+      ]);
+      const [styled, plain] = processor.measureLineItems(line);
+
+      expect(styled.chordAscent).toBe(0);
+      expect(styled.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(plain.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(styled.chordHeight).toBeCloseTo(19.2);
+    });
+
+    it('keeps the root baseline stable when an unshifted chord part is larger', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { quality: { fontSizeRatio: 2 } },
+        },
+      });
+      const line = createLine([
+        createChordLyricsPair('Cm', ''),
+        createChordLyricsPair('C', ''),
+      ]);
+      const [styled, plain] = processor.measureLineItems(line);
+
+      expect(styled.chordAscent).toBeCloseTo(14.4);
+      expect(styled.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(plain.chordBaselineHeight).toBeCloseTo(14.4);
+      expect(styled.chordHeight).toBeCloseTo(28.8);
+    });
+
+    it('does not style semantic non-chord tokens as chords', () => {
+      const { processor } = createProcessor({
+        config: {
+          chordRendering: { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } },
+        },
+      });
+      const instruction = new ChordLyricsPair('C7', '', null, null, false, {
+        kind: 'instruction',
+        variant: null,
+      });
+      const line = createLine([instruction]);
+      const [measured] = processor.measureLineItems(line);
+
+      expect(measured.chordHeight).toBeCloseTo(14.4);
+      expect(measured.chordBaselineHeight).toBeCloseTo(14.4);
+    });
+
+    it('uses the configured suffix normalization consistently for shaping', () => {
+      const chordRendering = { extensions: { baselineShiftRatio: 0.8, fontSizeRatio: 0.7 } };
+      const normalized = createProcessor({
+        config: { chordRendering, normalizeChords: true },
+      });
+      const preserved = createProcessor({
+        config: { chordRendering, normalizeChords: true, normalizeChordSuffix: false },
+      });
+      const line = createLine([createChordLyricsPair('Csus2', '')]);
+
+      const [normalizedItem] = normalized.processor.measureLineItems(line);
+      const [preservedItem] = preserved.processor.measureLineItems(line);
+
+      expect(normalizedItem.adjustedChord).toBe('C2');
+      expect(normalizedItem.chordHeight).toBeGreaterThan(normalizedItem.chordBaselineHeight!);
+      expect(preservedItem.adjustedChord).toBe('Csus2');
+      expect(preservedItem.chordHeight).toBe(preservedItem.chordBaselineHeight);
+    });
+
+    it('measures Unicode fallback runs with their selected fonts', () => {
+      const { processor, measurer } = createProcessor({
+        config: {
+          useUnicodeModifiers: true,
+          unicodeFallback: {
+            enabled: true,
+            preferChordSymbols: true,
+            warnOnMissingGlyph: false,
+            fallbackFonts: {
+              normal: 'ChordSheetSymbols',
+              bold: 'ChordSheetSymbols',
+              italic: 'ChordSheetSymbols',
+              bolditalic: 'ChordSheetSymbols',
+            },
+          },
+          glyphChecker: {
+            hasGlyph: (codePoint, font) => codePoint < 128 || font.name.startsWith('ChordSheetSymbols'),
+          },
+        },
+      });
+      jest.spyOn(measurer, 'measureTextWidth').mockImplementation((text, font: any) => (
+        text.length * (font.name.startsWith('ChordSheetSymbols') ? 5 : 8)
+      ));
+
+      const metrics = processor.measureChordMetrics('F♯', baseFonts.chord);
+
+      expect(metrics.width).toBe(13);
+    });
+
     it('measures soft line breaks', () => {
       const { processor } = createProcessor();
       const line = new Line();
@@ -519,6 +654,21 @@ describe('ItemProcessor', () => {
       const result = processor.measureLineItems(line);
 
       expect(result[0].chordHeight).toBe(9.6);
+    });
+
+    it('measures mute rhythm symbols with the no-chord font role', () => {
+      const fonts = {
+        ...createTestConfig().fonts,
+        rhythmSymbol: { ...baseFonts.chord, size: 8 },
+        noChord: { ...baseFonts.chord, size: 16 },
+      };
+      const { processor } = createProcessor({ config: { fonts } });
+      const line = new Line();
+      line.addChordLyricsPair(new ChordLyricsPair('x', ''));
+
+      const result = processor.measureLineItems(line);
+
+      expect(result[0].chordHeight).toBe(19.2);
     });
 
     it('returns pair when lyrics empty', () => {

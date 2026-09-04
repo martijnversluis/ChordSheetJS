@@ -146,7 +146,7 @@ class ChordLyricsPair {
   }
 
   get styleRole() {
-    return chordLineStyleRole(this.tokenKind, this.chords);
+    return chordLineStyleRole(this.tokenKind, this.chords, this.tokenVariant);
   }
 
   setLyrics(lyrics: string): ChordLyricsPair {
