@@ -502,11 +502,11 @@ __metadata:
   linkType: hard
 
 "@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.7.0":
-  version: 6.7.1
-  resolution: "@codemirror/state@npm:6.7.1"
+  version: 6.7.3
+  resolution: "@codemirror/state@npm:6.7.3"
   dependencies:
     "@marijn/find-cluster-break": "npm:^1.0.0"
-  checksum: 10c0/2490b87759d1f4f27f4573a084414bf30bf9ed5dccaa75485334a2d132c039f2255e3bca564fb07c6760a16bf86cc29532475d9fb75cfdb0771b330fe71be4e7
+  checksum: 10c0/7b50e6d20e246fa0b589fe81001fe9e81e86f800cb15327b5abf0dcd78f5055db209d3a02e89221420f9450c514eec68f62dc4b38e1088347651313a44e44873
   languageName: node
   linkType: hard
 
