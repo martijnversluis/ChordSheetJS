@@ -1,11 +1,24 @@
 import Line from '../../src/chord_sheet/line';
 import Song from '../../src/chord_sheet/song';
 
-import { Key } from '../../src';
 import { eachTestCase } from '../util/utilities';
-import { renderChord } from '../../src/helpers';
+import { ChordLyricsPair, Key } from '../../src';
+import { renderChord, renderChordLyricsPair } from '../../src/helpers';
 
 describe('renderChord helper', () => {
+  it('does not render chord-like text with an explicit non-chord classification', () => {
+    const pair = new ChordLyricsPair('C7', '', '', null, false, {
+      kind: 'instruction',
+      variant: null,
+    });
+    const song = new Song();
+    song.metadata.add('key', 'G');
+    const line = new Line();
+    line.transposeKey = 'A';
+
+    expect(renderChordLyricsPair(pair, line, song)).toBe('C7');
+  });
+
   describe('chord transposition symbol', () => {
     eachTestCase(`
       #  | songKey | capo | lineKey | lineTransposeKey | renderKey | decapo | outcome |

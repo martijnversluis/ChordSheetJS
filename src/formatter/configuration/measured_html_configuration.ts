@@ -28,6 +28,11 @@ export interface MeasuredHtmlFormatterConfiguration extends MeasurementBasedForm
     container?: string;
     page?: string;
     chord?: string;
+    rhythmSymbol?: string;
+    barline?: string;
+    instruction?: string;
+    noChord?: string;
+    annotation?: string;
     lyrics?: string;
     sectionLabel?: string;
     comment?: string;

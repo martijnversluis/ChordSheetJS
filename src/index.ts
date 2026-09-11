@@ -66,6 +66,7 @@ import { LayoutEngine } from './layout/engine';
 export { default as Chord } from './chord';
 export { default as ChordDefinition } from './chord_definition/chord_definition';
 export { default as ChordLyricsPair } from './chord_sheet/chord_lyrics_pair';
+export * from './chord_sheet/chord_line_token';
 export { default as ChordProFormatter } from './formatter/chord_pro_formatter';
 export { default as MeasuredHtmlFormatter } from './formatter/measured_html_formatter';
 export { default as ChordProParser } from './parser/chord_pro_parser';

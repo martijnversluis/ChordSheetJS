@@ -62,6 +62,11 @@ export interface LayoutConfig {
   width: number;
   fonts: {
     chord: FontConfiguration;
+    rhythmSymbol?: FontConfiguration;
+    barline?: FontConfiguration;
+    instruction?: FontConfiguration;
+    noChord?: FontConfiguration;
+    annotation?: FontConfiguration;
     lyrics: FontConfiguration;
     comment: FontConfiguration;
     sectionLabel: FontConfiguration;
@@ -75,6 +80,8 @@ export interface LayoutConfig {
 
   // Add column and page layout information
   minY: number;
+  totalPages?: number;
+  getMinYForPage?: (page: number, totalPages: number) => number;
   columnWidth: number;
   columnCount?: number;
   columnSpacing: number;
@@ -82,6 +89,7 @@ export interface LayoutConfig {
   maxColumnWidth?: number;
   paragraphSpacing: number;
   columnBottomY: number;
+  getColumnBottomYForPage?: (page: number, totalPages: number) => number;
   displayLyricsOnly?: boolean;
   decapo: boolean;
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';

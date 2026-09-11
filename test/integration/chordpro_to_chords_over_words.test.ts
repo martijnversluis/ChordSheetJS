@@ -30,7 +30,7 @@ describe('chordpro to chords over words', () => {
 
     const expectedChordOverWords = normalizeLineEndings(
       fs.readFileSync('./test/fixtures/kingdom_chords_over_words.txt', 'utf8'),
-    );
+    ).replace(/\n$/, '');
 
     const song = new ChordProParser().parse(chordpro);
     const actualChordsOverWords = new ChordsOverWordsFormatter().format(song);

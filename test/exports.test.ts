@@ -48,6 +48,7 @@ import ChordSheetJS, {
   TextFormatter,
   UltimateGuitarParser,
   VERSE,
+  classifyChordLineToken,
   formatterConfiguration,
   keyHelpers,
   pangoToHtml,
@@ -88,6 +89,7 @@ describe('exports', () => {
     expect(ChordSheetParser).toBeDefined();
     expect(ChordSheetSerializer).toBeDefined();
     expect(ChordsOverWordsParser).toBeDefined();
+    expect(classifyChordLineToken).toBeDefined();
     expect(Comment).toBeDefined();
     expect(Composite).toBeDefined();
     expect(Formatter).toBeDefined();

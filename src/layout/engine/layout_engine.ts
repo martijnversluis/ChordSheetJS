@@ -35,6 +35,7 @@ interface HandleRepeatedSectionParams {
 interface LayoutSimulationState {
   currentY: number;
   currentColumn: number;
+  currentPage: number;
 }
 
 interface LineTypeCounts {
@@ -57,6 +58,8 @@ export class LayoutEngine {
   private sectionCache: Map<string, Paragraph> = new Map<string, Paragraph>();
 
   private readonly paragraphs: Paragraph[];
+
+  private computedPageCount = 1;
 
   constructor(
     private song: Song,
@@ -417,15 +420,22 @@ export class LayoutEngine {
   public computeParagraphLayouts(): ParagraphLayoutResult[] {
     const layouts: ParagraphLayoutResult[] = [];
     let state: LayoutSimulationState = {
-      currentY: this.config.minY,
+      currentY: this.getMinYForPage(1),
       currentColumn: 1,
+      currentPage: 1,
     };
 
     this.paragraphs.forEach((paragraph) => {
       state = this.processParagraphLayout(paragraph, layouts, state);
     });
 
+    this.computedPageCount = state.currentPage;
+
     return layouts;
+  }
+
+  public getComputedPageCount(): number {
+    return this.computedPageCount;
   }
 
   private processParagraphLayout(
@@ -483,15 +493,15 @@ export class LayoutEngine {
   ): LineLayout[][] {
     const totalHeight = calculateTotalHeight(lineLayouts);
 
-    if (state.currentY + totalHeight <= this.config.columnBottomY) {
+    if (state.currentY + totalHeight <= this.getColumnBottomYForPage(state.currentPage)) {
       return lineLayouts;
     }
 
     return this.paragraphSplitter.splitParagraph(
       lineLayouts,
       state.currentY,
-      this.config.minY,
-      this.config.columnBottomY,
+      this.getMinYForPage(state.currentPage),
+      this.getColumnBottomYForPage(state.currentPage),
       chordLyricLineCount,
     );
   }
@@ -500,15 +510,16 @@ export class LayoutEngine {
     layouts: LineLayout[][],
     state: LayoutSimulationState,
   ): LayoutSimulationState {
-    let { currentY, currentColumn } = state;
+    let { currentY, currentColumn, currentPage } = state;
 
     layouts.forEach((lines) => {
       if (isColumnBreakLayout(lines)) {
         currentColumn += 1;
         if (currentColumn > (this.config.columnCount || 1)) {
           currentColumn = 1;
+          currentPage += 1;
         }
-        currentY = this.config.minY;
+        currentY = this.getMinYForPage(currentPage);
       } else {
         const linesHeight = lines.reduce((sum, line) => sum + line.lineHeight, 0);
         currentY += linesHeight;
@@ -520,7 +531,20 @@ export class LayoutEngine {
     return {
       currentY,
       currentColumn,
+      currentPage,
     };
+  }
+
+  private getMinYForPage(page: number): number {
+    return this.config.getMinYForPage?.(page, this.getTotalPages()) ?? this.config.minY;
+  }
+
+  private getColumnBottomYForPage(page: number): number {
+    return this.config.getColumnBottomYForPage?.(page, this.getTotalPages()) ?? this.config.columnBottomY;
+  }
+
+  private getTotalPages(): number {
+    return this.config.totalPages ?? Number.MAX_SAFE_INTEGER;
   }
 
   private addParagraphLayout(

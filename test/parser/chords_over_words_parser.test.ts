@@ -179,12 +179,25 @@ describe('ChordsOverWordsParser', () => {
     expect(line2Pairs[2]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[3]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[4]).toBeChordLyricsPair('|', '');
-    expect((line2Pairs[4] as ChordLyricsPair).isRhythmSymbol).toBe(true);
+    expect((line2Pairs[4] as ChordLyricsPair).tokenKind).toBe('barline');
     expect(line2Pairs[5]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[6]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[7]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[8]).toBeChordLyricsPair('/', '');
     expect(line2Pairs[9]).toBeChordLyricsPair('|', '');
+  });
+
+  it('supports repeat barlines and counts in chords-only sections', () => {
+    const chordOverWords = 'D2 / | || |. |: :| :|: :|| (6x) Bm7 / || D5 :|| (4x)';
+    const song = new ChordsOverWordsParser().parse(chordOverWords);
+    const pairs = song.lines[0].items as ChordLyricsPair[];
+
+    expect(pairs.map((pair) => pair.chords)).toEqual([
+      'D2', '/', '|', '||', '|.', '|:', ':|', ':|:', ':||', '(6x)', 'Bm7', '/', '||', 'D5', ':||', '(4x)',
+    ]);
+    expect(pairs.filter((pair) => pair.tokenKind !== 'chord').map((pair) => pair.chords)).toEqual([
+      '/', '|', '||', '|.', '|:', ':|', ':|:', ':||', '(6x)', '/', '||', ':||', '(4x)',
+    ]);
   });
 
   it('supports two chords only sections with rhythm symbols and chords above eachother', () => {
