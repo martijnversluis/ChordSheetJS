@@ -24,7 +24,7 @@ Line
       return helpers.buildLine([
           lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
           ...helpers.combineChordLyricsPairs(tokens.flat(), options.chopFirstWord),
-          chords ? { type: 'chordLyricsPair', chords, lyrics: '' } : null,
+          chords ? helpers.buildChordLyricsPair(chords, '') : null,
           comment ? { type: 'comment', comment } : null,
         ].filter(x => x !== null),
       );

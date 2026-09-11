@@ -145,7 +145,7 @@ class MockItemProcessor extends ItemProcessor {
           const chords = lyricsOnly ? '' : item.chords || '';
           const lyricsWidth = this.measurer.measureTextWidth(normalizedLyrics, this.config.fonts.lyrics);
           const chordWidth = chords ? this.measurer.measureTextWidth(chords, this.config.fonts.chord) : 0;
-          const pair = new ChordLyricsPair(chords, normalizedLyrics);
+          const pair = new ChordLyricsPair(chords, normalizedLyrics, item.annotation, null, item.isRhythmSymbol);
           return {
             item: pair,
             width: Math.max(lyricsWidth, chordWidth),
@@ -245,6 +245,10 @@ function createTestLine(items: (ChordLyricsPair | SoftLineBreak | Tag)[]): Line 
 
 function createSoftBreak(content = ' '): SoftLineBreak {
   return new SoftLineBreak(content);
+}
+
+function createRhythmSymbol(symbol: string): ChordLyricsPair {
+  return new ChordLyricsPair(symbol, null, null, null, true);
 }
 
 describe('LineBreaker', () => {
@@ -406,6 +410,87 @@ describe('LineBreaker', () => {
         const totalWidth = layout.items.reduce((sum, item) => sum + item.width, 0);
         expect(totalWidth).toBeLessThanOrEqual(40 + 1);
       });
+    });
+
+    it('moves leading rhythm symbols to the previous line when they fit without overflow', () => {
+      const line = createTestLine([
+        createChordLyricsPair('C', ''),
+        createRhythmSymbol('|'),
+        createChordLyricsPair('A/E', ''),
+      ]);
+
+      const layouts = lineBreaker.breakLineIntoLayouts(line, 20);
+
+      expect((layouts[0].items[layouts[0].items.length - 1].item as ChordLyricsPair).chords).toBe('|');
+      expect((layouts[1].items[0].item as ChordLyricsPair).chords).toBe('A/E');
+    });
+
+    it('preserves soft line break spacing when moving a rhythm symbol to the previous line', () => {
+      const line = createTestLine([
+        createChordLyricsPair('C', ''),
+        createSoftBreak(),
+        createRhythmSymbol('|'),
+        createChordLyricsPair('A/E', ''),
+      ]);
+
+      const layouts = lineBreaker.breakLineIntoLayouts(line, 30);
+
+      expect(layouts[0].items.map(({ item }) => {
+        if (item instanceof ChordLyricsPair) return item.chords;
+        if (item instanceof SoftLineBreak) return item.content;
+        return '';
+      })).toEqual(['C', ' ', '|']);
+    });
+
+    it('ignores trailing chord spacing when checking whether a line-ending rhythm symbol fits', () => {
+      const line = createTestLine([
+        createChordLyricsPair('C', ''),
+        createRhythmSymbol('|'),
+        createChordLyricsPair('A/E', ''),
+      ]);
+
+      itemProcessor.measureLineItemsSpy.mockImplementationOnce(() => [
+        { item: new ChordLyricsPair('C', ''), width: 24, chordHeight: 10 },
+        { item: createRhythmSymbol('|'), width: 32, chordHeight: 10 },
+        { item: new ChordLyricsPair('A/E', ''), width: 24, chordHeight: 10 },
+      ]);
+
+      const layouts = lineBreaker.breakLineIntoLayouts(line, 32);
+
+      expect((layouts[0].items[layouts[0].items.length - 1].item as ChordLyricsPair).chords).toBe('|');
+      expect((layouts[1].items[0].item as ChordLyricsPair).chords).toBe('A/E');
+    });
+
+    it('breaks earlier instead of overflowing to keep a rhythm symbol off the next line start', () => {
+      const line = createTestLine([
+        createChordLyricsPair('C', ''),
+        createChordLyricsPair('F#m', ''),
+        createRhythmSymbol('|'),
+        createChordLyricsPair('A/E', ''),
+      ]);
+
+      const layouts = lineBreaker.breakLineIntoLayouts(line, 35);
+
+      expect((layouts[0].items[layouts[0].items.length - 1].item as ChordLyricsPair).chords).toBe('C');
+      expect((layouts[1].items[0].item as ChordLyricsPair).chords).toBe('F#m');
+    });
+
+    it('preserves soft line break spacing when breaking earlier before a rhythm symbol', () => {
+      const line = createTestLine([
+        createChordLyricsPair('C', ''),
+        createChordLyricsPair('F#m', ''),
+        createSoftBreak(),
+        createRhythmSymbol('|'),
+        createChordLyricsPair('A/E', ''),
+      ]);
+
+      const layouts = lineBreaker.breakLineIntoLayouts(line, 45);
+
+      expect(layouts[1].items.map(({ item }) => {
+        if (item instanceof ChordLyricsPair) return item.chords;
+        if (item instanceof SoftLineBreak) return item.content;
+        return '';
+      })).toEqual(['F#m', ' ', '|']);
     });
   });
 

@@ -45,7 +45,7 @@ export class LineBreaker {
       return this.handleNoSoftBreaks(items, availableWidth, line);
     }
 
-    const { firstChunk, secondChunk } = this.splitAtBestSoftBreak(items, softBreakIndices, totalWidth);
+    const { firstChunk, secondChunk } = this.splitAtBestSoftBreak(items, softBreakIndices, totalWidth, availableWidth);
 
     if (firstChunk.length === 0) {
       return this.breakContent(secondChunk, availableWidth, line);
@@ -73,8 +73,10 @@ export class LineBreaker {
       return this.handleOversizedFirstItem(items, availableWidth, line);
     }
 
-    const firstChunk = items.slice(0, breakIndex);
-    const secondChunk = items.slice(breakIndex);
+    let firstChunk = items.slice(0, breakIndex);
+    let secondChunk = items.slice(breakIndex);
+
+    ({ firstChunk, secondChunk } = this.avoidLeadingRhythmSymbol(firstChunk, secondChunk, availableWidth));
 
     this.removeTrailingComma(firstChunk);
 
@@ -165,30 +167,175 @@ export class LineBreaker {
     items: MeasuredItem[],
     softBreakIndices: number[],
     totalWidth: number,
+    availableWidth: number,
   ): { firstChunk: MeasuredItem[]; secondChunk: MeasuredItem[] } {
-    const targetWidth = totalWidth / 2;
-    const breakOptions = softBreakIndices.map((idx) => ({
-      index: idx,
-      widthUpToBreak: this.getWidthUpToIndex(items, idx),
-    }));
-    const bestBreak = breakOptions.reduce((best, current) => {
-      const currentDistance = Math.abs(current.widthUpToBreak - targetWidth);
-      const bestDistance = Math.abs(best.widthUpToBreak - targetWidth);
+    const bestBreak = this.findBestSoftBreak(items, softBreakIndices, totalWidth);
+    const softBreak = items[bestBreak.index];
 
-      if (currentDistance === bestDistance) {
-        return current.index > best.index ? current : best;
-      }
+    let firstChunk = items.slice(0, bestBreak.index);
+    let secondChunk = items.slice(bestBreak.index + 1);
 
-      return currentDistance < bestDistance ? current : best;
-    });
-
-    const firstChunk = items.slice(0, bestBreak.index);
-    const secondChunk = items.slice(bestBreak.index + 1);
+    ({ firstChunk, secondChunk } = this.avoidLeadingRhythmSymbol(
+      firstChunk,
+      secondChunk,
+      availableWidth,
+      softBreak,
+    ));
 
     this.removeTrailingComma(firstChunk);
     this.capitalizeNextItem(secondChunk, secondChunk, 0);
 
     return { firstChunk, secondChunk };
+  }
+
+  private findBestSoftBreak(items: MeasuredItem[], softBreakIndices: number[], totalWidth: number) {
+    const targetWidth = totalWidth / 2;
+    const breakOptions = softBreakIndices.map((idx) => ({
+      index: idx,
+      widthUpToBreak: this.getWidthUpToIndex(items, idx),
+    }));
+
+    return breakOptions.reduce((best, current) => this.selectBetterSoftBreak(best, current, targetWidth));
+  }
+
+  private selectBetterSoftBreak<T extends { index: number; widthUpToBreak: number }>(
+    best: T,
+    current: T,
+    targetWidth: number,
+  ): T {
+    const currentDistance = Math.abs(current.widthUpToBreak - targetWidth);
+    const bestDistance = Math.abs(best.widthUpToBreak - targetWidth);
+
+    if (currentDistance === bestDistance) {
+      return current.index > best.index ? current : best;
+    }
+
+    return currentDistance < bestDistance ? current : best;
+  }
+
+  /**
+   * Avoid wrapping a line so that the next visual line starts with a rhythm symbol.
+   *
+   * Prefer keeping the leading rhythm symbol(s) with the previous line, but only
+   * when the previous line still fits. If they do not fit, break earlier by
+   * moving the nearest preceding non-rhythm chord to the next line. Width checks
+   * are recalculated in the final line context so trailing chord-spacing is not
+   * counted for a line-ending rhythm symbol such as `|`.
+   */
+  private avoidLeadingRhythmSymbol(
+    firstChunk: MeasuredItem[],
+    secondChunk: MeasuredItem[],
+    availableWidth: number,
+    separator: MeasuredItem | null = null,
+  ): { firstChunk: MeasuredItem[]; secondChunk: MeasuredItem[] } {
+    if (!this.shouldAvoidLeadingRhythmSymbol(secondChunk)) {
+      return { firstChunk, secondChunk };
+    }
+
+    return this.tryMoveLeadingRhythmSymbolsToFirstChunk(firstChunk, secondChunk, availableWidth, separator) ||
+      this.movePrecedingChordToSecondChunk(firstChunk, secondChunk, separator);
+  }
+
+  private shouldAvoidLeadingRhythmSymbol(secondChunk: MeasuredItem[]): boolean {
+    const leadingRhythmSymbolCount = this.countLeadingRhythmSymbols(secondChunk);
+    return this.startsWithRhythmSymbol(secondChunk) &&
+      this.hasChordAfterLeadingRhythmSymbols(secondChunk, leadingRhythmSymbolCount);
+  }
+
+  private tryMoveLeadingRhythmSymbolsToFirstChunk(
+    firstChunk: MeasuredItem[],
+    secondChunk: MeasuredItem[],
+    availableWidth: number,
+    separator: MeasuredItem | null,
+  ): { firstChunk: MeasuredItem[]; secondChunk: MeasuredItem[] } | null {
+    const leadingRhythmSymbolCount = this.countLeadingRhythmSymbols(secondChunk);
+    const separatorItems = separator ? [separator] : [];
+    const laterFirstChunk = [...firstChunk, ...separatorItems, ...secondChunk.slice(0, leadingRhythmSymbolCount)];
+    const laterSecondChunk = secondChunk.slice(leadingRhythmSymbolCount);
+
+    if (this.calculateLineContextWidth(laterFirstChunk) <= availableWidth) {
+      return { firstChunk: laterFirstChunk, secondChunk: laterSecondChunk };
+    }
+
+    return null;
+  }
+
+  private movePrecedingChordToSecondChunk(
+    firstChunk: MeasuredItem[],
+    secondChunk: MeasuredItem[],
+    separator: MeasuredItem | null,
+  ): { firstChunk: MeasuredItem[]; secondChunk: MeasuredItem[] } {
+    const precedingChordIndex = this.findLastNonRhythmChordIndex(firstChunk);
+
+    if (precedingChordIndex <= 0) {
+      return { firstChunk, secondChunk };
+    }
+
+    return {
+      firstChunk: firstChunk.slice(0, precedingChordIndex),
+      secondChunk: [...firstChunk.slice(precedingChordIndex), ...this.separatorItems(separator), ...secondChunk],
+    };
+  }
+
+  private separatorItems(separator: MeasuredItem | null): MeasuredItem[] {
+    return separator ? [separator] : [];
+  }
+
+  private startsWithRhythmSymbol(items: MeasuredItem[]): boolean {
+    return this.isRhythmSymbolItem(items[0]);
+  }
+
+  private countLeadingRhythmSymbols(items: MeasuredItem[]): number {
+    let count = 0;
+
+    while (count < items.length && this.isRhythmSymbolItem(items[count])) {
+      count += 1;
+    }
+
+    return count;
+  }
+
+  private hasChordAfterLeadingRhythmSymbols(items: MeasuredItem[], leadingRhythmSymbolCount: number): boolean {
+    return this.isNonRhythmChordItem(items[leadingRhythmSymbolCount]);
+  }
+
+  private findLastNonRhythmChordIndex(items: MeasuredItem[]): number {
+    for (let index = items.length - 1; index >= 0; index -= 1) {
+      if (this.isNonRhythmChordItem(items[index])) {
+        return index;
+      }
+    }
+
+    return -1;
+  }
+
+  private isRhythmSymbolItem(item: MeasuredItem | undefined): boolean {
+    return item?.item instanceof ChordLyricsPair && item.item.isRhythmSymbol;
+  }
+
+  private isNonRhythmChordItem(item: MeasuredItem | undefined): boolean {
+    return item?.item instanceof ChordLyricsPair &&
+      !item.item.isRhythmSymbol &&
+      (item.item.chords || '').trim() !== '';
+  }
+
+  private calculateLineContextWidth(items: MeasuredItem[]): number {
+    return items.reduce((width, item, index) => {
+      const nextItem = items[index + 1] || null;
+      return width + this.recalculateWidthForLineContext(item, nextItem);
+    }, 0);
+  }
+
+  private recalculateWidthForLineContext(item: MeasuredItem, nextItem: MeasuredItem | null): number {
+    if (item.item instanceof ChordLyricsPair) {
+      return this.recalculateChordLyricWidth(item, nextItem);
+    }
+
+    if (!nextItem && item.item instanceof SoftLineBreak) {
+      return 0;
+    }
+
+    return item.width;
   }
 
   private removeTrailingComma(items: MeasuredItem[]): void {
