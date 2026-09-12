@@ -121,6 +121,17 @@ export default tseslint.config(
     },
   },
   {
+    files: ['examples/terminal/**/*.ts'],
+    languageOptions: { globals: { Bun: 'readonly' } },
+  },
+  {
+    files: ['examples/terminal/*.spec.ts'],
+    rules: {
+      'max-lines-per-function': 'off',
+      'max-statements': 'off',
+    },
+  },
+  {
     files: ['test/fixtures/**/*.ts'],
     rules: {
       'max-len': 'off',
