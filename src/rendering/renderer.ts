@@ -1,9 +1,11 @@
 import Chord from '../chord';
+import ChordLyricsPair from '../chord_sheet/chord_lyrics_pair';
 import Dimensions from '../layout/engine/dimensions';
 import Line from '../chord_sheet/line';
+import SoftLineBreak from '../chord_sheet/soft_line_break';
 import Song from '../chord_sheet/song';
+import Tag from '../chord_sheet/tag';
 import { isChordTokenKind } from '../chord_sheet/chord_line_token';
-import { ChordLyricsPair, SoftLineBreak, Tag } from '../index';
 import { LineLayout, MeasuredItem } from '../layout/engine';
 import { isColumnBreak, isComment, renderChord } from '../template_helpers';
 
@@ -27,7 +29,6 @@ const FONT_SECTIONS_BY_TYPE: Record<string, FontSection> = {
   'sectionLabel': 'sectionLabel',
   'comment': 'comment',
 };
-
 /**
  * Interface representing paragraph layouts from the layout engine
  */
@@ -36,7 +37,6 @@ export interface ParagraphLayout {
   addSpacing: boolean;
   sectionType: string;
 }
-
 /**
  * PositionedElement represents an element with absolute positioning
  */

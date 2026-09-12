@@ -109,5 +109,9 @@
       "optional": true
     }
   },
-  "packageManager": "yarn@4.2.2"
+  "packageManager": "yarn@4.2.2",
+  "dependencies": {
+    "graphemer": "1.4.0",
+    "string-width": "4.2.3"
+  }
 }

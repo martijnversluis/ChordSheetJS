@@ -5,13 +5,11 @@ import Item from '../../chord_sheet/item';
 import { ParagraphType } from '../../constants';
 import { BaseFormatterConfiguration, ConfigurationProperties } from './base_configuration';
 
-import {
-  ChordLyricsPair,
-  Comment,
-  Line,
-  SoftLineBreak,
-  Tag,
-} from '../../index';
+import type ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
+import type Comment from '../../chord_sheet/comment';
+import type Line from '../../chord_sheet/line';
+import type SoftLineBreak from '../../chord_sheet/soft_line_break';
+import type Tag from '../../chord_sheet/tag';
 
 export interface Margins {
   top: number;

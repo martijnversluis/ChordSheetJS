@@ -220,3 +220,6 @@ export {
 };
 
 export default Configuration;
+export type {
+  TerminalConfigurationInput, TerminalLayoutConfig, TerminalFormatterConfiguration,
+} from './terminal_configuration';

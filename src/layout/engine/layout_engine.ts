@@ -1,3 +1,9 @@
+import { positionedParagraphs, splitPositionedLine } from './positioned_source';
+
+import {
+  PlacementGeometry, PlacementPlanner, PositionedLayout, SourceLineLayout,
+} from './placement_planner';
+
 import Item from '../../chord_sheet/item';
 import { ItemProcessor } from './item_processor';
 import { LayoutFactory } from './layout_factory';
@@ -418,8 +424,42 @@ export class LayoutEngine {
   }
 
   /**
-   * Compute layouts for all paragraphs in the song
+   * Opt-in placement using already-resolved geometry and pre-measurement paragraph policy.
+   * Does not reuse legacy paginated units or their four-/five-line splitting heuristics.
    */
+  public computePositionedLayout(
+    geometry: PlacementGeometry,
+    prepare?: (paragraph: Paragraph, occurrence: number) => { paragraph: Paragraph; lyricsOnly?: boolean } | null,
+  ): PositionedLayout {
+    const planner = new PlacementPlanner(geometry);
+    positionedParagraphs(this.song, this.config.expandChorusDirective).forEach((original, occurrence) => {
+      const selected = prepare ? prepare(original, occurrence) : { paragraph: original };
+      if (!selected) return;
+      const lines = this.measurePositionedParagraph(
+        selected.paragraph,
+        occurrence,
+        geometry.columnWidth,
+        selected.lyricsOnly ?? this.config.displayLyricsOnly,
+      );
+      planner.appendParagraph(lines);
+    });
+    this.computedPageCount = planner.result.pageCount;
+    this.computedMaxUsedColumn = Math.max(0, ...planner.result.placements.map((line) => line.column));
+    return planner.result;
+  }
+
+  private measurePositionedParagraph(
+    paragraph: Paragraph,
+    occurrence: number,
+    width: number,
+    lyricsOnly = false,
+  ): SourceLineLayout[] {
+    return paragraph.lines.flatMap((line, index) => splitPositionedLine(line).flatMap((segment) => {
+      const layouts = this.lineBreaker.breakLineIntoLayouts(segment, width, lyricsOnly);
+      return layouts.map((layout) => ({ layout, source: { paragraph: occurrence, line: index } }));
+    }));
+  }
+
   public computeParagraphLayouts(): ParagraphLayoutResult[] {
     const layouts: ParagraphLayoutResult[] = [];
     let state: LayoutSimulationState = {
