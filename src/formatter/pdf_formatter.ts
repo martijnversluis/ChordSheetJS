@@ -114,6 +114,11 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       useUnicodeModifiers: this.configuration.useUnicodeModifiers,
       normalizeChords: this.configuration.normalizeChords,
       normalizeChordSuffix: this.configuration.normalizeChordSuffix,
+      chordRendering: this.configuration.chordRendering,
+      unicodeFallback: this.configuration.unicodeFallback,
+      glyphChecker: {
+        hasGlyph: (codePoint, font) => this.renderer!.getDoc().hasGlyph(codePoint, font),
+      },
 
       // Column and page layout information
       totalPages,
