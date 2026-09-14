@@ -5,14 +5,14 @@ import Key from '../../src/key';
 const examples = {
   'Do': {
     '1': 'Do',
-    'b1': 'Si',
+    'b1': 'Dob',
     '#1': 'Do#',
     '2': 'Re',
     '#2': 'Re#',
     '7': 'Si',
 
     'I': 'Do',
-    'bI': 'Si',
+    'bI': 'Dob',
     '#I': 'Do#',
     'II': 'Re',
     '#II': 'Re#',
@@ -34,16 +34,27 @@ const examples = {
   'Mib': {
     '2': 'Fa',
     '#2': 'Fa#',
-    'b2': 'Mi',
+    'b2': 'Fab',
 
     'II': 'Fa',
     '#II': 'Fa#',
-    'bII': 'Mi',
+    'bII': 'Fab',
   },
 };
 
 describe('Key', () => {
   describe('#toChordSolfege', () => {
+    it.each([
+      ['2m', 1, 'Do', 'Mibm'],
+      ['2m', -1, 'Do', 'Rebm'],
+      ['ii', 1, 'Do', 'Mibm'],
+      ['ii', -1, 'Do', 'Rebm'],
+    ])('uses the current minor degree after transposing %s by %s', (input, delta, context, expected) => {
+      const converted = Key.parseOrFail(input).transpose(delta).toChordSolfegeString(Key.parseOrFail(context));
+
+      expect(converted).toEqual(expected);
+    });
+
     Object.entries(examples).forEach(([songKeyString, conversions]) => {
       const songKey = Key.parseOrFail(songKeyString);
 

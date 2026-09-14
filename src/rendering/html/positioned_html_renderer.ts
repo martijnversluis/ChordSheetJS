@@ -380,7 +380,9 @@ class PositionedHtmlRenderer extends Renderer {
   ): void {
     let { chords } = item;
     const { lyrics } = item;
-    if (chords && isChordTokenKind(item.tokenKind)) chords = this.processChords(chords, line);
+    if (chords && isChordTokenKind(item.tokenKind)) {
+      chords = this.processChords(item.chord ?? chords, line);
+    }
 
     if (!this.isLyricsOnly() && chords) {
       const chordBaseline = this.getChordBaseline(item, chordsYOffset, items, chords);
