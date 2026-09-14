@@ -21,10 +21,18 @@ function visible(block: TerminalTextBlock, page: number, pages: number): boolean
   }
 }
 
-function template(text: string, metadata: Metadata, page: number, pages: number, separator: string): string {
+function template(
+  text: string,
+  metadata: Metadata,
+  page: number,
+  pages: number,
+  separator: string,
+  width: number,
+): string {
   return text.replace(/\{([\w-]+)\}/g, (_match, key: string) => {
     if (key === 'page') return String(page);
     if (key === 'pages') return String(pages);
+    if (key === 'rule') return '.'.repeat(width);
     const value = metadata.get(key);
     return Array.isArray(value) ? value.join(separator) : String(value ?? '');
   });
@@ -54,7 +62,14 @@ export class TerminalBlocks {
   }
 
   private textLines(block: TerminalTextBlock, page: number, pages: number): string[] {
-    const text = template(block.text, this.metadata, page, pages, this.config.metadata.separator);
+    const text = template(
+      block.text,
+      this.metadata,
+      page,
+      pages,
+      this.config.metadata.separator,
+      this.geometry.contentWidth,
+    );
     const lines = this.measurer.splitTextToSize(text, this.geometry.contentWidth);
     return lines.slice(0, block.overflow === 'clip' ? 1 : block.height);
   }

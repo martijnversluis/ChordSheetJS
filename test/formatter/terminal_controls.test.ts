@@ -85,6 +85,28 @@ describe('TerminalFormatter cell controls', () => {
     expect(titles.map((span) => span.text)).not.toContain('second');
     expect(new ChordProFormatter().format(song)).toBe(before);
   });
+  it('builds multiline metadata headers with a viewport-width ASCII rule and blank row', () => {
+    const document = new TerminalFormatter({
+      width: 24,
+      height: 8,
+      layout: {
+        header: {
+          height: 5,
+          text: '{title}\n{artist}\nKey {key} | BPM {tempo}\n{rule}',
+        },
+      },
+    }).format(parse('{title: Song}\n{artist: Artist}\n{key:C}\n{tempo:120}\n[C]word'));
+    expect(document.pages[0].rows.map((row) => row.spans.map((span) => span.text))).toEqual([
+      ['Song'],
+      ['Artist'],
+      ['Key C | BPM 120'],
+      ['.'.repeat(24)],
+      [],
+      ['C'],
+      ['word'],
+      [],
+    ]);
+  });
   it('supports metadata separators/custom directives and semantic style overrides', () => {
     const document = new TerminalFormatter({
       height: 4,

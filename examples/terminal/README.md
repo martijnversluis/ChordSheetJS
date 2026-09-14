@@ -106,8 +106,9 @@ by the adapter.
 ### Fixed-height metadata blocks
 
 `header`/`footer` require `height` (nonnegative integer) and `text`. Text may contain
-`{title}`, `{artist}`, other metadata keys, and final `{page}`/`{pages}` substitutions.
-Unknown keys become empty strings. `metadata.separator` joins multi-valued metadata;
+`{title}`, `{artist}`, other metadata keys, final `{page}`/`{pages}` substitutions,
+and `{rule}` for a viewport-width ASCII-dot divider. Unknown keys become empty strings.
+`metadata.separator` joins multi-valued metadata;
 `metadata.additionalMetadataDirectives` enables custom fields. Existing metadata
 expression/provider behavior is reused, not a general JavaScript template engine.
 
@@ -157,8 +158,10 @@ exactly one `TerminalDocument.pages` entry at a time. Left/up/PageUp/`k` move ba
 right/down/PageDown/space/`j` move forward; Home/End jump to the first/last page.
 `+`/`-` transpose, and `q`/Ctrl-C exit. Page navigation clamps at document boundaries.
 
-Its example formatter reserves a one-row top/bottom margin and three cells on each
-side, with four cells between columns. It uses a responsive 32–52-cell column-width
+Its example formatter renders available artist information below the title, followed
+by one line of available key/BPM/time/capo metadata, a full-width ASCII-dot divider,
+and a blank row before the chart. It reserves a one-row top/bottom margin and three
+cells on each side, with four cells between columns. It uses a responsive 32–52-cell column-width
 band: a narrow viewport gets one readable column, then wider viewports add only as many
 columns as needed. Resize recomputes page and column geometry from the actual viewport width and
 height, then relocates the old page's first source occurrence/line when possible. Each

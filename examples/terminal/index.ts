@@ -3,7 +3,9 @@ import { TerminalScrollView } from './scroll_view';
 import { createTestRenderer } from '@opentui/core/testing';
 import { stringWidth } from 'bun';
 
-import { ChordProParser, TerminalFormatter } from '../../lib/module.js';
+import {
+  ChordProParser, type Song, TerminalFormatter, type TerminalTextBlock,
+} from '../../lib/module.js';
 import { type CliRenderer, type KeyEvent, createCliRenderer } from '@opentui/core';
 import { getTerminalSongExample, terminalSongExamples } from './songs';
 
@@ -15,7 +17,27 @@ const smokeSong = parser.parse(
   ).join('\n')}`,
 );
 
-function createFormatter(): TerminalFormatter {
+function hasMetadata(value: string | string[] | null): boolean {
+  return Array.isArray(value) ? value.length > 0 : !!value;
+}
+
+function headerFor(song: Song): TerminalTextBlock | undefined {
+  const lines: string[] = [];
+  if (song.title) lines.push('{title} — {page}/{pages}');
+  if (hasMetadata(song.artist)) lines.push('{artist}');
+  const details = [
+    [song.key, 'Key {key}'],
+    [song.tempo, 'BPM {tempo}'],
+    [song.time, 'Time {time}'],
+    [song.capo, 'Capo {capo}'],
+  ].filter(([value]) => hasMetadata(value as string | string[] | null)).map(([, text]) => text);
+  if (details.length) lines.push(details.join('  |  '));
+  if (!lines.length) return undefined;
+  lines.push('{rule}');
+  return { height: lines.length + 1, text: lines.join('\n') };
+}
+
+function createFormatter(song: Song): TerminalFormatter {
   return new TerminalFormatter({
     cellWidth: stringWidth,
     layout: {
@@ -24,7 +46,7 @@ function createFormatter(): TerminalFormatter {
           top: 1, right: 3, bottom: 1, left: 3,
         },
       },
-      header: { height: 1, text: '{title} — {page}/{pages}', overflow: 'clip' },
+      header: headerFor(song),
       sections: { global: { minColumnWidth: 32, maxColumnWidth: 52, columnSpacing: 4 } },
     },
   });
@@ -76,7 +98,7 @@ function bindKeys(renderer: CliRenderer, view: TerminalPageView | TerminalScroll
 async function smoke(): Promise<void> {
   const setup = await createTestRenderer({ width: 40, height: 10 });
   try {
-    const view = new TerminalScrollView(setup.renderer, smokeSong, createFormatter());
+    const view = new TerminalScrollView(setup.renderer, smokeSong, createFormatter(smokeSong));
     await setup.renderOnce();
     view.reflow();
     await setup.renderOnce();
@@ -95,8 +117,8 @@ async function interactive(slug?: string, scrolling = false): Promise<void> {
   const renderer = await createCliRenderer();
   const song = parser.parse(example.content);
   const view = scrolling ?
-    new TerminalScrollView(renderer, song, createFormatter()) :
-    new TerminalPageView(renderer, song, createFormatter());
+    new TerminalScrollView(renderer, song, createFormatter(song)) :
+    new TerminalPageView(renderer, song, createFormatter(song));
   bindKeys(renderer, view);
 }
 
