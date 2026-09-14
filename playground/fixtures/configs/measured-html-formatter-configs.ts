@@ -1,5 +1,69 @@
 export const measuredHtmlConfigs = [
   {
+    name: 'Fit content to adaptive columns (ENG-1888)',
+    content: {
+      fonts: {
+        text: { size: 16 },
+        chord: { size: 14 },
+      },
+      layout: {
+        global: {
+          margins: {
+            top: 14,
+            bottom: 12,
+            left: 32,
+            right: 32,
+          },
+          contentWidth: 'fit-columns',
+        },
+        sections: {
+          global: {
+            paragraphSpacing: 12,
+            linePadding: 6,
+            chordLyricSpacing: 0,
+            chordSpacing: 2,
+            columnWidth: 0,
+            columnSpacing: 40,
+            minColumnWidth: 180,
+            maxColumnWidth: 220,
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'Page-width content (comparison)',
+    content: {
+      fonts: {
+        text: { size: 16 },
+        chord: { size: 14 },
+      },
+      layout: {
+        global: {
+          margins: {
+            top: 14,
+            bottom: 12,
+            left: 32,
+            right: 32,
+          },
+          contentWidth: 'page',
+        },
+        sections: {
+          global: {
+            paragraphSpacing: 12,
+            linePadding: 6,
+            chordLyricSpacing: 0,
+            chordSpacing: 2,
+            columnWidth: 0,
+            columnSpacing: 40,
+            minColumnWidth: 180,
+            maxColumnWidth: 220,
+          },
+        },
+      },
+    },
+  },
+  {
     name: 'Html Config',
     content: {
       useUnicodeModifiers: true,
