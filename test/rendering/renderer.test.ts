@@ -197,8 +197,15 @@ describe('Renderer base class', () => {
       super.moveToNextColumn();
     }
 
-    public override addTextElement(text: string, x: number, y: number, type: string): void {
-      super.addTextElement(text, x, y, type);
+    public override addTextElement(
+      text: string,
+      x: number,
+      y: number,
+      type: string,
+      fontType = type,
+      tokenVariant?: string,
+    ): void {
+      super.addTextElement(text, x, y, type, fontType, tokenVariant);
     }
 
     public override getColumnStartX(): number {
@@ -237,6 +244,14 @@ describe('Renderer base class', () => {
     }
 
     public override getFontConfiguration(objectType: string): FontConfiguration {
+      if (objectType === 'rhythmSymbol') {
+        return { ...this.config.fonts.chord, weight: 500 };
+      }
+
+      if (['barline', 'instruction', 'noChord', 'annotation'].includes(objectType)) {
+        return this.config.fonts.chord;
+      }
+
       if (objectType === 'chord') {
         return this.config.fonts.chord;
       }
@@ -634,6 +649,28 @@ describe('Renderer base class', () => {
       expect(elements).toHaveLength(2);
       expect(elements[0]).toMatchObject({ type: 'chord', content: 'C' });
       expect(elements[1]).toMatchObject({ type: 'lyrics', content: 'Hello' });
+    });
+
+    it('renders semantic chord-line elements with their resolved font roles', () => {
+      renderer.initialize();
+      const pairs = ['/', '|', ':||', '(6x)', 'N.C.'].map((token) => new ChordLyricsPair(token, ''));
+      const line = createLineLayout(
+        pairs.map((pair) => createMeasuredItem(pair, 20, 12)),
+        12,
+        createLineWithItems(pairs),
+      );
+
+      renderer.renderLines([line]);
+
+      expect(renderer.getElements()).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          type: 'rhythm-symbol', content: '/', style: expect.objectContaining({ weight: 500 }),
+        }),
+        expect.objectContaining({ type: 'barline', content: '|', style: expect.objectContaining({ weight: 500 }) }),
+        expect.objectContaining({ type: 'barline', content: ':||', style: config.fonts.chord }),
+        expect.objectContaining({ type: 'instruction', content: '(6x)', style: config.fonts.chord }),
+        expect.objectContaining({ type: 'no-chord', content: 'N.C.', style: config.fonts.chord }),
+      ]));
     });
 
     it('skips chords in lyrics-only mode', () => {

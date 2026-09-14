@@ -7,7 +7,8 @@ import { GRID } from '../../src/constants';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 
 import {
-  ABC, ChordProParser, ChordsOverWordsFormatter, LILYPOND, TAB, TEXTBLOCK,
+  ABC, ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser, LILYPOND, TAB,
+  TEXTBLOCK,
 } from '../../src';
 
 import {
@@ -94,7 +95,7 @@ describe('ChordsOverWordsFormatter', () => {
       D       strong   G  A           G  D/F# Em D
       Whisper words of wisdom, let it be
 
-      Breakdown
+      comment: Breakdown
       Em               F              C  G
       Whisper words of wisdom, let it be
 
@@ -152,7 +153,7 @@ Let it be, let it be, let it be, let it be
 Re      strong   Sol La          Sol Re/Fa# Mim Re
 Whisper words of wis dom, let it be
 
-Breakdown
+comment: Breakdown
 Mim              Fa             Do Sol
 Whisper words of wisdom, let it be
 
@@ -201,6 +202,145 @@ Textblock line 2`;
       Let it be, let it be, let it be, let it be`;
 
     expect(formatter.format(songWithIntro)).toEqual(expectedChordSheet);
+  });
+
+  it('preserves directive names by default', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {st: The Subtitle}
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      t: My Song
+      st: The Subtitle
+
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+
+    expect(new ChordsOverWordsFormatter().format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('normalizes directive names to long names when configured', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {st: The Subtitle}
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+      subtitle: The Subtitle
+
+      comment: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({ directiveNameNormalization: 'prefer-long' });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('normalizes directive names to short names when configured', () => {
+    const chordpro = heredoc`
+      {title: My Song}
+      {subtitle: The Subtitle}
+      {comment: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      t: My Song
+      st: The Subtitle
+
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({ directiveNameNormalization: 'prefer-short' });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('normalizes directive names per directive when configured', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {comment: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+
+      c: Opt. Key Change
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { default: 'prefer-long', comment: 'prefer-short' },
+    });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('omits bare comment directive names even when short comment names are preferred', () => {
+    const chordpro = heredoc`
+      {t: My Song}
+      {comment: Verse 1}
+      {c: Chorus}
+      [C]Hi`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+
+      Verse 1
+      Chorus
+      C
+      Hi`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const formatter = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { default: 'prefer-long', comment: 'prefer-short' },
+    });
+
+    expect(formatter.format(song)).toEqual(expectedChordSheet);
+  });
+
+  it('preserves nk directives in body content', () => {
+    const chordpro = heredoc`
+      {title: My Song}
+      {key: C}
+
+      {c: Verse}
+      [C]Hi
+      {nk: G}
+      [G]There`;
+
+    const expectedChordSheet = heredoc`
+      title: My Song
+      key: C
+
+      Verse
+      C
+      Hi
+      nk: G
+      D
+      There`;
+
+    const song = new ChordProParser().parse(chordpro);
+    const chordSheet = new ChordsOverWordsFormatter({
+      directiveNameNormalization: { comment: 'prefer-short' },
+    }).format(song);
+
+    expect(chordSheet).toEqual(expectedChordSheet);
+    expect(
+      new ChordProFormatter({ directiveNameNormalization: { comment: 'prefer-short' } })
+        .format(new ChordsOverWordsParser().parse(chordSheet)),
+    ).toContain('{nk: G}');
   });
 
   it('allows to disable normalizing chords', () => {
