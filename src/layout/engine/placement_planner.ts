@@ -2,7 +2,11 @@ import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Tag from '../../chord_sheet/tag';
 
+import { ParagraphSplitter } from './paragraph_splitter';
 import type { LineLayout, MeasuredItem } from './types';
+import {
+  calculateTotalHeight, countLineTypes, isColumnBreakLayout,
+} from './layout_helpers';
 
 export interface LayoutSource {
   /** Paragraph occurrence and line within that occurrence, not a grapheme anchor. */
@@ -56,6 +60,8 @@ function hasVisualItem({ item, adjustedChord }: MeasuredItem): boolean {
 export class PlacementPlanner {
   readonly result: PositionedLayout = { placements: [], pageCount: 1 };
 
+  private readonly paragraphSplitter = new ParagraphSplitter();
+
   private column = 1;
 
   private y = 0;
@@ -81,12 +87,74 @@ export class PlacementPlanner {
     const visible = lines.filter(({ layout }) => layout.lineHeight > 0 && layout.items.some(hasVisualItem));
     const height = visible.reduce((sum, { layout }) => sum + layout.lineHeight, 0);
     if (!height) return;
-    const limit = this.geometry.bodyHeight ?? Infinity;
-    if (visible.some(({ layout }) => layout.lineHeight > limit)) {
+    const { bodyHeight } = this.geometry;
+    if (bodyHeight === undefined) {
+      visible.forEach((line) => this.place(line));
+      return;
+    }
+    this.assertAtomicLinesFit(visible, bodyHeight);
+    if (this.effectiveY() + height <= bodyHeight) {
+      visible.forEach((line) => this.place(line));
+      return;
+    }
+    this.placeSplitParagraph(visible, this.effectiveY(), bodyHeight);
+  }
+
+  private effectiveY(): number {
+    return this.y + (this.y ? this.pendingSpacing : 0);
+  }
+
+  private assertAtomicLinesFit(lines: SourceLineLayout[], bodyHeight: number): void {
+    if (lines.some(({ layout }) => layout.lineHeight > bodyHeight)) {
       throw new Error('Terminal content height is shorter than an atomic visual line');
     }
-    if (this.y && height <= limit && this.y + this.pendingSpacing + height > limit) this.advance();
-    visible.forEach((line) => this.place(line));
+  }
+
+  private placeSplitParagraph(lines: SourceLineLayout[], currentY: number, bodyHeight: number): void {
+    const sourceByLayout = new Map(lines.map(({ layout, source }) => [layout, source]));
+    this.placeSplitUnits(this.groupBySourceLine(lines), sourceByLayout, currentY, bodyHeight);
+  }
+
+  private placeSplitUnits(
+    units: LineLayout[][],
+    sourceByLayout: Map<LineLayout, LayoutSource>,
+    currentY: number,
+    bodyHeight: number,
+  ): void {
+    const counts = countLineTypes(units);
+    const split = this.paragraphSplitter.splitParagraph(units, currentY, 0, bodyHeight, counts.chordLyricPairLines);
+    const breakIndex = split.findIndex(isColumnBreakLayout);
+    if (breakIndex < 0) {
+      this.placeUnits(split, sourceByLayout);
+      return;
+    }
+    this.placeUnits(split.slice(0, breakIndex), sourceByLayout);
+    this.advance();
+    const remaining = split.slice(breakIndex + 1);
+    if (calculateTotalHeight(remaining) > bodyHeight) {
+      this.placeSplitUnits(remaining, sourceByLayout, 0, bodyHeight);
+    } else this.placeUnits(remaining, sourceByLayout);
+  }
+
+  private placeUnits(units: LineLayout[][], sourceByLayout: Map<LineLayout, LayoutSource>): void {
+    units.flat().forEach((layout) => {
+      const source = sourceByLayout.get(layout);
+      if (!source) throw new Error('Terminal paragraph splitter returned an unknown line layout');
+      this.place({ layout, source });
+    });
+  }
+
+  private groupBySourceLine(lines: SourceLineLayout[]): LineLayout[][] {
+    const units: LineLayout[][] = [];
+    let previousSource: LayoutSource | undefined;
+    lines.forEach((line) => {
+      const sameSource = previousSource?.paragraph === line.source.paragraph &&
+        previousSource.line === line.source.line;
+      if (sameSource) units[units.length - 1].push(line.layout);
+      else units.push([line.layout]);
+      previousSource = line.source;
+    });
+    return units;
   }
 
   private place(line: SourceLineLayout): void {

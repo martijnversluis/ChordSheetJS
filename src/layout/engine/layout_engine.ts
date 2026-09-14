@@ -424,8 +424,8 @@ export class LayoutEngine {
   }
 
   /**
-   * Opt-in placement using already-resolved geometry and pre-measurement paragraph policy.
-   * Does not reuse legacy paginated units or their four-/five-line splitting heuristics.
+   * Opt-in source-aware placement using already-resolved terminal geometry.
+   * Finite paragraph splitting is delegated to PlacementPlanner using the shared ParagraphSplitter.
    */
   public computePositionedLayout(
     geometry: PlacementGeometry,

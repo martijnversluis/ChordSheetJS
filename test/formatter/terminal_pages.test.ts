@@ -4,6 +4,48 @@ import TerminalFormatter from '../../src/formatter/terminal_formatter';
 
 const parse = (text: string) => new ChordProParser().parse(text);
 const text = (document) => document.rows.flatMap((row) => row.spans).map((span) => span.text);
+const section = (label: string, count: number) => [
+  `{comment: ${label}}`,
+  ...Array.from({ length: count }, (_, index) => `[C]Line ${index + 1}`),
+].join('\n');
+const blackBoxFormatter = (width: number, finite = true) => new TerminalFormatter({
+  width,
+  ...(finite ? { height: 38 } : {}),
+  layout: {
+    global: {
+      margins: {
+        top: 1, right: 3, bottom: 1, left: 3,
+      },
+    },
+    header: { height: 5, text: '{title}' },
+    sections: {
+      global: {
+        minColumnWidth: 32,
+        maxColumnWidth: 52,
+        columnSpacing: 4,
+        paragraphSpacing: 1,
+      },
+    },
+  },
+});
+const sourceOrder = (document) => document.pages.flatMap((page) => page.columns.flatMap((column) => (
+  page.rows.flatMap((row) => row.spans
+    .filter((span) => span.column === column.index && span.source)
+    .map((span) => [span.source.paragraph, span.source.line]))
+)));
+const lyricDestinations = (document, paragraph: number) => {
+  const destinations = new Map<string, Set<number>>();
+  document.pages.forEach((page) => page.rows.forEach((row) => row.spans.forEach((span) => {
+    if (span.kind !== 'lyrics' || span.source?.paragraph !== paragraph) return;
+    const key = `${page.index}:${span.column}`;
+    const lines = destinations.get(key) ?? new Set<number>();
+    lines.add(span.source.line);
+    destinations.set(key, lines);
+  })));
+  return [...destinations.entries()]
+    .sort(([left], [right]) => left.localeCompare(right, undefined, { numeric: true }))
+    .map(([destination, lines]) => [destination, [...lines].sort((left, right) => left - right)]);
+};
 
 describe('TerminalFormatter positioned pages', () => {
   it('places exact-fit columns and rolls into pages using resolved integer geometry', () => {
@@ -34,6 +76,94 @@ describe('TerminalFormatter positioned pages', () => {
     ]);
     expect(result.pages[1].rows[1].spans[0].text).toBe('e');
     expect(result.height).toBe(9);
+  });
+  describe('paragraph splitting parity', () => {
+    it('uses safe remaining space before splitting a five-line section onto the next page', () => {
+      const result = blackBoxFormatter(44).format(parse(
+        `{title: Split audit}\n${section('First', 10)}\n\n${section('Second', 5)}`,
+      ));
+      expect(result.geometry).toMatchObject({ columnCount: 1, columnWidth: 38, contentHeight: 31 });
+      expect(lyricDestinations(result, 1)).toEqual([
+        ['1:1', [1, 2, 3]],
+        ['2:1', [4, 5]],
+      ]);
+      expect(result.pages.map((page) => page.columns[0].usedHeight)).toEqual([29, 4]);
+      const unbounded = blackBoxFormatter(44, false).format(parse(
+        `{title: Split audit}\n${section('First', 10)}\n\n${section('Second', 5)}`,
+      ));
+      expect(sourceOrder(result)).toEqual(sourceOrder(unbounded));
+    });
+    it('continues applying orphan-safe splits across more than two destinations', () => {
+      const result = blackBoxFormatter(44).format(parse(`{title: Split audit}\n${section('Very long', 31)}`));
+      expect(lyricDestinations(result, 0)).toEqual([
+        ['1:1', Array.from({ length: 15 }, (_, index) => index + 1)],
+        ['2:1', Array.from({ length: 14 }, (_, index) => index + 16)],
+        ['3:1', [30, 31]],
+      ]);
+    });
+    it('keeps two chord/lyric lines after an oversized section break', () => {
+      const result = blackBoxFormatter(44).format(parse(`{title: Split audit}\n${section('Long', 16)}`));
+      expect(lyricDestinations(result, 0)).toEqual([
+        ['1:1', Array.from({ length: 14 }, (_, index) => index + 1)],
+        ['2:1', [15, 16]],
+      ]);
+      expect(result.pages.map((page) => page.columns[0].usedHeight)).toEqual([29, 4]);
+    });
+    it.each([
+      { prefix: '', paragraph: 1, destinations: ['1:1', '1:2'] },
+      { prefix: '{column_break}\n\n', paragraph: 2, destinations: ['1:2', '2:1'] },
+    ])('applies safe splits across two-column destinations %#', ({ prefix, paragraph, destinations }) => {
+      const result = blackBoxFormatter(100).format(parse(
+        `{title: Split audit}\n${prefix}${section('First', 10)}\n\n${section('Second', 5)}`,
+      ));
+      expect(result.geometry).toMatchObject({ columnCount: 2, columnWidth: 45, contentHeight: 31 });
+      expect(lyricDestinations(result, paragraph)).toEqual([
+        [destinations[0], [1, 2, 3]],
+        [destinations[1], [4, 5]],
+      ]);
+    });
+    it.each([
+      { prefix: '', paragraph: 0, destinations: ['1:1', '1:2'] },
+      { prefix: '{column_break}\n\n', paragraph: 1, destinations: ['1:2', '2:1'] },
+    ])('avoids oversized-section orphans across two-column destinations %#', ({
+      prefix, paragraph, destinations,
+    }) => {
+      const result = blackBoxFormatter(100).format(parse(
+        `{title: Split audit}\n${prefix}${section('Long', 16)}`,
+      ));
+      expect(lyricDestinations(result, paragraph)).toEqual([
+        [destinations[0], Array.from({ length: 14 }, (_, index) => index + 1)],
+        [destinations[1], [15, 16]],
+      ]);
+    });
+    it('preserves wrapped source anchors while splitting without losing body spans', () => {
+      const result = new TerminalFormatter({ width: 4, height: 2 }).format(parse('abcdefghijkl'));
+      const body = result.pages.flatMap((page) => page.rows.flatMap((row) => row.spans.filter((span) => span.source)));
+      expect(result.pages.length).toBeGreaterThan(1);
+      expect(body.every((span) => span.source?.paragraph === 0 && span.source.line === 0)).toBe(true);
+      expect(body.filter((span) => span.kind === 'lyrics').map((span) => span.text).join('')).toBe('abcdefghijkl');
+    });
+    it('leaves unbounded terminal documents unpaginated', () => {
+      const result = new TerminalFormatter({ width: 38 }).format(parse(section('Long', 16)));
+      expect(result.pages).toHaveLength(1);
+      expect(lyricDestinations(result, 0)).toEqual([
+        ['1:1', Array.from({ length: 16 }, (_, index) => index + 1)],
+      ]);
+    });
+    it('moves three-line sections intact and splits four-line sections two/two', () => {
+      const three = blackBoxFormatter(44).format(parse(
+        `{title: Split audit}\n${section('First', 13)}\n\n${section('Short', 3)}`,
+      ));
+      expect(lyricDestinations(three, 1)).toEqual([['2:1', [1, 2, 3]]]);
+
+      const four = blackBoxFormatter(44).format(parse(
+        `{title: Split audit}\n${section('First', 11)}\n\n${section('Four', 4)}`,
+      ));
+      expect(lyricDestinations(four, 1)).toEqual([
+        ['1:1', [1, 2]],
+        ['2:1', [3, 4]],
+      ]);
+    });
   });
   it('preserves explicit empty destinations and does not double advance', () => {
     const formatter = new TerminalFormatter({
