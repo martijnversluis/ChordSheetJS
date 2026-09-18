@@ -111,11 +111,12 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
    * @returns {string} The ChordPro string
    */
   format(song: Song): string {
-    const { lines } = song;
-    const metadata = song.getMetadata(this.configuration);
+    const preparedSong = this.prepareSong(song);
+    const { lines } = preparedSong;
+    const metadata = preparedSong.getMetadata(this.configuration);
     const { metadataLines, contentLines } = this.separateMetadataFromContent(lines);
     const formattedMetadataLines = this.formatMetadataSection(metadataLines, metadata);
-    const formattedContentLines = this.formatContentSection(contentLines, metadata, song);
+    const formattedContentLines = this.formatContentSection(contentLines, metadata, preparedSong);
     return this.combineMetadataAndContent(formattedMetadataLines, formattedContentLines);
   }
 
