@@ -5,10 +5,10 @@ import DocWrapper from '../../formatter/pdf_formatter/doc_wrapper';
 import PdfChordDiagramRenderer from './pdf_chord_diagram_renderer';
 import Song from '../../chord_sheet/song';
 
-import { MeasuredItem } from '../../layout/engine';
 import { PdfConstructor } from '../../formatter/pdf_formatter/types';
 import { getCapos } from '../../helpers';
 
+import { buildChordRuns } from '../chord_shaper';
 import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
 import Renderer, { PositionedElement } from '../renderer';
 
@@ -125,6 +125,9 @@ class JsPdfRenderer extends Renderer {
       renderingConfig: chordDiagrams.renderingConfig,
       fonts: chordDiagrams.fonts,
       overrides: chordDiagrams.overrides,
+      chordRendering: this.configuration.chordRendering,
+      unicodeFallback: this.configuration.unicodeFallback,
+      useUnicodeModifiers: this.configuration.useUnicodeModifiers,
     };
   }
 
@@ -178,12 +181,6 @@ class JsPdfRenderer extends Renderer {
       width: dimensions.w,
       height: dimensions.h,
     };
-  }
-
-  protected calculateChordBaseline(yOffset: number, items: MeasuredItem[], chordText: string): number {
-    const chordFont = this.getFontConfiguration('chord');
-    const chordDimensions = this.doc.getTextDimensions(chordText, chordFont);
-    return yOffset + this.getMaxChordHeight(items) - chordDimensions.h;
   }
 
   protected finalizeRendering(): void {
@@ -250,12 +247,13 @@ class JsPdfRenderer extends Renderer {
   //
 
   private drawElement(element: PositionedElement): void {
-    if (element.style) {
-      this.doc.setFontStyle(element.style);
-    }
+    if (element.style) this.doc.setFontStyle(element.style);
 
     switch (element.type) {
-      case 'chord':
+      case 'chord': {
+        this.drawChordElement(element);
+        break;
+      }
       case 'rhythm-symbol':
       case 'barline':
       case 'instruction':
@@ -275,10 +273,34 @@ class JsPdfRenderer extends Renderer {
     }
   }
 
-  private drawUnderlineIfNeeded(element: PositionedElement): void {
+  private drawChordElement(element: PositionedElement): void {
+    const runs = element.style ? buildChordRuns(element.content, {
+      chordFont: element.style,
+      chordRendering: this.configuration.chordRendering,
+      glyphChecker: { hasGlyph: (codePoint, font) => this.doc.hasGlyph(codePoint, font) },
+      unicodeFallback: this.configuration.unicodeFallback,
+      useUnicodeModifiers: this.useUnicodeModifiers(),
+    }) : null;
+
+    if (!runs) {
+      this.doc.text(element.content, element.x, element.y);
+      this.drawUnderlineIfNeeded(element);
+      return;
+    }
+
+    let { x } = element;
+    runs.forEach((run) => {
+      const font = run.font.underline ? { ...run.font, underline: false } : run.font;
+      this.doc.text(run.text, x, element.y + run.yOffset, font);
+      x += this.doc.getTextWidth(run.text, run.font);
+    });
+    this.drawUnderlineIfNeeded(element, x - element.x);
+  }
+
+  private drawUnderlineIfNeeded(element: PositionedElement, shapedWidth?: number): void {
     const isTitleSeparator = element.content?.trim() === '>';
     if (element.style?.underline && !isTitleSeparator) {
-      const { w: textWidth } = this.doc.getTextDimensions(element.content);
+      const textWidth = shapedWidth ?? this.doc.getTextDimensions(element.content).w;
       this.doc.setDrawColor(0);
       this.doc.setLineWidth(1.25);
       this.doc.line(element.x, element.y + 3, element.x + textWidth, element.y + 3);

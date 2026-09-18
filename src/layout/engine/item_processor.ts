@@ -7,6 +7,7 @@ import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
 import { isChordTokenKind } from '../../chord_sheet/chord_line_token';
 import { LayoutConfig, MeasuredItem } from './types';
+import { buildChordRuns, getChordRunsMetrics } from '../../rendering/chord_shaper';
 
 import {
   isChordLyricsPair,
@@ -15,6 +16,14 @@ import {
   isTag,
   renderChord,
 } from '../../template_helpers';
+
+interface ChordMeasurements {
+  totalWidth: number;
+  chordHeight: number;
+  chordAscent: number;
+  chordBaselineHeight: number;
+  renderedChords: string;
+}
 
 /**
  * Processes and measures different types of items in a chord sheet
@@ -138,8 +147,24 @@ export class ItemProcessor {
 
     const renderedChords = isChordTokenKind(splitItem.tokenKind) ? this.renderChordText(chords, line) : chords;
     const chordFont = this.config.fonts[splitItem.styleRole] || this.config.fonts.chord;
-    const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly, chordFont);
+    const measurements = this.calculateMeasurements(
+      renderedChords,
+      lyrics,
+      nextItem,
+      lyricsOnly,
+      chordFont,
+      splitItem.tokenKind === 'chord',
+    );
 
+    return this.createMeasuredChordLyricsPair(splitItem, chords, lyrics, measurements);
+  }
+
+  private createMeasuredChordLyricsPair(
+    splitItem: ChordLyricsPair,
+    chords: string,
+    lyrics: string,
+    measurements: ChordMeasurements,
+  ): MeasuredItem {
     return {
       item: new ChordLyricsPair(
         chords,
@@ -151,6 +176,9 @@ export class ItemProcessor {
       ),
       width: measurements.totalWidth,
       chordHeight: measurements.chordHeight,
+      chordAscent: measurements.chordAscent,
+      chordBaselineHeight: measurements.chordBaselineHeight,
+      adjustedChord: measurements.renderedChords,
     };
   }
 
@@ -180,13 +208,13 @@ export class ItemProcessor {
     nextItem: any,
     lyricsOnly: boolean,
     chordFont: FontConfiguration,
-  ): { totalWidth: number; chordHeight: number } {
+    allowChordRendering: boolean,
+  ): ChordMeasurements {
     const lyricsFont = this.config.fonts.lyrics;
-
-    const chordWidth = renderedChords ? this.measurer.measureTextWidth(renderedChords, chordFont) : 0;
+    const chordMetrics = this.measureChordMetrics(renderedChords, chordFont, allowChordRendering);
     const lyricsWidth = lyrics ? this.measurer.measureTextWidth(lyrics, lyricsFont) : 0;
     const adjustedChordWidth = this.getAdjustedChordWidth(
-      chordWidth,
+      chordMetrics.width,
       lyricsWidth,
       renderedChords,
       nextItem,
@@ -194,9 +222,56 @@ export class ItemProcessor {
       chordFont,
     );
 
+    return this.createChordMeasurements(renderedChords, lyricsWidth, adjustedChordWidth, chordMetrics);
+  }
+
+  private createChordMeasurements(
+    renderedChords: string,
+    lyricsWidth: number,
+    adjustedChordWidth: number,
+    chordMetrics: { boxHeight: number; ascentHeight: number; baselineHeight: number },
+  ): ChordMeasurements {
     return {
       totalWidth: Math.max(adjustedChordWidth, lyricsWidth),
-      chordHeight: renderedChords ? this.measurer.measureTextHeight(renderedChords, chordFont) : 0,
+      chordHeight: chordMetrics.boxHeight,
+      chordAscent: chordMetrics.ascentHeight,
+      chordBaselineHeight: chordMetrics.baselineHeight,
+      renderedChords,
+    };
+  }
+
+  measureChordMetrics(
+    chordText: string,
+    chordFont: FontConfiguration,
+    allowChordRendering = true,
+  ): { width: number; boxHeight: number; ascentHeight: number; baselineHeight: number } {
+    const { width, height } = this.measurePlainChord(chordText, chordFont);
+    if (!allowChordRendering) return this.plainChordRunMetrics(width, height);
+    const runs = buildChordRuns(chordText, {
+      chordFont,
+      chordRendering: this.config.chordRendering,
+      glyphChecker: this.config.glyphChecker,
+      unicodeFallback: this.config.unicodeFallback,
+      useUnicodeModifiers: this.config.useUnicodeModifiers,
+    });
+    if (!runs) return this.plainChordRunMetrics(width, height);
+
+    return getChordRunsMetrics(runs, (text, font) => ({
+      width: this.measurer.measureTextWidth(text, font),
+      height: this.measurer.measureTextHeight(text, font),
+    }));
+  }
+
+  private plainChordRunMetrics(width: number, height: number) {
+    return {
+      width, boxHeight: height, ascentHeight: 0, baselineHeight: height,
+    };
+  }
+
+  private measurePlainChord(chordText: string, chordFont: FontConfiguration): { width: number; height: number } {
+    return {
+      width: chordText ? this.measurer.measureTextWidth(chordText, chordFont) : 0,
+      height: chordText ? this.measurer.measureTextHeight(chordText, chordFont) : 0,
     };
   }
 
@@ -217,7 +292,9 @@ export class ItemProcessor {
 
     if (needsSpacing) {
       const spacing = this.getChordSpacingAsSpaces();
-      return this.measurer.measureTextWidth(renderedChords + spacing, chordFont);
+      const plainWidth = this.measurer.measureTextWidth(renderedChords, chordFont);
+      const widthWithSpacing = this.measurer.measureTextWidth(renderedChords + spacing, chordFont);
+      return chordWidth + widthWithSpacing - plainWidth;
     }
 
     return chordWidth;
@@ -291,6 +368,9 @@ export class ItemProcessor {
         item: new ChordLyricsPair('', secondLyrics),
         width: this.measurer.measureTextWidth(secondLyrics, lyricsFont),
         chordHeight: 0,
+        chordAscent: 0,
+        chordBaselineHeight: 0,
+        adjustedChord: '',
       },
     ];
   }
@@ -314,6 +394,9 @@ export class ItemProcessor {
       ),
       width: this.measurer.measureTextWidth(lyrics, this.config.fonts.lyrics),
       chordHeight: originalItem.chordHeight,
+      chordAscent: originalItem.chordAscent,
+      chordBaselineHeight: originalItem.chordBaselineHeight,
+      adjustedChord: originalItem.adjustedChord,
     };
   }
 

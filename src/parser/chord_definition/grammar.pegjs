@@ -22,7 +22,7 @@ ChordDefinitionNote
   = $([A-Ga-g]([b#♭♯] / "es" / "s" / "is")?)
 
 ChordDefinitionSuffix
-  = $([a-zA-Z0-9#♯b♭\(\)\+\-\/øΔ−]+)
+  = $([a-zA-Z0-9#♯b♭\(\)\+\-\/°ø⌀Δ∆△−]+)
 
 BaseFret
   = "base-fret" __ baseFret:FretNumber __ {

@@ -566,6 +566,21 @@ describe('LineBreaker', () => {
   });
 
   describe('regressions', () => {
+    it('remeasures the processed chord text used by the renderer', () => {
+      const pair = createChordLyricsPair('Csus2', 'word');
+      const measuredItem = {
+        item: pair,
+        width: 40,
+        chordHeight: 12,
+        adjustedChord: 'C2',
+      };
+
+      const widths = (lineBreaker as any).measureChordAndLyricWidths(measuredItem);
+
+      expect(widths.chordText).toBe('C2');
+      expect(widths.chordWidth).toBe(16);
+    });
+
     it('does not break at soft line breaks when the content fits within the width', () => {
       const line = createTestLine([
         createChordLyricsPair('Gm', 'Thine is the '),

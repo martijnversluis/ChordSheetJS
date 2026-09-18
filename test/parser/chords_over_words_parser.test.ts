@@ -52,6 +52,12 @@ describe('ChordsOverWordsParser', () => {
     expect(line4Pairs[7]).toBeChordLyricsPair('C', '');
   });
 
+  it('recognizes Unicode major and diminished chord symbols', () => {
+    const song = new ChordsOverWordsParser().parse('CΔ7 C°7 Cø7 C⌀7\nOne two three four');
+
+    expect(song.getChords()).toEqual(['CΔ7', 'C°7', 'Cø7', 'C⌀7']);
+  });
+
   it('allows for frontmatter separator to be optional', () => {
     const chordOverWords = heredoc`
       title: Let it be

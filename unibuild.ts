@@ -116,6 +116,18 @@ export default unibuild((u: Config) => {
     build: () => `export default '${version}';${os.EOL}`,
   });
 
+  const symbolFonts = u.asset('symbolFonts', {
+    input: [
+      'script/build_symbol_fonts.ts',
+      'script/font-sources/noto-sans-symbols/NotoSansSymbols-Regular.ttf',
+      'script/font-sources/noto-sans-symbols/NotoSansSymbols-Bold.ttf',
+      'package.json',
+      'yarn.lock',
+    ],
+    outfile: 'src/formatter/pdf_formatter/fonts/ChordSheetSymbolsFonts.base64.ts',
+    command: 'yarn tsx script/build_symbol_fonts.ts',
+  });
+
   const codeGeneratedAssets: Asset[] = [
     suffixNormalizeMapping,
     scales,
@@ -124,6 +136,7 @@ export default unibuild((u: Config) => {
     chordsOverWordsParser,
     chordDefinitionParser,
     versionFile,
+    symbolFonts,
   ];
 
   const jsBuild = u.asset('sources', {
@@ -134,9 +147,10 @@ export default unibuild((u: Config) => {
   });
 
   u.asset('pdfSources', {
-    input: jsBuild,
+    input: [jsBuild, 'src/formatter/pdf_formatter/fonts/ChordSheetSymbols.OFL.txt'],
     outfile: 'lib/pdf/index.js',
-    command: 'rm -rf pdf/.parcel-cache && cd pdf && parcel build',
+    command: 'rm -rf pdf/.parcel-cache lib/pdf && cd pdf && parcel build && ' +
+      'cp ../src/formatter/pdf_formatter/fonts/ChordSheetSymbols.OFL.txt ../lib/pdf/',
     releaseOnly: true,
   });
 
@@ -168,6 +182,11 @@ export default unibuild((u: Config) => {
     requires: codeGeneratedAssets,
     command: 'yarn eslint .',
     autofixCommand: 'yarn eslint . --fix',
+  });
+
+  u.lint('symbolFonts', {
+    requires: [],
+    command: 'yarn fonts:check',
   });
 
   u.test('jest', {

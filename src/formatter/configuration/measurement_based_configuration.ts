@@ -289,12 +289,62 @@ export interface ChordDiagramsConfig {
   fonts: ChordDiagramFontConfigurations;
 }
 
+export type ChordPartFontConfig = Partial<Pick<FontConfiguration, 'color' | 'name' | 'style' | 'weight'>>;
+
+export interface ChordPartStyle {
+  /** Font size relative to the configured chord font size. */
+  fontSizeRatio?: number;
+  /** Baseline shift relative to the chord font size. Positive values raise the part. */
+  baselineShiftRatio?: number;
+  /** Font properties to override for this chord part. */
+  font?: ChordPartFontConfig;
+}
+
+export interface ChordRenderingConfig {
+  quality?: ChordPartStyle;
+  extensions?: ChordPartStyle;
+}
+
+export const defaultChordRenderingConfig: ChordRenderingConfig = {};
+
+export interface UnicodeFallbackFonts {
+  normal: string;
+  bold: string;
+  italic: string;
+  bolditalic: string;
+}
+
+export interface UnicodeFallbackConfig {
+  enabled: boolean;
+  preferChordSymbols?: boolean;
+  warnOnMissingGlyph: boolean;
+  fallbackFonts: UnicodeFallbackFonts;
+}
+
+export type UnicodeFallbackConfigProperties = Omit<Partial<UnicodeFallbackConfig>, 'fallbackFonts'> & {
+  fallbackFonts?: Partial<UnicodeFallbackFonts>;
+};
+
+export const defaultUnicodeFallbackConfig: UnicodeFallbackConfig = {
+  enabled: true,
+  preferChordSymbols: true,
+  warnOnMissingGlyph: true,
+  fallbackFonts: {
+    normal: 'ChordSheetSymbols',
+    bold: 'ChordSheetSymbols',
+    italic: 'ChordSheetSymbols',
+    bolditalic: 'ChordSheetSymbols',
+  },
+};
+
 // Measurement items
 export interface MeasuredItem {
   item: ChordLyricsPair | Comment | SoftLineBreak | Tag | Item | null,
   width: number,
   chordLyricWidthDifference?: number,
   chordHeight?: number,
+  chordAscent?: number,
+  chordBaselineHeight?: number,
   adjustedChord?: string,
 }
 
@@ -355,7 +405,9 @@ export const defaultMeasurementBasedLayout: MeasurementBasedLayoutConfig = {
 export const measurementSpecificDefaults = {
   fonts: defaultFontConfigurations,
   measurer: 'canvas',
+  chordRendering: defaultChordRenderingConfig,
   layout: defaultMeasurementBasedLayout,
+  unicodeFallback: defaultUnicodeFallbackConfig,
 };
 
 // Base measurement-based formatter configuration
@@ -363,6 +415,8 @@ export interface MeasurementBasedFormatterConfiguration extends BaseFormatterCon
   fonts: FontConfigurations;
   measurer: MeasurerType;
   layout: MeasurementBasedLayoutConfig;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfig;
 }
 
 // Configuration properties type for measurement-based formatters
@@ -370,4 +424,6 @@ export interface MeasurementBasedConfigurationProperties extends ConfigurationPr
   fonts?: Partial<FontConfigurations>;
   measurer?: MeasurerType;
   layout?: Partial<MeasurementBasedLayoutConfig>;
+  chordRendering?: ChordRenderingConfig;
+  unicodeFallback?: UnicodeFallbackConfigProperties;
 }

@@ -49,6 +49,12 @@ describe('ChordDefinition', () => {
       expect(chordDefinition.fingers).toEqual([1, 2, 3, 4, 5, 6]);
     });
 
+    it.each(['CΔ7', 'C∆7', 'C△7', 'C°7', 'Cø7', 'C⌀7'])('parses a %s chord definition', (name) => {
+      const chordDefinition = ChordDefinition.parse(`${name} base-fret 1 frets x 3 2 3 1 x`);
+
+      expect(chordDefinition.name).toBe(name);
+    });
+
     Object
       .keys(SUFFIX_MAPPING)
       .filter((suffix) => suffix !== '[blank]')

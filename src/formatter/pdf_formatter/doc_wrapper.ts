@@ -10,6 +10,23 @@ import {
   NimbusSansLRegNormal,
 } from './fonts/NimbusSansLFonts.base64';
 
+import {
+  ChordSheetSymbolsBold,
+  ChordSheetSymbolsRegular,
+} from './fonts/ChordSheetSymbolsFonts.base64';
+
+const STYLE_WEIGHT_FONT_FAMILIES = new Set([
+  'chordsheetsymbols',
+  'courier',
+  'helvetica',
+  'nimbussansl',
+  'nimbussansl-bol',
+  'nimbussansl-bolita',
+  'nimbussansl-reg',
+  'nimbussansl-regita',
+  'times',
+]);
+
 const defaultOptions: jsPDFOptions = {
   orientation: 'p',
   unit: 'pt',
@@ -89,7 +106,8 @@ class DocWrapper {
   }
 
   setFontStyle(styleConfig: FontConfiguration) {
-    this.doc.setFont(styleConfig.name, styleConfig.style, styleConfig.weight);
+    const useStyleWeight = STYLE_WEIGHT_FONT_FAMILIES.has(styleConfig.name.toLowerCase());
+    this.doc.setFont(styleConfig.name, styleConfig.style, useStyleWeight ? undefined : styleConfig.weight);
     this.doc.setFontSize(styleConfig.size);
     this.setTextColor(styleConfig.color);
     this.fontConfiguration = styleConfig;
@@ -253,18 +271,50 @@ class DocWrapper {
     this.doc.setLineWidth(previousLineWidth);
   }
 
+  hasGlyph(codePoint: number, fontConfig?: FontConfiguration): boolean {
+    return this.withFontConfiguration(fontConfig || null, () => {
+      const font = typeof this.doc.getFont === 'function' ? this.doc.getFont() : null;
+      const codeMap = font?.metadata?.cmap?.unicode?.codeMap;
+      if (!codeMap) return codePoint < 128;
+      const glyphId = codeMap[codePoint];
+      return glyphId !== undefined && glyphId !== 0;
+    });
+  }
+
   private addFonts() {
+    this.addNimbusFonts();
+    this.addChordSheetSymbolsFonts();
+  }
+
+  private addNimbusFonts() {
     this.doc.addFileToVFS('NimbusSansL-Reg.ttf', NimbusSansLRegNormal);
-    this.doc.addFont('NimbusSansL-Reg.ttf', 'NimbusSansL-Reg', 'normal');
-
     this.doc.addFileToVFS('NimbusSansL-Bol.ttf', NimbusSansLBolBold);
-    this.doc.addFont('NimbusSansL-Bol.ttf', 'NimbusSansL-Bol', 'bold');
-
     this.doc.addFileToVFS('NimbusSansL-RegIta-italic.ttf', NimbusSansLRegItaItalic);
-    this.doc.addFont('NimbusSansL-RegIta-italic.ttf', 'NimbusSansL-RegIta', 'italic');
-
     this.doc.addFileToVFS('NimbusSanL-BolIta-bolditalic.ttf', NimbusSansLBolItaBoldItalic);
-    this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', 'NimbusSansL-BolIta', 'bolditalic');
+    [
+      'NimbusSansL',
+      'NimbusSansL-Reg',
+      'NimbusSansL-Bol',
+      'NimbusSansL-RegIta',
+      'NimbusSansL-BolIta',
+    ].forEach((family) => this.addNimbusFamily(family));
+  }
+
+  private addNimbusFamily(family: string) {
+    this.doc.addFont('NimbusSansL-Reg.ttf', family, 'normal');
+    this.doc.addFont('NimbusSansL-Bol.ttf', family, 'bold');
+    this.doc.addFont('NimbusSansL-RegIta-italic.ttf', family, 'italic');
+    this.doc.addFont('NimbusSanL-BolIta-bolditalic.ttf', family, 'bolditalic');
+  }
+
+  private addChordSheetSymbolsFonts() {
+    this.doc.addFileToVFS('ChordSheetSymbols-Regular.ttf', ChordSheetSymbolsRegular);
+    this.doc.addFont('ChordSheetSymbols-Regular.ttf', 'ChordSheetSymbols', 'normal');
+    this.doc.addFont('ChordSheetSymbols-Regular.ttf', 'ChordSheetSymbols', 'italic');
+
+    this.doc.addFileToVFS('ChordSheetSymbols-Bold.ttf', ChordSheetSymbolsBold);
+    this.doc.addFont('ChordSheetSymbols-Bold.ttf', 'ChordSheetSymbols', 'bold');
+    this.doc.addFont('ChordSheetSymbols-Bold.ttf', 'ChordSheetSymbols', 'bolditalic');
   }
 }
 
