@@ -496,6 +496,17 @@ describe('ItemProcessor', () => {
       expect(result[0]).toEqual(pair);
     });
 
+    it('preserves rhythm symbols when splitting or measuring chord-lyrics pairs', () => {
+      const { processor } = createProcessor();
+      const pair = new ChordLyricsPair('|', '', null, null, true);
+      const line = new Line();
+      line.addChordLyricsPair(pair);
+
+      const result = processor.measureLineItems(line);
+
+      expect((result[0].item as ChordLyricsPair).isRhythmSymbol).toBe(true);
+    });
+
     it('returns pair when lyrics empty', () => {
       const { processor } = createProcessor();
       const pair = createChordLyricsPair('C', '');
