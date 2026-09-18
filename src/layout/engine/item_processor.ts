@@ -5,6 +5,7 @@ import { Measurer } from '../measurement';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
 import Song from '../../chord_sheet/song';
 import Tag from '../../chord_sheet/tag';
+import { isChordTokenKind } from '../../chord_sheet/chord_line_token';
 import { LayoutConfig, MeasuredItem } from './types';
 
 import {
@@ -135,11 +136,19 @@ export class ItemProcessor {
     const { chords, lyrics } = this.getAdjustedChordsAndLyrics(splitItem, lyricsOnly);
     if (lyricsOnly && lyrics === '') return { item: null, width: 0 };
 
-    const renderedChords = this.renderChordText(chords, line);
-    const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly);
+    const renderedChords = isChordTokenKind(splitItem.tokenKind) ? this.renderChordText(chords, line) : chords;
+    const chordFont = this.config.fonts[splitItem.styleRole] || this.config.fonts.chord;
+    const measurements = this.calculateMeasurements(renderedChords, lyrics, nextItem, lyricsOnly, chordFont);
 
     return {
-      item: new ChordLyricsPair(chords, lyrics, splitItem.annotation, null, splitItem.isRhythmSymbol),
+      item: new ChordLyricsPair(
+        chords,
+        lyrics,
+        splitItem.annotation,
+        null,
+        splitItem.isRhythmSymbol,
+        splitItem.classification,
+      ),
       width: measurements.totalWidth,
       chordHeight: measurements.chordHeight,
     };
@@ -170,8 +179,8 @@ export class ItemProcessor {
     lyrics: string,
     nextItem: any,
     lyricsOnly: boolean,
+    chordFont: FontConfiguration,
   ): { totalWidth: number; chordHeight: number } {
-    const chordFont = this.config.fonts.chord;
     const lyricsFont = this.config.fonts.lyrics;
 
     const chordWidth = renderedChords ? this.measurer.measureTextWidth(renderedChords, chordFont) : 0;
@@ -182,6 +191,7 @@ export class ItemProcessor {
       renderedChords,
       nextItem,
       lyricsOnly,
+      chordFont,
     );
 
     return {
@@ -196,6 +206,7 @@ export class ItemProcessor {
     renderedChords: string,
     nextItem: any,
     lyricsOnly: boolean,
+    chordFont: FontConfiguration,
   ): number {
     const nextItemHasChords = nextItem &&
       isChordLyricsPair(nextItem) &&
@@ -206,7 +217,7 @@ export class ItemProcessor {
 
     if (needsSpacing) {
       const spacing = this.getChordSpacingAsSpaces();
-      return this.measurer.measureTextWidth(renderedChords + spacing, this.config.fonts.chord);
+      return this.measurer.measureTextWidth(renderedChords + spacing, chordFont);
     }
 
     return chordWidth;
@@ -293,7 +304,14 @@ export class ItemProcessor {
     const annotation = originalItem.item instanceof ChordLyricsPair ? originalItem.item.annotation : null;
 
     return {
-      item: new ChordLyricsPair(chords, lyrics, annotation, null, isRhythmSymbol),
+      item: new ChordLyricsPair(
+        chords,
+        lyrics,
+        annotation,
+        null,
+        isRhythmSymbol,
+        originalItem.item instanceof ChordLyricsPair ? originalItem.item.classification : undefined,
+      ),
       width: this.measurer.measureTextWidth(lyrics, this.config.fonts.lyrics),
       chordHeight: originalItem.chordHeight,
     };
@@ -315,7 +333,7 @@ export class ItemProcessor {
    * Split a chord-lyrics pair at natural break points (commas)
    */
   splitChordLyricsPair(pair: ChordLyricsPair, lyricsOnly = false): (ChordLyricsPair | SoftLineBreak)[] {
-    const { chords, lyrics, annotation } = pair;
+    const { lyrics } = pair;
 
     if (!lyrics || lyrics.trim() === '') {
       return [pair];
@@ -335,11 +353,11 @@ export class ItemProcessor {
       }
 
       if (index === 0 && lyricFragments.length === 1) {
-        items.push(new ChordLyricsPair(chords, fragment, annotation, null, pair.isRhythmSymbol));
+        items.push(pair.set({ lyrics: fragment }));
       } else if (index === 0 && lyricFragments.length > 1) {
         let commaAdjustedFragment = fragment;
         commaAdjustedFragment += ',';
-        items.push(new ChordLyricsPair(chords, commaAdjustedFragment, annotation, null, pair.isRhythmSymbol));
+        items.push(pair.set({ lyrics: commaAdjustedFragment }));
       }
     });
 

@@ -1,4 +1,4 @@
-import { ChordLyricsPair } from '../../src';
+import { ChordLineTokenClassification, ChordLyricsPair } from '../../src';
 
 describe('ChordLyricsPair', () => {
   describe('#clone', () => {
@@ -33,6 +33,13 @@ describe('ChordLyricsPair', () => {
 
       expect(transposedPair.chords).toEqual('F#');
     });
+
+    it.each(['/', '|', ':||', '(6x)', 'N.C.'])('does not transpose non-chord token %s', (token) => {
+      const pair = new ChordLyricsPair(token, '');
+
+      expect(pair.transpose(2).chords).toBe(token);
+      expect(pair.chord).toBeNull();
+    });
   });
 
   describe('#hasLyrics', () => {
@@ -52,6 +59,57 @@ describe('ChordLyricsPair', () => {
       const chordLyricsPair = new ChordLyricsPair('C', '   ');
 
       expect(chordLyricsPair.hasLyrics()).toBe(false);
+    });
+  });
+
+  describe('#set', () => {
+    it('reclassifies tokens when chord content changes', () => {
+      const instruction = new ChordLyricsPair('(6x)', '');
+
+      expect(instruction.set({ chords: 'D' }).tokenKind).toBe('chord');
+    });
+
+    it('does not carry the derived rhythm flag when chord content changes', () => {
+      const rhythmSymbol = new ChordLyricsPair('/', '');
+      const chord = rhythmSymbol.set({ chords: 'D' });
+
+      expect(chord.classification).toEqual({ kind: 'chord', variant: null });
+      expect(chord.isRhythmSymbol).toBe(false);
+    });
+
+    it('preserves token classification when only lyrics change', () => {
+      const instruction = new ChordLyricsPair('(6x)', '');
+
+      expect(instruction.setLyrics('repeat').tokenKind).toBe('instruction');
+    });
+
+    it('accepts an atomic classification override', () => {
+      const pair = new ChordLyricsPair('/', '', '', null, false, {
+        kind: 'instruction',
+        variant: null,
+      });
+
+      expect(pair.tokenKind).toBe('instruction');
+      expect(pair.tokenVariant).toBeNull();
+    });
+
+    it('preserves an explicit null variant when updating a pair', () => {
+      const rhythmSymbol = new ChordLyricsPair('/', '');
+
+      expect(rhythmSymbol.set({
+        classification: { kind: 'rhythm-symbol', variant: null },
+      }).tokenVariant).toBeNull();
+    });
+
+    it('infers classification when an invalid runtime override is supplied', () => {
+      const invalidClassification = {
+        kind: 'chord',
+        variant: 'repeat-count',
+      } as unknown as ChordLineTokenClassification;
+
+      const pair = new ChordLyricsPair('/', '', '', null, false, invalidClassification);
+
+      expect(pair.classification).toEqual({ kind: 'rhythm-symbol', variant: 'continuation' });
     });
   });
 });

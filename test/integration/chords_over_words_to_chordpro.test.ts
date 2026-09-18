@@ -2,7 +2,9 @@ import fs from 'fs';
 
 import { heredoc } from '../util/utilities';
 import { normalizeLineEndings } from '../../src/utilities';
-import { ChordProFormatter, ChordsOverWordsParser } from '../../src';
+import {
+  ChordProFormatter, ChordProParser, ChordsOverWordsFormatter, ChordsOverWordsParser,
+} from '../../src';
 
 describe('chords over words to chordpro', () => {
   it('correctly parses and converts the song structure', () => {
@@ -57,6 +59,61 @@ describe('chords over words to chordpro', () => {
     const actualChordPro = new ChordProFormatter().format(song);
 
     expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('round trips known heading comments as bare section labels', () => {
+    const chordpro = heredoc`
+      {comment: Verse 1}
+      [C]Hi`;
+
+    const expectedChordPro = heredoc`
+      {comment: Verse 1}
+      [C]Hi`;
+
+    const chordsOverWords = new ChordsOverWordsFormatter().format(new ChordProParser().parse(chordpro));
+    const song = new ChordsOverWordsParser().parse(chordsOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(chordsOverWords).toContain('Verse 1\n');
+    expect(chordsOverWords).not.toContain('comment: Verse 1');
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('round trips optional key change comments with periods', () => {
+    const chordpro = heredoc`
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const expectedChordPro = heredoc`
+      {c: Opt. Key Change}
+      [C]Hi`;
+
+    const chordsOverWords = new ChordsOverWordsFormatter().format(new ChordProParser().parse(chordpro));
+    const song = new ChordsOverWordsParser().parse(chordsOverWords);
+    const actualChordPro = new ChordProFormatter().format(song);
+
+    expect(actualChordPro).toEqual(expectedChordPro);
+  });
+
+  it('round trips chord-only rhythm sections without changing their tokens', () => {
+    const chordproRhythmLine = [
+      '[D2][/][/][/][:||][(6x)][Bm7][/][/][/][|][/][/][/][/][|]',
+      '[D/A][/][/][/][|][/][/][/][/][|][G2][/][/][/][|][/][/][/][/][||]',
+      '[D5][/][/][/][:||][(4x)]',
+    ].join('');
+    const chordpro = `{c: Intro}\n${chordproRhythmLine}`;
+    const expectedChordsOverWords = heredoc`
+      Intro
+      D2 / / / :|| (6x) Bm7 / / / | / / / / | D/A / / / | / / / / | G2 / / / | / / / / || D5 / / / :|| (4x)`;
+    const configuration = { directiveNameNormalization: { comment: 'prefer-short' as const } };
+
+    const chordsOverWords = new ChordsOverWordsFormatter(configuration)
+      .format(new ChordProParser().parse(chordpro));
+    const actualChordPro = new ChordProFormatter(configuration)
+      .format(new ChordsOverWordsParser().parse(chordsOverWords));
+
+    expect(chordsOverWords).toEqual(expectedChordsOverWords);
+    expect(actualChordPro).toEqual(chordpro);
   });
 
   it('allows for a variance in space between trailing chord and next lyric', () => {

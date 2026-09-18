@@ -6,12 +6,24 @@ import Metadata from '../chord_sheet/metadata';
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import Tag from '../chord_sheet/tag';
-
-import { renderChord } from '../helpers';
+import { renderChordLyricsPair } from '../helpers';
 import { stripPangoMarkup } from '../pango/pango_helpers';
 import { SoftLineBreak, Ternary } from '../index';
 import { hasRemarkContents, isEmptyString, padLeft } from '../utilities';
 import { hasTextContents, processMetadata, renderSection } from '../template_helpers';
+import { longTagName, shortTagName } from '../chord_sheet/tag';
+
+const DIRECTION_KEYWORDS = [
+  'verse',
+  'chorus',
+  'bridge',
+  'tag',
+  'interlude',
+  'instrumental',
+  'intro',
+];
+
+const STANDALONE_BODY_DIRECTIVES = ['new_key'];
 
 /**
  * Formats a song into a plain text chord sheet
@@ -54,13 +66,15 @@ class ChordsOverWordsFormatter extends Formatter {
 
     const metadata = orderedMetadata
       .map(([key, value]) => {
+        const directiveName = this.formatMetadataName(key);
+
         if (Array.isArray(value)) {
-          return `${key}: ${value.join(',')}`;
+          return `${directiveName}: ${value.join(',')}`;
         }
         if (typeof value === 'undefined' || value === null || value === '') {
-          return `${key}:`;
+          return `${directiveName}:`;
         }
-        return `${key}: ${value}`;
+        return `${directiveName}: ${value}`;
       })
       .join('\n');
 
@@ -69,19 +83,51 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatParagraphs(): string {
     const metadata = this.song.getMetadata(this.configuration);
-    const { bodyParagraphs, expandedBodyParagraphs } = this.song;
-    const bodyParagraphsToFormat = this.configuration.expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs;
-    const paragraphs = this.song.filterParagraphs(bodyParagraphsToFormat, this.configuration);
+    const bodyParagraphs = this.configuration.expandChorusDirective ?
+      this.song.expandedBodyParagraphs :
+      this.bodyParagraphs();
+    const paragraphs = this.song.filterParagraphs(bodyParagraphs, this.configuration);
     const count = paragraphs.length;
 
     const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
     const combined = formattedParagraphs.join('\n\n');
 
-    if (formattedParagraphs[count - 1].length === 0) {
+    if (count > 0 && formattedParagraphs[count - 1].length === 0) {
       return combined.substring(0, combined.length - 1);
     }
 
     return combined;
+  }
+
+  private bodyParagraphs(): Paragraph[] {
+    const bodyLines = [...this.song.lines];
+    while (bodyLines.length && !this.shouldFormatBodyLine(bodyLines[0])) {
+      bodyLines.shift();
+    }
+
+    return this.linesToParagraphs(bodyLines);
+  }
+
+  private linesToParagraphs(lines: Line[]): Paragraph[] {
+    let currentParagraph = new Paragraph();
+    const paragraphs = [currentParagraph];
+
+    lines.forEach((line, index) => {
+      const nextLine: Line | null = lines[index + 1] || null;
+      if (line.isEmpty() || (line.isSectionEnd() && nextLine && !nextLine.isEmpty())) {
+        currentParagraph = new Paragraph();
+        paragraphs.push(currentParagraph);
+      } else if (this.shouldFormatBodyLine(line)) {
+        currentParagraph.addLine(line);
+      }
+    });
+
+    return paragraphs.filter((paragraph) => paragraph.hasRenderableItems() ||
+      paragraph.lines.some((line) => this.hasStandaloneBodyDirective(line)));
+  }
+
+  private shouldFormatBodyLine(line: Line): boolean {
+    return line.hasRenderableItems() || this.hasStandaloneBodyDirective(line);
   }
 
   formatParagraph(paragraph: Paragraph, metadata: Metadata): string {
@@ -92,12 +138,17 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     return paragraph.lines
-      .filter((line) => line.hasRenderableItems())
+      .filter((line) => this.shouldFormatBodyLine(line))
       .map((line) => this.formatLine(line, metadata))
       .join('\n');
   }
 
   formatLine(line: Line, metadata: Metadata): string {
+    const standaloneBodyDirective = this.formatStandaloneBodyDirective(line);
+    if (standaloneBodyDirective !== null) {
+      return standaloneBodyDirective;
+    }
+
     const parts = [
       this.formatLineTop(line, metadata),
       this.formatLineBottom(line, metadata),
@@ -107,6 +158,29 @@ class ChordsOverWordsFormatter extends Formatter {
       .filter((p) => !isEmptyString(p))
       .map((part) => (part || '').trimRight())
       .join('\n');
+  }
+
+  private hasStandaloneBodyDirective(line: Line): boolean {
+    return this.standaloneBodyDirective(line) !== null;
+  }
+
+  private formatStandaloneBodyDirective(line: Line): string | null {
+    const item = this.standaloneBodyDirective(line);
+    if (!item) {
+      return null;
+    }
+
+    const directiveName = this.formatDirectiveName(item);
+    return item.hasValue() ? `${directiveName}: ${item.value}` : directiveName;
+  }
+
+  private standaloneBodyDirective(line: Line): Tag | null {
+    if (line.items.length !== 1 || !(line.items[0] instanceof Tag)) {
+      return null;
+    }
+
+    const item = line.items[0];
+    return STANDALONE_BODY_DIRECTIVES.includes(item.name) ? item : null;
   }
 
   formatLineTop(line: Line, metadata: Metadata): string | null {
@@ -148,8 +222,8 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   renderChord(item: ChordLyricsPair, line: Line) {
-    return renderChord(
-      item.chord ?? item.chords,
+    return renderChordLyricsPair(
+      item,
       line,
       this.song,
       {
@@ -186,7 +260,7 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     if (item instanceof Tag && item.isRenderable()) {
-      return item.label;
+      return this.formatTag(item);
     }
 
     if (item instanceof ChordLyricsPair) {
@@ -202,6 +276,64 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     return '';
+  }
+
+  private formatTag(item: Tag): string {
+    if (item.isComment() && this.shouldFormatExplicitComment(item)) {
+      return `${this.formatDirectiveName(item)}: ${item.label}`;
+    }
+
+    return item.label;
+  }
+
+  private shouldFormatExplicitComment(item: Tag): boolean {
+    return !this.isBareCommentLabel(item.label);
+  }
+
+  private formatDirectiveName(tag: Tag): string {
+    return this.formatTagName(tag.name, tag.originalName);
+  }
+
+  private formatMetadataName(name: string): string {
+    return this.formatTagName(name, this.findOriginalMetadataName(name));
+  }
+
+  private formatTagName(name: string, originalName: string): string {
+    switch (this.directiveNameNormalizationFor(name)) {
+      case 'prefer-long':
+        return longTagName(name);
+      case 'prefer-short':
+        return shortTagName(name);
+      case 'none':
+      default:
+        return originalName;
+    }
+  }
+
+  private directiveNameNormalizationFor(name: string) {
+    const { directiveNameNormalization } = this.configuration;
+
+    if (typeof directiveNameNormalization === 'string') {
+      return directiveNameNormalization;
+    }
+
+    return directiveNameNormalization[longTagName(name)] || directiveNameNormalization[name] ||
+      directiveNameNormalization.default || 'none';
+  }
+
+  private findOriginalMetadataName(name: string): string {
+    const additionalMetadataDirectives = this.configuration.metadata.additionalMetadataDirectives ?? [];
+    const item = this.song.lines
+      .flatMap((line) => line.items)
+      .find((lineItem) => lineItem instanceof Tag &&
+        lineItem.isMetaTag(additionalMetadataDirectives) &&
+        lineItem.name === name);
+
+    return item instanceof Tag ? item.originalName : name;
+  }
+
+  private isBareCommentLabel(label: string): boolean {
+    return DIRECTION_KEYWORDS.some((keyword) => label.trim().toLowerCase().startsWith(keyword));
   }
 
   private formatEvaluatable(item: Ternary, metadata: Metadata) {
