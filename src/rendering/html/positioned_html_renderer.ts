@@ -1,6 +1,5 @@
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import Dimensions from '../../layout/engine/dimensions';
-import HtmlDocWrapper from './html_doc_wrapper';
 import HtmlElementStyler from './html_element_styler';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
@@ -10,11 +9,6 @@ import { getCapos } from '../../helpers';
 import { isChordTokenKind } from '../../chord_sheet/chord_line_token';
 import { isComment } from '../../template_helpers';
 import renderChordRuns from './chord_run_renderer';
-import { LineLayout, MeasuredItem } from '../../layout/engine';
-
-import LayoutSectionRenderer, { LayoutRenderingBackend } from '../shared/layout_section_renderer';
-import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
-
 import {
   FontConfiguration,
   FontSection,
@@ -24,14 +18,20 @@ import {
   MeasuredHtmlFormatterConfiguration,
   resolveFontConfiguration,
 } from '../../formatter/configuration';
+import HtmlDocWrapper, { HtmlContentFrame } from './html_doc_wrapper';
+import LayoutSectionRenderer, {
+  HorizontalBounds,
+  LayoutRenderingBackend,
+} from '../shared/layout_section_renderer';
+import { LineLayout, MeasuredItem } from '../../layout/engine';
+import ParagraphGroup, { ParagraphBounds } from './paragraph_group';
+import Renderer, { ParagraphLayout, PositionedElement } from '../renderer';
 
 declare const document: any;
 
-interface Bounds {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
+interface ResolvedContentFrame {
+  bounds: HorizontalBounds;
+  frame: HtmlContentFrame;
 }
 
 /**
@@ -53,6 +53,8 @@ class PositionedHtmlRenderer extends Renderer {
   private _dimensionCacheKey: string | null = null;
 
   private styler: HtmlElementStyler;
+
+  private contentBounds: HorizontalBounds | undefined;
 
   container: HTMLElement;
 
@@ -115,6 +117,29 @@ class PositionedHtmlRenderer extends Renderer {
 
   getHTML(): HTMLElement {
     return this.container;
+  }
+
+  setContentFrame(maxUsedColumn: number): void {
+    const resolvedFrame = this.resolveContentFrame(maxUsedColumn);
+    this.contentBounds = resolvedFrame?.bounds;
+    this.doc.setContentFrame(resolvedFrame?.frame || null);
+  }
+
+  private resolveContentFrame(maxUsedColumn: number): ResolvedContentFrame | null {
+    if (this.configuration.layout.global.contentWidth !== 'fit-columns' || maxUsedColumn < 1) {
+      return null;
+    }
+
+    const usedColumnCount = Math.min(maxUsedColumn, this.getColumnCount());
+    const frameWidth = usedColumnCount * this.getColumnWidth() +
+      (usedColumnCount - 1) * this.getColumnSpacing();
+    const sourceLeft = this.getLeftMargin();
+    const availableWidth = this.getPageWidth() - sourceLeft - this.getRightMargin();
+    const frameLeft = sourceLeft + (availableWidth - frameWidth) / 2;
+    return {
+      bounds: { left: sourceLeft, right: sourceLeft + frameWidth },
+      frame: { left: frameLeft, sourceLeft, width: frameWidth },
+    };
   }
 
   dispose(): void {
@@ -180,6 +205,7 @@ class PositionedHtmlRenderer extends Renderer {
       metadata: this.song.getMetadata(this.configuration).merge(this.song.metadata),
       margins: this.dimensions.margins,
       extraMetadata: this.getExtraMetadata(page, totalPages),
+      horizontalBounds: this.contentBounds,
     });
   }
 
@@ -529,41 +555,6 @@ class PositionedHtmlRenderer extends Renderer {
   // PRIVATE HELPERS
   //
 
-  private calculateBounds(group: PositionedElement[]): Bounds {
-    let minX = Number.MAX_VALUE;
-    let minY = Number.MAX_VALUE;
-    let maxX = Number.MIN_VALUE;
-    let maxY = Number.MIN_VALUE;
-
-    group.forEach((element) => {
-      minX = Math.min(minX, element.x);
-      minY = Math.min(minY, element.y);
-      maxX = Math.max(maxX, element.x + element.width);
-      maxY = Math.max(maxY, element.y + element.height);
-    });
-
-    return {
-      minX, minY, maxX, maxY,
-    };
-  }
-
-  private createParagraphDiv(bounds: Bounds, classes: (string | undefined)[]) {
-    const width = bounds.maxX - bounds.minX;
-    const height = bounds.maxY - bounds.minY;
-    const div = document.createElement('div');
-    div.className = this.styler.createClassName(...classes);
-
-    Object.assign(div.style, {
-      position: 'absolute',
-      left: `${bounds.minX}px`,
-      top: `${bounds.minY}px`,
-      width: `${width}px`,
-      height: `${height}px`,
-    });
-
-    return div;
-  }
-
   private createElementGroupDiv(
     x: number,
     y: number,
@@ -592,14 +583,14 @@ class PositionedHtmlRenderer extends Renderer {
     const { page } = group[0];
     this.doc.setPage(page);
 
-    const bounds = this.calculateBounds(group);
+    const bounds = ParagraphGroup.calculateBounds(group);
     const { prefix } = this.styler;
 
-    const paragraphDiv = this.createParagraphDiv(bounds, [
+    const paragraphDiv = ParagraphGroup.createElement(bounds, this.styler.createClassName(
       `${prefix}paragraph`,
       `paragraph-${paragraphIndex}-${groupIndex}`,
       `${prefix}${layout.sectionType}`,
-    ]);
+    ));
 
     group.forEach((element) => {
       this.renderElement(element, bounds, paragraphDiv);
@@ -608,7 +599,7 @@ class PositionedHtmlRenderer extends Renderer {
     this.doc.addElement(paragraphDiv, bounds.minX, bounds.minY);
   }
 
-  private renderElement(element: PositionedElement, bounds: Bounds, paragraphDiv: any) {
+  private renderElement(element: PositionedElement, bounds: ParagraphBounds, paragraphDiv: any) {
     const { prefix } = this.styler;
     const htmlElement = this.createElementGroupDiv(
       element.x - bounds.minX,
