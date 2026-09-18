@@ -1,3 +1,5 @@
+import type Key from '../../key';
+
 import ChordLyricsPair from '../../chord_sheet/chord_lyrics_pair';
 import Line from '../../chord_sheet/line';
 import SoftLineBreak from '../../chord_sheet/soft_line_break';
@@ -66,6 +68,7 @@ export interface LineLayout {
  * Configuration for the layout engine
  */
 export interface LayoutConfig {
+  renderKey?: Key | null;
   width: number;
   fonts: {
     chord: FontConfiguration;

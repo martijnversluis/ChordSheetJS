@@ -1,4 +1,6 @@
 import { mergeConfigs } from '../../utilities';
+import { terminalSpecificDefaults } from './terminal_configuration';
+
 import {
   BaseFormatterConfiguration,
   defaultBaseConfiguration,
@@ -14,6 +16,7 @@ import { TextFormatterConfiguration, textSpecificDefaults } from './text_configu
 
 const formatterDefaultParts: Record<string, any> = {
   'base': {},
+  'terminal': terminalSpecificDefaults,
   'html': htmlSpecificDefaults,
   'measurement': measurementSpecificDefaults,
   'pdf': pdfSpecificDefaults,
@@ -23,6 +26,7 @@ const formatterDefaultParts: Record<string, any> = {
 
 const inheritanceMap: Record<string, string[]> = {
   base: ['base'],
+  terminal: ['base', 'terminal'],
   html: ['base', 'html'],
   measurement: ['base', 'measurement'],
   pdf: ['base', 'measurement', 'pdf'],
