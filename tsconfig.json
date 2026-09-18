@@ -18,5 +18,5 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "exclude": ["./unibuild.ts", "./examples/terminal"]
+  "exclude": ["./unibuild.ts"]
 }

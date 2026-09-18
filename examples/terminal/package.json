@@ -1,7 +1,0 @@
-{
-  "name": "chordsheetjs-terminal-example",
-  "private": true,
-  "type": "module",
-  "scripts": { "test": "bun test", "start": "bun run index.ts" },
-  "devDependencies": { "@opentui/core": "0.5.11", "@types/bun": "1.3.10" }
-}

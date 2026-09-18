@@ -4,12 +4,7 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/test/util/setup.ts'],
   testEnvironment: 'node',
   modulePathIgnorePatterns: ['<rootDir>/worktrees/', '<rootDir>/.claude/worktrees/'],
-  testPathIgnorePatterns: [
-    '<rootDir>/examples/terminal/',
-    '/node_modules/',
-    '<rootDir>/worktrees/',
-    '<rootDir>/.claude/worktrees/',
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/worktrees/', '<rootDir>/.claude/worktrees/'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
