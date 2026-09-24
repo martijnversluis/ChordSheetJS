@@ -32,6 +32,10 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * `repeatedSections: "full"` to render the full chorus.
    * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp
    * symbols.
+   * @param {boolean} [configuration.decapo=false] Whether to eliminate the capo by transposing the chords up by
+   * the capo amount. The `{key}` directive is updated to the sounding key and the `{capo}` directive is dropped.
+   * When `false` (the default), the chords are rendered as written, because a capo tells the player which shapes
+   * to play, not which chords sound.
    * @param {boolean} [configuration.normalizeChords=true] Whether or not to automatically normalize chords
    * @param {boolean} [configuration.normalizeChordSuffix=true] Whether to normalize chord suffixes (e.g.
    * `sus2` to `2`, `maj7` to `ma7`). Only takes effect when `normalizeChords` is `true`. Defaults to `false`
@@ -56,7 +60,8 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   }
 
   protected prepareSong(song: Song): Song {
-    return this.configuration.normalizeChords ? song.normalizeChordSequences() : song;
+    const preparedSong = this.configuration.decapo ? song.decapo() : song;
+    return this.configuration.normalizeChords ? preparedSong.normalizeChordSequences() : preparedSong;
   }
 
   /**

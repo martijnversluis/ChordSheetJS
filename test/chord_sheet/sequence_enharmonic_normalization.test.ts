@@ -214,8 +214,8 @@ describe('formatter sequence normalization flag', () => {
 
     const text = new TextFormatter({ decapo: true, normalizeChords: true }).format(withCapo);
 
-    expect(text).toContain('Bdim7 Cm');
-    expect(text).not.toContain('Cbdim7');
+    expect(text).toContain('D#dim7 Em');
+    expect(text).not.toContain('Ebdim7');
   });
 
   it('preserves the source when normalizeChords is disabled', () => {

@@ -40,7 +40,6 @@ describe('Renderer base class', () => {
       normalizeChords: boolean;
       lyricsOnly: boolean;
     };
-    decapo: number;
   }
 
   class TestRenderer extends Renderer {
@@ -400,7 +399,6 @@ describe('Renderer base class', () => {
       paragraphSpacing: overrides.paragraphSpacing ?? 10,
       chordLyricSpacing: overrides.chordLyricSpacing ?? 6,
       flags: createFlags(overrides.flags),
-      decapo: overrides.decapo ?? 0,
     };
   }
 

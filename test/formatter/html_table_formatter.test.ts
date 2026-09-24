@@ -950,9 +950,9 @@ describe('HtmlTableFormatter', () => {
           <table class="row">
             <tr>
               <td class="chord"></td>
-              <td class="chord">C#m7</td>
-              <td class="chord">B/D#</td>
-              <td class="chord">E</td>
+              <td class="chord">D#m7</td>
+              <td class="chord">C#/E#</td>
+              <td class="chord">F#</td>
             </tr>
             <tr>
               <td class="lyrics">My </td>

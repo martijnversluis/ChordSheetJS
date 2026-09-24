@@ -230,7 +230,6 @@ class ChordsOverWordsFormatter extends Formatter {
         renderKey: this.configuration.key,
         normalizeChords: this.configuration.normalizeChords,
         normalizeChordSuffix: this.configuration.normalizeChordSuffix,
-        decapo: this.configuration.decapo,
       },
     );
   }

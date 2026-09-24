@@ -181,6 +181,22 @@ const formatter = new ChordSheetJS.MeasuredHtmlFormatter();
 const disp = formatter.format(song);
 ```
 
+#### Capo
+
+By default, a `{capo}` directive is informational only: the chords are rendered exactly as written, because a
+capo tells the player which shapes to play, not which chords sound. Set `decapo: true` to eliminate the capo
+instead: all chords are transposed up by the capo amount, the `{key}` directive is updated to the sounding key
+and the `{capo}` directive is dropped.
+
+```javascript
+// {key: A}, {capo: 1}, [A]This is an [F#m]example
+new ChordSheetJS.TextFormatter().format(song);
+// A          F#m
+
+new ChordSheetJS.TextFormatter({ decapo: true }).format(song);
+// A#         Gm
+```
+
 ### Layout Engine
 
 The `PdfFormatter` and `MeasuredHtmlFormatter` are powered by a layout engine that handles text measurement

@@ -127,7 +127,6 @@ describe('LayoutEngine', () => {
     paragraphSpacing: 10,
     columnBottomY: 750,
     displayLyricsOnly: false,
-    decapo: false,
   };
 
   function createTestConfig(overrides: Partial<LayoutConfig> = {}): LayoutConfig {

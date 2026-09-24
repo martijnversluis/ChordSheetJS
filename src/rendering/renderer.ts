@@ -383,7 +383,6 @@ abstract class Renderer {
         useUnicodeModifier: this.useUnicodeModifiers(),
         normalizeChords: this.normalizeChords(),
         normalizeChordSuffix: this.getConfiguration().normalizeChordSuffix,
-        decapo: this.getConfiguration().decapo,
       },
     );
   }

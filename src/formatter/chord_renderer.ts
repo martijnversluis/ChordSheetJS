@@ -115,7 +115,7 @@ class ChordRenderer {
   }
 
   private get effectiveTransposeDistance() {
-    let transpose = -1 * this.capo;
+    let transpose = this.capo;
 
     if (this.songKey) {
       if (this.transposeKey) {
@@ -123,7 +123,8 @@ class ChordRenderer {
       }
 
       if (this.renderKey) {
-        transpose += Key.distance(this.songKey, this.renderKey);
+        const soundingKey = this.capo ? this.songKey.transpose(this.capo) : this.songKey;
+        transpose += Key.distance(soundingKey, this.renderKey);
       }
     }
 

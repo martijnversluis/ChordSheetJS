@@ -11,7 +11,7 @@ describe('renderChord', () => {
     const line = createLine();
     const song = new Song({ key: 'F', capo: '1' });
 
-    expect(renderChord('Dm7', line, song, { decapo: true })).toEqual('C#m7');
+    expect(renderChord('Dm7', line, song, { decapo: true })).toEqual('D#m7');
   });
 
   it('does not normalize for capo when decapo is disabled', () => {

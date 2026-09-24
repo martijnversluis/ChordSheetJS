@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 import Chord from '../chord';
 import ChordDefinition from '../chord_definition/chord_definition';
 import ChordDefinitionSet from '../chord_definition/chord_definition_set';
@@ -169,6 +171,29 @@ class Song extends MetadataAccessors {
   setCapo(capo: number | null): Song {
     const strCapo = capo ? capo.toString() : null;
     return this.changeMetadata(CAPO, strCapo);
+  }
+
+  /**
+   * Returns a copy of the song with the capo eliminated, like ChordPro's `decapo` setting. It changes:
+   * - all chords, those are transposed up by the capo amount so they sound the same without a capo
+   * - the song key in {@link metadata} and any existing `key` directive, to the sounding key
+   * - the value for `capo` in {@link metadata} and any existing `capo` directive, which are removed
+   *
+   * The song is returned unchanged when it has no usable capo, or when any of its keys cannot be parsed.
+   * @returns {Song} The changed song
+   */
+  decapo(): Song {
+    const capo = parseInt(this.metadata.getSingle(CAPO) ?? '', 10);
+    if (!capo || !this.hasParsableKeys()) return this;
+
+    return this.transpose(capo).setCapo(null);
+  }
+
+  private hasParsableKeys(): boolean {
+    const value = this.metadata.get(KEY);
+    if (value === null) return true;
+
+    return [value].flat().every((key) => Key.parse(key) !== null);
   }
 
   private updateDirectives(metadata: Record<string, string | string[] | null>): Song {

@@ -2,7 +2,9 @@ import Metadata from '../../src/chord_sheet/metadata';
 import Song from '../../src/chord_sheet/song';
 
 import { configure } from '../../src/formatter/configuration';
-import { ChordLyricsPair, ChordSheetSerializer, Tag } from '../../src';
+import {
+  ChordLyricsPair, ChordProFormatter, ChordProParser, ChordSheetSerializer, Tag,
+} from '../../src';
 import { changedSongSolfege, changedSongSymbol } from '../fixtures/changed_song';
 import { exampleSongSolfege, exampleSongSymbol } from '../fixtures/song';
 import { serializedSongSolfege, serializedSongSymbol } from '../fixtures/serialized_song';
@@ -693,6 +695,47 @@ describe('Song', () => {
       const { items } = normalized.paragraphs[0].lines[0];
       expect((items[0] as ChordLyricsPair).chords).toEqual('A#dim7');
       expect((items[1] as ChordLyricsPair).chords).toEqual('D#+');
+    });
+  });
+
+  describe('#decapo', () => {
+    it('transposes the chords up by the capo and removes the capo', () => {
+      const song = new ChordProParser().parse('{key: C}\n{capo: 2}\n[C]let it [Am]be');
+
+      const decapoed = song.decapo();
+
+      expect(new ChordProFormatter().format(decapoed)).toEqual('{key: D}\n[D]let it [Bm]be');
+      expect(decapoed.metadata.getSingle('capo')).toBeNull();
+    });
+
+    it('transposes the chords when the song has no key', () => {
+      const song = new ChordProParser().parse('{capo: 2}\n[C]let it [Am]be');
+
+      expect(new ChordProFormatter().format(song.decapo())).toEqual('[D]let it [Bm]be');
+    });
+
+    it('returns the song unchanged when there is no capo', () => {
+      const song = new ChordProParser().parse('{key: C}\n[C]let it [Am]be');
+
+      expect(song.decapo()).toBe(song);
+    });
+
+    it('returns the song unchanged when the capo is not a number', () => {
+      const song = new ChordProParser().parse('{key: C}\n{capo: none}\n[C]let it [Am]be');
+
+      expect(song.decapo()).toBe(song);
+    });
+
+    it('returns the song unchanged when the key cannot be parsed', () => {
+      const song = new ChordProParser().parse('{key: Q7x}\n{capo: 2}\n[C]let it [Am]be');
+
+      expect(song.decapo()).toBe(song);
+    });
+
+    it('returns the song unchanged when a later key cannot be parsed', () => {
+      const song = new ChordProParser().parse('{key: C}\n{capo: 2}\n[C]let it\n{key: Q7x}\n[Am]be');
+
+      expect(song.decapo()).toBe(song);
     });
   });
 
