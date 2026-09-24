@@ -843,15 +843,15 @@ describe('HtmlDivFormatter', () => {
               <div class="lyrics">My </div>
             </div>
             <div class="column">
-              <div class="chord">C#m7</div>
+              <div class="chord">D#m7</div>
               <div class="lyrics">heart has always </div>
             </div>
             <div class="column">
-              <div class="chord">B/D#</div>
+              <div class="chord">C#/E#</div>
               <div class="lyrics">longed for something </div>
             </div>
             <div class="column">
-              <div class="chord">E</div>
+              <div class="chord">F#</div>
               <div class="lyrics">more</div>
             </div>
           </div>

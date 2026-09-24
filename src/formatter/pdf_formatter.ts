@@ -134,7 +134,6 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       columnBottomY: this.renderer.getContentBottomY(1, totalPages),
       getColumnBottomYForPage: (page, pages) => this.renderer!.getContentBottomY(page, pages),
       displayLyricsOnly: !!this.configuration.layout.sections?.base?.display?.lyricsOnly,
-      decapo: this.configuration.decapo,
       repeatedSections: this.configuration.layout.sections?.base?.display?.repeatedSections,
       expandChorusDirective: this.configuration.expandChorusDirective,
     };

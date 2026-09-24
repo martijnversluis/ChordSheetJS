@@ -68,7 +68,7 @@ abstract class HtmlFormatter extends Formatter<HTMLFormatterConfiguration> {
         song: preparedSong,
         metadata: preparedSong.getMetadata(this.configuration),
         configuration: this.configuration,
-        bodyParagraphs: song.filterParagraphs(paragraphs, this.configuration),
+        bodyParagraphs: preparedSong.filterParagraphs(paragraphs, this.configuration),
       },
     );
   }

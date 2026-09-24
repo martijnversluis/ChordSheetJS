@@ -29,14 +29,14 @@ describe('renderChord helper', () => {
        4 |         |      |         | "A"              | "F"       |        | "Em7"   |
        5 |         |      | "Bb"    |                  | "F"       |        | "Em7"   |
        6 |         |      | "Bb"    | "A"              | "F"       |        | "Em7"   |
-       7 |         | 3    |         |                  |           | true   | "Dbm7"  |
-       8 |         | 3    |         |                  | "F"       | true   | "Dbm7"  |
-       9 |         | 3    |         | "A"              |           | true   | "Dbm7"  |
-      10 |         | 3    |         | "A"              | "F"       | true   | "Dbm7"  |
-      11 |         | 3    | "Bb"    |                  |           | true   | "Dbm7"  |
-      12 |         | 3    | "Bb"    |                  | "F"       | true   | "Dbm7"  |
-      13 |         | 3    | "Bb"    | "A"              |           | true   | "Dbm7"  |
-      14 |         | 3    | "Bb"    | "A"              | "F"       | true   | "Dbm7"  |
+       7 |         | 3    |         |                  |           | true   | "Gm7"   |
+       8 |         | 3    |         |                  | "F"       | true   | "Gm7"   |
+       9 |         | 3    |         | "A"              |           | true   | "Gm7"   |
+      10 |         | 3    |         | "A"              | "F"       | true   | "Gm7"   |
+      11 |         | 3    | "Bb"    |                  |           | true   | "Gm7"   |
+      12 |         | 3    | "Bb"    |                  | "F"       | true   | "Gm7"   |
+      13 |         | 3    | "Bb"    | "A"              |           | true   | "Gm7"   |
+      14 |         | 3    | "Bb"    | "A"              | "F"       | true   | "Gm7"   |
       15 | "G"     |      |         |                  |           |        | "Em7"   |
       16 | "G"     |      |         |                  | "F"       |        | "Dm7"   |
       17 | "G"     |      |         | "A"              | "F"       |        | "Em7"   |
@@ -44,13 +44,13 @@ describe('renderChord helper', () => {
       19 | "G"     |      | "Bb"    |                  | "F"       |        | "Dm7"   |
       20 | "G"     |      | "Bb"    | "A"              |           |        | "Gbm7"  |
       21 | "G"     |      | "Bb"    | "A"              | "F"       |        | "Em7"   |
-      22 | "G"     | 3    |         |                  |           | true   | "C#m7"  |
-      23 | "G"     | 3    |         |                  | "F"       | true   | "Bm7"   |
-      24 | "G"     | 3    |         | "A"              |           | true   | "Ebm7"  |
-      25 | "G"     | 3    |         | "A"              | "F"       | true   | "C#m7"  |
-      26 | "G"     | 3    | "Bb"    |                  | "F"       | true   | "Bm7"   |
-      27 | "G"     | 3    | "Bb"    | "A"              |           | true   | "Ebm7"  |
-      28 | "G"     | 3    | "Bb"    | "A"              | "F"       | true   | "Dbm7"  |
+      22 | "G"     | 3    |         |                  |           | true   | "Gm7"   |
+      23 | "G"     | 3    |         |                  | "F"       | true   | "Dm7"   |
+      24 | "G"     | 3    |         | "A"              |           | true   | "Am7"   |
+      25 | "G"     | 3    |         | "A"              | "F"       | true   | "Em7"   |
+      26 | "G"     | 3    | "Bb"    |                  | "F"       | true   | "Dm7"   |
+      27 | "G"     | 3    | "Bb"    | "A"              |           | true   | "Am7"   |
+      28 | "G"     | 3    | "Bb"    | "A"              | "F"       | true   | "Em7"   |
       29 |         | 3    |         |                  |           | false  | "Em7"   |
       30 |         | 3    |         |                  | "F"       | false  | "Em7"   |
       31 |         | 3    |         | "A"              |           | false  | "Em7"   |
@@ -120,14 +120,14 @@ describe('renderChord helper', () => {
        4 |           |      |         | "La"             | "Fa"      |        | "Mim7"   |
        5 |           |      | "Sib"   |                  | "Fa"      |        | "Mim7"   |
        6 |           |      | "Sib"   | "La"             | "Fa"      |        | "Mim7"   |
-       7 |           | 3    |         |                  |           | true   | "Rebm7"  |
-       8 |           | 3    |         |                  | "Fa"      | true   | "Rebm7"  |
-       9 |           | 3    |         | "La"             |           | true   | "Rebm7"  |
-      10 |           | 3    |         | "La"             | "Fa"      | true   | "Rebm7"  |
-      11 |           | 3    | "Sib"   |                  |           | true   | "Rebm7"  |
-      12 |           | 3    | "Sib"   |                  | "Fa"      | true   | "Rebm7"  |
-      13 |           | 3    | "Sib"   | "La"             |           | true   | "Rebm7"  |
-      14 |           | 3    | "Sib"   | "La"             | "Fa"      | true   | "Rebm7"  |
+       7 |           | 3    |         |                  |           | true   | "Solm7"  |
+       8 |           | 3    |         |                  | "Fa"      | true   | "Solm7"  |
+       9 |           | 3    |         | "La"             |           | true   | "Solm7"  |
+      10 |           | 3    |         | "La"             | "Fa"      | true   | "Solm7"  |
+      11 |           | 3    | "Sib"   |                  |           | true   | "Solm7"  |
+      12 |           | 3    | "Sib"   |                  | "Fa"      | true   | "Solm7"  |
+      13 |           | 3    | "Sib"   | "La"             |           | true   | "Solm7"  |
+      14 |           | 3    | "Sib"   | "La"             | "Fa"      | true   | "Solm7"  |
       15 | "Sol"     |      |         |                  |           |        | "Mim7"   |
       16 | "Sol"     |      |         |                  | "Fa"      |        | "Rem7"   |
       17 | "Sol"     |      |         | "La"             | "Fa"      |        | "Mim7"   |
@@ -135,13 +135,13 @@ describe('renderChord helper', () => {
       19 | "Sol"     |      | "Sib"   |                  | "Fa"      |        | "Rem7"   |
       20 | "Sol"     |      | "Sib"   | "La"             |           |        | "Solbm7" |
       21 | "Sol"     |      | "Sib"   | "La"             | "Fa"      |        | "Mim7"   |
-      22 | "Sol"     | 3    |         |                  |           | true   | "Do#m7"  |
-      23 | "Sol"     | 3    |         |                  | "Fa"      | true   | "Sim7"   |
-      24 | "Sol"     | 3    |         | "La"             |           | true   | "Mibm7"  |
-      25 | "Sol"     | 3    |         | "La"             | "Fa"      | true   | "Do#m7"  |
-      26 | "Sol"     | 3    | "Sib"   |                  | "Fa"      | true   | "Sim7"   |
-      27 | "Sol"     | 3    | "Sib"   | "La"             |           | true   | "Mibm7"  |
-      28 | "Sol"     | 3    | "Sib"   | "La"             | "Fa"      | true   | "Rebm7"  |
+      22 | "Sol"     | 3    |         |                  |           | true   | "Solm7"  |
+      23 | "Sol"     | 3    |         |                  | "Fa"      | true   | "Rem7"   |
+      24 | "Sol"     | 3    |         | "La"             |           | true   | "Lam7"   |
+      25 | "Sol"     | 3    |         | "La"             | "Fa"      | true   | "Mim7"   |
+      26 | "Sol"     | 3    | "Sib"   |                  | "Fa"      | true   | "Rem7"   |
+      27 | "Sol"     | 3    | "Sib"   | "La"             |           | true   | "Lam7"   |
+      28 | "Sol"     | 3    | "Sib"   | "La"             | "Fa"      | true   | "Mim7"   |
       29 |           | 3    |         |                  |           | false  | "Mim7"   |
       30 |           | 3    |         |                  | "Fa"      | false  | "Mim7"   |
       31 |           | 3    |         | "La"             |           | false  | "Mim7"   |

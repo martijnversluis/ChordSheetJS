@@ -118,7 +118,6 @@ function createTestConfig(overrides: Partial<LayoutConfig> = {}): LayoutConfig {
     paragraphSpacing: 10,
     columnBottomY: 750,
     displayLyricsOnly: false,
-    decapo: false,
     ...overrides,
   };
 }

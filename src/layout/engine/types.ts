@@ -103,7 +103,6 @@ export interface LayoutConfig {
   columnBottomY: number;
   getColumnBottomYForPage?: (page: number, totalPages: number) => number;
   displayLyricsOnly?: boolean;
-  decapo: boolean;
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';
   expandChorusDirective?: boolean;
 }

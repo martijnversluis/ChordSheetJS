@@ -40,7 +40,8 @@ interface RenderChordOptions {
  * @param normalizeChords Whether to normalize the chord to the key (default `true`)
  * @param normalizeChordSuffix Whether to normalize the chord suffix (e.g. `sus2` to `2`, `maj7` to `ma7`).
  * Only takes effect when `normalizeChords` is `true`. Default `true`.
- * @param decapo Whether to transpose all chords to eliminate the capo (default `false`)
+ * @param decapo Whether to eliminate the capo by transposing the chord up by the capo amount. Use
+ * {@link Song#decapo} to do this for a whole song, including its `key` and `capo` directives. Default `false`.
  */
 const renderChordDefaults: Required<RenderChordOptions> = {
   renderKey: null,

@@ -145,7 +145,7 @@ Let it be, let it be, let it be, let it be`;
     ]);
 
     const expectedChordSheet = heredoc`
-         C#m7             B/D#                 E
+         D#m7             C#/E#                F#
       My heart has always longed for something more`;
 
     expect(new TextFormatter({ decapo: true }).format(songWithCapo)).toEqual(expectedChordSheet);

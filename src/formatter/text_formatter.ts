@@ -202,7 +202,6 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
         useUnicodeModifier: this.configuration.useUnicodeModifiers,
         normalizeChords: this.configuration.normalizeChords,
         normalizeChordSuffix: this.configuration.normalizeChordSuffix,
-        decapo: this.configuration.decapo,
       },
     );
     return chords;
