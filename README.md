@@ -226,6 +226,36 @@ const formatter = new PdfFormatter({
 Font inheritance is resolved after defaults and user configuration are merged, so later `fonts.chord` overrides also
 flow through to token fonts.
 
+### Generate a song map
+
+A song map is the ordered list of section occurrences that describes in which order a song is performed. It can be
+generated from the recognized sections of a linear chart. Generating a song map does not change the song.
+
+```javascript
+const song = new ChordProParser().parse(chordSheet);
+const songMap = SongMapGenerator.generate(song);
+
+songMap.toString();
+// 'V1 C1 V2 C1'
+
+songMap.sections.map((section) => [section.token, section.displayLabel]);
+// [['V1', 'Verse 1'], ['C1', 'Chorus'], ['V2', 'Verse 2']]
+
+songMap.occurrences.map((occurrence) => [occurrence.index, occurrence.token, occurrence.origin]);
+// [[0, 'V1', 'source'], [1, 'C1', 'source'], [2, 'V2', 'source'], [3, 'C1', 'recall']]
+```
+
+Every occurrence refers to one section, so the same section can occur multiple times. Sections are identified by
+section type, label and content: a repeated block with exactly equal content is another occurrence of the same
+section, a block with a conflicting label is a new section.
+
+When generation cannot resolve something, it reports a diagnostic instead of guessing:
+
+```javascript
+songMap.diagnostics.map((diagnostic) => [diagnostic.type, diagnostic.message]);
+// [['missing_recall_target', 'A chorus recall has no preceding chorus to refer to']]
+```
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by
