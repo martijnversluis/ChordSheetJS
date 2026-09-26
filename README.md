@@ -149,6 +149,42 @@ const formatter = new ChordSheetJS.ChordsOverWordsFormatter();
 const disp = formatter.format(song);
 ```
 
+#### Terminal cell format (experimental)
+
+```typescript
+import { ChordProParser, TerminalFormatter, type TerminalDocument } from 'chordsheetjs';
+
+const song = new ChordProParser().parse('{title: Example}\n[C]Hello [G]world');
+const formatter = new TerminalFormatter({
+  width: 80,
+  height: 24,
+  layout: {
+    header: { height: 2, text: '{title} — {page}/{pages}' },
+    sections: { global: { columnCount: 2, columnSpacing: 4 } },
+  },
+});
+const document: TerminalDocument = formatter.format(song);
+```
+
+`TerminalFormatter` returns serializable cell data, not ANSI output or UI widgets.
+`width` and optional `height` are terminal cells; omit `height` for an unbounded single column.
+`document.pages` contains page-local rows, spans and column geometry; `document.rows` is the
+page-stacked projection (including page spacing), and `document.height` is its total row count.
+Coordinates are zero-based; page and column indices are one-based. Spans carry text, cell width,
+style roles, optional styles and source anchors. Consumers draw at `span.x` and `row.y`, clip to
+column/page bounds, and inspect `document.diagnostics` for unsupported content or overflow.
+
+Use `layout.global` for margins/page spacing, `layout.sections.global` for columns and spacing,
+and `layout.sections.base.display` for lyric/label/repeated-section visibility. Headers and footers
+reserve a fixed height and support metadata, `{page}` and `{pages}` templates. `styles` maps semantic
+roles to colors/emphasis. `cellWidth` can override Unicode cell measurement to match a renderer.
+Reflow with `formatter.format(song, { width, height })` when the viewport changes.
+
+The package root exports `TerminalFormatter`, `TerminalMeasurer` and the `TerminalDocument`,
+`TerminalPage`, `TerminalSpan`, configuration, style and geometry types for external consumers.
+See [Chordli](https://github.com/musicready/chordli) for the complete OpenTUI consumer, including
+painting, navigation, scrolling and resize handling. ChordSheetJS requires neither OpenTUI nor Bun.
+
 #### PDF format (BETA)
 
 > **Note:** `PdfFormatter` is currently in beta. Its API may change in future releases.

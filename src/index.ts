@@ -1,3 +1,19 @@
+import TerminalFormatter from './formatter/terminal_formatter';
+import { TerminalMeasurer } from './layout/measurement/terminal_measurer';
+
+export { TerminalFormatter, TerminalMeasurer };
+export type { TerminalCellWidth } from './layout/measurement/terminal_measurer';
+export type {
+  TerminalConfigurationInput, TerminalLayoutConfig, TerminalFormatterConfiguration,
+} from './formatter/configuration/terminal_configuration';
+export type {
+  TerminalDocument, TerminalRow, TerminalSpan, TerminalPage, TerminalColumn, TerminalGeometry,
+  TerminalStyle, TerminalStyleRole, TerminalDiagnostic,
+} from './rendering/terminal/types';
+export type {
+  LayoutSource, PlacementGeometry, PositionedLayout, PositionedLine,
+} from './layout/engine/placement_planner';
+export type { TerminalMargins, TerminalTextBlock } from './formatter/configuration/terminal_configuration';
 import Chord from './chord';
 import ChordDefinition from './chord_definition/chord_definition';
 import ChordLyricsPair from './chord_sheet/chord_lyrics_pair';
@@ -125,6 +141,8 @@ export {
 } from './constants';
 
 export default {
+  TerminalFormatter,
+  TerminalMeasurer,
   CHORUS,
   Chord,
   ChordDefinition,

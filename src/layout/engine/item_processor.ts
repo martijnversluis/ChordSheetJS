@@ -197,7 +197,7 @@ export class ItemProcessor {
 
   private renderChordText(chords: Chord | string, line: Line): string {
     return renderChord(chords, line, this.song, {
-      renderKey: null,
+      renderKey: this.config.renderKey ?? null,
       useUnicodeModifier: this.config.useUnicodeModifiers,
       normalizeChords: this.config.normalizeChords,
       normalizeChordSuffix: this.config.normalizeChordSuffix,
@@ -363,7 +363,8 @@ export class ItemProcessor {
     if (splitLines.length === 1) return [item, null];
 
     const firstLyrics = splitLines[0];
-    const secondLyrics = splitLines.slice(1).join(' ');
+    const remainingLines = splitLines.slice(1);
+    const secondLyrics = this.measurer.joinWrappedLines?.(remainingLines) ?? remainingLines.join(' ');
     return [
       this.createSplitMeasuredItem(item, firstLyrics, item.item.chords, item.item.isRhythmSymbol),
       {

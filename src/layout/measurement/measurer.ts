@@ -6,6 +6,9 @@ export interface TextDimensions {
 }
 
 export interface Measurer {
+  /** Reconstruct unconsumed wrapped fragments. Omit to retain legacy space-separated wrapping. */
+  joinWrappedLines?(lines: string[]): string;
+
   /**
    * Measures the dimensions of text with the given font configuration
    * @param text The text to measure
