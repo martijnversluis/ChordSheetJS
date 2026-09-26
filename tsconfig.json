@@ -2,6 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     "lib": ["es2018", "es2019", "es2022", "dom"],
     "module": "preserve",
     "moduleResolution": "bundler",
