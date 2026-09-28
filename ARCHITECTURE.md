@@ -176,6 +176,8 @@ src/
 │   ├── ultimate_guitar/     # Ultimate Guitar parser
 │   └── chord/               # Chord string parser
 │
+├── song_map/                # Song map generation (section tokens, occurrences)
+│
 ├── formatter/               # Output formatters
 │   ├── formatter.ts         # Base class
 │   ├── text_formatter.ts

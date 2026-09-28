@@ -18,6 +18,8 @@ import Metadata from './chord_sheet/metadata';
 import Paragraph from './chord_sheet/paragraph';
 import SoftLineBreak from './chord_sheet/soft_line_break';
 import Song from './chord_sheet/song';
+import SongMap from './song_map/song_map';
+import SongMapGenerator from './song_map/song_map_generator';
 import Tag from './chord_sheet/tag';
 import Ternary from './chord_sheet/chord_pro/ternary';
 import TextFormatter from './formatter/text_formatter';
@@ -87,6 +89,11 @@ export { default as Metadata } from './chord_sheet/metadata';
 export { default as Paragraph } from './chord_sheet/paragraph';
 export { default as SoftLineBreak } from './chord_sheet/soft_line_break';
 export { default as Song } from './chord_sheet/song';
+export { default as SongMap } from './song_map/song_map';
+export { default as SongMapGenerator } from './song_map/song_map_generator';
+export type { default as SongMapDiagnostic, SongMapDiagnosticType } from './song_map/song_map_diagnostic';
+export type { default as SongMapOccurrence, SongMapOccurrenceOrigin } from './song_map/song_map_occurrence';
+export type { default as SongSection } from './song_map/song_section';
 export { default as Tag } from './chord_sheet/tag';
 export { default as Ternary } from './chord_sheet/chord_pro/ternary';
 export { default as TextFormatter } from './formatter/text_formatter';
@@ -149,6 +156,8 @@ export default {
   PART,
   SoftLineBreak,
   Song,
+  SongMap,
+  SongMapGenerator,
   TAB,
   TEXTBLOCK,
   Tag,

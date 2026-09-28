@@ -42,6 +42,8 @@ import ChordSheetJS, {
   SerializedTernary,
   SerializedTraceInfo,
   Song,
+  SongMap,
+  SongMapGenerator,
   TAB,
   Tag,
   Ternary,
@@ -102,6 +104,8 @@ describe('exports', () => {
     expect(Metadata).toBeDefined();
     expect(Paragraph).toBeDefined();
     expect(Song).toBeDefined();
+    expect(SongMap).toBeDefined();
+    expect(SongMapGenerator).toBeDefined();
     expect(Tag).toBeDefined();
     expect(Ternary).toBeDefined();
     expect(TextFormatter).toBeDefined();
