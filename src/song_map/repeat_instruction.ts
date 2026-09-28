@@ -3,7 +3,7 @@ const UNBOUNDED_PATTERN = /\brepeat\s+(?:until|till|while|as\s+needed|ad\s+lib(?
 const COUNT_PATTERNS = [
   /\(\s*(-?\d+(?:[.,]\d+)?)\s*(?:x|times?)\s*\)/i,
   /\(\s*x\s*(-?\d+(?:[.,]\d+)?)\s*\)/i,
-  /\brepeat\s+(-?\d+(?:[.,]\d+)?)\s*(?:x\b|times?\b)?/i,
+  /\brepeat\s+(-?\d+(?:[.,]\d+)?)\s*(?:x\b|times?\b)/i,
   /(-?\d+(?:[.,]\d+)?)\s*(?:x\b|times?\b)/i,
   /\bx\s*(-?\d+(?:[.,]\d+)?)/i,
 ];

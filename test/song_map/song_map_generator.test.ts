@@ -171,6 +171,27 @@ describe('SongMapGenerator', () => {
       expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['ordinal_conflict']);
     });
 
+    it('resolves a chorus recall to the nearest preceding chorus', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus A
+        {end_of_chorus}
+
+        {start_of_chorus: Alternate}
+        [C]Chorus B
+        {end_of_chorus}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus A
+        {end_of_chorus}
+
+        {chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 C2 C1 C1');
+    });
+
     it('reports a chorus recall without a resolvable target', () => {
       const song = parse(heredoc`
         {chorus}

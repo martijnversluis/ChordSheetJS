@@ -55,6 +55,8 @@ class SongMapGenerator {
 
   private currentBlock: Line[] = [];
 
+  private lastSections: Record<string, SongSection> = {};
+
   constructor(song: Song) {
     this.song = song;
   }
@@ -111,6 +113,7 @@ class SongMapGenerator {
     const section = this.resolveSection(lines);
     const count = this.repeatCount(lines);
 
+    this.lastSections[section.type] = section;
     this.addOccurrence(section, 'source', lines[0].lineNumber);
     Array.from({ length: count - 1 }).forEach(() => this.addOccurrence(section, 'repeat', lines[0].lineNumber));
   }
@@ -220,8 +223,7 @@ class SongMapGenerator {
   }
 
   private lastSectionOfType(type: string): SongSection | null {
-    const entries = this.entries.filter((entry) => entry.section.type === type);
-    return entries[entries.length - 1]?.section ?? null;
+    return this.lastSections[type] ?? null;
   }
 
   private addOccurrence(section: SongSection, origin: SongMapOccurrenceOrigin, lineNumber: number | null): void {

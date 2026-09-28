@@ -31,7 +31,7 @@ describe('RepeatInstruction', () => {
     });
 
     describe('text without a repeat instruction', () => {
-      ['Chorus', 'Verse 2', 'Capo 2', ''].forEach((text) => {
+      ['Chorus', 'Verse 2', 'Capo 2', 'Repeat 2', 'Repeat 2 more bars', ''].forEach((text) => {
         it(`returns null for ${JSON.stringify(text)}`, () => {
           expect(RepeatInstruction.parse(text)).toBeNull();
         });
