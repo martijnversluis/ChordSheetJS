@@ -1,6 +1,8 @@
 export type SongMapDiagnosticType =
   'ambiguous_label' |
+  'ambiguous_repeat' |
   'inferred_token' |
+  'invalid_repeat' |
   'missing_recall_target' |
   'ordinal_conflict';
 

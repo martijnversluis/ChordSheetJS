@@ -1,6 +1,7 @@
 import ChordProFormatter from '../formatter/chord_pro_formatter';
 import Line from '../chord_sheet/line';
 import Paragraph from '../chord_sheet/paragraph';
+import RepeatInstruction from './repeat_instruction';
 import SectionTokenizer from './section_tokenizer';
 import Song from '../chord_sheet/song';
 import SongMap from './song_map';
@@ -78,6 +79,7 @@ class SongMapGenerator {
 
     if (!this.isSectionLine(line)) {
       this.flushBlock();
+      this.reportUnattachedRepeat(line);
       return;
     }
 
@@ -106,13 +108,47 @@ class SongMapGenerator {
 
     if (lines.length === 0) return;
 
-    this.addOccurrence(this.resolveSection(lines), 'source', lines[0].lineNumber);
+    const section = this.resolveSection(lines);
+    const count = this.repeatCount(lines);
+
+    this.addOccurrence(section, 'source', lines[0].lineNumber);
+    Array.from({ length: count - 1 }).forEach(() => this.addOccurrence(section, 'repeat', lines[0].lineNumber));
+  }
+
+  private repeatCount(lines: Line[]): number {
+    const instructions = this.repeatInstructions(lines);
+
+    if (instructions.length === 0) return 1;
+
+    const unbounded = instructions.find((instruction) => !instruction.isFinite());
+
+    if (unbounded) return this.reportInvalidRepeat(unbounded, lines[0]);
+
+    const counts = [...new Set(instructions.map((instruction) => instruction.count))];
+
+    if (counts.length > 1) return this.reportAmbiguousRepeat(instructions, lines[0]);
+
+    return counts[0] as number;
+  }
+
+  private repeatInstructions(lines: Line[]): RepeatInstruction[] {
+    return [this.labelFor(lines) ?? '', ...this.commentsIn(lines)]
+      .map((text) => RepeatInstruction.parse(text))
+      .filter((instruction): instruction is RepeatInstruction => instruction !== null);
+  }
+
+  private commentsIn(lines: Line[]): string[] {
+    return lines.flatMap((line) => (
+      line.items
+        .filter((item) => item instanceof Tag && item.isComment())
+        .map((item) => (item as Tag).value ?? '')
+    ));
   }
 
   private resolveSection(lines: Line[]): SongSection {
     const { type } = lines[0];
     const label = this.labelFor(lines);
-    const normalizedLabel = normalizeLabel(label);
+    const normalizedLabel = normalizeLabel(RepeatInstruction.strip(label ?? ''));
     const fingerprint = this.fingerprint(lines);
 
     const identical = this.entries.find((entry) => (
@@ -211,6 +247,40 @@ class SongMapGenerator {
     });
   }
 
+  private reportInvalidRepeat(instruction: RepeatInstruction, line: Line): number {
+    this.addDiagnostic({
+      type: 'invalid_repeat',
+      message: `Repeat instruction "${instruction.text}" does not describe a finite number of performances`,
+      lineNumber: line.lineNumber,
+    });
+
+    return 1;
+  }
+
+  private reportAmbiguousRepeat(instructions: RepeatInstruction[], line: Line): number {
+    this.addDiagnostic({
+      type: 'ambiguous_repeat',
+      message: `Conflicting repeat instructions: ${instructions.map((instruction) => instruction.text).join(', ')}`,
+      lineNumber: line.lineNumber,
+    });
+
+    return 1;
+  }
+
+  private reportUnattachedRepeat(line: Line): void {
+    const instruction = this.commentsIn([line])
+      .map((text) => RepeatInstruction.parse(text))
+      .find((parsed) => parsed !== null);
+
+    if (!instruction) return;
+
+    this.addDiagnostic({
+      type: 'ambiguous_repeat',
+      message: `Repeat instruction "${instruction.text}" is not part of a section and does not identify one occurrence`,
+      lineNumber: line.lineNumber,
+    });
+  }
+
   private reportInferredToken(section: SongSection, line: Line): void {
     this.addDiagnostic({
       type: 'inferred_token',
@@ -221,7 +291,7 @@ class SongMapGenerator {
   }
 
   private reportOrdinalConflict(section: SongSection, line: Line): void {
-    const labelOrdinal = /(\d+)\s*$/.exec(section.label ?? '');
+    const labelOrdinal = /(\d+)\s*$/.exec(RepeatInstruction.strip(section.label ?? ''));
 
     if (!labelOrdinal || parseInt(labelOrdinal[1], 10) === section.ordinal) return;
 
