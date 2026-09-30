@@ -249,6 +249,21 @@ Every occurrence refers to one section, so the same section can occur multiple t
 section type, label and content: a repeated block with exactly equal content is another occurrence of the same
 section, a block with a conflicting label is a new section.
 
+Recognized repeat instructions (`2x`, `x2`, `(2x)`, `Repeat 2x`, `Repeat 2 times`) in a section label or in a comment
+inside a section become explicit occurrences. The instruction itself is preserved in the label:
+
+```javascript
+// {start_of_chorus: Chorus (2x)}
+songMap.toString();
+// 'C1 C1'
+
+songMap.occurrences.map((occurrence) => occurrence.origin);
+// ['source', 'repeat']
+```
+
+Instructions that do not describe a finite number of performances (`0x`, `-1x`, `1.5x`, `repeat until cue`) and
+instructions that do not identify one occurrence do not create occurrences; they report a diagnostic.
+
 When generation cannot resolve something, it reports a diagnostic instead of guessing:
 
 ```javascript

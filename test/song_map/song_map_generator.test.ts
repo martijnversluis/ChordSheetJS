@@ -159,6 +159,39 @@ describe('SongMapGenerator', () => {
       expect(diagnostic.sectionToken).toEqual('V1');
     });
 
+    it('reports an ordinal conflict for a label with a repeat instruction', () => {
+      const song = parse(heredoc`
+        {start_of_verse: Verse 2 (2x)}
+        [G]Verse two
+        {end_of_verse}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('V1 V1');
+      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['ordinal_conflict']);
+    });
+
+    it('resolves a chorus recall to the nearest preceding chorus', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus A
+        {end_of_chorus}
+
+        {start_of_chorus: Alternate}
+        [C]Chorus B
+        {end_of_chorus}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus A
+        {end_of_chorus}
+
+        {chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 C2 C1 C1');
+    });
+
     it('reports a chorus recall without a resolvable target', () => {
       const song = parse(heredoc`
         {chorus}
@@ -184,6 +217,114 @@ describe('SongMapGenerator', () => {
 
       expect(songMap.occurrences).toEqual([]);
       expect(songMap.toString()).toEqual('');
+    });
+
+    it('expands a repeat instruction in a section label into explicit occurrences', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+      const [section] = songMap.sections;
+
+      expect(songMap.toString()).toEqual('C1 C1');
+      expect(songMap.occurrences.map((occurrence) => occurrence.origin)).toEqual(['source', 'repeat']);
+      expect(songMap.occurrences.map((occurrence) => occurrence.index)).toEqual([0, 1]);
+      expect(section.label).toEqual('Chorus (2x)');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('expands a repeat instruction in a comment within a section', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {comment: Repeat 2 times}
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 C1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('ignores the repeat instruction when identifying a section', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse
+        {end_of_verse}
+
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 V1 C1 C1');
+      expect(songMap.sections).toHaveLength(2);
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('does not repeat a section for an invalid repeat value', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus (0x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+      const [diagnostic] = songMap.diagnostics;
+
+      expect(songMap.toString()).toEqual('C1');
+      expect(diagnostic.type).toEqual('invalid_repeat');
+      expect(diagnostic.sectionToken).toEqual('C1');
+    });
+
+    it('does not repeat a section for an unbounded repeat instruction', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {comment: Repeat until cue}
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1');
+      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['invalid_repeat']);
+    });
+
+    it('does not repeat a section for conflicting repeat instructions', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {comment: 3x}
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+      const [diagnostic] = songMap.diagnostics;
+
+      expect(songMap.toString()).toEqual('C1');
+      expect(diagnostic.type).toEqual('ambiguous_repeat');
+      expect(diagnostic.sectionToken).toEqual('C1');
+    });
+
+    it('reports a repeat instruction that does not identify one occurrence', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {comment: 2x}`);
+
+      const songMap = SongMapGenerator.generate(song);
+      const [diagnostic] = songMap.diagnostics;
+
+      expect(songMap.toString()).toEqual('C1');
+      expect(diagnostic.type).toEqual('ambiguous_repeat');
+      expect(diagnostic.lineNumber).toEqual(4);
     });
 
     it('does not change the song', () => {
