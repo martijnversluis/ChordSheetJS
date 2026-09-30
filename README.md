@@ -271,6 +271,29 @@ songMap.diagnostics.map((diagnostic) => [diagnostic.type, diagnostic.message]);
 // [['missing_recall_target', 'A chorus recall has no preceding chorus to refer to']]
 ```
 
+### Read and write a flow directive
+
+A song map can be stored in the chart itself with the OnSong `{flow: ...}` directive. Both the shorthand
+(`V1 C V2 C`) and the comma separated longhand (`Verse 1, Chorus, Verse 2, Chorus`) are read; items can refer to a
+section token, a section label or an OnSong style label abbreviation.
+
+```javascript
+const song = new ChordProParser().parse(chordSheet);
+const songMap = FlowDirective.parse(song);
+// null when the song has no flow directive
+
+songMap.toString();
+// 'C1 V1 C1 B1 C1'
+
+FlowDirective.format(songMap);
+// '{flow: C1 V1 C1 B1 C1}'
+```
+
+A repeat in a flow must be marked as one, either with parentheses or with the word `repeat`:
+`Verse 1, Chorus, (Repeat 2x)` renders the chorus twice. A reference that does not resolve to exactly one section
+does not become an occurrence; it reports an `invalid_reference` or `ambiguous_reference` diagnostic. Items that are
+not section references, such as OnSong page breaks and transpose instructions, report `unsupported_flow_item`.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by

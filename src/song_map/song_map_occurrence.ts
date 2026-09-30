@@ -1,6 +1,6 @@
 import SongSection from './song_section';
 
-export type SongMapOccurrenceOrigin = 'source' | 'recall' | 'repeat';
+export type SongMapOccurrenceOrigin = 'source' | 'recall' | 'repeat' | 'flow';
 
 export interface SongMapOccurrenceProperties {
   section: SongSection;
@@ -19,7 +19,7 @@ class SongMapOccurrence {
   /** The 0-based position of the occurrence in the song map */
   index: number;
 
-  /** Whether the occurrence comes from section content, a recall directive or a repeat instruction */
+  /** Whether the occurrence comes from section content, a recall, a repeat instruction or a flow directive */
   origin: SongMapOccurrenceOrigin;
 
   /** The source line that produced the occurrence */
