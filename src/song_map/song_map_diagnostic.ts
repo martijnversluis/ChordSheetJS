@@ -1,10 +1,15 @@
 export type SongMapDiagnosticType =
+  'ambiguous_flow' |
   'ambiguous_label' |
+  'ambiguous_reference' |
   'ambiguous_repeat' |
+  'empty_map' |
   'inferred_token' |
+  'invalid_reference' |
   'invalid_repeat' |
   'missing_recall_target' |
-  'ordinal_conflict';
+  'ordinal_conflict' |
+  'unsupported_flow_item';
 
 export interface SongMapDiagnosticProperties {
   type: SongMapDiagnosticType;

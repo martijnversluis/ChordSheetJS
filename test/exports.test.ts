@@ -11,6 +11,7 @@ import ChordSheetJS, {
   Comment,
   Composite,
   ContentType,
+  FlowDirective,
   Formatter,
   HtmlDivFormatter,
   HtmlFormatter,
@@ -104,6 +105,7 @@ describe('exports', () => {
     expect(Metadata).toBeDefined();
     expect(Paragraph).toBeDefined();
     expect(Song).toBeDefined();
+    expect(FlowDirective).toBeDefined();
     expect(SongMap).toBeDefined();
     expect(SongMapGenerator).toBeDefined();
     expect(Tag).toBeDefined();

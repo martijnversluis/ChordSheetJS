@@ -9,6 +9,7 @@ import ChordsOverWordsFormatter from './formatter/chords_over_words_formatter';
 import ChordsOverWordsParser from './parser/chords_over_words_parser';
 import Comment from './chord_sheet/comment';
 import Composite from './chord_sheet/chord_pro/composite';
+import FlowDirective from './song_map/flow_directive';
 import HtmlDivFormatter from './formatter/html_div_formatter';
 import HtmlTableFormatter from './formatter/html_table_formatter';
 import Line from './chord_sheet/line';
@@ -78,6 +79,7 @@ export { default as ChordsOverWordsFormatter } from './formatter/chords_over_wor
 export { default as ChordsOverWordsParser } from './parser/chords_over_words_parser';
 export { default as Comment } from './chord_sheet/comment';
 export { default as Composite } from './chord_sheet/chord_pro/composite';
+export { default as FlowDirective } from './song_map/flow_directive';
 export { default as Formatter } from './formatter/formatter';
 export { default as HtmlDivFormatter } from './formatter/html_div_formatter';
 export { default as HtmlFormatter } from './formatter/html_formatter';
@@ -158,6 +160,7 @@ export default {
   Song,
   SongMap,
   SongMapGenerator,
+  FlowDirective,
   TAB,
   TEXTBLOCK,
   Tag,
