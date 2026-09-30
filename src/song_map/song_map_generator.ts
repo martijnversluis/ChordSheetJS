@@ -20,7 +20,7 @@ interface SectionEntry {
   normalizedLabel: string;
 }
 
-interface SectionProperties {
+interface SectionBlock {
   type: string;
   label: string | null;
   lines: Line[];
@@ -110,32 +110,46 @@ class SongMapGenerator {
 
     if (lines.length === 0) return;
 
-    const section = this.resolveSection(lines);
-    const count = this.repeatCount(lines);
+    const block = this.readBlock(lines);
+    const section = this.resolveSection(block);
+    const count = this.repeatCount(block, section);
 
     this.lastSections[section.type] = section;
     this.addOccurrence(section, 'source', lines[0].lineNumber);
     Array.from({ length: count - 1 }).forEach(() => this.addOccurrence(section, 'repeat', lines[0].lineNumber));
   }
 
-  private repeatCount(lines: Line[]): number {
-    const instructions = this.repeatInstructions(lines);
+  private readBlock(lines: Line[]): SectionBlock {
+    const label = this.labelFor(lines);
+
+    return {
+      type: lines[0].type,
+      label,
+      lines,
+      fingerprint: this.fingerprint(lines),
+      normalizedLabel: normalizeLabel(RepeatInstruction.strip(label ?? '')),
+    };
+  }
+
+  private repeatCount(block: SectionBlock, section: SongSection): number {
+    const instructions = this.repeatInstructions(block);
 
     if (instructions.length === 0) return 1;
 
     const unbounded = instructions.find((instruction) => !instruction.isFinite());
 
-    if (unbounded) return this.reportInvalidRepeat(unbounded, lines[0]);
+    if (unbounded) return this.reportInvalidRepeat(unbounded, block, section);
 
-    const counts = [...new Set(instructions.map((instruction) => instruction.count))];
+    const counts = [...new Set(instructions.map((instruction) => instruction.count))]
+      .filter((count): count is number => count !== null);
 
-    if (counts.length > 1) return this.reportAmbiguousRepeat(instructions, lines[0]);
+    if (counts.length > 1) return this.reportAmbiguousRepeat(instructions, block, section);
 
-    return counts[0] as number;
+    return counts[0];
   }
 
-  private repeatInstructions(lines: Line[]): RepeatInstruction[] {
-    return [this.labelFor(lines) ?? '', ...this.commentsIn(lines)]
+  private repeatInstructions({ label, lines }: SectionBlock): RepeatInstruction[] {
+    return [label ?? '', ...this.commentsIn(lines)]
       .map((text) => RepeatInstruction.parse(text))
       .filter((instruction): instruction is RepeatInstruction => instruction !== null);
   }
@@ -148,11 +162,8 @@ class SongMapGenerator {
     ));
   }
 
-  private resolveSection(lines: Line[]): SongSection {
-    const { type } = lines[0];
-    const label = this.labelFor(lines);
-    const normalizedLabel = normalizeLabel(RepeatInstruction.strip(label ?? ''));
-    const fingerprint = this.fingerprint(lines);
+  private resolveSection(block: SectionBlock): SongSection {
+    const { type, normalizedLabel, fingerprint } = block;
 
     const identical = this.entries.find((entry) => (
       entry.section.type === type && entry.normalizedLabel === normalizedLabel && entry.fingerprint === fingerprint
@@ -160,15 +171,13 @@ class SongMapGenerator {
 
     if (identical) return identical.section;
 
-    this.reportLabelConflict(type, normalizedLabel, lines[0]);
-    return this.createSection({
-      type, label, lines, fingerprint, normalizedLabel,
-    });
+    this.reportLabelConflict(block);
+    return this.createSection(block);
   }
 
   private createSection({
     type, label, lines, fingerprint, normalizedLabel,
-  }: SectionProperties): SongSection {
+  }: SectionBlock): SongSection {
     const { prefix, inferred } = this.tokenizer.prefixFor(type);
     const ordinal = this.entries.filter((entry) => entry.section.type === type).length + 1;
 
@@ -232,7 +241,7 @@ class SongMapGenerator {
     }));
   }
 
-  private reportLabelConflict(type: string, normalizedLabel: string, line: Line): void {
+  private reportLabelConflict({ type, normalizedLabel, lines }: SectionBlock): void {
     if (normalizedLabel.length === 0) return;
 
     const conflicting = this.entries.find((entry) => (
@@ -244,26 +253,32 @@ class SongMapGenerator {
     this.addDiagnostic({
       type: 'ambiguous_label',
       message: `Label "${conflicting.section.label}" is used for sections with different content`,
-      lineNumber: line.lineNumber,
+      lineNumber: lines[0].lineNumber,
       sectionToken: conflicting.section.token,
     });
   }
 
-  private reportInvalidRepeat(instruction: RepeatInstruction, line: Line): number {
+  private reportInvalidRepeat(instruction: RepeatInstruction, block: SectionBlock, section: SongSection): number {
     this.addDiagnostic({
       type: 'invalid_repeat',
       message: `Repeat instruction "${instruction.text}" does not describe a finite number of performances`,
-      lineNumber: line.lineNumber,
+      lineNumber: block.lines[0].lineNumber,
+      sectionToken: section.token,
     });
 
     return 1;
   }
 
-  private reportAmbiguousRepeat(instructions: RepeatInstruction[], line: Line): number {
+  private reportAmbiguousRepeat(
+    instructions: RepeatInstruction[],
+    block: SectionBlock,
+    section: SongSection,
+  ): number {
     this.addDiagnostic({
       type: 'ambiguous_repeat',
       message: `Conflicting repeat instructions: ${instructions.map((instruction) => instruction.text).join(', ')}`,
-      lineNumber: line.lineNumber,
+      lineNumber: block.lines[0].lineNumber,
+      sectionToken: section.token,
     });
 
     return 1;

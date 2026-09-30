@@ -276,9 +276,11 @@ describe('SongMapGenerator', () => {
         {end_of_chorus}`);
 
       const songMap = SongMapGenerator.generate(song);
+      const [diagnostic] = songMap.diagnostics;
 
       expect(songMap.toString()).toEqual('C1');
-      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['invalid_repeat']);
+      expect(diagnostic.type).toEqual('invalid_repeat');
+      expect(diagnostic.sectionToken).toEqual('C1');
     });
 
     it('does not repeat a section for an unbounded repeat instruction', () => {
@@ -302,9 +304,11 @@ describe('SongMapGenerator', () => {
         {end_of_chorus}`);
 
       const songMap = SongMapGenerator.generate(song);
+      const [diagnostic] = songMap.diagnostics;
 
       expect(songMap.toString()).toEqual('C1');
-      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['ambiguous_repeat']);
+      expect(diagnostic.type).toEqual('ambiguous_repeat');
+      expect(diagnostic.sectionToken).toEqual('C1');
     });
 
     it('reports a repeat instruction that does not identify one occurrence', () => {
