@@ -1,4 +1,5 @@
 export type SongMapDiagnosticType =
+  'ambiguous_flow' |
   'ambiguous_label' |
   'ambiguous_reference' |
   'ambiguous_repeat' |

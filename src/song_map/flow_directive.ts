@@ -25,6 +25,14 @@ function abbreviate(label: string): string {
     .join('');
 }
 
+function plainLabel(section: SongSection): string {
+  return RepeatInstruction.strip(section.displayLabel);
+}
+
+function labelsOf(section: SongSection): string[] {
+  return [normalize(section.displayLabel), normalize(plainLabel(section))];
+}
+
 function splitItems(value: string): string[] {
   return (value.includes(',') ? value.split(',') : value.split(/\s+/))
     .map((item) => item.trim())
@@ -33,8 +41,6 @@ function splitItems(value: string): string[] {
 
 const TRAILING_INSTRUCTION = /\(([^()]*)\)$/;
 
-// A flow item is only read as a repeat instruction when it is marked as one, either by parentheses
-// or by the word "repeat". A bare `x2` is a section reference, since tokens can look the same.
 function splitReference(item: string): [string, RepeatInstruction | null] {
   const parenthesized = TRAILING_INSTRUCTION.exec(item);
   const marked = parenthesized || /^repeat\b/i.test(item);
@@ -45,12 +51,10 @@ function splitReference(item: string): [string, RepeatInstruction | null] {
   return [parenthesized ? item.replace(parenthesized[0], '').trim() : '', instruction];
 }
 
-function findFlowTag(song: Song): Tag | null {
-  const tags = song.lines
+function findFlowTags(song: Song): Tag[] {
+  return song.lines
     .flatMap((line) => line.items)
     .filter((item): item is Tag => item instanceof Tag && item.name === FLOW);
-
-  return tags[0] ?? null;
 }
 
 /**
@@ -64,11 +68,11 @@ class FlowDirective {
    * @returns {SongMap|null} the song map, or `null` when the song has no flow directive
    */
   static parse(song: Song): SongMap | null {
-    const tag = findFlowTag(song);
+    const [tag, ...rest] = findFlowTags(song);
 
     if (!tag) return null;
 
-    return new FlowDirective(song, tag).parse();
+    return new FlowDirective(song, tag).parse(rest);
   }
 
   /** Renders a song map as a flow directive @returns {string} */
@@ -91,12 +95,13 @@ class FlowDirective {
     this.tag = tag;
   }
 
-  parse(): SongMap {
+  parse(ignored: Tag[] = []): SongMap {
     const generated = SongMapGenerator.generate(this.song);
     const items = splitItems(this.tag.value ?? '');
 
     this.sections = generated.sections;
 
+    if (ignored.length > 0) this.reportAmbiguousFlow(ignored);
     if (items.length === 0) this.reportEmptyMap();
     items.forEach((item) => this.processItem(item));
 
@@ -112,11 +117,6 @@ class FlowDirective {
 
     if (reference.length === 0) {
       this.applyRepeat(item, instruction);
-      return;
-    }
-
-    if (UNSUPPORTED_ITEM.test(reference)) {
-      this.reportUnsupportedItem(item);
       return;
     }
 
@@ -168,6 +168,11 @@ class FlowDirective {
       return null;
     }
 
+    if (UNSUPPORTED_ITEM.test(reference)) {
+      this.reportUnsupportedItem(item);
+      return null;
+    }
+
     this.reportInvalidReference(item);
     return null;
   }
@@ -179,11 +184,11 @@ class FlowDirective {
 
     if (byToken.length > 0) return byToken;
 
-    const byLabel = this.sections.filter((section) => normalize(section.displayLabel) === normalized);
+    const byLabel = this.sections.filter((section) => labelsOf(section).includes(normalized));
 
     if (byLabel.length > 0) return byLabel;
 
-    return this.sections.filter((section) => abbreviate(section.displayLabel) === normalized);
+    return this.sections.filter((section) => abbreviate(plainLabel(section)) === normalized);
   }
 
   private addOccurrence(section: SongSection, origin: SongMapOccurrenceOrigin): void {
@@ -193,6 +198,13 @@ class FlowDirective {
       origin,
       lineNumber: this.tag.parentLine?.lineNumber ?? null,
     }));
+  }
+
+  private reportAmbiguousFlow(ignored: Tag[]): void {
+    this.addDiagnostic({
+      type: 'ambiguous_flow',
+      message: `The song has ${ignored.length + 1} flow directives, only the first one is used`,
+    });
   }
 
   private reportEmptyMap(): void {

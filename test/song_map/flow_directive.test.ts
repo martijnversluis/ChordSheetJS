@@ -93,6 +93,50 @@ describe('FlowDirective', () => {
       expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['ambiguous_reference']);
     });
 
+    it('resolves a label that carries a repeat instruction', () => {
+      const song = parse(heredoc`
+        {flow: Verse 1, Chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      const songMap = FlowDirective.parse(song) as SongMap;
+
+      expect(songMap.toString()).toEqual('V1 C1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('resolves a label that contains a colon', () => {
+      const song = parse(heredoc`
+        {flow: Intro: soft, Verse 1}
+
+        {start_of_bridge: Intro: soft}
+        [A]Intro
+        {end_of_bridge}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}`);
+
+      const songMap = FlowDirective.parse(song) as SongMap;
+
+      expect(songMap.toString()).toEqual('B1 V1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('reports a second flow directive instead of ignoring it', () => {
+      const song = parse(`{flow: V1}\n{flow: C1}\n\n${sections}`);
+      const songMap = FlowDirective.parse(song) as SongMap;
+
+      expect(songMap.toString()).toEqual('V1');
+      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['ambiguous_flow']);
+    });
+
     it('reports an unsupported flow item', () => {
       const songMap = flowMap('V1, ----, Transpose: 2, C1');
 
