@@ -4137,6 +4137,7 @@ __metadata:
     eslint-plugin-jest: "npm:^29.15.0"
     fonteditor-core: "npm:2.6.3"
     globals: "npm:^17.0.0"
+    graphemer: "npm:1.4.0"
     jest: "npm:^30.0.0"
     js-levenshtein: "npm:^1.1.6"
     jspdf: "npm:^4.0.0"
@@ -4146,6 +4147,7 @@ __metadata:
     print: "npm:^1.2.0"
     process: "npm:^0.11.10"
     puppeteer: "npm:^25.0.2"
+    string-width: "npm:4.2.3"
     theredoc: "npm:^1.0.0"
     ts-jest: "npm:^29.2.3"
     ts-node: "npm:^10.9.2"
@@ -5387,6 +5389,13 @@ __metadata:
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
+  languageName: node
+  linkType: hard
+
+"graphemer@npm:1.4.0":
+  version: 1.4.0
+  resolution: "graphemer@npm:1.4.0"
+  checksum: 10c0/e951259d8cd2e0d196c72ec711add7115d42eb9a8146c8eeda5b8d3ac91e5dd816b9cd68920726d9fd4490368e7ed86e9c423f40db87e2d8dfafa00fa17c3a31
   languageName: node
   linkType: hard
 
@@ -7711,7 +7720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-width-cjs@npm:string-width@^4.2.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
+"string-width-cjs@npm:string-width@^4.2.0, string-width@npm:4.2.3, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
   version: 4.2.3
   resolution: "string-width@npm:4.2.3"
   dependencies:

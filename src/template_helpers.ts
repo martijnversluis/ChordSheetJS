@@ -3,10 +3,12 @@ import Evaluatable from './chord_sheet/chord_pro/evaluatable';
 import Font from './chord_sheet/font';
 import Item from './chord_sheet/item';
 import Line from './chord_sheet/line';
+import Literal from './chord_sheet/chord_pro/literal';
 import Metadata from './chord_sheet/metadata';
 import { MetadataConfiguration } from './formatter/configuration/base_configuration';
 import MetadataProcessor from './template_helpers/metadata_processor';
 import Paragraph from './chord_sheet/paragraph';
+import SoftLineBreak from './chord_sheet/soft_line_break';
 import Tag from './chord_sheet/tag';
 import When from './template_helpers/when';
 import WhenCallback from './template_helpers/when_callback';
@@ -14,7 +16,6 @@ import parseMetaValue from './chord_sheet/chord_pro/parse_meta_value';
 
 import { renderChord } from './helpers';
 import { INDETERMINATE, NONE } from './constants';
-import { Literal, SoftLineBreak } from './index';
 import { hasChordContents, isEmptyString, isEvaluatable } from './utilities';
 
 import {
