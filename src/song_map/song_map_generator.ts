@@ -31,7 +31,10 @@ interface SectionBlock {
 }
 
 function isContentItem(item: Item): boolean {
-  return !(item instanceof Tag) && !(item instanceof Comment) && item.isRenderable();
+  if (item instanceof Comment) return false;
+  if (item instanceof Tag) return item.isRenderable() && !item.isComment();
+
+  return item.isRenderable();
 }
 
 function hasContent(line: Line): boolean {
@@ -108,10 +111,10 @@ class SongMapGenerator {
 
   private isSectionLine(line: Line): boolean {
     if (line.type === INDETERMINATE) return false;
+    if (line.type === NONE) return !line.isEmpty() && (hasContent(line) || this.continuesBlock(line));
     if (line.isEmpty()) return this.continuesBlock(line);
-    if (line.type !== NONE) return true;
 
-    return hasContent(line) || this.continuesBlock(line);
+    return true;
   }
 
   private continuesBlock(line: Line): boolean {
@@ -317,9 +320,13 @@ class SongMapGenerator {
   }
 
   private reportInferredToken(section: SongSection, line: Line): void {
+    const reason = section.type === NONE ?
+      'Paragraph is not part of a section' :
+      `Section type "${section.type}" is not a known section type`;
+
     this.addDiagnostic({
       type: 'inferred_token',
-      message: `Section type "${section.type}" is not a known section type, inferred token ${section.token}`,
+      message: `${reason}, inferred token ${section.token}`,
       lineNumber: line.lineNumber,
       sectionToken: section.token,
     });

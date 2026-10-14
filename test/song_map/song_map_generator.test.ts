@@ -277,6 +277,43 @@ describe('SongMapGenerator', () => {
       expect(SongMapGenerator.generate(song).toString()).toEqual('S1 V1 S1');
     });
 
+    it('separates paragraphs that are not part of a section', () => {
+      const song = parse(heredoc`
+        [A]Intro line
+
+        [D]Outro line`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('S1 S2');
+    });
+
+    it('keeps a comment inside a paragraph that is not part of a section', () => {
+      const song = parse(heredoc`
+        [A]Intro line
+        {comment: Softly}
+        [A]Second line`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('S1');
+    });
+
+    it('includes a paragraph that only contains an image', () => {
+      const song = parse(heredoc`
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {image: diagram.png}`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('V1 S1');
+    });
+
+    it('explains an inferred token for a paragraph without a section', () => {
+      const song = parse('[A]Intro line');
+      const [diagnostic] = SongMapGenerator.generate(song).diagnostics;
+
+      expect(diagnostic.type).toEqual('inferred_token');
+      expect(diagnostic.message).toEqual('Paragraph is not part of a section, inferred token S1');
+    });
+
     it('does not turn a comment into a section', () => {
       const song = parse(heredoc`
         {start_of_chorus: Chorus}
