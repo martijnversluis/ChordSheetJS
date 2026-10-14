@@ -229,7 +229,7 @@ flow through to token fonts.
 ### Generate a song map
 
 A song map is the ordered list of section occurrences that describes in which order a song is performed. It can be
-generated from the recognized sections of a linear chart. Generating a song map does not change the song.
+generated from a linear chart. Generating a song map does not change the song.
 
 ```javascript
 const song = new ChordProParser().parse(chordSheet);
@@ -244,6 +244,9 @@ songMap.sections.map((section) => [section.token, section.displayLabel]);
 songMap.occurrences.map((occurrence) => [occurrence.index, occurrence.token, occurrence.origin]);
 // [[0, 'V1', 'source'], [1, 'C1', 'source'], [2, 'V2', 'source'], [3, 'C1', 'recall']]
 ```
+
+A paragraph that is not part of a section becomes an anonymous section with an `S` token, so every piece of chart
+content has a place in the map.
 
 Every occurrence refers to one section, so the same section can occur multiple times. Sections are identified by
 section type, label and content: a repeated block with exactly equal content is another occurrence of the same

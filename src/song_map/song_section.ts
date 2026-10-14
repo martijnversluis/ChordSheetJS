@@ -1,5 +1,7 @@
 import Line from '../chord_sheet/line';
 
+import { NONE } from '../constants';
+
 export interface SongSectionProperties {
   type: string;
   label: string | null;
@@ -43,7 +45,10 @@ class SongSection {
 
   /** The label to display, falling back to the section type and ordinal */
   get displayLabel(): string {
-    return this.label ?? `${titleize(this.type)} ${this.ordinal}`;
+    if (this.label) return this.label;
+
+    const name = this.type === NONE ? 'Section' : titleize(this.type);
+    return `${name} ${this.ordinal}`;
   }
 }
 
