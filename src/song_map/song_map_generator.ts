@@ -97,7 +97,13 @@ class SongMapGenerator {
   }
 
   private isSectionLine(line: Line): boolean {
-    return !line.isEmpty() && line.type !== NONE && line.type !== INDETERMINATE;
+    if (line.type === NONE || line.type === INDETERMINATE) return false;
+
+    return !line.isEmpty() || this.continuesBlock(line);
+  }
+
+  private continuesBlock(line: Line): boolean {
+    return this.currentBlock.length > 0 && !this.startsNewType(line);
   }
 
   private startsNewType(line: Line): boolean {
