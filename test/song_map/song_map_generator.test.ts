@@ -51,6 +51,32 @@ describe('SongMapGenerator', () => {
       expect(first.section).toBe(second.section);
     });
 
+    it('keeps a section with a blank line in it as one section', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]First half
+
+        [C]Second half
+        {end_of_chorus}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1');
+      expect(songMap.sections).toHaveLength(1);
+    });
+
+    it('keeps a section without an end tag as one section', () => {
+      const song = parse(heredoc`
+        {start_of_verse: Verse 1}
+        [G]First half
+
+        [G]Second half`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('V1');
+    });
+
     it('reuses a section for an exactly equal repeated block', () => {
       const song = parse(heredoc`
         {start_of_chorus: Chorus}
