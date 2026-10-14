@@ -234,15 +234,99 @@ describe('SongMapGenerator', () => {
       expect(diagnostic.lineNumber).toEqual(0);
     });
 
-    it('returns an empty map for a chart without recognized sections', () => {
+    it('returns an empty map for a chart without content', () => {
       const song = parse(heredoc`
         {title: Song}
-        [G]Just a line`);
+        {artist: Artist}`);
 
       const songMap = SongMapGenerator.generate(song);
 
       expect(songMap.occurrences).toEqual([]);
       expect(songMap.toString()).toEqual('');
+    });
+
+    it('includes paragraphs that are not part of a section', () => {
+      const song = parse(heredoc`
+        {title: Song}
+        [A]Intro line
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        [D]Outro line`);
+
+      const songMap = SongMapGenerator.generate(song);
+      const [section] = songMap.sections;
+
+      expect(songMap.toString()).toEqual('S1 V1 S2');
+      expect(section.displayLabel).toEqual('Section 1');
+      expect(songMap.diagnostics.map((diagnostic) => diagnostic.type)).toEqual(['inferred_token', 'inferred_token']);
+    });
+
+    it('reuses a section for an equal paragraph that is not part of a section', () => {
+      const song = parse(heredoc`
+        [A]Tag line
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        [A]Tag line`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('S1 V1 S1');
+    });
+
+    it('separates paragraphs that are not part of a section', () => {
+      const song = parse(heredoc`
+        [A]Intro line
+
+        [D]Outro line`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('S1 S2');
+    });
+
+    it('keeps a comment inside a paragraph that is not part of a section', () => {
+      const song = parse(heredoc`
+        [A]Intro line
+        {comment: Softly}
+        [A]Second line`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('S1');
+    });
+
+    it('includes a paragraph that only contains an image', () => {
+      const song = parse(heredoc`
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {image: diagram.png}`);
+
+      expect(SongMapGenerator.generate(song).toString()).toEqual('V1 S1');
+    });
+
+    it('explains an inferred token for a paragraph without a section', () => {
+      const song = parse('[A]Intro line');
+      const [diagnostic] = SongMapGenerator.generate(song).diagnostics;
+
+      expect(diagnostic.type).toEqual('inferred_token');
+      expect(diagnostic.message).toEqual('Paragraph is not part of a section, inferred token S1');
+    });
+
+    it('does not turn a comment into a section', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {comment: Softly}
+
+        [D]Outro line`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 S1');
     });
 
     it('expands a repeat instruction in a section label into explicit occurrences', () => {

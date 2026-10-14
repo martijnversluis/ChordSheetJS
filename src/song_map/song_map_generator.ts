@@ -1,4 +1,6 @@
 import ChordProFormatter from '../formatter/chord_pro_formatter';
+import Comment from '../chord_sheet/comment';
+import Item from '../chord_sheet/item';
 import Line from '../chord_sheet/line';
 import Paragraph from '../chord_sheet/paragraph';
 import RepeatInstruction from './repeat_instruction';
@@ -28,13 +30,24 @@ interface SectionBlock {
   normalizedLabel: string;
 }
 
+function isContentItem(item: Item): boolean {
+  if (item instanceof Comment) return false;
+  if (item instanceof Tag) return item.isRenderable() && !item.isComment();
+
+  return item.isRenderable();
+}
+
+function hasContent(line: Line): boolean {
+  return line.items.some(isContentItem);
+}
+
 function normalizeLabel(label: string | null): string {
   return (label ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
 /**
- * Generates a {@link SongMap} from the recognized sections of a linear chart. Generation does not
- * change the song.
+ * Generates a {@link SongMap} from a linear chart. Paragraphs that are not part of a section become
+ * anonymous sections. Generation does not change the song.
  */
 class SongMapGenerator {
   static generate(song: Song): SongMap {
@@ -97,9 +110,11 @@ class SongMapGenerator {
   }
 
   private isSectionLine(line: Line): boolean {
-    if (line.type === NONE || line.type === INDETERMINATE) return false;
+    if (line.type === INDETERMINATE) return false;
+    if (line.type === NONE) return !line.isEmpty() && (hasContent(line) || this.continuesBlock(line));
+    if (line.isEmpty()) return this.continuesBlock(line);
 
-    return !line.isEmpty() || this.continuesBlock(line);
+    return true;
   }
 
   private continuesBlock(line: Line): boolean {
@@ -305,9 +320,13 @@ class SongMapGenerator {
   }
 
   private reportInferredToken(section: SongSection, line: Line): void {
+    const reason = section.type === NONE ?
+      'Paragraph is not part of a section' :
+      `Section type "${section.type}" is not a known section type`;
+
     this.addDiagnostic({
       type: 'inferred_token',
-      message: `Section type "${section.type}" is not a known section type, inferred token ${section.token}`,
+      message: `${reason}, inferred token ${section.token}`,
       lineNumber: line.lineNumber,
       sectionToken: section.token,
     });

@@ -1,5 +1,5 @@
 import {
-  BRIDGE, CHORUS, GRID, PART, TAB, VERSE,
+  BRIDGE, CHORUS, GRID, NONE, PART, TAB, VERSE,
 } from '../constants';
 
 const PRE_CHORUS = 'pre-chorus';
@@ -18,7 +18,9 @@ const KNOWN_TOKEN_PREFIXES: Record<string, string> = {
   end: 'E',
 };
 
-const RESERVED_PREFIXES = Object.values(KNOWN_TOKEN_PREFIXES);
+const UNTYPED_PREFIX = 'S';
+
+const RESERVED_PREFIXES = [...Object.values(KNOWN_TOKEN_PREFIXES), UNTYPED_PREFIX];
 
 export interface SectionTokenPrefix {
   prefix: string;
@@ -33,6 +35,8 @@ class SectionTokenizer {
   private inferredPrefixes: Record<string, string> = {};
 
   prefixFor(type: string): SectionTokenPrefix {
+    if (type === NONE) return { prefix: UNTYPED_PREFIX, inferred: true };
+
     const knownPrefix = KNOWN_TOKEN_PREFIXES[type];
 
     if (knownPrefix) {
