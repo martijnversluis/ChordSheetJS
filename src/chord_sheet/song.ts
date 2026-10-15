@@ -12,6 +12,7 @@ import Key from '../key';
 import Line from './line';
 import LineExpander from './line_expander';
 import Literal from './chord_pro/literal';
+import MappedParagraphs from '../song_map/mapped_paragraphs';
 import Metadata from './metadata';
 import MetadataAccessors from './metadata_accessors';
 import Paragraph from './paragraph';
@@ -46,6 +47,8 @@ class Song extends MetadataAccessors {
   _bodyParagraphs: Paragraph[] | null = null;
 
   _renderParagraphs: Paragraph[] | null = null;
+
+  _mappedBodyParagraphs: Paragraph[] | null = null;
 
   warnings: ParserWarning[] = [];
 
@@ -100,6 +103,28 @@ class Song extends MetadataAccessors {
   get expandedBodyParagraphs(): Paragraph[] {
     const expandedLines = this.lines.flatMap((line: Line) => LineExpander.expand(line, this));
     return this.selectRenderableItems(this.linesToParagraphs(expandedLines)) as Paragraph[];
+  }
+
+  /**
+   * The paragraphs that the song map describes, one paragraph per occurrence in performance order
+   * @member {Paragraph[]}
+   */
+  get mappedBodyParagraphs(): Paragraph[] {
+    this._mappedBodyParagraphs ??= MappedParagraphs.for(this);
+    return this._mappedBodyParagraphs;
+  }
+
+  /**
+   * The paragraphs to render for the supplied formatter configuration: the song map order when
+   * `renderOrder` is `mapped`, else the source order, with `{chorus}` directives expanded when
+   * `expandChorusDirective` is set.
+   * @param configuration the formatter configuration
+   * @returns {Paragraph[]}
+   */
+  bodyParagraphsFor(configuration: Configuration): Paragraph[] {
+    if (configuration.renderOrder === 'mapped') return this.mappedBodyParagraphs;
+
+    return configuration.expandChorusDirective ? this.expandedBodyParagraphs : this.bodyParagraphs;
   }
 
   filterParagraphs(paragraphs: Paragraph[], configuration: Configuration): Paragraph[] {

@@ -247,6 +247,26 @@ describe('LayoutEngine', () => {
       expect(processedParagraphs.length).toEqual(paragraphs.length);
     });
 
+    it('uses the song map order when renderOrder is mapped', () => {
+      const song = new ChordProParser().parse([
+        '{flow: C1 V1}',
+        '',
+        '{start_of_verse: Verse 1}',
+        '[G]Verse one',
+        '{end_of_verse}',
+        '',
+        '{start_of_chorus: Chorus}',
+        '[C]Chorus line',
+        '{end_of_chorus}',
+      ].join('\n'));
+      const config = createTestConfig({ renderOrder: 'mapped' });
+
+      const engine = new LayoutEngine(song, measurer, config);
+      const { paragraphs } = engine as any;
+
+      expect(paragraphs.map((paragraph) => paragraph.label)).toEqual(['Chorus', 'Verse 1']);
+    });
+
     describe('warning about expandChorusDirective and repeatedSections', () => {
       let warnSpy: jest.SpyInstance;
 

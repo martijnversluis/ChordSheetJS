@@ -5,6 +5,7 @@ import Tag from '../../chord_sheet/tag';
 import {
   ChordRenderingConfig,
   FontConfiguration,
+  RenderOrder,
   UnicodeFallbackConfig,
 } from '../../formatter/configuration';
 
@@ -105,6 +106,7 @@ export interface LayoutConfig {
   displayLyricsOnly?: boolean;
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';
   expandChorusDirective?: boolean;
+  renderOrder?: RenderOrder;
 }
 
 export interface ParagraphLayoutResult {
