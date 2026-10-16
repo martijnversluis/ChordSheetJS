@@ -83,8 +83,7 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatParagraphs(): string {
     const metadata = this.song.getMetadata(this.configuration);
-    const bodyParagraphs = this.song.bodyParagraphsFor(this.configuration, () => this.bodyParagraphs());
-    const paragraphs = this.song.filterParagraphs(bodyParagraphs, this.configuration);
+    const paragraphs = this.renderableParagraphs(this.song, () => this.bodyParagraphs());
     const count = paragraphs.length;
 
     const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));

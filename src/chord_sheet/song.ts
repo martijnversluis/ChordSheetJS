@@ -18,9 +18,12 @@ import MetadataAccessors from './metadata_accessors';
 import Paragraph from './paragraph';
 import ParserWarning from '../parser/parser_warning';
 import SongBuilder from '../song_builder';
+import SongMap from '../song_map/song_map';
 import SongMapper from './song_mapper';
 import Tag from './tag';
 import normalizeSongSequenceEnharmonics from './sequence_enharmonic_normalizer';
+
+import resolveSongMap from '../song_map/resolve_song_map';
 
 import { testSelector } from '../helpers';
 import {
@@ -57,6 +60,8 @@ class Song extends MetadataAccessors {
   _renderParagraphs: Paragraph[] | null = null;
 
   _mappedBodyParagraphs: Partial<Record<RepeatPresentation, Paragraph[]>> = {};
+
+  _songMap: SongMap | null = null;
 
   warnings: ParserWarning[] = [];
 
@@ -111,6 +116,16 @@ class Song extends MetadataAccessors {
   get expandedBodyParagraphs(): Paragraph[] {
     const expandedLines = this.lines.flatMap((line: Line) => LineExpander.expand(line, this));
     return this.selectRenderableItems(this.linesToParagraphs(expandedLines)) as Paragraph[];
+  }
+
+  /**
+   * The song map that controls mapped rendering: the map that the `{flow}` directive of the song describes, or
+   * else the map that is generated from the chart. Also carries the diagnostics of that map.
+   * @member {SongMap}
+   */
+  get songMap(): SongMap {
+    this._songMap ??= resolveSongMap(this);
+    return this._songMap;
   }
 
   /**
