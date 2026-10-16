@@ -6,6 +6,7 @@ import {
   ChordRenderingConfig,
   FontConfiguration,
   RenderOrder,
+  RepeatPresentation,
   UnicodeFallbackConfig,
 } from '../../formatter/configuration';
 
@@ -107,6 +108,7 @@ export interface LayoutConfig {
   repeatedSections?: 'hide' | 'title_only' | 'lyrics_only' | 'full';
   expandChorusDirective?: boolean;
   renderOrder?: RenderOrder;
+  repeatPresentation?: RepeatPresentation;
 }
 
 export interface ParagraphLayoutResult {

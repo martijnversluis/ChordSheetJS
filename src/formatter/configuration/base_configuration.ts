@@ -29,6 +29,12 @@ export type DirectiveNameNormalizationConfiguration = DirectiveNameNormalization
  */
 export type RenderOrder = 'source' | 'mapped';
 
+/**
+ * Whether to render every song map occurrence in full (`full`) or to combine adjacent occurrences of one
+ * section into one section with a repeat label (`condensed`)
+ */
+export type RepeatPresentation = 'full' | 'condensed';
+
 export interface InstrumentConfiguration {
   type?: string;
   description?: string;
@@ -79,6 +85,7 @@ export interface BaseFormatterConfiguration {
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
   renderOrder: RenderOrder;
+  repeatPresentation: RepeatPresentation;
   useUnicodeModifiers: boolean;
   user: UserConfigurationProperties | null;
 }
@@ -96,6 +103,7 @@ export type ConfigurationProperties = Record<string, any> & Partial<{
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
   renderOrder: RenderOrder;
+  repeatPresentation: RepeatPresentation;
   useUnicodeModifiers: boolean;
   user: Partial<UserConfigurationProperties>;
 }>;
@@ -113,6 +121,7 @@ export const defaultBaseConfiguration: BaseFormatterConfiguration = {
   normalizeChords: true,
   normalizeChordSuffix: true,
   renderOrder: 'source',
+  repeatPresentation: 'full',
   useUnicodeModifiers: false,
   user: null,
 };

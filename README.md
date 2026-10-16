@@ -318,6 +318,31 @@ The song map paragraphs are also available directly:
 song.mappedBodyParagraphs;
 ```
 
+### Condense repeated sections
+
+In mapped order every occurrence is rendered in full by default. With `repeatPresentation: 'condensed'` adjacent
+occurrences of one section are rendered once, with the repeat count in the section label:
+
+```javascript
+// {flow: V1 C1 C1}
+new TextFormatter({ renderOrder: 'mapped', repeatPresentation: 'condensed' }).format(song);
+// Verse 1
+// G
+// Verse one
+//
+// Chorus (2x)
+// C
+// Chorus line
+```
+
+A repeat instruction that the label already has is replaced, so a `Chorus (2x)` label stays `Chorus (2x)`. A section
+without a label is labelled with the repeat count alone, and a section without a section delimiter has nowhere to
+show the repeat count, so its occurrences stay in full. Occurrences of one section that are not adjacent keep their
+own position in the output.
+
+Condensing is presentation only: the song map keeps one occurrence per performance, and `renderOrder: 'source'`
+output is not affected.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by
