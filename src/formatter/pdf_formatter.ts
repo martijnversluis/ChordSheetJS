@@ -137,6 +137,7 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
       repeatedSections: this.configuration.layout.sections?.base?.display?.repeatedSections,
       expandChorusDirective: this.configuration.expandChorusDirective,
       renderOrder: this.configuration.renderOrder,
+      repeatPresentation: this.configuration.repeatPresentation,
     };
 
     // Return the layout engine
