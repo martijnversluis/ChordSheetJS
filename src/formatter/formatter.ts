@@ -1,6 +1,10 @@
+import Paragraph from '../chord_sheet/paragraph';
+import Song from '../chord_sheet/song';
+import SongMapDiagnostic from '../song_map/song_map_diagnostic';
+import omittedOccurrences from '../song_map/omitted_occurrences';
+
 import { BaseFormatterConfiguration } from './configuration/base_configuration';
 import { DeepPartial } from '../utilities';
-import Song from '../chord_sheet/song';
 import { getBaseDefaultConfig } from './configuration/default_config_manager';
 import { mergeConfigs } from '../utilities';
 
@@ -9,6 +13,13 @@ import { mergeConfigs } from '../utilities';
  */
 class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguration> {
   configuration: T;
+
+  /**
+   * The song map diagnostics of the latest {@link format} call, empty when the song was rendered in source
+   * order. See {@link Song.songMap} for the map itself.
+   * @member {SongMapDiagnostic[]}
+   */
+  diagnostics: SongMapDiagnostic[] = [];
 
   /**
    * Instantiate
@@ -65,6 +76,36 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   configure(config: DeepPartial<T>): this {
     this.configuration = mergeConfigs(this.configuration, config) as T;
     return this;
+  }
+
+  /**
+   * Returns the paragraphs to render and collects the diagnostics of the render. For a formatter that renders
+   * paragraphs it selected itself, use {@link collectMapDiagnostics}.
+   * @param song the song that is being rendered
+   * @param sourceParagraphs returns the paragraphs for source order rendering, see
+   * {@link Song.bodyParagraphsFor}
+   * @returns {Paragraph[]}
+   */
+  protected renderableParagraphs(song: Song, sourceParagraphs?: () => Paragraph[]): Paragraph[] {
+    const paragraphs = song.bodyParagraphsFor(this.configuration, sourceParagraphs);
+    this.diagnostics = this.mapDiagnostics(song, () => omittedOccurrences(song, this.configuration));
+
+    return song.filterParagraphs(paragraphs, this.configuration);
+  }
+
+  /**
+   * Collects the diagnostics of the render for a formatter that does not filter paragraphs by selector, so
+   * occurrences that formatter configuration excludes are not reported.
+   * @param song the song that is being rendered
+   */
+  protected collectMapDiagnostics(song: Song): void {
+    this.diagnostics = this.mapDiagnostics(song, () => []);
+  }
+
+  private mapDiagnostics(song: Song, omissions: () => SongMapDiagnostic[]): SongMapDiagnostic[] {
+    if (this.configuration.renderOrder !== 'mapped') return [];
+
+    return [...song.songMap.diagnostics, ...omissions()];
   }
 
   protected prepareSong(song: Song): Song {

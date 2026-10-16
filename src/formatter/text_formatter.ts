@@ -112,9 +112,7 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
   }
 
   formatParagraphs(): string {
-    const paragraphs = this.song.bodyParagraphsFor(this.configuration);
-
-    return this.song.filterParagraphs(paragraphs, this.configuration)
+    return this.renderableParagraphs(this.song)
       .map((paragraph: Paragraph) => this.formatParagraph(paragraph, this.metadata))
       .filter((paragraph) => !isEmptyString(paragraph))
       .join('\n\n');
