@@ -309,8 +309,9 @@ new TextFormatter({ renderOrder: 'mapped' }).format(song);
 
 Because every occurrence is rendered, `{chorus}` recalls and repeat instructions are written out in full, which makes
 `expandChorusDirective` redundant in this mode. Content that is not part of a section, such as a comment between two
-sections, travels along with the section that follows it in the chart. A section that the song map does not mention,
-for example because a flow directive leaves it out or refers to it with an unresolvable reference, is not rendered.
+sections, travels along with the next section that the map performs, and is rendered last when the map performs no
+section after it. A section that the song map does not mention, for example because a flow directive leaves it out or
+refers to it with an unresolvable reference, is not rendered.
 
 The song map paragraphs are also available directly:
 

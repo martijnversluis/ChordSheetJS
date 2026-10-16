@@ -129,6 +129,54 @@ describe('Song', () => {
       expect(song.mappedBodyParagraphs[1].lines[0].items[0]).toHaveProperty('value', 'Fade out');
     });
 
+    it('keeps a blank line inside a section as a paragraph break', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]First half
+
+        [C]Second half
+        {end_of_chorus}`);
+
+      expect(labels(song)).toEqual(['Chorus', null]);
+      expect(song.mappedBodyParagraphs.map((paragraph) => paragraph.lines.length)).toEqual([2, 1]);
+    });
+
+    it('moves a comment forward to the next section that the map performs', () => {
+      const song = parse(heredoc`
+        {flow: C1}
+
+        {comment: Capo 2}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(labels(song)).toEqual([null, 'Chorus']);
+      expect(song.mappedBodyParagraphs[0].lines[0].items[0]).toHaveProperty('value', 'Capo 2');
+    });
+
+    it('keeps a comment that no performed section follows at the end', () => {
+      const song = parse(heredoc`
+        {flow: C1}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {comment: Fade out}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}`);
+
+      expect(labels(song)).toEqual(['Chorus', null]);
+      expect(song.mappedBodyParagraphs[1].lines[0].items[0]).toHaveProperty('value', 'Fade out');
+    });
+
     it('returns no paragraphs for a song without sections', () => {
       const song = parse('{title: Only metadata}');
 
