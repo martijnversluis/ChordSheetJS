@@ -49,6 +49,20 @@ describe('renderOrder', () => {
     });
   });
 
+  describe('a section with a blank line in it', () => {
+    const splitSong = parse(heredoc`
+      {start_of_chorus: Chorus}
+      [C]First half
+
+      [C]Second half
+      {end_of_chorus}`);
+
+    it('renders the same in mapped order as in source order', () => {
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(splitSong))
+        .toEqual(new TextFormatter().format(splitSong));
+    });
+  });
+
   describe('HtmlDivFormatter', () => {
     it('renders the sections in song map order when set to mapped', () => {
       const output = new HtmlDivFormatter({ renderOrder: 'mapped' }).format(song);
