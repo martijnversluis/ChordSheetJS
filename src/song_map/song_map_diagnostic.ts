@@ -8,6 +8,7 @@ export type SongMapDiagnosticType =
   'invalid_reference' |
   'invalid_repeat' |
   'missing_recall_target' |
+  'omitted_occurrence' |
   'ordinal_conflict' |
   'unsupported_flow_item';
 
@@ -19,7 +20,7 @@ export interface SongMapDiagnosticProperties {
 }
 
 /**
- * Reports an issue that {@link SongMapGenerator} encountered while generating a {@link SongMap}
+ * Reports an issue that was encountered while generating a {@link SongMap} or while rendering it
  */
 class SongMapDiagnostic {
   type: SongMapDiagnosticType;

@@ -41,6 +41,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
   format(song: Song): void {
     const preparedSong = this.prepareSong(song);
     this.song = preparedSong;
+    this.collectMapDiagnostics(preparedSong);
 
     // Clear the container
     while (this.container.firstChild) {

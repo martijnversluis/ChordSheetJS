@@ -184,6 +184,34 @@ describe('Song', () => {
     });
   });
 
+  describe('#songMap', () => {
+    it('returns the map that the flow directive describes', () => {
+      const song = parse(heredoc`
+        {flow: C1 V1}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(song.songMap.toString()).toEqual('C1 V1');
+    });
+
+    it('returns the generated map when the song has no flow directive', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {chorus}`);
+
+      expect(song.songMap.toString()).toEqual('C1 C1');
+    });
+  });
+
   describe('#mappedBodyParagraphsFor', () => {
     function condensedLabels(song: Song): (string | null)[] {
       return song.mappedBodyParagraphsFor('condensed').map((paragraph) => paragraph.label);
