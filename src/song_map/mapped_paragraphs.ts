@@ -6,7 +6,6 @@ import SongMap from './song_map';
 import SongMapOccurrence from './song_map_occurrence';
 import SongSection from './song_section';
 import Tag from '../chord_sheet/tag';
-import resolveSongMap from './resolve_song_map';
 
 import { RepeatPresentation } from './presentation';
 
@@ -51,7 +50,7 @@ function withRepeatLabel(section: SongSection, count: number): Line[] | null {
  */
 class MappedParagraphs {
   static for(song: Song, presentation: RepeatPresentation = 'full'): Paragraph[] {
-    return new MappedParagraphs(song, resolveSongMap(song), presentation).build();
+    return new MappedParagraphs(song, song.songMap, presentation).build();
   }
 
   private song: Song;
