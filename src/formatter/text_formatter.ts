@@ -112,9 +112,7 @@ class TextFormatter extends Formatter<TextFormatterConfiguration> {
   }
 
   formatParagraphs(): string {
-    const { bodyParagraphs, expandedBodyParagraphs } = this.song;
-    const { expandChorusDirective } = this.configuration;
-    const paragraphs = expandChorusDirective ? expandedBodyParagraphs : bodyParagraphs;
+    const paragraphs = this.song.bodyParagraphsFor(this.configuration);
 
     return this.song.filterParagraphs(paragraphs, this.configuration)
       .map((paragraph: Paragraph) => this.formatParagraph(paragraph, this.metadata))

@@ -137,6 +137,10 @@ export class LayoutEngine {
   }
 
   private getSourceParagraphs(): Paragraph[] {
+    if (this.config.renderOrder === 'mapped') {
+      return this.song.mappedBodyParagraphs;
+    }
+
     if (!this.config.expandChorusDirective) {
       return this.song.bodyParagraphs;
     }

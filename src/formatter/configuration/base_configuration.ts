@@ -24,6 +24,11 @@ export type DirectiveNameNormalizationConfiguration = DirectiveNameNormalization
   [directiveName: string]: DirectiveNameNormalization | undefined;
 };
 
+/**
+ * Whether to render the song as written (`source`) or in the order of its song map (`mapped`)
+ */
+export type RenderOrder = 'source' | 'mapped';
+
 export interface InstrumentConfiguration {
   type?: string;
   description?: string;
@@ -73,6 +78,7 @@ export interface BaseFormatterConfiguration {
   metadata: MetadataConfiguration;
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
+  renderOrder: RenderOrder;
   useUnicodeModifiers: boolean;
   user: UserConfigurationProperties | null;
 }
@@ -89,6 +95,7 @@ export type ConfigurationProperties = Record<string, any> & Partial<{
   metadata: Partial<MetadataConfiguration>;
   normalizeChords: boolean;
   normalizeChordSuffix: boolean;
+  renderOrder: RenderOrder;
   useUnicodeModifiers: boolean;
   user: Partial<UserConfigurationProperties>;
 }>;
@@ -105,6 +112,7 @@ export const defaultBaseConfiguration: BaseFormatterConfiguration = {
   metadata: defaultMetadataConfiguration,
   normalizeChords: true,
   normalizeChordSuffix: true,
+  renderOrder: 'source',
   useUnicodeModifiers: false,
   user: null,
 };

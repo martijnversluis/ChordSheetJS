@@ -30,6 +30,10 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * `repeatedSections` display rule: an expanded chorus counts as a repeated section, so a collapsing
    * `repeatedSections` mode (the PDF default is `title_only`) can hide part or all of the recalled chorus. Use
    * `repeatedSections: "full"` to render the full chorus.
+   * @param {'source'|'mapped'} [configuration.renderOrder='source'] Whether to render the song as written
+   * (`source`) or in the order of its song map (`mapped`). In `mapped` order every occurrence is rendered, so
+   * `{chorus}` recalls and repeat instructions are written out in full and `expandChorusDirective` has no effect.
+   * The {@link ChordProFormatter} always renders the source order.
    * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp
    * symbols.
    * @param {boolean} [configuration.decapo=false] Whether to eliminate the capo by transposing the chords up by

@@ -297,6 +297,27 @@ A repeat in a flow must be marked as one, either with parentheses or with the wo
 does not become an occurrence; it reports an `invalid_reference` or `ambiguous_reference` diagnostic. Items that are
 not section references, such as OnSong page breaks and transpose instructions, report `unsupported_flow_item`.
 
+### Render a song in song map order
+
+By default the display formatters render the chart as written. With `renderOrder: 'mapped'` they render the song map
+instead: one paragraph per occurrence, in performance order. The `{flow}` directive of the song is followed when it
+has one, else the map that is generated from the chart.
+
+```javascript
+new TextFormatter({ renderOrder: 'mapped' }).format(song);
+```
+
+Because every occurrence is rendered, `{chorus}` recalls and repeat instructions are written out in full, which makes
+`expandChorusDirective` redundant in this mode. Content that is not part of a section, such as a comment between two
+sections, travels along with the section that follows it in the chart. A section that the song map does not mention,
+for example because a flow directive leaves it out or refers to it with an unresolvable reference, is not rendered.
+
+The song map paragraphs are also available directly:
+
+```javascript
+song.mappedBodyParagraphs;
+```
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by

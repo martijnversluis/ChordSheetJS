@@ -154,6 +154,7 @@ class MeasuredHtmlFormatter extends MeasurementBasedFormatter<MeasuredHtmlFormat
       displayLyricsOnly: !!this.configuration.layout.sections?.base?.display?.lyricsOnly,
       repeatedSections: this.configuration.layout.sections?.base?.display?.repeatedSections,
       expandChorusDirective: this.configuration.expandChorusDirective,
+      renderOrder: this.configuration.renderOrder,
     };
 
     // Return the layout engine
