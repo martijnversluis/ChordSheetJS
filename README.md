@@ -241,8 +241,8 @@ songMap.toString();
 songMap.sections.map((section) => [section.token, section.displayLabel]);
 // [['V1', 'Verse 1'], ['C1', 'Chorus'], ['V2', 'Verse 2']]
 
-songMap.occurrences.map((occurrence) => [occurrence.index, occurrence.token, occurrence.origin]);
-// [[0, 'V1', 'source'], [1, 'C1', 'source'], [2, 'V2', 'source'], [3, 'C1', 'recall']]
+songMap.occurrences.map((occurrence) => [occurrence.token, occurrence.origin]);
+// [['V1', 'source'], ['C1', 'source'], ['V2', 'source'], ['C1', 'recall']]
 ```
 
 A paragraph that is not part of a section becomes an anonymous section with an `S` token, so every piece of chart

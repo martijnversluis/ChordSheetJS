@@ -44,8 +44,6 @@ describe('SongMapGenerator', () => {
       const [first, second] = songMap.occurrences;
 
       expect(songMap.occurrences).toHaveLength(2);
-      expect(first.index).toEqual(0);
-      expect(second.index).toEqual(1);
       expect(first.origin).toEqual('source');
       expect(second.origin).toEqual('recall');
       expect(first.section).toBe(second.section);
@@ -183,6 +181,22 @@ describe('SongMapGenerator', () => {
       expect(songMap.toString()).toEqual('V1');
       expect(diagnostic.type).toEqual('ordinal_conflict');
       expect(diagnostic.sectionToken).toEqual('V1');
+    });
+
+    it('does not report an ordinal conflict for a number that is not an ordinal', () => {
+      const song = parse(heredoc`
+        {start_of_verse: Verse in 6/8}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_verse: Verse 1 of 2}
+        [G]Verse two
+        {end_of_verse}`);
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('V1 V2');
+      expect(songMap.diagnostics).toEqual([]);
     });
 
     it('reports an ordinal conflict for a label with a repeat instruction', () => {
@@ -340,7 +354,6 @@ describe('SongMapGenerator', () => {
 
       expect(songMap.toString()).toEqual('C1 C1');
       expect(songMap.occurrences.map((occurrence) => occurrence.origin)).toEqual(['source', 'repeat']);
-      expect(songMap.occurrences.map((occurrence) => occurrence.index)).toEqual([0, 1]);
       expect(section.label).toEqual('Chorus (2x)');
       expect(songMap.diagnostics).toEqual([]);
     });

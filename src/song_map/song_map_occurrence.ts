@@ -4,7 +4,6 @@ export type SongMapOccurrenceOrigin = 'source' | 'recall' | 'repeat' | 'flow';
 
 export interface SongMapOccurrenceProperties {
   section: SongSection;
-  index: number;
   origin: SongMapOccurrenceOrigin;
   lineNumber?: number | null;
 }
@@ -16,20 +15,14 @@ class SongMapOccurrence {
   /** The section that is performed */
   section: SongSection;
 
-  /** The 0-based position of the occurrence in the song map */
-  index: number;
-
   /** Whether the occurrence comes from section content, a recall, a repeat instruction or a flow directive */
   origin: SongMapOccurrenceOrigin;
 
   /** The source line that produced the occurrence */
   lineNumber: number | null;
 
-  constructor({
-    section, index, origin, lineNumber = null,
-  }: SongMapOccurrenceProperties) {
+  constructor({ section, origin, lineNumber = null }: SongMapOccurrenceProperties) {
     this.section = section;
-    this.index = index;
     this.origin = origin;
     this.lineNumber = lineNumber;
   }
