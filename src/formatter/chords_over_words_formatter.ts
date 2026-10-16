@@ -83,7 +83,8 @@ class ChordsOverWordsFormatter extends Formatter {
 
   formatParagraphs(): string {
     const metadata = this.song.getMetadata(this.configuration);
-    const paragraphs = this.song.filterParagraphs(this.paragraphsToRender(), this.configuration);
+    const bodyParagraphs = this.song.bodyParagraphsFor(this.configuration, () => this.bodyParagraphs());
+    const paragraphs = this.song.filterParagraphs(bodyParagraphs, this.configuration);
     const count = paragraphs.length;
 
     const formattedParagraphs = paragraphs.map((paragraph) => this.formatParagraph(paragraph, metadata));
@@ -94,16 +95,6 @@ class ChordsOverWordsFormatter extends Formatter {
     }
 
     return combined;
-  }
-
-  private paragraphsToRender(): Paragraph[] {
-    if (this.configuration.renderOrder === 'mapped') {
-      return this.song.mappedBodyParagraphsFor(this.configuration.repeatPresentation);
-    }
-
-    if (this.configuration.expandChorusDirective) return this.song.expandedBodyParagraphs;
-
-    return this.bodyParagraphs();
   }
 
   private bodyParagraphs(): Paragraph[] {

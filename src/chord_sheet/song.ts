@@ -22,16 +22,23 @@ import SongMapper from './song_mapper';
 import Tag from './tag';
 import normalizeSongSequenceEnharmonics from './sequence_enharmonic_normalizer';
 
-import { RepeatPresentation } from '../formatter/configuration/base_configuration';
 import { testSelector } from '../helpers';
 import {
   ABC, Accidental, LILYPOND, SVG, TEXTBLOCK,
 } from '../constants';
 import { CAPO, KEY } from './tags';
+import { RenderOrder, RepeatPresentation } from '../song_map/presentation';
 import { configurationProviders, staticProviders } from './standard_metadata_providers';
 import { deprecate, filterObject } from '../utilities';
 
 type MapItemsCallback = (_item: Item) => Item | Item[] | null;
+
+/** The formatter configuration properties that select the paragraphs to render */
+export interface BodyParagraphOptions {
+  expandChorusDirective?: boolean;
+  renderOrder?: RenderOrder;
+  repeatPresentation?: RepeatPresentation;
+}
 
 /**
  * Represents a song in a chord sheet. Currently a chord sheet can only have one song.
@@ -49,7 +56,7 @@ class Song extends MetadataAccessors {
 
   _renderParagraphs: Paragraph[] | null = null;
 
-  _mappedBodyParagraphs: Paragraph[] | null = null;
+  _mappedBodyParagraphs: Partial<Record<RepeatPresentation, Paragraph[]>> = {};
 
   warnings: ParserWarning[] = [];
 
@@ -121,23 +128,27 @@ class Song extends MetadataAccessors {
    * @returns {Paragraph[]}
    */
   mappedBodyParagraphsFor(presentation: RepeatPresentation = 'full'): Paragraph[] {
-    if (presentation === 'condensed') return MappedParagraphs.for(this, presentation);
-
-    this._mappedBodyParagraphs ??= MappedParagraphs.for(this, presentation);
-    return this._mappedBodyParagraphs;
+    this._mappedBodyParagraphs[presentation] ??= MappedParagraphs.for(this, presentation);
+    return this._mappedBodyParagraphs[presentation] as Paragraph[];
   }
 
   /**
    * The paragraphs to render for the supplied formatter configuration: the song map order when
    * `renderOrder` is `mapped`, else the source order, with `{chorus}` directives expanded when
    * `expandChorusDirective` is set.
-   * @param configuration the formatter configuration
+   * @param options the render order, repeat presentation and chorus expansion to use
+   * @param sourceParagraphs returns the paragraphs for source order rendering, for a formatter that selects
+   * its body paragraphs itself. Defaults to {@link bodyParagraphs}.
    * @returns {Paragraph[]}
    */
-  bodyParagraphsFor(configuration: Configuration): Paragraph[] {
-    if (configuration.renderOrder === 'mapped') return this.mappedBodyParagraphsFor(configuration.repeatPresentation);
+  bodyParagraphsFor(
+    options: BodyParagraphOptions,
+    sourceParagraphs: () => Paragraph[] = () => this.bodyParagraphs,
+  ): Paragraph[] {
+    if (options.renderOrder === 'mapped') return this.mappedBodyParagraphsFor(options.repeatPresentation);
+    if (options.expandChorusDirective) return this.expandedBodyParagraphs;
 
-    return configuration.expandChorusDirective ? this.expandedBodyParagraphs : this.bodyParagraphs;
+    return sourceParagraphs();
   }
 
   filterParagraphs(paragraphs: Paragraph[], configuration: Configuration): Paragraph[] {
