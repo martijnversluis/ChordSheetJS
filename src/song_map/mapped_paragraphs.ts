@@ -8,14 +8,7 @@ import SongSection from './song_section';
 import Tag from '../chord_sheet/tag';
 import resolveSongMap from './resolve_song_map';
 
-import { RepeatPresentation } from '../formatter/configuration/base_configuration';
-
-function paragraphOf(lines: Line[]): Paragraph {
-  const paragraph = new Paragraph();
-  lines.filter((line) => line.hasRenderableItems()).forEach((line) => paragraph.addLine(line));
-
-  return paragraph;
-}
+import { RepeatPresentation } from './presentation';
 
 function occurrenceRuns(occurrences: SongMapOccurrence[]): SongMapOccurrence[][] {
   return occurrences.reduce((runs: SongMapOccurrence[][], occurrence) => {
@@ -54,7 +47,7 @@ function withRepeatLabel(section: SongSection, count: number): Line[] | null {
 
 /**
  * Builds the paragraphs that a song map describes: one paragraph per occurrence, in performance order.
- * Content that is not part of a section travels along with the section that follows it in the chart.
+ * Content that is not part of a section travels along with the next section that the map performs.
  */
 class MappedParagraphs {
   static for(song: Song, presentation: RepeatPresentation = 'full'): Paragraph[] {
@@ -67,13 +60,11 @@ class MappedParagraphs {
 
   private presentation: RepeatPresentation;
 
-  private attachments = new Map<SongSection, Line[][]>();
+  private attachments = new Map<SongSection, Line[]>();
 
   private placed = new Set<SongSection>();
 
-  private trailing: Line[][] = [];
-
-  private pending: Line[][] = [];
+  private unattached: Line[] = [];
 
   constructor(song: Song, songMap: SongMap, presentation: RepeatPresentation) {
     this.song = song;
@@ -86,7 +77,7 @@ class MappedParagraphs {
 
     const paragraphs = occurrenceRuns(this.songMap.occurrences).flatMap((run) => this.paragraphsForRun(run));
 
-    return [...paragraphs, ...this.trailing.map(paragraphOf)].filter((paragraph) => !paragraph.isEmpty());
+    return [...paragraphs, ...this.paragraphsOf(this.unattached)];
   }
 
   private paragraphsForRun(run: SongMapOccurrence[]): Paragraph[] {
@@ -100,50 +91,47 @@ class MappedParagraphs {
   private sectionParagraphs(section: SongSection, count: number): Paragraph[] {
     const condensed = count > 1 && this.presentation === 'condensed' ? withRepeatLabel(section, count) : null;
 
-    if (condensed) return [paragraphOf(condensed)];
+    if (condensed) return this.paragraphsOf(condensed);
 
-    return Array.from({ length: count }, () => paragraphOf(section.lines));
+    return Array.from({ length: count }, () => this.paragraphsOf(section.lines)).flat();
   }
 
   private attachmentsFor(section: SongSection): Paragraph[] {
-    return (this.attachments.get(section) ?? []).map(paragraphOf);
+    return this.paragraphsOf(this.attachments.get(section) ?? []);
   }
 
+  /** Builds the paragraphs for a set of lines the same way the source order pipeline does */
+  private paragraphsOf(lines: Line[]): Paragraph[] {
+    return this.song.linesToParagraphs(lines).filter((paragraph) => !paragraph.isEmpty());
+  }
+
+  /**
+   * Collects the lines that are not part of a section and attaches them to the next section that the map
+   * performs. Lines that no performed section follows stay unattached and are rendered last.
+   */
   private collectUnmappedLines(): void {
     const sections = this.sectionsByLine();
+    const performed = new Set(this.songMap.occurrences.map((occurrence) => occurrence.section));
+    let pending: Line[] = [];
 
     this.song.lines.forEach((line) => {
       const section = sections.get(line);
 
-      if (section) {
-        this.attachPending(section);
-      } else if (line.hasRenderableItems()) {
-        this.addToPending(line);
-      } else {
-        this.pending.push([]);
+      if (section && performed.has(section)) {
+        this.attach(section, pending);
+        pending = [];
+      } else if (!section && (line.hasRenderableItems() || line.isEmpty())) {
+        pending.push(line);
       }
     });
 
-    this.trailing = this.pending.filter((lines) => lines.length > 0);
+    this.unattached = pending;
   }
 
-  private addToPending(line: Line): void {
-    const group = this.pending[this.pending.length - 1];
+  private attach(section: SongSection, lines: Line[]): void {
+    if (lines.length === 0) return;
 
-    if (group) {
-      group.push(line);
-    } else {
-      this.pending.push([line]);
-    }
-  }
-
-  private attachPending(section: SongSection): void {
-    const groups = this.pending.filter((lines) => lines.length > 0);
-    this.pending = [];
-
-    if (groups.length === 0) return;
-
-    this.attachments.set(section, [...(this.attachments.get(section) ?? []), ...groups]);
+    this.attachments.set(section, [...(this.attachments.get(section) ?? []), ...lines]);
   }
 
   private sectionsByLine(): Map<Line, SongSection> {

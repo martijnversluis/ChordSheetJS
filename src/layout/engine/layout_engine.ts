@@ -137,16 +137,11 @@ export class LayoutEngine {
   }
 
   private getSourceParagraphs(): Paragraph[] {
-    if (this.config.renderOrder === 'mapped') {
-      return this.song.mappedBodyParagraphsFor(this.config.repeatPresentation);
+    if (this.config.renderOrder !== 'mapped' && this.config.expandChorusDirective) {
+      this.warnAboutRepeatedSections();
     }
 
-    if (!this.config.expandChorusDirective) {
-      return this.song.bodyParagraphs;
-    }
-
-    this.warnAboutRepeatedSections();
-    return this.song.expandedBodyParagraphs;
+    return this.song.bodyParagraphsFor(this.config);
   }
 
   private warnAboutRepeatedSections(): void {
