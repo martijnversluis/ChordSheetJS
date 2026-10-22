@@ -194,7 +194,6 @@ class FlowDirective {
   private addOccurrence(section: SongSection, origin: SongMapOccurrenceOrigin): void {
     this.occurrences.push(new SongMapOccurrence({
       section,
-      index: this.occurrences.length,
       origin,
       lineNumber: this.tag.parentLine?.lineNumber ?? null,
     }));
@@ -245,7 +244,7 @@ class FlowDirective {
   private reportInvalidRepeat(instruction: RepeatInstruction): void {
     this.addDiagnostic({
       type: 'invalid_repeat',
-      message: `Repeat instruction "${instruction.text}" does not describe a finite number of performances`,
+      message: instruction.notFiniteMessage,
     });
   }
 

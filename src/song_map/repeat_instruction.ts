@@ -73,6 +73,11 @@ class RepeatInstruction {
   isFinite(): boolean {
     return this.count !== null;
   }
+
+  /** Describes why the instruction cannot create occurrences */
+  get notFiniteMessage(): string {
+    return `Repeat instruction "${this.text}" does not describe a finite number of performances`;
+  }
 }
 
 export default RepeatInstruction;
