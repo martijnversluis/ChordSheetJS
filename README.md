@@ -241,8 +241,8 @@ songMap.toString();
 songMap.sections.map((section) => [section.token, section.displayLabel]);
 // [['V1', 'Verse 1'], ['C1', 'Chorus'], ['V2', 'Verse 2']]
 
-songMap.occurrences.map((occurrence) => [occurrence.index, occurrence.token, occurrence.origin]);
-// [[0, 'V1', 'source'], [1, 'C1', 'source'], [2, 'V2', 'source'], [3, 'C1', 'recall']]
+songMap.occurrences.map((occurrence) => [occurrence.token, occurrence.origin]);
+// [['V1', 'source'], ['C1', 'source'], ['V2', 'source'], ['C1', 'recall']]
 ```
 
 A paragraph that is not part of a section becomes an anonymous section with an `S` token, so every piece of chart
@@ -313,11 +313,28 @@ sections, travels along with the next section that the map performs, and is rend
 section after it. A section that the song map does not mention, for example because a flow directive leaves it out or
 refers to it with an unresolvable reference, is not rendered.
 
-The song map paragraphs are also available directly:
+The active song map and the paragraphs it describes are also available directly:
 
 ```javascript
+song.songMap;
 song.mappedBodyParagraphs;
 ```
+
+A formatter reports what mapped rendering could not resolve or had to leave out, so a flow directive with a typo
+does not silently drop a section:
+
+```javascript
+const formatter = new TextFormatter({ renderOrder: 'mapped' });
+formatter.format(song);
+
+formatter.diagnostics.map((diagnostic) => [diagnostic.type, diagnostic.sectionToken]);
+// [['invalid_reference', null], ['omitted_occurrence', 'C1']]
+```
+
+The diagnostics are those of the rendered song map, plus an `omitted_occurrence` for every occurrence of which
+formatter configuration excludes the content, for example a `{start_of_chorus-guitar}` section that is rendered
+for another instrument. Source order rendering reports no diagnostics. `PdfFormatter` and `MeasuredHtmlFormatter` do not filter paragraphs by selector, so they report the song map
+diagnostics only.
 
 ### Condense repeated sections
 
