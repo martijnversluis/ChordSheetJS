@@ -22,6 +22,7 @@ import SongMapper from './song_mapper';
 import Tag from './tag';
 import normalizeSongSequenceEnharmonics from './sequence_enharmonic_normalizer';
 
+import { RepeatPresentation } from '../formatter/configuration/base_configuration';
 import { testSelector } from '../helpers';
 import {
   ABC, Accidental, LILYPOND, SVG, TEXTBLOCK,
@@ -110,7 +111,19 @@ class Song extends MetadataAccessors {
    * @member {Paragraph[]}
    */
   get mappedBodyParagraphs(): Paragraph[] {
-    this._mappedBodyParagraphs ??= MappedParagraphs.for(this);
+    return this.mappedBodyParagraphsFor();
+  }
+
+  /**
+   * The paragraphs that the song map describes, with adjacent occurrences of one section combined into one
+   * paragraph with a repeat label when the presentation is `condensed`
+   * @param presentation the repeat presentation to use
+   * @returns {Paragraph[]}
+   */
+  mappedBodyParagraphsFor(presentation: RepeatPresentation = 'full'): Paragraph[] {
+    if (presentation === 'condensed') return MappedParagraphs.for(this, presentation);
+
+    this._mappedBodyParagraphs ??= MappedParagraphs.for(this, presentation);
     return this._mappedBodyParagraphs;
   }
 
@@ -122,7 +135,7 @@ class Song extends MetadataAccessors {
    * @returns {Paragraph[]}
    */
   bodyParagraphsFor(configuration: Configuration): Paragraph[] {
-    if (configuration.renderOrder === 'mapped') return this.mappedBodyParagraphs;
+    if (configuration.renderOrder === 'mapped') return this.mappedBodyParagraphsFor(configuration.repeatPresentation);
 
     return configuration.expandChorusDirective ? this.expandedBodyParagraphs : this.bodyParagraphs;
   }

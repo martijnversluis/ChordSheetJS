@@ -34,6 +34,10 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * (`source`) or in the order of its song map (`mapped`). In `mapped` order every occurrence is rendered, so
    * `{chorus}` recalls and repeat instructions are written out in full and `expandChorusDirective` has no effect.
    * The {@link ChordProFormatter} always renders the source order.
+   * @param {'full'|'condensed'} [configuration.repeatPresentation='full'] Whether to render every song map
+   * occurrence in full, or to combine adjacent occurrences of one section into one section with a repeat label,
+   * for example `Chorus (2x)`. Only applies when `renderOrder` is `mapped`. The song map itself is not changed:
+   * it keeps one occurrence per performance.
    * @param {boolean} [configuration.useUnicodeModifiers=false] Whether or not to use unicode flat and sharp
    * symbols.
    * @param {boolean} [configuration.decapo=false] Whether to eliminate the capo by transposing the chords up by

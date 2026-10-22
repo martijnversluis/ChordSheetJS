@@ -97,7 +97,10 @@ class ChordsOverWordsFormatter extends Formatter {
   }
 
   private paragraphsToRender(): Paragraph[] {
-    if (this.configuration.renderOrder === 'mapped') return this.song.mappedBodyParagraphs;
+    if (this.configuration.renderOrder === 'mapped') {
+      return this.song.mappedBodyParagraphsFor(this.configuration.repeatPresentation);
+    }
+
     if (this.configuration.expandChorusDirective) return this.song.expandedBodyParagraphs;
 
     return this.bodyParagraphs();

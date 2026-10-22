@@ -135,4 +135,103 @@ describe('Song', () => {
       expect(song.mappedBodyParagraphs).toEqual([]);
     });
   });
+
+  describe('#mappedBodyParagraphsFor', () => {
+    function condensedLabels(song: Song): (string | null)[] {
+      return song.mappedBodyParagraphsFor('condensed').map((paragraph) => paragraph.label);
+    }
+
+    it('renders adjacent occurrences of one section once with a repeat label', () => {
+      const song = parse(heredoc`
+        {flow: V1 C1 C1}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(condensedLabels(song)).toEqual(['Verse 1', 'Chorus (2x)']);
+    });
+
+    it('keeps non-adjacent occurrences of one section at their map positions', () => {
+      const song = parse(heredoc`
+        {flow: C1 V1 C1}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(condensedLabels(song)).toEqual(['Chorus', 'Verse 1', 'Chorus']);
+    });
+
+    it('replaces the repeat instruction in the label instead of adding a second one', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(condensedLabels(song)).toEqual(['Chorus (2x)']);
+    });
+
+    it('counts every adjacent occurrence', () => {
+      const song = parse(heredoc`
+        {flow: C1 C1 C1}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(condensedLabels(song)).toEqual(['Chorus (3x)']);
+    });
+
+    it('labels a section that has no label with the repeat count', () => {
+      const song = parse(heredoc`
+        {flow: C1 C1}
+
+        {start_of_chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(condensedLabels(song)).toEqual(['(2x)']);
+    });
+
+    it('does not change the source chart', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus (2x)}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      condensedLabels(song);
+
+      expect(song.bodyParagraphs.map((paragraph) => paragraph.label)).toEqual(['Chorus (2x)']);
+      expect(song.mappedBodyParagraphs.map((paragraph) => paragraph.label)).toEqual(['Chorus (2x)', 'Chorus (2x)']);
+    });
+
+    it('keeps the occurrences of a section without a section delimiter in full', () => {
+      const song = parse(heredoc`
+        {flow: S1 S1}
+
+        [C]Loose line`);
+
+      expect(condensedLabels(song)).toEqual([null, null]);
+    });
+
+    it('renders every occurrence in full by default', () => {
+      const song = parse(heredoc`
+        {flow: C1 C1}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      expect(song.mappedBodyParagraphsFor().map((paragraph) => paragraph.label)).toEqual(['Chorus', 'Chorus']);
+    });
+  });
 });
