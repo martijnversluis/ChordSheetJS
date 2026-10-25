@@ -14,8 +14,6 @@ function withRepeatLabel(section: SongSection, count: number): Line[] {
   return section.lines.map((line) => {
     const clone = line.clone();
 
-    if (!clone.isSectionStart()) return clone;
-
     clone.items = clone.items.map((item) => (
       item instanceof Tag && item.isSectionStart() ? item.setAttribute('label', repeatLabel(item.label, count)) : item
     ));

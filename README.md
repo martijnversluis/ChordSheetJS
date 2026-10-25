@@ -378,7 +378,8 @@ songMap.view({ repeatPresentation: 'condensed' }).map(String);
 
 Every entry refers to the canonical occurrences it presents through `entry.occurrences`, so a condensed entry still
 identifies each performance. `entry.lineNumber` is the source line of the first occurrence, and `entry.type` is the
-section type, for example `chorus`.
+section type, for example `chorus`. For a section without a label, `entry.displayLabel` falls back to the section type
+and ordinal, so an entry reads `Verse 2 (2x)` where the chart itself has no label to extend and shows `(2x)`.
 
 A formatter exposes the song map it rendered, in the order and the repeat presentation of that render:
 

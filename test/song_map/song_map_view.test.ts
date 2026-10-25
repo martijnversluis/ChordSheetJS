@@ -89,6 +89,19 @@ describe('SongMap', () => {
       expect(entries.map((entry) => entry.displayLabel)).toEqual(['Section 1', 'Section 1']);
     });
 
+    it('combines a section of which the delimiter shares a line with content', () => {
+      const song = parse(heredoc`
+        {flow: C1 C1}
+
+        {start_of_chorus: Chorus}[C]Chorus line
+        {end_of_chorus}`);
+
+      const entries = song.songMap.view({ repeatPresentation: 'condensed' });
+
+      expect(entries.map(String)).toEqual(['C1 (2x)']);
+      expect(song.mappedBodyParagraphsFor('condensed')).toHaveLength(1);
+    });
+
     it('marks the entries of a section that the renderer leaves out', () => {
       const { songMap } = songWithRecalls;
       const entries = songMap.view({ omittedSections: [songMap.sections[1]] });
