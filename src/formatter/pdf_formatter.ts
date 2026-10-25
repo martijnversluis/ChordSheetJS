@@ -37,7 +37,7 @@ class PdfFormatter extends MeasurementBasedFormatter<PDFFormatterConfiguration> 
   ): void {
     const preparedSong = this.prepareSong(song);
     this.song = preparedSong;
-    this.collectMapDiagnostics(preparedSong);
+    this.collectSongMap(preparedSong);
 
     // Create the PDF renderer
     this.renderer = new JsPdfRenderer(

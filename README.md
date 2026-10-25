@@ -361,6 +361,43 @@ own position in the output.
 Condensing is presentation only: the song map keeps one occurrence per performance, and `renderOrder: 'source'`
 output is not affected.
 
+### Present the song map
+
+A song map can be presented next to the chart, for example as a row of section tokens that a player highlights while
+it follows along. ChordSheetJS does not render that presentation; it provides the data for it. `songMap.view()`
+returns one entry per presented item:
+
+```javascript
+// {flow: V1 C1 C1 B1}
+songMap.view().map((entry) => [entry.token, entry.displayLabel, entry.repeatCount]);
+// [['V1', 'Verse 1', 1], ['C1', 'Chorus', 1], ['C1', 'Chorus', 1], ['B1', 'Bridge', 1]]
+
+songMap.view({ repeatPresentation: 'condensed' }).map(String);
+// ['V1', 'C1 (2x)', 'B1']
+```
+
+Every entry refers to the canonical occurrences it presents through `entry.occurrences`, so a condensed entry still
+identifies each performance. `entry.lineNumber` is the source line of the first occurrence, and `entry.type` is the
+section type, for example `chorus`. For a section without a label, `entry.displayLabel` falls back to the section type
+and ordinal, so an entry reads `Verse 2 (2x)` where the chart itself has no label to extend and shows `(2x)`.
+
+A formatter exposes the song map it rendered, in the order and the repeat presentation of that render:
+
+```javascript
+const formatter = new TextFormatter({ renderOrder: 'mapped', repeatPresentation: 'condensed' });
+formatter.format(song);
+
+formatter.songMapEntries.map((entry) => [entry.displayLabel, entry.omitted]);
+// [['Verse 1', false], ['Chorus (2x)', false], ['Bridge', false]]
+```
+
+`entry.omitted` marks an entry of which this formatter leaves the content out, which is the same occurrence that
+reports an `omitted_occurrence` diagnostic. `songMapEntries` is empty for source order rendering.
+
+The entries carry everything an accessible presentation needs: a name per occurrence (`displayLabel`), the repeat
+count in text rather than in a visual marker, and a reading order that matches the rendered chart. Use `entry.type`
+for a type colour only in addition to the label, never as the only way to tell sections apart.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by

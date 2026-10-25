@@ -1,6 +1,11 @@
 import Line from '../chord_sheet/line';
+import Tag from '../chord_sheet/tag';
 
 import { NONE } from '../constants';
+
+function startsSection(line: Line): boolean {
+  return line.items.some((item) => item instanceof Tag && item.isSectionStart());
+}
 
 export interface SongSectionProperties {
   type: string;
@@ -41,6 +46,11 @@ class SongSection {
     this.ordinal = ordinal;
     this.token = token;
     this.lines = lines;
+  }
+
+  /** Whether the section is delimited by section directives, which can carry a repeat label */
+  get hasDelimiter(): boolean {
+    return this.lines.some(startsSection);
   }
 
   /** The label to display, falling back to the section type and ordinal */

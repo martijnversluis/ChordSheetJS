@@ -1,6 +1,5 @@
 import Line from '../chord_sheet/line';
 import Paragraph from '../chord_sheet/paragraph';
-import RepeatInstruction from './repeat_instruction';
 import Song from '../chord_sheet/song';
 import SongMap from './song_map';
 import SongMapOccurrence from './song_map_occurrence';
@@ -8,40 +7,19 @@ import SongSection from './song_section';
 import Tag from '../chord_sheet/tag';
 
 import { RepeatPresentation } from './presentation';
+import { isCondensed, occurrenceRuns, repeatLabel } from './repeat_grouping';
 
-function occurrenceRuns(occurrences: SongMapOccurrence[]): SongMapOccurrence[][] {
-  return occurrences.reduce((runs: SongMapOccurrence[][], occurrence) => {
-    const current = runs[runs.length - 1];
+/** Returns the section lines with the repeat count in the label of the section delimiter */
+function withRepeatLabel(section: SongSection, count: number): Line[] {
+  return section.lines.map((line) => {
+    const clone = line.clone();
 
-    if (current && current[0].section === occurrence.section) {
-      current.push(occurrence);
-    } else {
-      runs.push([occurrence]);
-    }
+    clone.items = clone.items.map((item) => (
+      item instanceof Tag && item.isSectionStart() ? item.setAttribute('label', repeatLabel(item.label, count)) : item
+    ));
 
-    return runs;
-  }, []);
-}
-
-function repeatLabel(label: string, count: number): string {
-  return [RepeatInstruction.strip(label), `(${count}x)`].filter((part) => part.length > 0).join(' ');
-}
-
-/**
- * Returns the section lines with the repeat count in the label of the section delimiter, or `null` when the
- * section has no delimiter to carry the repeat count.
- */
-function withRepeatLabel(section: SongSection, count: number): Line[] | null {
-  const lines = section.lines.map((line) => line.clone());
-  const line = lines.find((candidate) => candidate.items.some((item) => item instanceof Tag && item.isSectionStart()));
-
-  if (!line) return null;
-
-  line.items = line.items.map((item) => (
-    item instanceof Tag && item.isSectionStart() ? item.setAttribute('label', repeatLabel(item.label, count)) : item
-  ));
-
-  return lines;
+    return clone;
+  });
 }
 
 /**
@@ -84,15 +62,15 @@ class MappedParagraphs {
     const leading = this.placed.has(section) ? [] : this.attachmentsFor(section);
     this.placed.add(section);
 
-    return [...leading, ...this.sectionParagraphs(section, run.length)];
+    return [...leading, ...this.sectionParagraphs(run)];
   }
 
-  private sectionParagraphs(section: SongSection, count: number): Paragraph[] {
-    const condensed = count > 1 && this.presentation === 'condensed' ? withRepeatLabel(section, count) : null;
+  private sectionParagraphs(run: SongMapOccurrence[]): Paragraph[] {
+    const { section } = run[0];
 
-    if (condensed) return this.paragraphsOf(condensed);
+    if (isCondensed(run, this.presentation)) return this.paragraphsOf(withRepeatLabel(section, run.length));
 
-    return Array.from({ length: count }, () => this.paragraphsOf(section.lines)).flat();
+    return run.flatMap(() => this.paragraphsOf(section.lines));
   }
 
   private attachmentsFor(section: SongSection): Paragraph[] {
