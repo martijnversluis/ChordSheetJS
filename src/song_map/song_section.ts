@@ -43,6 +43,11 @@ class SongSection {
     this.lines = lines;
   }
 
+  /** Whether the section is delimited by section directives, which can carry a repeat label */
+  get hasDelimiter(): boolean {
+    return this.lines.some((line) => line.isSectionStart());
+  }
+
   /** The label to display, falling back to the section type and ordinal */
   get displayLabel(): string {
     if (this.label) return this.label;

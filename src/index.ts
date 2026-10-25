@@ -95,6 +95,7 @@ export { default as SongMap } from './song_map/song_map';
 export { default as SongMapGenerator } from './song_map/song_map_generator';
 export type { default as SongMapDiagnostic, SongMapDiagnosticType } from './song_map/song_map_diagnostic';
 export type { default as SongMapOccurrence, SongMapOccurrenceOrigin } from './song_map/song_map_occurrence';
+export type { default as SongMapViewEntry, SongMapViewOptions } from './song_map/song_map_view';
 export type { default as SongSection } from './song_map/song_section';
 export { default as Tag } from './chord_sheet/tag';
 export { default as Ternary } from './chord_sheet/chord_pro/ternary';

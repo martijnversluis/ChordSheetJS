@@ -1,6 +1,9 @@
 import Paragraph from '../chord_sheet/paragraph';
 import Song from '../chord_sheet/song';
 import SongMapDiagnostic from '../song_map/song_map_diagnostic';
+import SongMapViewEntry from '../song_map/song_map_view';
+import SongSection from '../song_map/song_section';
+import excludedSections from '../song_map/excluded_sections';
 import omittedOccurrences from '../song_map/omitted_occurrences';
 
 import { BaseFormatterConfiguration } from './configuration/base_configuration';
@@ -20,6 +23,15 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    * @member {SongMapDiagnostic[]}
    */
   diagnostics: SongMapDiagnostic[] = [];
+
+  /**
+   * The song map of the latest {@link format} call as it was rendered, empty when the song was rendered in
+   * source order. Use it to present a song map next to the chart: the entries follow the order and the
+   * repeat presentation of the render, and an entry whose content the configuration excludes is marked
+   * `omitted`. See {@link SongMap.view}.
+   * @member {SongMapViewEntry[]}
+   */
+  songMapEntries: SongMapViewEntry[] = [];
 
   /**
    * Instantiate
@@ -79,8 +91,8 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
   }
 
   /**
-   * Returns the paragraphs to render and collects the diagnostics of the render. For a formatter that renders
-   * paragraphs it selected itself, use {@link collectMapDiagnostics}.
+   * Returns the paragraphs to render and collects the song map of the render. For a formatter that renders
+   * paragraphs it selected itself, use {@link collectSongMap}.
    * @param song the song that is being rendered
    * @param sourceParagraphs returns the paragraphs for source order rendering, see
    * {@link Song.bodyParagraphsFor}
@@ -88,24 +100,32 @@ class Formatter<T extends BaseFormatterConfiguration = BaseFormatterConfiguratio
    */
   protected renderableParagraphs(song: Song, sourceParagraphs?: () => Paragraph[]): Paragraph[] {
     const paragraphs = song.bodyParagraphsFor(this.configuration, sourceParagraphs);
-    this.diagnostics = this.mapDiagnostics(song, () => omittedOccurrences(song, this.configuration));
+    this.applySongMap(song, () => excludedSections(song, this.configuration));
 
     return song.filterParagraphs(paragraphs, this.configuration);
   }
 
   /**
-   * Collects the diagnostics of the render for a formatter that does not filter paragraphs by selector, so
+   * Collects the song map of the render for a formatter that does not filter paragraphs by selector, so
    * occurrences that formatter configuration excludes are not reported.
    * @param song the song that is being rendered
    */
-  protected collectMapDiagnostics(song: Song): void {
-    this.diagnostics = this.mapDiagnostics(song, () => []);
+  protected collectSongMap(song: Song): void {
+    this.applySongMap(song, () => []);
   }
 
-  private mapDiagnostics(song: Song, omissions: () => SongMapDiagnostic[]): SongMapDiagnostic[] {
-    if (this.configuration.renderOrder !== 'mapped') return [];
+  private applySongMap(song: Song, excluded: () => SongSection[]): void {
+    if (this.configuration.renderOrder !== 'mapped') {
+      this.diagnostics = [];
+      this.songMapEntries = [];
+      return;
+    }
 
-    return [...song.songMap.diagnostics, ...omissions()];
+    const omittedSections = excluded();
+    const { repeatPresentation } = this.configuration;
+
+    this.diagnostics = [...song.songMap.diagnostics, ...omittedOccurrences(song.songMap, omittedSections)];
+    this.songMapEntries = song.songMap.view({ repeatPresentation, omittedSections });
   }
 
   protected prepareSong(song: Song): Song {
