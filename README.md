@@ -398,6 +398,28 @@ The entries carry everything an accessible presentation needs: a name per occurr
 count in text rather than in a visual marker, and a reading order that matches the rendered chart. Use `entry.type`
 for a type colour only in addition to the label, never as the only way to tell sections apart.
 
+### Song map compatibility
+
+Song map rendering is opt-in. Without `renderOrder: 'mapped'` every formatter renders the chart exactly as it did
+before: the song map is not generated, `formatter.diagnostics` and `formatter.songMapEntries` stay empty, and output
+is unchanged. Generating a song map never changes the song.
+
+The charts in `test/fixtures` are covered as compatibility fixtures: real-world ChordPro, chords over words and
+Ultimate Guitar charts, including a chart that uses `{comment}` headers instead of section directives and a chart
+that writes out its chorus three times. For those charts mapped order renders the same content as source order.
+`TextFormatter` and `ChordsOverWordsFormatter` output is identical, `HtmlDivFormatter` and `HtmlTableFormatter`
+output is identical apart from the empty paragraph elements that source order emits and mapped order leaves out, and
+`PdfFormatter` renders the same text in the same order, shifted up where source order spends vertical space on an
+empty paragraph.
+
+Mapped order does differ from source order where the song map says it should:
+
+- A `{chorus}` recall and a recognized repeat instruction become occurrences, so their content is written out in
+  full. In source order a recall renders nothing unless `expandChorusDirective` is set.
+- A section that the song map does not mention is not rendered, and reports a diagnostic.
+- Content that is not part of a section travels along with the next section that the map performs, keeping the
+  paragraph it shares in the source chart.
+
 ### Serialize/deserialize
 
 Chord sheets (`Song`s) can be serialized to plain JavaScript objects, which can be converted to JSON, XML etc by

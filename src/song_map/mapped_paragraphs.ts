@@ -57,24 +57,27 @@ class MappedParagraphs {
     return [...paragraphs, ...this.paragraphsOf(this.unattached)];
   }
 
+  /**
+   * The paragraphs of one run of occurrences. The content that travels along with the section joins the lines
+   * of its first performance, so content that the chart does not separate by a blank line keeps sharing its
+   * paragraph, just like in source order.
+   */
   private paragraphsForRun(run: SongMapOccurrence[]): Paragraph[] {
     const { section } = run[0];
-    const leading = this.placed.has(section) ? [] : this.attachmentsFor(section);
+    const leading = this.placed.has(section) ? [] : this.attachments.get(section) ?? [];
     this.placed.add(section);
 
-    return [...leading, ...this.sectionParagraphs(run)];
+    return this.performances(run)
+      .flatMap((lines, index) => this.paragraphsOf(index === 0 ? [...leading, ...lines] : lines));
   }
 
-  private sectionParagraphs(run: SongMapOccurrence[]): Paragraph[] {
+  /** The lines of every performance of a run, one entry per rendered section */
+  private performances(run: SongMapOccurrence[]): Line[][] {
     const { section } = run[0];
 
-    if (isCondensed(run, this.presentation)) return this.paragraphsOf(withRepeatLabel(section, run.length));
+    if (isCondensed(run, this.presentation)) return [withRepeatLabel(section, run.length)];
 
-    return run.flatMap(() => this.paragraphsOf(section.lines));
-  }
-
-  private attachmentsFor(section: SongSection): Paragraph[] {
-    return this.paragraphsOf(this.attachments.get(section) ?? []);
+    return run.map(() => section.lines);
   }
 
   /** Builds the paragraphs for a set of lines the same way the source order pipeline does */
@@ -115,7 +118,7 @@ class MappedParagraphs {
     const sections = new Map<Line, SongSection>();
 
     this.songMap.sections.forEach((section) => {
-      section.lines.forEach((line) => sections.set(line, section));
+      section.sourceBlocks.forEach((lines) => lines.forEach((line) => sections.set(line, section)));
     });
 
     return sections;
