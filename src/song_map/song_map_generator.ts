@@ -141,7 +141,10 @@ class SongMapGenerator {
       entry.section.type === type && entry.normalizedLabel === normalizedLabel && entry.fingerprint === fingerprint
     ));
 
-    if (identical) return identical.section;
+    if (identical) {
+      identical.section.addSourceBlock(block.lines);
+      return identical.section;
+    }
 
     this.reportLabelConflict(block);
     return this.createSection(block);

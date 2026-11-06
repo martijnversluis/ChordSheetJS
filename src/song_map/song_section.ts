@@ -38,6 +38,12 @@ class SongSection {
   /** The source lines that make up the section, including its section delimiters */
   lines: Line[];
 
+  /**
+   * Every block of source lines that the section was read from, the first of which is {@link lines}. A chart
+   * that writes out a repeated section has one block per written performance.
+   */
+  sourceBlocks: Line[][];
+
   constructor({
     type, label, ordinal, token, lines,
   }: SongSectionProperties) {
@@ -46,6 +52,12 @@ class SongSection {
     this.ordinal = ordinal;
     this.token = token;
     this.lines = lines;
+    this.sourceBlocks = [lines];
+  }
+
+  /** Records another block of source lines that this section was read from */
+  addSourceBlock(lines: Line[]): void {
+    this.sourceBlocks.push(lines);
   }
 
   /** Whether the section is delimited by section directives, which can carry a repeat label */
