@@ -319,12 +319,13 @@ class ChordDiagram {
   }
 
   renderStringMarkers(renderer: Renderer) {
-    const { fretCount, markers } = this.chordDiagramDefinition;
+    const { fretCount, markers, stringCount } = this.chordDiagramDefinition;
     const fretSpacing = (this.config.neckHeight - this.nutThicknessCorrection) / fretCount;
+    const stringSpacing = this.config.neckWidth / (stringCount - 1);
 
     markers.forEach(({ string, fret }: StringMarker) => {
       renderer.circle({
-        x: this.neckX + ((string - 1) * (this.config.neckWidth / 5)),
+        x: this.neckX + ((string - 1) * stringSpacing),
         y: this.neckY + this.nutThicknessCorrection +
            (fret * fretSpacing) - (fretSpacing / 2) + this.config.fingerIndicatorOffset,
         size: this.config.fingerIndicatorSize,
