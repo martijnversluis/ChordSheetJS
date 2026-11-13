@@ -117,6 +117,24 @@ describe('Song', () => {
       expect(song.mappedBodyParagraphs[1].lines[0].items[0]).toHaveProperty('value', 'Softly');
     });
 
+    it('renders a section that the chart writes out twice once per occurrence', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      expect(song.songMap.toString()).toEqual('C1 V1 C1');
+      expect(labels(song)).toEqual(['Chorus', 'Verse 1', 'Chorus']);
+    });
+
     it('keeps a trailing comment at the end', () => {
       const song = parse(heredoc`
         {start_of_verse: Verse 1}
