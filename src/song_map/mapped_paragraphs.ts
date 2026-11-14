@@ -66,29 +66,32 @@ class MappedParagraphs {
   /**
    * The paragraphs of one run of occurrences. The content that travels along with a performance joins its
    * lines, so content that the chart does not separate by a blank line keeps sharing its paragraph, just like
-   * in source order.
+   * in source order. A condensed run renders one section, which carries the content of every performance it
+   * combines.
    */
   private paragraphsForRun(run: SongMapOccurrence[]): Paragraph[] {
     const { section } = run[0];
     const performed = this.rendered.get(section) ?? 0;
     this.rendered.set(section, performed + run.length);
 
-    return this.performances(run)
-      .flatMap((lines, index) => this.paragraphsOf([...this.attachmentFor(section, performed + index), ...lines]));
+    if (isCondensed(run, this.presentation)) {
+      return this.paragraphsOf([
+        ...this.attachmentsFor(section, performed, run.length),
+        ...withRepeatLabel(section, run.length),
+      ]);
+    }
+
+    return run.flatMap((_occurrence, index) => this.paragraphsOf([
+      ...this.attachmentsFor(section, performed + index, 1),
+      ...section.lines,
+    ]));
   }
 
-  /** The content that travels along with a performance of a section, by its position in the performance order */
-  private attachmentFor(section: SongSection, performance: number): Line[] {
-    return this.attachments.get(section)?.[performance] ?? [];
-  }
+  /** The content that travels along with `count` performances of a section, from `from` in performance order */
+  private attachmentsFor(section: SongSection, from: number, count: number): Line[] {
+    const performances = this.attachments.get(section) ?? [];
 
-  /** The lines of every performance of a run, one entry per rendered section */
-  private performances(run: SongMapOccurrence[]): Line[][] {
-    const { section } = run[0];
-
-    if (isCondensed(run, this.presentation)) return [withRepeatLabel(section, run.length)];
-
-    return run.map(() => section.lines);
+    return Array.from({ length: count }, (_value, offset) => performances[from + offset] ?? []).flat();
   }
 
   /** Builds the paragraphs for a set of lines the same way the source order pipeline does */

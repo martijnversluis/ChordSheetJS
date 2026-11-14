@@ -187,6 +187,29 @@ describe('Song', () => {
         Chorus line`);
     });
 
+    it('keeps the forwarded content of every performance that condensing combines', () => {
+      const song = parse(heredoc`
+        {comment: Softly}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {comment: Softer}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      const formatter = new TextFormatter({ renderOrder: 'mapped', repeatPresentation: 'condensed' });
+
+      expect(formatter.format(song)).toEqual(heredoc`
+        Softly
+
+        Softer
+        Chorus (2x)
+        C
+        Chorus line`);
+    });
+
     it('keeps a trailing comment at the end', () => {
       const song = parse(heredoc`
         {start_of_verse: Verse 1}
