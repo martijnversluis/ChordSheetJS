@@ -309,8 +309,8 @@ new TextFormatter({ renderOrder: 'mapped' }).format(song);
 
 Because every occurrence is rendered, `{chorus}` recalls and repeat instructions are written out in full, which makes
 `expandChorusDirective` redundant in this mode. Content that is not part of a section, such as a comment between two
-sections, travels along with the next section that the map performs, and is rendered last when the map performs no
-section after it. A section that the song map does not mention, for example because a flow directive leaves it out or
+sections, travels along with the performance of the section block it precedes, and is rendered last when the map
+performs no section after it. A section that the song map does not mention, for example because a flow directive leaves it out or
 refers to it with an unresolvable reference, is not rendered.
 
 The active song map and the paragraphs it describes are also available directly:
@@ -417,8 +417,8 @@ Mapped order does differ from source order where the song map says it should:
 - A `{chorus}` recall and a recognized repeat instruction become occurrences, so their content is written out in
   full. In source order a recall renders nothing unless `expandChorusDirective` is set.
 - A section that the song map does not mention is not rendered, and reports a diagnostic.
-- Content that is not part of a section travels along with the next section that the map performs, keeping the
-  paragraph it shares in the source chart.
+- Content that is not part of a section travels along with the performance of the section block it precedes, keeping
+  the paragraph it shares in the source chart.
 
 ### Serialize/deserialize
 
