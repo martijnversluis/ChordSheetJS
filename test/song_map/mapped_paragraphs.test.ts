@@ -210,6 +210,34 @@ describe('Song', () => {
         Chorus line`);
     });
 
+    it('keeps the forwarded content of a block that the map performs no more', () => {
+      const song = parse(heredoc`
+        {flow: V1 C1}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {comment: Softer}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(song)).toEqual(heredoc`
+        Verse 1
+        G
+        Verse one
+
+        Softer
+        Chorus
+        C
+        Chorus line`);
+    });
+
     it('keeps a trailing comment at the end', () => {
       const song = parse(heredoc`
         {start_of_verse: Verse 1}

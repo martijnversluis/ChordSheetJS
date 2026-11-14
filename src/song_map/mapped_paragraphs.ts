@@ -47,6 +47,8 @@ class MappedParagraphs {
 
   private rendered = new Map<SongSection, number>();
 
+  private performances = new Map<SongSection, number>();
+
   private unattached: Line[] = [];
 
   constructor(song: Song, songMap: SongMap, presentation: RepeatPresentation) {
@@ -56,6 +58,7 @@ class MappedParagraphs {
   }
 
   build(): Paragraph[] {
+    this.countPerformances();
     this.collectUnmappedLines();
 
     const paragraphs = occurrenceRuns(this.songMap.occurrences).flatMap((run) => this.paragraphsForRun(run));
@@ -87,11 +90,22 @@ class MappedParagraphs {
     ]));
   }
 
-  /** The content that travels along with `count` performances of a section, from `from` in performance order */
+  /**
+   * The content that travels along with `count` performances of a section, from `from` in performance order.
+   * The last performance also carries the content of the blocks that the map performs no more, so a chart
+   * that writes out a section more often than the map performs it does not lose content.
+   */
   private attachmentsFor(section: SongSection, from: number, count: number): Line[] {
-    const performances = this.attachments.get(section) ?? [];
+    const blocks = this.attachments.get(section) ?? [];
+    const isLast = from + count >= (this.performances.get(section) ?? 0);
 
-    return Array.from({ length: count }, (_value, offset) => performances[from + offset] ?? []).flat();
+    return (isLast ? blocks.slice(from) : blocks.slice(from, from + count)).flat();
+  }
+
+  private countPerformances(): void {
+    this.songMap.occurrences.forEach(({ section }) => {
+      this.performances.set(section, (this.performances.get(section) ?? 0) + 1);
+    });
   }
 
   /** Builds the paragraphs for a set of lines the same way the source order pipeline does */
