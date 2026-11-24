@@ -7,6 +7,11 @@ function linesOf(chordpro: string): Line[] {
   return new ChordProParser().parse(chordpro).lines;
 }
 
+/** The last line of a chart, so the metadata that sets up its context stays out of the fingerprint */
+function chordLineOf(chordpro: string): Line[] {
+  return linesOf(chordpro).slice(-1);
+}
+
 describe('sectionFingerprint', () => {
   it('ignores the section delimiters', () => {
     const verse = linesOf(heredoc`
@@ -54,6 +59,27 @@ describe('sectionFingerprint', () => {
     const single = linesOf('[C]Chorus here');
 
     expect(sectionFingerprint(spaced)).not.toEqual(sectionFingerprint(single));
+  });
+
+  it('does not normalize chords', () => {
+    const long = linesOf('[Cmaj7]Hello');
+    const short = linesOf('[CM7]Hello');
+
+    expect(sectionFingerprint(long)).not.toEqual(sectionFingerprint(short));
+  });
+
+  it('does not apply the chord style of the song', () => {
+    const inC = chordLineOf(heredoc`
+      {key: C}
+      {chord_style: numeral}
+      [C]Hello`);
+
+    const inG = chordLineOf(heredoc`
+      {key: G}
+      {chord_style: numeral}
+      [G]Hello`);
+
+    expect(sectionFingerprint(inC)).not.toEqual(sectionFingerprint(inG));
   });
 
   it('does not evaluate metadata expressions', () => {

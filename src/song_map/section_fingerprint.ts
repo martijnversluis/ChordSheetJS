@@ -2,22 +2,24 @@ import ChordSheetSerializer from '../chord_sheet_serializer';
 import Line from '../chord_sheet/line';
 import Tag from '../chord_sheet/tag';
 
-import { SerializedComponent } from '../serialized_types';
+import { SerializedChordLyricsPair, SerializedComponent } from '../serialized_types';
 
 const EMPTY_LINE = '[]';
+
+function isChordLyricsPair(item: SerializedComponent): item is SerializedChordLyricsPair {
+  return typeof item !== 'string' && item.type === 'chordLyricsPair';
+}
 
 /** The text of a serialized item, or `null` for an item that holds no text */
 function textOf(item: SerializedComponent): string | null {
   if (typeof item === 'string') return item;
 
-  const { lyrics } = item as { lyrics?: string | null };
-
-  return typeof lyrics === 'string' ? lyrics : null;
+  return isChordLyricsPair(item) ? item.lyrics : null;
 }
 
 /** The serialized item with its text replaced */
 function withText(item: SerializedComponent, text: string): SerializedComponent {
-  return typeof item === 'string' ? text : { ...item, lyrics: text } as SerializedComponent;
+  return isChordLyricsPair(item) ? { ...item, lyrics: text } : text;
 }
 
 /** Drops the whitespace at the start and the end of a line, which does not make a section a different one */
@@ -37,10 +39,9 @@ function trimEdges(items: SerializedComponent[]): SerializedComponent[] {
 /** An item that holds nothing: rendering the line would not show it either */
 function isBlank(item: SerializedComponent): boolean {
   if (typeof item === 'string') return item.length === 0;
+  if (!isChordLyricsPair(item)) return false;
 
-  const { chords, annotation } = item as { chords?: string | null, annotation?: string | null };
-
-  return textOf(item) === '' && !chords && !annotation;
+  return !item.chords && !item.lyrics && !item.annotation;
 }
 
 /** The serialized items of one line, without the section delimiters that wrap the block */
