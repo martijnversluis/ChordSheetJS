@@ -1,4 +1,3 @@
-import ChordProFormatter from '../formatter/chord_pro_formatter';
 import Line from '../chord_sheet/line';
 import Paragraph from '../chord_sheet/paragraph';
 import RepeatInstruction from './repeat_instruction';
@@ -10,6 +9,7 @@ import SongMapDiagnostic from './song_map_diagnostic';
 import SongMapOccurrence from './song_map_occurrence';
 import SongSection from './song_section';
 import Tag from '../chord_sheet/tag';
+import sectionFingerprint from './section_fingerprint';
 
 import { SectionSplitEntry } from './section_splitter';
 import { SongMapDiagnosticProperties } from './song_map_diagnostic';
@@ -18,7 +18,7 @@ import { CHORUS, NONE } from '../constants';
 
 interface SectionEntry {
   section: SongSection;
-  fingerprint: string;
+  fingerprint: string | null;
   normalizedLabel: string;
 }
 
@@ -26,7 +26,7 @@ interface SectionBlock {
   type: string;
   label: string | null;
   lines: Line[];
-  fingerprint: string;
+  fingerprint: string | null;
   normalizedLabel: string;
 }
 
@@ -52,8 +52,6 @@ class SongMapGenerator {
   private diagnostics: SongMapDiagnostic[] = [];
 
   private tokenizer = new SectionTokenizer();
-
-  private formatter = new ChordProFormatter();
 
   private lastSections: Record<string, SongSection> = {};
 
@@ -98,7 +96,7 @@ class SongMapGenerator {
       type: lines[0].type,
       label,
       lines,
-      fingerprint: this.fingerprint(lines),
+      fingerprint: sectionFingerprint(lines),
       normalizedLabel: normalizeLabel(RepeatInstruction.strip(label ?? '')),
     };
   }
@@ -135,19 +133,28 @@ class SongMapGenerator {
   }
 
   private resolveSection(block: SectionBlock): SongSection {
-    const { type, normalizedLabel, fingerprint } = block;
-
-    const identical = this.entries.find((entry) => (
-      entry.section.type === type && entry.normalizedLabel === normalizedLabel && entry.fingerprint === fingerprint
-    ));
+    const identical = this.identicalSection(block);
 
     if (identical) {
-      identical.section.addSourceBlock(block.lines);
-      return identical.section;
+      identical.addSourceBlock(block.lines);
+      return identical;
     }
 
     this.reportLabelConflict(block);
     return this.createSection(block);
+  }
+
+  /** The section that holds exactly the same content, if any. A block without a fingerprint matches none. */
+  private identicalSection({ type, normalizedLabel, fingerprint }: SectionBlock): SongSection | null {
+    if (fingerprint === null) return null;
+
+    const entry = this.entries.find((candidate) => (
+      candidate.section.type === type &&
+      candidate.normalizedLabel === normalizedLabel &&
+      candidate.fingerprint === fingerprint
+    ));
+
+    return entry?.section ?? null;
   }
 
   private createSection({
@@ -173,21 +180,6 @@ class SongMapGenerator {
     const { label } = paragraph;
 
     return label && label.length > 0 ? label : null;
-  }
-
-  private fingerprint(lines: Line[]): string {
-    return lines
-      .map((line) => this.fingerprintLine(line))
-      .filter((contents) => contents.length > 0)
-      .join('\n');
-  }
-
-  private fingerprintLine(line: Line): string {
-    return line.items
-      .filter((item) => !(item instanceof Tag && item.isSectionDelimiter()))
-      .map((item) => this.formatter.formatItem(item, this.song.metadata, line, this.song))
-      .join('')
-      .trim();
   }
 
   private addRecall(line: Line): void {
