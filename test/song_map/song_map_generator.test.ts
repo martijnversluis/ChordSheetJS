@@ -96,6 +96,25 @@ describe('SongMapGenerator', () => {
       expect(songMap.diagnostics).toEqual([]);
     });
 
+    it('keeps blocks that hold unserializable content apart', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus
+        {end_of_chorus}`);
+
+      song.lines.forEach((line) => {
+        if (line.items.length > 0) line.addItem({ unknown: true } as never);
+      });
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 C2');
+    });
+
     it('does not merge equally labelled sections with different content', () => {
       const song = parse(heredoc`
         {start_of_chorus: Chorus}
