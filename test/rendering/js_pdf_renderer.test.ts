@@ -1,6 +1,7 @@
 import ChordDefinition from '../../src/chord_definition/chord_definition';
 import JsPdfRenderer from '../../src/rendering/pdf/js_pdf_renderer';
 import LayoutSectionRenderer from '../../src/rendering/shared/layout_section_renderer';
+import PdfChordDiagramRenderer from '../../src/rendering/pdf/pdf_chord_diagram_renderer';
 import Song from '../../src/chord_sheet/song';
 import StubbedPdfDoc from '../util/stubbed_pdf_doc';
 
@@ -479,6 +480,26 @@ describe('JsPdfRenderer', () => {
       expect(renderedChordNames).toContain('C');
       expect(renderedChordNames).toContain('G');
       expect(renderedChordNames).not.toContain('Am');
+    });
+
+    it('renders diagrams for instruments with fewer than 6 strings', () => {
+      const { renderer, doc } = createRenderer();
+      const ukuleleF = ChordDefinition.parse('F base-fret 1 frets 2 0 1 0');
+
+      const spy = jest.spyOn(PdfChordDiagramRenderer.prototype as any, 'getChordDefinitions')
+        .mockReturnValue([ukuleleF]);
+
+      (renderer as any).renderChordDiagrams();
+      spy.mockRestore();
+
+      const items = getStubDoc(doc).renderedItems as any[];
+      const stringXs = items
+        .filter((item) => item.type === 'line' && item.x1 === item.x2 && item.y1 !== item.y2)
+        .map((item) => item.x1);
+      const markers = items.filter((item) => item.type === 'circle' && item.style === 'F');
+
+      expect(stringXs).toHaveLength(4);
+      expect(markers.map((marker) => marker.x)).toEqual([stringXs[0], stringXs[2]]);
     });
   });
 
