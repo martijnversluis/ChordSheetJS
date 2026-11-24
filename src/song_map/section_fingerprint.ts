@@ -2,15 +2,54 @@ import ChordSheetSerializer from '../chord_sheet_serializer';
 import Line from '../chord_sheet/line';
 import Tag from '../chord_sheet/tag';
 
+import { SerializedComponent } from '../serialized_types';
+
 const EMPTY_LINE = '[]';
+
+/** The text of a serialized item, or `null` for an item that holds no text */
+function textOf(item: SerializedComponent): string | null {
+  if (typeof item === 'string') return item;
+
+  const { lyrics } = item as { lyrics?: string | null };
+
+  return typeof lyrics === 'string' ? lyrics : null;
+}
+
+/** The serialized item with its text replaced */
+function withText(item: SerializedComponent, text: string): SerializedComponent {
+  return typeof item === 'string' ? text : { ...item, lyrics: text } as SerializedComponent;
+}
+
+/** Drops the whitespace at the start and the end of a line, which does not make a section a different one */
+function trimEdges(items: SerializedComponent[]): SerializedComponent[] {
+  return items.map((item, index) => {
+    const text = textOf(item);
+
+    if (text === null) return item;
+
+    let trimmed = index === 0 ? text.trimStart() : text;
+    if (index === items.length - 1) trimmed = trimmed.trimEnd();
+
+    return trimmed === text ? item : withText(item, trimmed);
+  });
+}
+
+/** An item that holds nothing: rendering the line would not show it either */
+function isBlank(item: SerializedComponent): boolean {
+  if (typeof item === 'string') return item.length === 0;
+
+  const { chords, annotation } = item as { chords?: string | null, annotation?: string | null };
+
+  return textOf(item) === '' && !chords && !annotation;
+}
 
 /** The serialized items of one line, without the section delimiters that wrap the block */
 function fingerprintLine(line: Line, serializer: ChordSheetSerializer): string {
-  return JSON.stringify(
-    line.items
-      .filter((item) => !(item instanceof Tag && item.isSectionDelimiter()))
-      .map((item) => serializer.serializeItem(item)),
-  );
+  const items = line.items
+    .filter((item) => !(item instanceof Tag && item.isSectionDelimiter()))
+    .map((item) => serializer.serializeItem(item));
+
+  return JSON.stringify(trimEdges(items).filter((item) => !isBlank(item)));
 }
 
 /**

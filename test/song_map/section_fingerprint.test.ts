@@ -42,11 +42,18 @@ describe('sectionFingerprint', () => {
     expect(sectionFingerprint(spaced)).toEqual(sectionFingerprint(packed));
   });
 
-  it('distinguishes blocks that differ in whitespace only', () => {
-    const padded = linesOf('[C]Chorus ');
+  it('ignores whitespace at the start and the end of a line', () => {
+    const padded = linesOf(' [C]Chorus ');
     const trimmed = linesOf('[C]Chorus');
 
-    expect(sectionFingerprint(padded)).not.toEqual(sectionFingerprint(trimmed));
+    expect(sectionFingerprint(padded)).toEqual(sectionFingerprint(trimmed));
+  });
+
+  it('keeps whitespace within a line significant', () => {
+    const spaced = linesOf('[C]Chorus  here');
+    const single = linesOf('[C]Chorus here');
+
+    expect(sectionFingerprint(spaced)).not.toEqual(sectionFingerprint(single));
   });
 
   it('does not evaluate metadata expressions', () => {

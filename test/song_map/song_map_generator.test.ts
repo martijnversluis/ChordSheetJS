@@ -96,6 +96,23 @@ describe('SongMapGenerator', () => {
       expect(songMap.diagnostics).toEqual([]);
     });
 
+    it('reuses a section for a block that only differs in trailing whitespace', () => {
+      const song = parse([
+        '{start_of_chorus: Chorus}',
+        '[C]Chorus ',
+        '{end_of_chorus}',
+        '',
+        '{start_of_chorus: Chorus}',
+        '[C]Chorus',
+        '{end_of_chorus}',
+      ].join('\n'));
+
+      const songMap = SongMapGenerator.generate(song);
+
+      expect(songMap.toString()).toEqual('C1 C1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
     it('keeps blocks that hold unserializable content apart', () => {
       const song = parse(heredoc`
         {start_of_chorus: Chorus}
