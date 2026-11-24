@@ -22,6 +22,12 @@ function withRepeatLabel(section: SongSection, count: number): Line[] {
   });
 }
 
+/** One block of source lines that a section was read from, by its position in the chart */
+interface SourceBlock {
+  section: SongSection;
+  index: number;
+}
+
 /**
  * Builds the paragraphs that a song map describes: one paragraph per occurrence, in performance order.
  * Content that is not part of a section travels along with the next section that the map performs.
@@ -37,9 +43,11 @@ class MappedParagraphs {
 
   private presentation: RepeatPresentation;
 
-  private attachments = new Map<SongSection, Line[]>();
+  private attachments = new Map<SongSection, Line[][]>();
 
-  private placed = new Set<SongSection>();
+  private rendered = new Map<SongSection, number>();
+
+  private performances = new Map<SongSection, number>();
 
   private unattached: Line[] = [];
 
@@ -50,6 +58,7 @@ class MappedParagraphs {
   }
 
   build(): Paragraph[] {
+    this.countPerformances();
     this.collectUnmappedLines();
 
     const paragraphs = occurrenceRuns(this.songMap.occurrences).flatMap((run) => this.paragraphsForRun(run));
@@ -58,26 +67,45 @@ class MappedParagraphs {
   }
 
   /**
-   * The paragraphs of one run of occurrences. The content that travels along with the section joins the lines
-   * of its first performance, so content that the chart does not separate by a blank line keeps sharing its
-   * paragraph, just like in source order.
+   * The paragraphs of one run of occurrences. The content that travels along with a performance joins its
+   * lines, so content that the chart does not separate by a blank line keeps sharing its paragraph, just like
+   * in source order. A condensed run renders one section, which carries the content of every performance it
+   * combines.
    */
   private paragraphsForRun(run: SongMapOccurrence[]): Paragraph[] {
     const { section } = run[0];
-    const leading = this.placed.has(section) ? [] : this.attachments.get(section) ?? [];
-    this.placed.add(section);
+    const performed = this.rendered.get(section) ?? 0;
+    this.rendered.set(section, performed + run.length);
 
-    return this.performances(run)
-      .flatMap((lines, index) => this.paragraphsOf(index === 0 ? [...leading, ...lines] : lines));
+    if (isCondensed(run, this.presentation)) {
+      return this.paragraphsOf([
+        ...this.attachmentsFor(section, performed, run.length),
+        ...withRepeatLabel(section, run.length),
+      ]);
+    }
+
+    return run.flatMap((_occurrence, index) => this.paragraphsOf([
+      ...this.attachmentsFor(section, performed + index, 1),
+      ...section.lines,
+    ]));
   }
 
-  /** The lines of every performance of a run, one entry per rendered section */
-  private performances(run: SongMapOccurrence[]): Line[][] {
-    const { section } = run[0];
+  /**
+   * The content that travels along with `count` performances of a section, from `from` in performance order.
+   * The last performance also carries the content of the blocks that the map performs no more, so a chart
+   * that writes out a section more often than the map performs it does not lose content.
+   */
+  private attachmentsFor(section: SongSection, from: number, count: number): Line[] {
+    const blocks = this.attachments.get(section) ?? [];
+    const isLast = from + count >= (this.performances.get(section) ?? 0);
 
-    if (isCondensed(run, this.presentation)) return [withRepeatLabel(section, run.length)];
+    return (isLast ? blocks.slice(from) : blocks.slice(from, from + count)).flat();
+  }
 
-    return run.map(() => section.lines);
+  private countPerformances(): void {
+    this.songMap.occurrences.forEach(({ section }) => {
+      this.performances.set(section, (this.performances.get(section) ?? 0) + 1);
+    });
   }
 
   /** Builds the paragraphs for a set of lines the same way the source order pipeline does */
@@ -86,21 +114,22 @@ class MappedParagraphs {
   }
 
   /**
-   * Collects the lines that are not part of a section and attaches them to the next section that the map
-   * performs. Lines that no performed section follows stay unattached and are rendered last.
+   * Collects the lines that are not part of a section and attaches them to the block they precede, so they
+   * travel along with the performance that renders that block. Lines that no performed block follows stay
+   * unattached and are rendered last.
    */
   private collectUnmappedLines(): void {
-    const sections = this.sectionsByLine();
+    const blocks = this.blocksByLine();
     const performed = new Set(this.songMap.occurrences.map((occurrence) => occurrence.section));
     let pending: Line[] = [];
 
     this.song.lines.forEach((line) => {
-      const section = sections.get(line);
+      const block = blocks.get(line);
 
-      if (section && performed.has(section)) {
-        this.attach(section, pending);
+      if (block && performed.has(block.section)) {
+        this.attach(block, pending);
         pending = [];
-      } else if (!section && (line.hasRenderableItems() || line.isEmpty())) {
+      } else if (!block && (line.hasRenderableItems() || line.isEmpty())) {
         pending.push(line);
       }
     });
@@ -108,20 +137,25 @@ class MappedParagraphs {
     this.unattached = pending;
   }
 
-  private attach(section: SongSection, lines: Line[]): void {
+  private attach({ section, index }: SourceBlock, lines: Line[]): void {
     if (lines.length === 0) return;
 
-    this.attachments.set(section, [...(this.attachments.get(section) ?? []), ...lines]);
+    const attachments = this.attachments.get(section) ?? [];
+    attachments[index] = [...(attachments[index] ?? []), ...lines];
+    this.attachments.set(section, attachments);
   }
 
-  private sectionsByLine(): Map<Line, SongSection> {
-    const sections = new Map<Line, SongSection>();
+  /** Maps every source line of a section to the block it belongs to */
+  private blocksByLine(): Map<Line, SourceBlock> {
+    const blocks = new Map<Line, SourceBlock>();
 
     this.songMap.sections.forEach((section) => {
-      section.sourceBlocks.forEach((lines) => lines.forEach((line) => sections.set(line, section)));
+      section.sourceBlocks.forEach((lines, index) => {
+        lines.forEach((line) => blocks.set(line, { section, index }));
+      });
     });
 
-    return sections;
+    return blocks;
   }
 }
 

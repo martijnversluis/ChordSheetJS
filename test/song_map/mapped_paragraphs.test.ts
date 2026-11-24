@@ -1,5 +1,6 @@
 import { ChordProParser } from '../../src';
 import Song from '../../src/chord_sheet/song';
+import TextFormatter from '../../src/formatter/text_formatter';
 import { heredoc } from '../util/utilities';
 
 function parse(chordpro: string): Song {
@@ -133,6 +134,108 @@ describe('Song', () => {
 
       expect(song.songMap.toString()).toEqual('C1 V1 C1');
       expect(labels(song)).toEqual(['Chorus', 'Verse 1', 'Chorus']);
+    });
+
+    it('moves a comment along with the performance whose block it precedes', () => {
+      const song = parse(heredoc`
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {comment: Softer now}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      expect(song.songMap.toString()).toEqual('C1 V1 C1');
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(song)).toEqual(heredoc`
+        Chorus
+        C
+        Chorus line
+
+        Verse 1
+        G
+        Verse one
+
+        Softer now
+        Chorus
+        C
+        Chorus line`);
+    });
+
+    it('does not repeat forwarded content for a performance that the chart does not write out', () => {
+      const song = parse(heredoc`
+        {flow: C1 C1}
+
+        {comment: Softly}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(song)).toEqual(heredoc`
+        Softly
+        Chorus
+        C
+        Chorus line
+
+        Chorus
+        C
+        Chorus line`);
+    });
+
+    it('keeps the forwarded content of every performance that condensing combines', () => {
+      const song = parse(heredoc`
+        {comment: Softly}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {comment: Softer}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      const formatter = new TextFormatter({ renderOrder: 'mapped', repeatPresentation: 'condensed' });
+
+      expect(formatter.format(song)).toEqual(heredoc`
+        Softly
+
+        Softer
+        Chorus (2x)
+        C
+        Chorus line`);
+    });
+
+    it('keeps the forwarded content of a block that the map performs no more', () => {
+      const song = parse(heredoc`
+        {flow: V1 C1}
+
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}
+
+        {start_of_verse: Verse 1}
+        [G]Verse one
+        {end_of_verse}
+
+        {comment: Softer}
+        {start_of_chorus: Chorus}
+        [C]Chorus line
+        {end_of_chorus}`);
+
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(song)).toEqual(heredoc`
+        Verse 1
+        G
+        Verse one
+
+        Softer
+        Chorus
+        C
+        Chorus line`);
     });
 
     it('keeps a trailing comment at the end', () => {
