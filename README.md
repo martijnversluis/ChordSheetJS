@@ -268,9 +268,10 @@ songMap.toString();
 // 'V1 C1 C1 C1'
 ```
 
-Recognized section names are Intro, Verse, Pre-Chorus, Chorus, Bridge, Instrumental, Interlude, Tag, Outro, Ending
-and End. A comment that says anything else, such as `Chorus softly`, a comment in the middle of a paragraph and a
-comment inside a section directive stay ordinary comments.
+Recognized section names are Intro, Verse, Pre-Chorus, Chorus, Bridge, Instrumental, Interlude, Tag, Turn, Turnaround,
+Outro, Ending and End. Turn and Turnaround are sections of type `turn`, with token `TURN1`. A comment that says
+anything else, such as `Chorus softly`, a comment in the middle of a paragraph and a comment inside a section
+directive stay ordinary comments.
 
 Every occurrence refers to one section, so the same section can occur multiple times. Sections are identified by
 section type, label and content: a repeated block with exactly equal content is another occurrence of the same

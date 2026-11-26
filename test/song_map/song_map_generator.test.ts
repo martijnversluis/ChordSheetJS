@@ -567,6 +567,45 @@ describe('SongMapGenerator', () => {
       expect(songMap.sections).toHaveLength(1);
     });
 
+    it('reads a turn as a section of its own type, which a heading without content recalls', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Verse 1}
+        [G]Verse one
+
+        {comment: Turn}
+        [D]Turn
+
+        {comment: Verse 2}
+        [G]Verse two
+
+        {c: Turn}`));
+
+      expect(songMap.toString()).toEqual('V1 TURN1 V2 TURN1');
+      expect(songMap.sections[1].type).toEqual('turn');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('performs a turn as often as the repeat instruction of its heading says', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Turn (2x)}
+        [D]Turn`));
+
+      expect(songMap.toString()).toEqual('TURN1 TURN1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('keeps the tokens of a tag and a turn in one chart apart', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Turn}
+        [D]Turn
+
+        {comment: Tag}
+        [C]Tag`));
+
+      expect(songMap.toString()).toEqual('TURN1 T1');
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
     it('does not read a comment heading in the middle of a paragraph', () => {
       const songMap = SongMapGenerator.generate(parse(heredoc`
         [G]Verse one

@@ -184,6 +184,27 @@ describe('FlowDirective', () => {
     });
   });
 
+  describe('with comment headings', () => {
+    it('resolves and writes back the token of a turn', () => {
+      const song = parse(heredoc`
+        {flow: V1 TURN1 V2}
+
+        {comment: Verse 1}
+        [G]Verse one
+
+        {comment: Turn}
+        [D]Turn
+
+        {comment: Verse 2}
+        [G]Verse two`);
+      const songMap = FlowDirective.parse(song) as SongMap;
+
+      expect(songMap.toString()).toEqual('V1 TURN1 V2');
+      expect(songMap.diagnostics).toEqual([]);
+      expect(FlowDirective.format(songMap)).toEqual('{flow: V1 TURN1 V2}');
+    });
+  });
+
   describe('.format', () => {
     it('renders a song map as a flow directive', () => {
       const songMap = flowMap('C1 V1 C1');

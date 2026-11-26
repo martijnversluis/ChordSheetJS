@@ -15,6 +15,8 @@ const SECTION_TYPES: Record<string, string> = {
   'instrumental': 'instrumental',
   'interlude': 'instrumental',
   'tag': 'tag',
+  'turn': 'turn',
+  'turnaround': 'turn',
   'outro': 'end',
   'ending': 'end',
   'end': 'end',

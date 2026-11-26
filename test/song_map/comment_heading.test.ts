@@ -18,6 +18,10 @@ describe('commentHeading', () => {
     ['{comment: Tag 9 *20a}', 'tag', 'Tag 9'],
     ['{comment: Outro}', 'end', 'Outro'],
     ['{comment: ending}', 'end', 'ending'],
+    ['{comment: Turn}', 'turn', 'Turn'],
+    ['{comment: Turn 2}', 'turn', 'Turn 2'],
+    ['{comment: Turn (2x)}', 'turn', 'Turn'],
+    ['{comment: Turnaround}', 'turn', 'Turnaround'],
   ])('reads %s as a heading', (chordpro, type, name) => {
     expect(headingOf(chordpro)).toEqual({ type, name, label: chordpro.replace(/^\{\w+: (.*)\}$/, '$1') });
   });
@@ -25,6 +29,7 @@ describe('commentHeading', () => {
   it.each([
     ['a comment that is not a section name', '{comment: Capo 2}'],
     ['a section name with more text', '{comment: Chorus softly}'],
+    ['a turn with more text', '{comment: Turn softly}'],
     ['a repeat instruction before the section name', '{comment: 2x Chorus}'],
     ['a comment with a selector', '{comment-guitar: Chorus}'],
     ['a comment that shares its line', '{comment: Chorus}[C]Lyrics'],
