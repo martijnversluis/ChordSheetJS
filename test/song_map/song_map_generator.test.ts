@@ -500,4 +500,93 @@ describe('SongMapGenerator', () => {
       expect(song.lines).toHaveLength(lineCount);
     });
   });
+
+  describe('.generate with comment headings', () => {
+    it('reads a comment heading as the section type and label of the paragraph it starts', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Verse 1}
+        [G]Verse one
+
+        {comment: Pre-Chorus}
+        [D]Pre-chorus
+
+        {comment: Chorus}
+        [C]Chorus`));
+
+      expect(songMap.toString()).toEqual('V1 PC1 C1');
+      expect(songMap.sections.map((section) => [section.type, section.label]))
+        .toEqual([['verse', 'Verse 1'], ['pre-chorus', 'Pre-Chorus'], ['chorus', 'Chorus']]);
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('performs a section as often as the repeat instruction of its heading says', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Bridge (2x) *6-7}
+        [Em]Bridge`));
+
+      expect(songMap.toString()).toEqual('B1 B1');
+      expect(songMap.occurrences.map((occurrence) => occurrence.origin)).toEqual(['source', 'repeat']);
+      expect(songMap.sections[0].label).toEqual('Bridge (2x) *6-7');
+    });
+
+    it('recalls the earlier section that a heading without content below it names', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Chorus *2}
+        [C]Chorus
+
+        {comment: Verse 1}
+        [G]Verse one
+
+        {comment: Chorus (2x)}`));
+
+      expect(songMap.toString()).toEqual('C1 V1 C1 C1');
+      expect(songMap.occurrences.map((occurrence) => occurrence.origin))
+        .toEqual(['source', 'source', 'recall', 'repeat']);
+      expect(songMap.diagnostics).toEqual([]);
+    });
+
+    it('keeps a heading without content below it a comment when no single earlier section matches it', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Chorus}
+
+        {comment: Verse}
+        [G]Verse`));
+
+      expect(songMap.toString()).toEqual('V1');
+    });
+
+    it('reads written-out repeats with an equal heading as one section', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {comment: Chorus}
+        [C]Chorus
+
+        {comment: Chorus (2x)}
+        [C]Chorus`));
+
+      expect(songMap.toString()).toEqual('C1 C1 C1');
+      expect(songMap.sections).toHaveLength(1);
+    });
+
+    it('does not read a comment heading in the middle of a paragraph', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        [G]Verse one
+        {comment: Chorus}
+        [C]Chorus`));
+
+      expect(songMap.toString()).toEqual('S1');
+    });
+
+    it('leaves charts that use section directives unchanged', () => {
+      const songMap = SongMapGenerator.generate(parse(heredoc`
+        {start_of_verse: Verse 1}
+        {comment: Chorus}
+        [G]Verse one
+        {end_of_verse}
+
+        {comment: Capo 2}
+        [C]Untyped paragraph`));
+
+      expect(songMap.toString()).toEqual('V1 S1');
+    });
+  });
 });

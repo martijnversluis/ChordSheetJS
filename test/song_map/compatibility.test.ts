@@ -35,13 +35,18 @@ function withoutEmptyParagraphs(html: string): string {
   return html.replace(/<div class="paragraph"><\/div>/g, '');
 }
 
-const songs: [string, Song][] = [
+const commentHeadedSongs: [string, Song][] = [
   ['a ChordPro chart with comment headers', new ChordProParser().parse(read('kingdom_chordpro.txt'))],
   ['a chords over words chart', new ChordsOverWordsParser().parse(read('kingdom_chords_over_words.txt'))],
+];
+
+const sectionedSongs: [string, Song][] = [
   ['a chart with a written out repeat', new UltimateGuitarParser().parse(read('ultimate_guitar_chordsheet.txt'))],
   ['a chart with every section type', new ChordProParser().parse(chordProSheetSymbol)],
   ['the example song', exampleSongSymbol],
 ];
+
+const songs: [string, Song][] = [...commentHeadedSongs, ...sectionedSongs];
 
 const textFormatters: [string, DisplayFormatter][] = [
   ['TextFormatter', TextFormatter],
@@ -64,7 +69,25 @@ describe('song map compatibility', () => {
         expect(formatter.songMapEntries).toEqual([]);
       });
     });
+  });
 
+  describe.each(commentHeadedSongs)('%s', (_name, song) => {
+    it('reads its comment headings as sections and their repeat instructions as occurrences', () => {
+      expect(song.songMap.toString()).toEqual(
+        'I1 I1 V1 C1 V2 C2 C3 INST1 INST1 INST1 INST1 B1 B1 B1 T1 T1 T1 T1 T1 T1 T1 T1 T2 T2 T2 T2 ' +
+        'T3 T3 T3 T3 T3 T3 T3 T3 INST2 INST2 T4 T5 T5 T6 INST3 T7 T7 T7 T7 INST4 T8 T8 T9 T10',
+      );
+    });
+
+    it('renders each occurrence in full in mapped order, headed by its comment', () => {
+      const mapped = new TextFormatter({ renderOrder: 'mapped' }).format(song);
+
+      expect(mapped.match(/^Bridge \(3x\) \*6-7$/gm)).toHaveLength(3);
+      expect(mapped.match(/^Verse 1 \*1$/gm)).toHaveLength(1);
+    });
+  });
+
+  describe.each(sectionedSongs)('%s', (_name, song) => {
     describe.each(textFormatters)('%s', (_formatterName, FormatterClass) => {
       it('renders mapped order like source order', () => {
         const mapped = new FormatterClass({ renderOrder: 'mapped' }).format(song);

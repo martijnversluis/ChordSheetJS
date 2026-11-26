@@ -430,5 +430,30 @@ describe('Song', () => {
 
       expect(song.mappedBodyParagraphsFor().map((paragraph) => paragraph.label)).toEqual(['Chorus', 'Chorus']);
     });
+
+    it('renders a section that a comment heading recalls once, headed by its comment', () => {
+      const song = parse(heredoc`
+        {comment: Chorus}
+        [C]Chorus line
+
+        {comment: Verse 1}
+        [G]Verse one
+
+        {comment: Chorus}`);
+
+      expect(song.songMap.toString()).toEqual('C1 V1 C1');
+      expect(new TextFormatter({ renderOrder: 'mapped' }).format(song)).toEqual(heredoc`
+        Chorus
+        C
+        Chorus line
+
+        Verse 1
+        G
+        Verse one
+
+        Chorus
+        C
+        Chorus line`);
+    });
   });
 });

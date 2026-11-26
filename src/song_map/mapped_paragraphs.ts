@@ -116,11 +116,13 @@ class MappedParagraphs {
   /**
    * Collects the lines that are not part of a section and attaches them to the block they precede, so they
    * travel along with the performance that renders that block. Lines that no performed block follows stay
-   * unattached and are rendered last.
+   * unattached and are rendered last. A recall line, such as a comment heading that recalls a section, is
+   * rendered by the occurrence it adds, so it does not travel along as well.
    */
   private collectUnmappedLines(): void {
     const blocks = this.blocksByLine();
     const performed = new Set(this.songMap.occurrences.map((occurrence) => occurrence.section));
+    const recalls = this.recallLineNumbers();
     let pending: Line[] = [];
 
     this.song.lines.forEach((line) => {
@@ -129,12 +131,18 @@ class MappedParagraphs {
       if (block && performed.has(block.section)) {
         this.attach(block, pending);
         pending = [];
-      } else if (!block && (line.hasRenderableItems() || line.isEmpty())) {
+      } else if (!block && !recalls.has(line.lineNumber) && (line.hasRenderableItems() || line.isEmpty())) {
         pending.push(line);
       }
     });
 
     this.unattached = pending;
+  }
+
+  private recallLineNumbers(): Set<number | null> {
+    return new Set(this.songMap.occurrences
+      .filter((occurrence) => occurrence.origin === 'recall' && occurrence.lineNumber !== null)
+      .map((occurrence) => occurrence.lineNumber));
   }
 
   private attach({ section, index }: SourceBlock, lines: Line[]): void {
