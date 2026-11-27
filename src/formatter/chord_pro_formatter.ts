@@ -57,6 +57,12 @@ import {
 import {
   NUMBER, NUMERAL, NullableChordStyle, SOLFEGE, SYMBOL,
 } from '../constants';
+import {
+  escapeAttributeValue,
+  escapeLyrics,
+  escapeTagValue,
+  escapeTagValuePreservingMetaExpressions,
+} from './chord_pro_escaping';
 import { longTagName, shortTagName } from '../chord_sheet/tag';
 
 const NON_METADATA_HEADER_DIRECTIVES = [
@@ -324,6 +330,14 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
 
   formatTagValue(value: string, metadata: Metadata): string {
     if (!this.configuration.evaluate) {
+      return escapeTagValuePreservingMetaExpressions(value);
+    }
+
+    return escapeTagValue(this.evaluateTagValue(value, metadata));
+  }
+
+  private evaluateTagValue(value: string, metadata: Metadata): string {
+    if (!this.configuration.evaluate) {
       return value;
     }
 
@@ -338,7 +352,9 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
       return '';
     }
 
-    return keys.map((key) => `${key}="${this.formatTagValue(tag.attributes[key], metadata)}"`).join(' ');
+    return keys
+      .map((key) => `${key}="${escapeAttributeValue(this.evaluateTagValue(tag.attributes[key], metadata))}"`)
+      .join(' ');
   }
 
   formatChordLyricsPair(chordLyricsPair: ChordLyricsPair, line: Line, song: Song): string {
@@ -393,7 +409,7 @@ class ChordProFormatter extends Formatter<ChordProFormatterConfiguration> {
   }
 
   formatChordLyricsPairLyrics(chordLyricsPair: ChordLyricsPair): string {
-    return chordLyricsPair.lyrics || '';
+    return escapeLyrics(chordLyricsPair.lyrics || '');
   }
 
   formatComment(comment: Comment): string {

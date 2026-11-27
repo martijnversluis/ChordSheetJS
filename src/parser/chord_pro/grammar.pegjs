@@ -20,9 +20,8 @@ LineWithNewline
     }
 
 Line
-  = lyrics:$(Lyrics?) tokens:Token* chords:Chord? comment:Comment? Space* {
+  = tokens:Token* chords:Chord? comment:Comment? Space* {
       return helpers.buildLine([
-          lyrics ? { type: 'chordLyricsPair', chords: '', lyrics } : null,
           ...helpers.combineChordLyricsPairs(tokens.flat(), options.chopFirstWord),
           chords ? helpers.buildChordLyricsPair(chords, '') : null,
           comment ? { type: 'comment', comment } : null,
@@ -298,13 +297,13 @@ TagAttributeName
   = $([a-zA-Z-_]+)
 
 TagAttributeValue
-  = "\"" value:$(TagAttributeValueChar*) "\"" {
-      return value;
+  = "\"" chars:TagAttributeValueChar* "\"" {
+      return chars.map(c => c.char || c).join('');
     }
 
 TagAttributeValueChar
   = MetaExpressionSource
-  / [^"}]
+  / [^"}\\]
   / Escape
     sequence: (
       "\\" { return { type: 'char', char: '\\'   }; }
@@ -313,3 +312,4 @@ TagAttributeValueChar
     ) {
       return sequence;
     }
+  / "\\"

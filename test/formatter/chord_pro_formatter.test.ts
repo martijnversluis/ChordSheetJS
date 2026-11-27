@@ -193,4 +193,23 @@ describe('ChordProFormatter', () => {
       '{title: Let it be}\n{composer: John Lennon}\n{meta: non_standard value}',
     );
   });
+
+  describe('escaping', () => {
+    const roundTrip = (chordSheet: string) => new ChordProFormatter().format(new ChordProParser().parse(chordSheet));
+
+    it.each([
+      ['brackets in lyrics', '[C]a \\[b\\]'],
+      ['braces in lyrics', '[C]a \\{b\\}'],
+      ['a backslash in lyrics', '[C]a \\\\ b'],
+      ['a meta expression marker in lyrics', '[C]a %\\{b\\}'],
+      ['a comment marker in lyrics', '[C]a \\# b'],
+      ['a closing brace in a directive value', '{title: a \\} b}'],
+      ['a backslash in a directive value', '{title: a \\\\ b}'],
+      ['a closing brace in an attribute value', '{start_of_verse: label="a \\} b"}\n{end_of_verse}'],
+      ['a quote in an attribute value', '{start_of_verse: label="a \\" b"}\n{end_of_verse}'],
+      ['a meta expression in a directive value', '{title: %{artist|by %{artist}} \\} x}'],
+    ])('round-trips %s', (_description, chordSheet) => {
+      expect(roundTrip(chordSheet)).toEqual(chordSheet);
+    });
+  });
 });
