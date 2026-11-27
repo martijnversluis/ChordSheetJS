@@ -82,8 +82,8 @@ describe('song map compatibility', () => {
     it('renders each occurrence in full in mapped order, headed by its comment', () => {
       const mapped = new TextFormatter({ renderOrder: 'mapped' }).format(song);
 
-      expect(mapped.match(/^Bridge \(3x\) \*6-7$/gm)).toHaveLength(3);
-      expect(mapped.match(/^Verse 1 \*1$/gm)).toHaveLength(1);
+      expect(mapped.match(/^Bridge \(3x\)$/gm)).toHaveLength(3);
+      expect(mapped.match(/^Verse 1$/gm)).toHaveLength(1);
     });
   });
 

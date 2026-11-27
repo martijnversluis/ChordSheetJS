@@ -25,17 +25,14 @@ const SECTION_TYPES: Record<string, string> = {
 /** A section name, optionally numbered, for example `Verse 2` or `Pre-Chorus` */
 const HEADING_PATTERN = /^([a-z]+(?:[- ][a-z]+)?)(?:\s+[1-9]\d*)?$/i;
 
-/** A trailing marker such as `*1`, `*4a` or `*6-7`, which charts add after a section heading */
-const MARKER_PATTERN = /\s+\*\S+$/;
-
 export interface CommentHeading {
   /** The section type the heading denotes, for example `chorus` */
   type: string;
 
-  /** The heading as written, including a repeat instruction such as `2x` and a marker such as `*1` */
+  /** The heading as written, including a repeat instruction such as `2x` */
   label: string;
 
-  /** The section name without repeat instruction and marker, for example `Verse 1` */
+  /** The section name without repeat instruction, for example `Verse 1` */
   name: string;
 }
 
@@ -48,26 +45,22 @@ function headingTag(line: Line): Tag | null {
   return item;
 }
 
-/**
- * The section name of a heading, without a trailing marker such as `*1` and a trailing repeat instruction such
- * as `2x` or `(2x)`
- */
+/** The section name of a heading, without a trailing repeat instruction such as `2x` or `(2x)` */
 function sectionName(label: string): string | null {
-  const unmarked = label.replace(MARKER_PATTERN, '');
-  const instruction = RepeatInstruction.parse(unmarked);
+  const instruction = RepeatInstruction.parse(label);
 
-  if (!instruction) return unmarked;
-  if (!unmarked.endsWith(instruction.text)) return null;
+  if (!instruction) return label;
+  if (!label.endsWith(instruction.text)) return null;
 
-  return unmarked.slice(0, -instruction.text.length).replace(/\($/, '').trim();
+  return label.slice(0, -instruction.text.length).replace(/\($/, '').trim();
 }
 
 /**
  * Reads a line that consists of a single comment naming a section, such as `{comment: Chorus}` or
  * `{c: Verse 2}`, as the heading of the paragraph it starts. Charts commonly head their sections this way
  * instead of using section directives. Returns `null` for any other line, including a comment inside a
- * section, a comment with a selector, and a comment that says more than a section name, a repeat instruction and
- * a marker, such as `Chorus softly`.
+ * section, a comment with a selector, and a comment that says more than a section name and a repeat instruction,
+ * such as `Chorus softly`.
  */
 function commentHeading(line: Line): CommentHeading | null {
   const tag = headingTag(line);

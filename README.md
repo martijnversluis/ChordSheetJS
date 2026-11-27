@@ -249,15 +249,14 @@ A paragraph that is not part of a section becomes an anonymous section with an `
 content has a place in the map.
 
 Many charts head their sections with a comment instead of a section directive. A paragraph that starts with a comment
-naming a section, optionally numbered and followed by a repeat instruction or a marker such as `*1`, becomes a section
-of that type, with the comment as its label. A comment heading with no content below it recalls the one earlier
-section with the same name:
+naming a section, optionally numbered and followed by a repeat instruction, becomes a section of that type, with the
+comment as its label. A comment heading with no content below it recalls the one earlier section with the same name:
 
 ```chordpro
 {comment: Verse 1}
 [G]Verse one
 
-{comment: Chorus *2}
+{comment: Chorus}
 [C]Chorus
 
 {comment: Chorus (2x)}

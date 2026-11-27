@@ -521,17 +521,17 @@ describe('SongMapGenerator', () => {
 
     it('performs a section as often as the repeat instruction of its heading says', () => {
       const songMap = SongMapGenerator.generate(parse(heredoc`
-        {comment: Bridge (2x) *6-7}
+        {comment: Bridge (2x)}
         [Em]Bridge`));
 
       expect(songMap.toString()).toEqual('B1 B1');
       expect(songMap.occurrences.map((occurrence) => occurrence.origin)).toEqual(['source', 'repeat']);
-      expect(songMap.sections[0].label).toEqual('Bridge (2x) *6-7');
+      expect(songMap.sections[0].label).toEqual('Bridge (2x)');
     });
 
     it('recalls the earlier section that a heading without content below it names', () => {
       const songMap = SongMapGenerator.generate(parse(heredoc`
-        {comment: Chorus *2}
+        {comment: Chorus}
         [C]Chorus
 
         {comment: Verse 1}
