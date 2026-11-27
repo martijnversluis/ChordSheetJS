@@ -409,6 +409,20 @@ This part is [G]key
     expect(song.title).toEqual('my {title}');
   });
 
+  it('keeps a lone backslash in an attribute value', () => {
+    const song = new ChordProParser().parse('{start_of_verse: label="a\\b"}\n{end_of_verse}');
+    const tag = song.lines[0].items[0] as Tag;
+
+    expect(tag.attributes).toEqual({ label: 'a\\b' });
+  });
+
+  it('unescapes special characters on a lyrics line without chords', () => {
+    const song = new ChordProParser().parse('x \\[y\\] z');
+    const pair = song.lines[0].items[0] as ChordLyricsPair;
+
+    expect(pair.lyrics).toEqual('x [y] z');
+  });
+
   it('allows conditional directives', () => {
     const chordSheet = '{title-guitar: Guitar song}';
     const song = new ChordProParser().parse(chordSheet);
