@@ -9,8 +9,10 @@ import SongMapDiagnostic from './song_map_diagnostic';
 import SongMapOccurrence from './song_map_occurrence';
 import SongSection from './song_section';
 import Tag from '../chord_sheet/tag';
+import commentHeading from './comment_heading';
 import sectionFingerprint from './section_fingerprint';
 
+import { CommentHeading } from './comment_heading';
 import { SectionSplitEntry } from './section_splitter';
 import { SongMapDiagnosticProperties } from './song_map_diagnostic';
 import { SongMapOccurrenceOrigin } from './song_map_occurrence';
@@ -36,7 +38,7 @@ function normalizeLabel(label: string | null): string {
 
 /**
  * Generates a {@link SongMap} from a linear chart. Paragraphs that are not part of a section become
- * anonymous sections. Generation does not change the song.
+ * anonymous sections, unless a comment heading names their section type. Generation does not change the song.
  */
 class SongMapGenerator {
   static generate(song: Song): SongMap {
@@ -89,15 +91,20 @@ class SongMapGenerator {
     Array.from({ length: count - 1 }).forEach(() => this.addOccurrence(section, 'repeat', lines[0].lineNumber));
   }
 
+  /**
+   * A block headed by a comment heading takes its type and label from the heading. The heading stays out of the
+   * fingerprint, just like the label of a section directive.
+   */
   private readBlock(lines: Line[]): SectionBlock {
-    const label = this.labelFor(lines);
+    const heading = commentHeading(lines[0]);
+    const label = heading ? heading.label : this.labelFor(lines);
 
     return {
-      type: lines[0].type,
+      type: heading ? heading.type : lines[0].type,
       label,
       lines,
-      fingerprint: sectionFingerprint(lines),
-      normalizedLabel: normalizeLabel(RepeatInstruction.strip(label ?? '')),
+      fingerprint: sectionFingerprint(heading ? lines.slice(1) : lines),
+      normalizedLabel: normalizeLabel(heading ? heading.name : RepeatInstruction.strip(label ?? '')),
     };
   }
 
@@ -183,6 +190,13 @@ class SongMapGenerator {
   }
 
   private addRecall(line: Line): void {
+    const heading = commentHeading(line);
+
+    if (heading) {
+      this.addCommentRecall(line, heading);
+      return;
+    }
+
     const section = this.lastSectionOfType(CHORUS);
 
     if (!section) {
@@ -196,6 +210,30 @@ class SongMapGenerator {
     }
 
     this.addOccurrence(section, 'recall', line.lineNumber);
+  }
+
+  /**
+   * A comment heading without content below it performs the one earlier section with the same type and label
+   * again, as often as its repeat instruction says. When no single earlier section matches, the heading stays
+   * an ordinary comment.
+   */
+  private addCommentRecall(line: Line, { type, label, name }: CommentHeading): void {
+    const normalizedLabel = normalizeLabel(name);
+    const matches = this.entries.filter((entry) => (
+      entry.section.type === type && entry.normalizedLabel === normalizedLabel
+    ));
+
+    if (matches.length !== 1) {
+      this.reportUnattachedRepeat(line);
+      return;
+    }
+
+    const { section } = matches[0];
+    const instruction = RepeatInstruction.parse(label);
+    const count = instruction?.isFinite() ? instruction.count as number : 1;
+
+    this.addOccurrence(section, 'recall', line.lineNumber);
+    Array.from({ length: count - 1 }).forEach(() => this.addOccurrence(section, 'repeat', line.lineNumber));
   }
 
   private lastSectionOfType(type: string): SongSection | null {

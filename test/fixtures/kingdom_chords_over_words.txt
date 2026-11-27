@@ -3,7 +3,7 @@ key: F
 Intro (2x)
 Gm F / / | C#dim7 Dm / / |
 
-Verse 1 *1
+Verse 1
    Dm7              C/E                 F
 My heart has always longed for something  more
   Dm7                   Bb                F2
@@ -15,7 +15,7 @@ Every wound we carry will be   healed
                G7/B                   Bbm6
 My eyes on the Son, Lord Your will be done
 
-Chorus 1 *2
+Chorus 1
              Gm     F                   C#dim7   Dm
 Thine is the King - dom, the power, the glo    - ry
             Gm   F                   C#dim7   Dm
@@ -27,7 +27,7 @@ We’ll be singing for - ev  - er,   a - men
          Dm/C          G13      G13(#5) Gm7/C     F
 We’ll be singing for - ever and ever,         a - men
 
-Verse 2 *3
+Verse 2
 Dm7            C/E           F
 Beautiful each color that He made
      Dm7             Bb        F2
@@ -39,7 +39,7 @@ You'll return to set  the pris'ners free
                G7/B                   Bbm6
 My eyes on the Son, Lord Your will be done
 
-Chorus 2 *4a
+Chorus 2
              Gm     F                  C#dim7   Dm
 Thine is the King - dom, the power the glo    - ry
             Gm   F                   C#dim7   Dm
@@ -49,7 +49,7 @@ We’re singing free - dom, our testi - mo     - ny
                        G13   Gm7/C     F  x
 We’ll be singing for - ev  - er,   a - men
 
-Chorus 2 *4b
+Chorus 2
              Gm     F                  C#dim7   Dm
 Thine is the King - dom, the power the glo    - ry
             Gm   F                   C#dim7   Dm
@@ -65,10 +65,10 @@ We’ll be singing for - ev  -       er,   a - men
          Dm7/A         G13      G13(#5) Gm7/C     F
 We’ll be singing for - ever and ever,         a - men
 
-Interlude 1 (4x) *5
+Interlude 1 (4x)
 Dm7 / C/E / | F / Bb2 / |
 
-Bridge (3x) *6-7
+Bridge (3x)
 Dm7           C/E          F      Bb2
     If you've ever wondered  What Heaven looks like
 Dm7 C/E                      F      Bb2
@@ -78,34 +78,34 @@ Dm7           C/E            F      Bb2
 Dm7 C2/E                  F       Bb2
          Just let it fill the room
 
-Tag 1 (8x) *8
+Tag 1 (8x)
 Dm7 C/E                  F       Bb2
         Just let it fill the room
 
-Tag 2 (4x) *9
+Tag 2 (4x)
                   x     x x x | x x x
 He's coming, He's coming
 
-Tag 3 (8x) *10
+Tag 3 (8x)
                   Dm7    C/E                   F     Bb2
 He's coming, He's coming,    He's coming, He's coming
 
-Interlude 2 (2x) *11
+Interlude 2 (2x)
 Bb2 / / / | / / / / | / / / / | / / / / |
 
-Tag 4 *12
+Tag 4
 C/Bb F/Bb      Bbma7
 All  hail King Jesus
 C/Bb F/Bb      Bbma7
 All  hail King Jesus
 
-Tag 5 (2x) *13
+Tag 5 (2x)
 C/E F         Bbma7
 All hail King Jesus
 C/E F         Bbma7
 All hail King Jesus
 
-Tag 6 *14
+Tag 6
 C/E F         x    F13 Ebma7
 All hail King Je - sus
 Bbma9     A7(#5)      x    F13 Ebma7
@@ -116,11 +116,11 @@ Bbma9     A7(#5)      x    F13 Ebma7
       All hail   King Je - sus
 Bbma9 | / / / | / / / / | / / / / | / / / |
 
-Interlude 3 *15
+Interlude 3
 Dm7 / C/E / | Eb/F F9/A Bbma9 A7(#9#5) |
 Dm9 / C/E /D - /Db | Cm7 F13 Bbma9 / A7(#9#5) |
 
-Tag 7 (4x) *16-17
+Tag 7 (4x)
 Dm7                C/E               Eb/F
 If  you wanna know what Heaven looks like
         F9/A    Bbma9    A7(#9#5)
@@ -130,11 +130,11 @@ If  you wanna know what Heav - en  sounds like
          F13      Bbma9     A7(#9#5)
 Just let it  fill the   room
 
-Interlude 4 *18
+Interlude 4
 Dm9 / C/E / | F9/A Bbma9 / A7(#9#5) |
 Dm9 / C/E /D - /Db - /C | F13 Bbma9 / A7(#9#5) |
 
-Tag 8 (2x) *19
+Tag 8 (2x)
        Dm9        C/E
 If you wanna know what Heaven looks like
         F9/A          Bbma9        A7(#9#5)
@@ -144,7 +144,7 @@ If you wanna know what Heav - en looks like
      F13          Bbma9             A7(#9#5)
 Just let it, just let   it fill the room
 
-Tag 9 *20a
+Tag 9
 Dm9                C/E               Ebma7/F
 If  you wanna know what Heaven looks like
         F9/A          Bbma9    A7(#9#5)
@@ -154,7 +154,7 @@ If  you wanna know what Heav - en sounds like
      F13          Bbma9             A7(#9#5)
 Just let it, just let   it fill the room
 
-Tag 10 *20b
+Tag 10
 Dm9                C/E               Ebma7/F
 If  you wanna know what Heaven looks like
         F9/A          Bbma9    A7(#9#5)

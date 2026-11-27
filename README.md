@@ -248,6 +248,30 @@ songMap.occurrences.map((occurrence) => [occurrence.token, occurrence.origin]);
 A paragraph that is not part of a section becomes an anonymous section with an `S` token, so every piece of chart
 content has a place in the map.
 
+Many charts head their sections with a comment instead of a section directive. A paragraph that starts with a comment
+naming a section, optionally numbered and followed by a repeat instruction, becomes a section of that type, with the
+comment as its label. A comment heading with no content below it recalls the one earlier section with the same name:
+
+```chordpro
+{comment: Verse 1}
+[G]Verse one
+
+{comment: Chorus}
+[C]Chorus
+
+{comment: Chorus (2x)}
+```
+
+```javascript
+songMap.toString();
+// 'V1 C1 C1 C1'
+```
+
+Recognized section names are Intro, Verse, Pre-Chorus, Chorus, Bridge, Instrumental, Interlude, Tag, Turn, Turnaround,
+Outro, Ending and End. Turn and Turnaround are sections of type `turn`, with token `TURN1`. A comment that says
+anything else, such as `Chorus softly`, a comment in the middle of a paragraph and a comment inside a section
+directive stay ordinary comments.
+
 Every occurrence refers to one section, so the same section can occur multiple times. Sections are identified by
 section type, label and content: a repeated block with exactly equal content is another occurrence of the same
 section, a block with a conflicting label is a new section.
@@ -406,8 +430,9 @@ before: the song map is not generated, `formatter.diagnostics` and `formatter.so
 is unchanged. Generating a song map never changes the song.
 
 The charts in `test/fixtures` are covered as compatibility fixtures: real-world ChordPro, chords over words and
-Ultimate Guitar charts, including a chart that uses `{comment}` headers instead of section directives and a chart
-that writes out its chorus three times. For those charts mapped order renders the same content as source order.
+Ultimate Guitar charts, including two charts that use `{comment}` headers instead of section directives and a chart
+that writes out its chorus three times. For the charts with section directives mapped order renders the same content
+as source order.
 `TextFormatter` and `ChordsOverWordsFormatter` output is identical, `HtmlDivFormatter` and `HtmlTableFormatter`
 output is identical apart from the empty paragraph elements that source order emits and mapped order leaves out, and
 `PdfFormatter` renders the same text in the same order, shifted up where source order spends vertical space on an
@@ -416,7 +441,9 @@ empty paragraph.
 Mapped order does differ from source order where the song map says it should:
 
 - A `{chorus}` recall and a recognized repeat instruction become occurrences, so their content is written out in
-  full. In source order a recall renders nothing unless `expandChorusDirective` is set.
+  full. In source order a recall renders nothing unless `expandChorusDirective` is set. The same goes for the repeat
+  instructions and recalls of comment headings, which is why the charts with `{comment}` headers render differently
+  in mapped order.
 - A section that the song map does not mention is not rendered, and reports a diagnostic.
 - Content that is not part of a section travels along with the performance of the section block it precedes, keeping
   the paragraph it shares in the source chart.

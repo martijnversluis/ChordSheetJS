@@ -15,6 +15,7 @@ const KNOWN_TOKEN_PREFIXES: Record<string, string> = {
   intro: 'I',
   instrumental: 'INST',
   tag: 'T',
+  turn: 'TURN',
   end: 'E',
 };
 
